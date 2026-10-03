@@ -1,0 +1,172 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchIndexServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Manages search indexes: creates, reads, changes, and lists them.
+service SearchIndexService {
+  // Creates a search index.
+  rpc CreateSearchIndex(CreateSearchIndexRequest) returns (CreateSearchIndexResponse);
+
+  // Returns a search index.
+  rpc GetSearchIndex(GetSearchIndexRequest) returns (GetSearchIndexResponse);
+
+  // Changes a search index.
+  rpc UpdateSearchIndex(UpdateSearchIndexRequest) returns (UpdateSearchIndexResponse);
+
+  // Deletes a search index.
+  rpc DeleteSearchIndex(DeleteSearchIndexRequest) returns (DeleteSearchIndexResponse);
+
+  // Returns several search indexes at once.
+  rpc BatchGetSearchIndexes(BatchGetSearchIndexesRequest) returns (BatchGetSearchIndexesResponse);
+
+  // Lists search indexes a page at a time.
+  rpc SearchSearchIndexes(SearchSearchIndexesRequest) returns (SearchSearchIndexesResponse);
+
+  // Takes a stream of search indexes and answers once at the end.
+  rpc BatchCreateSearchIndexes(stream BatchCreateSearchIndexesRequest) returns (BatchCreateSearchIndexesResponse);
+}
+
+// The request of `CreateSearchIndex`.
+message CreateSearchIndexRequest {
+  acme.common.v1.RequestContext context = 1;
+  SearchIndex search_index = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSearchIndex`.
+message CreateSearchIndexResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSearchIndex`.
+message GetSearchIndexRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchIndex`.
+message GetSearchIndexResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateSearchIndex`.
+message UpdateSearchIndexRequest {
+  acme.common.v1.RequestContext context = 1;
+  SearchIndex search_index = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateSearchIndex`.
+message UpdateSearchIndexResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteSearchIndex`.
+message DeleteSearchIndexRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteSearchIndex`.
+message DeleteSearchIndexResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetSearchIndexes`.
+message BatchGetSearchIndexesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string search_index_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetSearchIndexes`.
+message BatchGetSearchIndexesResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchSearchIndexes`.
+message SearchSearchIndexesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchSearchIndexesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchSearchIndexes`.
+message SearchSearchIndexesResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateSearchIndexes`.
+message BatchCreateSearchIndexesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSearchIndexesRequest.StreamHeader header = 2;
+    SearchIndex record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSearchIndexes`.
+message BatchCreateSearchIndexesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string search_index_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSearchIndexesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

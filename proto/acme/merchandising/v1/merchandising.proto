@@ -1,0 +1,145 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "MerchandisingProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Where a collection is in its lifecycle.
+enum CollectionStatus {
+  COLLECTION_STATUS_UNSPECIFIED = 0;
+  COLLECTION_STATUS_ACTIVE = 1;
+  COLLECTION_STATUS_INACTIVE = 2;
+}
+
+// Where a placement is in its lifecycle.
+enum PlacementStatus {
+  PLACEMENT_STATUS_UNSPECIFIED = 0;
+  PLACEMENT_STATUS_TENTATIVE = 1;
+  PLACEMENT_STATUS_CONFIRMED = 2;
+  PLACEMENT_STATUS_CANCELLED = 3;
+  PLACEMENT_STATUS_COMPLETED = 4;
+}
+
+// Where a merchandising rule is in its lifecycle.
+enum MerchandisingRuleStatus {
+  MERCHANDISING_RULE_STATUS_UNSPECIFIED = 0;
+  MERCHANDISING_RULE_STATUS_DRAFT = 1;
+  MERCHANDISING_RULE_STATUS_ENABLED = 2;
+  MERCHANDISING_RULE_STATUS_DISABLED = 3;
+  MERCHANDISING_RULE_STATUS_RETIRED = 4;
+}
+
+// A collection of the merchandising domain.
+message Collection {
+  string collection_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Collection children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  CollectionStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The participant of a placement.
+message PlacementParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a placement.
+message PlacementDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a placement.
+message PlacementWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A placement of the merchandising domain.
+message Placement {
+  string placement_id = 1;
+  string title = 2;
+  PlacementStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated PlacementParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    PlacementDailyRule daily = 7;
+    PlacementWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The condition of a merchandising rule.
+message MerchandisingRuleCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a merchandising rule.
+message MerchandisingRuleDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a merchandising rule.
+message MerchandisingRuleRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a merchandising rule.
+message MerchandisingRuleBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A merchandising rule of the merchandising domain.
+message MerchandisingRule {
+  string merchandising_rule_id = 1;
+  string name = 2;
+  string description = 3;
+  MerchandisingRuleStatus status = 4;
+  int32 priority = 5;
+  repeated MerchandisingRuleCondition conditions = 6;
+  oneof action {
+    MerchandisingRuleDiscountAction discount = 7;
+    MerchandisingRuleRouteAction route = 8;
+    MerchandisingRuleBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

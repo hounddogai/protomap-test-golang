@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.admissions.v1;
+
+import "acme/admissions/v1/admissions.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Admissions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/admissions/v1;admissionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AdmissionCalculationServiceProto";
+option java_package = "com.acme.admissions.v1";
+
+// Computes the figures of an admission, such as totals, taxes, and estimates.
+service AdmissionCalculationService {
+  // Calculates an admission.
+  rpc CalculateAdmission(CalculateAdmissionRequest) returns (CalculateAdmissionResponse);
+
+  // Estimates an admission.
+  rpc EstimateAdmission(EstimateAdmissionRequest) returns (EstimateAdmissionResponse);
+
+  // Compares an admission.
+  rpc CompareAdmissionOptions(CompareAdmissionOptionsRequest) returns (CompareAdmissionOptionsResponse);
+
+  // Recalculates an admission.
+  rpc RecalculateAdmissions(RecalculateAdmissionsRequest) returns (RecalculateAdmissionsResponse);
+
+  // Simulates an admission.
+  rpc SimulateAdmission(SimulateAdmissionRequest) returns (SimulateAdmissionResponse);
+
+  // Explains an admission.
+  rpc ExplainAdmissionCalculation(ExplainAdmissionCalculationRequest) returns (ExplainAdmissionCalculationResponse);
+
+  // Returns an admission.
+  rpc GetAdmissionRates(GetAdmissionRatesRequest) returns (GetAdmissionRatesResponse);
+}
+
+// The request of `CalculateAdmission`.
+message CalculateAdmissionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  Admission admission = 3;
+  CalculateAdmissionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateAdmission`.
+message CalculateAdmissionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateAdmissionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Admission admission = 1;
+  CalculateAdmissionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateAdmission`.
+message EstimateAdmissionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  Admission admission = 3;
+  EstimateAdmissionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateAdmission`.
+message EstimateAdmissionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateAdmissionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Admission admission = 1;
+  EstimateAdmissionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareAdmissionOptions`.
+message CompareAdmissionOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  Admission admission = 3;
+  CompareAdmissionOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareAdmissionOptions`.
+message CompareAdmissionOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareAdmissionOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Admission admission = 1;
+  CompareAdmissionOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateAdmissions`.
+message RecalculateAdmissionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  Admission admission = 3;
+  RecalculateAdmissionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateAdmissions`.
+message RecalculateAdmissionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateAdmissionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Admission admission = 1;
+  RecalculateAdmissionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateAdmission`.
+message SimulateAdmissionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  Admission admission = 3;
+  SimulateAdmissionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateAdmission`.
+message SimulateAdmissionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateAdmissionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Admission admission = 1;
+  SimulateAdmissionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainAdmissionCalculation`.
+message ExplainAdmissionCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  Admission admission = 3;
+  ExplainAdmissionCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainAdmissionCalculation`.
+message ExplainAdmissionCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Admission admission = 1;
+  ExplainAdmissionCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAdmissionRates`.
+message GetAdmissionRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAdmissionRates`.
+message GetAdmissionRatesResponse {
+  Admission admission = 1;
+  acme.common.v1.OperationResult result = 2;
+}

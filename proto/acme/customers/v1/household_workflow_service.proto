@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "HouseholdWorkflowServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Runs the long-lived workflow that takes a household from start to finish.
+service HouseholdWorkflowService {
+  // Starts a household.
+  rpc StartHouseholdWorkflow(StartHouseholdWorkflowRequest) returns (StartHouseholdWorkflowResponse);
+
+  // Advances a household.
+  rpc AdvanceHouseholdWorkflow(AdvanceHouseholdWorkflowRequest) returns (AdvanceHouseholdWorkflowResponse);
+
+  // Cancels a household.
+  rpc CancelHouseholdWorkflow(CancelHouseholdWorkflowRequest) returns (CancelHouseholdWorkflowResponse);
+
+  // Retrys a household.
+  rpc RetryHouseholdWorkflow(RetryHouseholdWorkflowRequest) returns (RetryHouseholdWorkflowResponse);
+
+  // Pauses a household.
+  rpc PauseHouseholdWorkflow(PauseHouseholdWorkflowRequest) returns (PauseHouseholdWorkflowResponse);
+
+  // Resumes a household.
+  rpc ResumeHouseholdWorkflow(ResumeHouseholdWorkflowRequest) returns (ResumeHouseholdWorkflowResponse);
+
+  // Returns a household.
+  rpc InspectHouseholdWorkflow(InspectHouseholdWorkflowRequest) returns (InspectHouseholdWorkflowResponse);
+
+  // Lists households a page at a time.
+  rpc ListHouseholdWorkflows(ListHouseholdWorkflowsRequest) returns (ListHouseholdWorkflowsResponse);
+
+  // Signals a household.
+  rpc SignalHouseholdWorkflow(SignalHouseholdWorkflowRequest) returns (SignalHouseholdWorkflowResponse);
+}
+
+// The request of `StartHouseholdWorkflow`.
+message StartHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  StartHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartHouseholdWorkflow`.
+message StartHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  StartHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceHouseholdWorkflow`.
+message AdvanceHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  AdvanceHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceHouseholdWorkflow`.
+message AdvanceHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  AdvanceHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelHouseholdWorkflow`.
+message CancelHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  CancelHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelHouseholdWorkflow`.
+message CancelHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  CancelHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryHouseholdWorkflow`.
+message RetryHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  RetryHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryHouseholdWorkflow`.
+message RetryHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  RetryHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseHouseholdWorkflow`.
+message PauseHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  PauseHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseHouseholdWorkflow`.
+message PauseHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  PauseHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeHouseholdWorkflow`.
+message ResumeHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  ResumeHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeHouseholdWorkflow`.
+message ResumeHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  ResumeHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectHouseholdWorkflow`.
+message InspectHouseholdWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectHouseholdWorkflow`.
+message InspectHouseholdWorkflowResponse {
+  Household household = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListHouseholdWorkflows`.
+message ListHouseholdWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated HouseholdStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListHouseholdWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListHouseholdWorkflows`.
+message ListHouseholdWorkflowsResponse {
+  repeated Household households = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalHouseholdWorkflow`.
+message SignalHouseholdWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  SignalHouseholdWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalHouseholdWorkflow`.
+message SignalHouseholdWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  SignalHouseholdWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

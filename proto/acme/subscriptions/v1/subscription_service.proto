@@ -1,0 +1,183 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "SubscriptionServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Manages subscriptions: creates, reads, changes, and lists them.
+service SubscriptionService {
+  // Creates a subscription.
+  rpc CreateSubscription(CreateSubscriptionRequest) returns (CreateSubscriptionResponse);
+
+  // Returns a subscription.
+  rpc GetSubscription(GetSubscriptionRequest) returns (GetSubscriptionResponse);
+
+  // Changes a subscription.
+  rpc UpdateSubscription(UpdateSubscriptionRequest) returns (UpdateSubscriptionResponse);
+
+  // Deletes a subscription.
+  rpc DeleteSubscription(DeleteSubscriptionRequest) returns (DeleteSubscriptionResponse);
+
+  // Lists subscriptions a page at a time.
+  rpc ListSubscriptions(ListSubscriptionsRequest) returns (ListSubscriptionsResponse);
+
+  // Lists subscriptions a page at a time.
+  rpc SearchSubscriptions(SearchSubscriptionsRequest) returns (SearchSubscriptionsResponse);
+
+  // Takes a stream of subscriptions and answers once at the end.
+  rpc BatchCreateSubscriptions(stream BatchCreateSubscriptionsRequest) returns (BatchCreateSubscriptionsResponse);
+}
+
+// The request of `CreateSubscription`.
+message CreateSubscriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Subscription subscription = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSubscription`.
+message CreateSubscriptionResponse {
+  Subscription subscription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSubscription`.
+message GetSubscriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSubscription`.
+message GetSubscriptionResponse {
+  Subscription subscription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateSubscription`.
+message UpdateSubscriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Subscription subscription = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateSubscription`.
+message UpdateSubscriptionResponse {
+  Subscription subscription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteSubscription`.
+message DeleteSubscriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteSubscription`.
+message DeleteSubscriptionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListSubscriptions`.
+message ListSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SubscriptionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSubscriptions`.
+message ListSubscriptionsResponse {
+  repeated Subscription subscriptions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchSubscriptions`.
+message SearchSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SubscriptionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchSubscriptions`.
+message SearchSubscriptionsResponse {
+  repeated Subscription subscriptions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateSubscriptions`.
+message BatchCreateSubscriptionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSubscriptionsRequest.StreamHeader header = 2;
+    Subscription record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSubscriptions`.
+message BatchCreateSubscriptionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string subscription_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSubscriptionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

@@ -1,0 +1,255 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefundLifecycleServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Moves a refund between the states of its lifecycle.
+service RefundLifecycleService {
+  // Activates a refund.
+  rpc ActivateRefund(ActivateRefundRequest) returns (ActivateRefundResponse);
+
+  // Suspends a refund.
+  rpc SuspendRefund(SuspendRefundRequest) returns (SuspendRefundResponse);
+
+  // Reinstates a refund.
+  rpc ReinstateRefund(ReinstateRefundRequest) returns (ReinstateRefundResponse);
+
+  // Terminates a refund.
+  rpc TerminateRefund(TerminateRefundRequest) returns (TerminateRefundResponse);
+
+  // Renews a refund.
+  rpc RenewRefund(RenewRefundRequest) returns (RenewRefundResponse);
+
+  // Expires a refund.
+  rpc ExpireRefund(ExpireRefundRequest) returns (ExpireRefundResponse);
+
+  // Returns a refund.
+  rpc GetRefundLifecycle(GetRefundLifecycleRequest) returns (GetRefundLifecycleResponse);
+}
+
+// The request of `ActivateRefund`.
+message ActivateRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  ActivateRefundRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateRefund`.
+message ActivateRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  ActivateRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendRefund`.
+message SuspendRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  SuspendRefundRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendRefund`.
+message SuspendRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  SuspendRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateRefund`.
+message ReinstateRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  ReinstateRefundRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateRefund`.
+message ReinstateRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  ReinstateRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateRefund`.
+message TerminateRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  TerminateRefundRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateRefund`.
+message TerminateRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  TerminateRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewRefund`.
+message RenewRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  RenewRefundRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewRefund`.
+message RenewRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  RenewRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireRefund`.
+message ExpireRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  ExpireRefundRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireRefund`.
+message ExpireRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  ExpireRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefundLifecycle`.
+message GetRefundLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefundLifecycle`.
+message GetRefundLifecycleResponse {
+  Refund refund = 1;
+  acme.common.v1.OperationResult result = 2;
+}

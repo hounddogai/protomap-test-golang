@@ -1,0 +1,243 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerSegmentReportingServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Builds and schedules reports about customer segments.
+service CustomerSegmentReportingService {
+  // Generates a customer segment.
+  rpc GenerateCustomerSegmentReport(GenerateCustomerSegmentReportRequest) returns (GenerateCustomerSegmentReportResponse);
+
+  // Returns a customer segment.
+  rpc FetchCustomerSegmentReport(FetchCustomerSegmentReportRequest) returns (FetchCustomerSegmentReportResponse);
+
+  // Schedules a customer segment.
+  rpc ScheduleCustomerSegmentReport(ScheduleCustomerSegmentReportRequest) returns (ScheduleCustomerSegmentReportResponse);
+
+  // Streams the changes of customer segments as they happen.
+  rpc StreamCustomerSegmentMetrics(StreamCustomerSegmentMetricsRequest) returns (stream StreamCustomerSegmentMetricsResponse);
+
+  // Lists customer segments a page at a time.
+  rpc ListCustomerSegmentReports(ListCustomerSegmentReportsRequest) returns (ListCustomerSegmentReportsResponse);
+
+  // Shares a customer segment.
+  rpc ShareCustomerSegmentReport(ShareCustomerSegmentReportRequest) returns (ShareCustomerSegmentReportResponse);
+
+  // Counts customer segments by status.
+  rpc CountCustomerSegmentTotals(CountCustomerSegmentTotalsRequest) returns (CountCustomerSegmentTotalsResponse);
+
+  // Deletes a customer segment.
+  rpc DeleteCustomerSegmentReport(DeleteCustomerSegmentReportRequest) returns (DeleteCustomerSegmentReportResponse);
+}
+
+// The request of `GenerateCustomerSegmentReport`.
+message GenerateCustomerSegmentReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  GenerateCustomerSegmentReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `GenerateCustomerSegmentReport`.
+message GenerateCustomerSegmentReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `FetchCustomerSegmentReport`.
+message FetchCustomerSegmentReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `FetchCustomerSegmentReport`.
+message FetchCustomerSegmentReportResponse {
+  CustomerSegment customer_segment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleCustomerSegmentReport`.
+message ScheduleCustomerSegmentReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  ScheduleCustomerSegmentReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ScheduleCustomerSegmentReport`.
+message ScheduleCustomerSegmentReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `StreamCustomerSegmentMetrics`.
+message StreamCustomerSegmentMetricsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerSegmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamCustomerSegmentMetricsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamCustomerSegmentMetrics`.
+message StreamCustomerSegmentMetricsResponse {
+  CustomerSegment customer_segment = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListCustomerSegmentReports`.
+message ListCustomerSegmentReportsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerSegmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCustomerSegmentReportsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCustomerSegmentReports`.
+message ListCustomerSegmentReportsResponse {
+  repeated CustomerSegment customer_segments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ShareCustomerSegmentReport`.
+message ShareCustomerSegmentReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  ShareCustomerSegmentReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ShareCustomerSegmentReport`.
+message ShareCustomerSegmentReportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ShareCustomerSegmentReportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCustomerSegmentTotals`.
+message CountCustomerSegmentTotalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerSegmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCustomerSegmentTotalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCustomerSegmentTotals`.
+message CountCustomerSegmentTotalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DeleteCustomerSegmentReport`.
+message DeleteCustomerSegmentReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteCustomerSegmentReport`.
+message DeleteCustomerSegmentReportResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

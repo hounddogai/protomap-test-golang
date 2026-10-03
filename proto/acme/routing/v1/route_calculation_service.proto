@@ -1,0 +1,318 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.routing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/routing/v1/routing.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Routing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/routing/v1;routingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RouteCalculationServiceProto";
+option java_package = "com.acme.routing.v1";
+
+// Computes the figures of a route, such as totals, taxes, and estimates.
+service RouteCalculationService {
+  // Calculates a route.
+  rpc CalculateRoute(CalculateRouteRequest) returns (CalculateRouteResponse);
+
+  // Estimates a route.
+  rpc EstimateRoute(EstimateRouteRequest) returns (EstimateRouteResponse);
+
+  // Quotes a route.
+  rpc QuoteRoute(QuoteRouteRequest) returns (QuoteRouteResponse);
+
+  // Compares a route.
+  rpc CompareRouteOptions(CompareRouteOptionsRequest) returns (CompareRouteOptionsResponse);
+
+  // Recalculates a route.
+  rpc RecalculateRoutes(RecalculateRoutesRequest) returns (RecalculateRoutesResponse);
+
+  // Simulates a route.
+  rpc SimulateRoute(SimulateRouteRequest) returns (SimulateRouteResponse);
+
+  // Explains a route.
+  rpc ExplainRouteCalculation(ExplainRouteCalculationRequest) returns (ExplainRouteCalculationResponse);
+}
+
+// The request of `CalculateRoute`.
+message CalculateRouteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  CalculateRouteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRoute`.
+message CalculateRouteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRouteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Route route = 1;
+  CalculateRouteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRoute`.
+message EstimateRouteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  EstimateRouteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRoute`.
+message EstimateRouteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRouteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Route route = 1;
+  EstimateRouteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRoute`.
+message QuoteRouteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  QuoteRouteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRoute`.
+message QuoteRouteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRouteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Route route = 1;
+  QuoteRouteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRouteOptions`.
+message CompareRouteOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  CompareRouteOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRouteOptions`.
+message CompareRouteOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRouteOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Route route = 1;
+  CompareRouteOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRoutes`.
+message RecalculateRoutesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  RecalculateRoutesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRoutes`.
+message RecalculateRoutesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRoutesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Route route = 1;
+  RecalculateRoutesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRoute`.
+message SimulateRouteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  SimulateRouteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRoute`.
+message SimulateRouteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRouteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Route route = 1;
+  SimulateRouteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRouteCalculation`.
+message ExplainRouteCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  Route route = 3;
+  ExplainRouteCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRouteCalculation`.
+message ExplainRouteCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Route route = 1;
+  ExplainRouteCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

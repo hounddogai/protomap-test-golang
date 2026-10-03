@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "TierCalculationServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Computes the figures of a tier, such as totals, taxes, and estimates.
+service TierCalculationService {
+  // Calculates a tier.
+  rpc CalculateTier(CalculateTierRequest) returns (CalculateTierResponse);
+
+  // Estimates a tier.
+  rpc EstimateTier(EstimateTierRequest) returns (EstimateTierResponse);
+
+  // Quotes a tier.
+  rpc QuoteTier(QuoteTierRequest) returns (QuoteTierResponse);
+
+  // Compares a tier.
+  rpc CompareTierOptions(CompareTierOptionsRequest) returns (CompareTierOptionsResponse);
+
+  // Recalculates a tier.
+  rpc RecalculateTiers(RecalculateTiersRequest) returns (RecalculateTiersResponse);
+
+  // Simulates a tier.
+  rpc SimulateTier(SimulateTierRequest) returns (SimulateTierResponse);
+
+  // Returns a tier.
+  rpc GetTierRates(GetTierRatesRequest) returns (GetTierRatesResponse);
+}
+
+// The request of `CalculateTier`.
+message CalculateTierRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  Tier tier = 3;
+  CalculateTierRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateTier`.
+message CalculateTierResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateTierResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Tier tier = 1;
+  CalculateTierResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateTier`.
+message EstimateTierRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  Tier tier = 3;
+  EstimateTierRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateTier`.
+message EstimateTierResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateTierResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Tier tier = 1;
+  EstimateTierResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteTier`.
+message QuoteTierRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  Tier tier = 3;
+  QuoteTierRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteTier`.
+message QuoteTierResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteTierResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Tier tier = 1;
+  QuoteTierResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareTierOptions`.
+message CompareTierOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  Tier tier = 3;
+  CompareTierOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareTierOptions`.
+message CompareTierOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareTierOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Tier tier = 1;
+  CompareTierOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateTiers`.
+message RecalculateTiersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  Tier tier = 3;
+  RecalculateTiersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateTiers`.
+message RecalculateTiersResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateTiersResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Tier tier = 1;
+  RecalculateTiersResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateTier`.
+message SimulateTierRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  Tier tier = 3;
+  SimulateTierRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateTier`.
+message SimulateTierResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateTierResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Tier tier = 1;
+  SimulateTierResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetTierRates`.
+message GetTierRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string tier_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTierRates`.
+message GetTierRatesResponse {
+  Tier tier = 1;
+  acme.common.v1.OperationResult result = 2;
+}

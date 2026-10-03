@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "BrandValidationServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Checks brands against the rules before anything acts on them.
+service BrandValidationService {
+  // Validates a brand.
+  rpc ValidateBrand(ValidateBrandRequest) returns (ValidateBrandResponse);
+
+  // Previews a brand.
+  rpc PreviewBrand(PreviewBrandRequest) returns (PreviewBrandResponse);
+
+  // Checks a brand.
+  rpc CheckBrandEligibility(CheckBrandEligibilityRequest) returns (CheckBrandEligibilityResponse);
+
+  // Normalizes a brand.
+  rpc NormalizeBrand(NormalizeBrandRequest) returns (NormalizeBrandResponse);
+
+  // Explains a brand.
+  rpc ExplainBrandDecision(ExplainBrandDecisionRequest) returns (ExplainBrandDecisionResponse);
+
+  // Scores a brand.
+  rpc ScoreBrand(ScoreBrandRequest) returns (ScoreBrandResponse);
+
+  // Lints a brand.
+  rpc LintBrands(LintBrandsRequest) returns (LintBrandsResponse);
+
+  // Returns a brand.
+  rpc GetBrandRules(GetBrandRulesRequest) returns (GetBrandRulesResponse);
+}
+
+// The request of `ValidateBrand`.
+message ValidateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  ValidateBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateBrand`.
+message ValidateBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ValidateBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewBrand`.
+message PreviewBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  PreviewBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewBrand`.
+message PreviewBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  PreviewBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckBrandEligibility`.
+message CheckBrandEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  CheckBrandEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckBrandEligibility`.
+message CheckBrandEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  CheckBrandEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeBrand`.
+message NormalizeBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  NormalizeBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeBrand`.
+message NormalizeBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  NormalizeBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainBrandDecision`.
+message ExplainBrandDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  ExplainBrandDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainBrandDecision`.
+message ExplainBrandDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ExplainBrandDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreBrand`.
+message ScoreBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  ScoreBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreBrand`.
+message ScoreBrandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreBrandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Brand brand = 1;
+  ScoreBrandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintBrands`.
+message LintBrandsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  LintBrandsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintBrands`.
+message LintBrandsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  LintBrandsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBrandRules`.
+message GetBrandRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBrandRules`.
+message GetBrandRulesResponse {
+  Brand brand = 1;
+  acme.common.v1.OperationResult result = 2;
+}

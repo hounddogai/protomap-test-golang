@@ -1,0 +1,287 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.budgeting.v1;
+
+import "acme/budgeting/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/suppliers/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Budgeting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/budgeting/v1;budgetingv1";
+option java_multiple_files = true;
+option java_outer_classname = "BudgetingProto";
+option java_package = "com.acme.budgeting.v1";
+
+// Where a budget is in its lifecycle.
+enum BudgetStatus {
+  BUDGET_STATUS_UNSPECIFIED = 0;
+  BUDGET_STATUS_PENDING = 1;
+  BUDGET_STATUS_OPEN = 2;
+  BUDGET_STATUS_FROZEN = 3;
+  BUDGET_STATUS_CLOSED = 4;
+}
+
+// Where a budget line is in its lifecycle.
+enum BudgetLineStatus {
+  BUDGET_LINE_STATUS_UNSPECIFIED = 0;
+  BUDGET_LINE_STATUS_DRAFT = 1;
+  BUDGET_LINE_STATUS_ISSUED = 2;
+  BUDGET_LINE_STATUS_APPROVED = 3;
+  BUDGET_LINE_STATUS_PAID = 4;
+  BUDGET_LINE_STATUS_VOID = 5;
+}
+
+// Where a forecast is in its lifecycle.
+enum ForecastStatus {
+  FORECAST_STATUS_UNSPECIFIED = 0;
+  FORECAST_STATUS_DRAFT = 1;
+  FORECAST_STATUS_ISSUED = 2;
+  FORECAST_STATUS_APPROVED = 3;
+  FORECAST_STATUS_PAID = 4;
+  FORECAST_STATUS_VOID = 5;
+}
+
+// Where a variance is in its lifecycle.
+enum VarianceStatus {
+  VARIANCE_STATUS_UNSPECIFIED = 0;
+  VARIANCE_STATUS_NEW = 1;
+  VARIANCE_STATUS_OPEN = 2;
+  VARIANCE_STATUS_WAITING = 3;
+  VARIANCE_STATUS_RESOLVED = 4;
+  VARIANCE_STATUS_CLOSED = 5;
+}
+
+// The limit of a budget.
+message BudgetLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a budget.
+message BudgetCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a budget.
+message BudgetBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A budget of the budgeting domain.
+message Budget {
+  string budget_id = 1;
+  ForecastRef holder = 2;
+  BudgetStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated BudgetLimit limits = 7;
+  oneof funding {
+    BudgetCardFunding card = 8;
+    BudgetBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The line of a budget line.
+message BudgetLineLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  BudgetLineLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a budget line line.
+message BudgetLineLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a budget line.
+message BudgetLineCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a budget line.
+message BudgetLineBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a budget line.
+message BudgetLineAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A budget line of the budgeting domain.
+message BudgetLine {
+  string budget_line_id = 1;
+  string number = 2;
+  BudgetLineStatus status = 3;
+  acme.suppliers.v1.SupplierRef counterparty = 4;
+  repeated BudgetLineLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    BudgetLineCardSettlement card = 8;
+    BudgetLineBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated BudgetLineAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a forecast.
+message ForecastLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ForecastLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a forecast line.
+message ForecastLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a forecast.
+message ForecastCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a forecast.
+message ForecastBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a forecast.
+message ForecastAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A forecast of the budgeting domain.
+message Forecast {
+  string forecast_id = 1;
+  string number = 2;
+  ForecastStatus status = 3;
+  BudgetRef counterparty = 4;
+  repeated ForecastLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ForecastCardSettlement card = 8;
+    ForecastBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ForecastAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a variance.
+message VarianceComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a variance.
+message VarianceSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a variance.
+message VarianceChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a variance.
+message VarianceStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A variance of the budgeting domain.
+message Variance {
+  string variance_id = 1;
+  string subject = 2;
+  VarianceStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated VarianceComment comments = 7;
+  VarianceSla sla = 8;
+  oneof origin {
+    BudgetLineRef customer = 9;
+    string external_reference = 10;
+    VarianceChannelOrigin channel = 11;
+  }
+  repeated VarianceStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

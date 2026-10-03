@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.yards.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/yards/v1/yards.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Yards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/yards/v1;yardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "YardCalculationServiceProto";
+option java_package = "com.acme.yards.v1";
+
+// Computes the figures of a yard, such as totals, taxes, and estimates.
+service YardCalculationService {
+  // Calculates a yard.
+  rpc CalculateYard(CalculateYardRequest) returns (CalculateYardResponse);
+
+  // Estimates a yard.
+  rpc EstimateYard(EstimateYardRequest) returns (EstimateYardResponse);
+
+  // Quotes a yard.
+  rpc QuoteYard(QuoteYardRequest) returns (QuoteYardResponse);
+
+  // Compares a yard.
+  rpc CompareYardOptions(CompareYardOptionsRequest) returns (CompareYardOptionsResponse);
+
+  // Recalculates a yard.
+  rpc RecalculateYards(RecalculateYardsRequest) returns (RecalculateYardsResponse);
+
+  // Simulates a yard.
+  rpc SimulateYard(SimulateYardRequest) returns (SimulateYardResponse);
+
+  // Explains a yard.
+  rpc ExplainYardCalculation(ExplainYardCalculationRequest) returns (ExplainYardCalculationResponse);
+
+  // Returns a yard.
+  rpc GetYardRates(GetYardRatesRequest) returns (GetYardRatesResponse);
+}
+
+// The request of `CalculateYard`.
+message CalculateYardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  CalculateYardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateYard`.
+message CalculateYardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateYardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Yard yard = 1;
+  CalculateYardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateYard`.
+message EstimateYardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  EstimateYardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateYard`.
+message EstimateYardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateYardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Yard yard = 1;
+  EstimateYardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteYard`.
+message QuoteYardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  QuoteYardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteYard`.
+message QuoteYardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteYardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Yard yard = 1;
+  QuoteYardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareYardOptions`.
+message CompareYardOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  CompareYardOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareYardOptions`.
+message CompareYardOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareYardOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Yard yard = 1;
+  CompareYardOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateYards`.
+message RecalculateYardsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  RecalculateYardsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateYards`.
+message RecalculateYardsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateYardsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Yard yard = 1;
+  RecalculateYardsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateYard`.
+message SimulateYardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  SimulateYardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateYard`.
+message SimulateYardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateYardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Yard yard = 1;
+  SimulateYardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainYardCalculation`.
+message ExplainYardCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  Yard yard = 3;
+  ExplainYardCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainYardCalculation`.
+message ExplainYardCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Yard yard = 1;
+  ExplainYardCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetYardRates`.
+message GetYardRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string yard_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetYardRates`.
+message GetYardRatesResponse {
+  Yard yard = 1;
+  acme.common.v1.OperationResult result = 2;
+}

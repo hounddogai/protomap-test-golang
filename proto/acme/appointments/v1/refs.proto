@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.appointments.v1";
+
+// A reference to an appointment of the appointments domain.
+message AppointmentRef {
+  string appointment_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a provider of the appointments domain.
+message ProviderRef {
+  string provider_id = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+// A reference to a clinic slot of the appointments domain.
+message ClinicSlotRef {
+  string clinic_slot_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}

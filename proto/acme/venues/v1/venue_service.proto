@@ -1,0 +1,172 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.venues.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/venues/v1/venues.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Venues.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/venues/v1;venuesv1";
+option java_multiple_files = true;
+option java_outer_classname = "VenueServiceProto";
+option java_package = "com.acme.venues.v1";
+
+// Manages venues: creates, reads, changes, and lists them.
+service VenueService {
+  // Creates a venue.
+  rpc CreateVenue(CreateVenueRequest) returns (CreateVenueResponse);
+
+  // Returns a venue.
+  rpc GetVenue(GetVenueRequest) returns (GetVenueResponse);
+
+  // Changes a venue.
+  rpc UpdateVenue(UpdateVenueRequest) returns (UpdateVenueResponse);
+
+  // Deletes a venue.
+  rpc DeleteVenue(DeleteVenueRequest) returns (DeleteVenueResponse);
+
+  // Lists venues a page at a time.
+  rpc SearchVenues(SearchVenuesRequest) returns (SearchVenuesResponse);
+
+  // Takes a stream of venues and answers once at the end.
+  rpc BatchCreateVenues(stream BatchCreateVenuesRequest) returns (BatchCreateVenuesResponse);
+
+  // Creates a venue.
+  rpc CloneVenue(CloneVenueRequest) returns (CloneVenueResponse);
+}
+
+// The request of `CreateVenue`.
+message CreateVenueRequest {
+  acme.common.v1.RequestContext context = 1;
+  Venue venue = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateVenue`.
+message CreateVenueResponse {
+  Venue venue = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetVenue`.
+message GetVenueRequest {
+  acme.common.v1.RequestContext context = 1;
+  string venue_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVenue`.
+message GetVenueResponse {
+  Venue venue = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateVenue`.
+message UpdateVenueRequest {
+  acme.common.v1.RequestContext context = 1;
+  Venue venue = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateVenue`.
+message UpdateVenueResponse {
+  Venue venue = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteVenue`.
+message DeleteVenueRequest {
+  acme.common.v1.RequestContext context = 1;
+  string venue_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteVenue`.
+message DeleteVenueResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `SearchVenues`.
+message SearchVenuesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VenueStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchVenuesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchVenues`.
+message SearchVenuesResponse {
+  repeated Venue venues = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateVenues`.
+message BatchCreateVenuesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateVenuesRequest.StreamHeader header = 2;
+    Venue record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateVenues`.
+message BatchCreateVenuesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string venue_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateVenuesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneVenue`.
+message CloneVenueRequest {
+  acme.common.v1.RequestContext context = 1;
+  Venue venue = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneVenue`.
+message CloneVenueResponse {
+  Venue venue = 1;
+  acme.common.v1.OperationResult result = 2;
+}

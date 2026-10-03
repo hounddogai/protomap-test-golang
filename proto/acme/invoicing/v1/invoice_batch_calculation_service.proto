@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.invoicing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/invoicing/v1/invoicing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Invoicing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/invoicing/v1;invoicingv1";
+option java_multiple_files = true;
+option java_outer_classname = "InvoiceBatchCalculationServiceProto";
+option java_package = "com.acme.invoicing.v1";
+
+// Computes the figures of an invoice batch, such as totals, taxes, and estimates.
+service InvoiceBatchCalculationService {
+  // Calculates an invoice batch.
+  rpc CalculateInvoiceBatch(CalculateInvoiceBatchRequest) returns (CalculateInvoiceBatchResponse);
+
+  // Estimates an invoice batch.
+  rpc EstimateInvoiceBatch(EstimateInvoiceBatchRequest) returns (EstimateInvoiceBatchResponse);
+
+  // Quotes an invoice batch.
+  rpc QuoteInvoiceBatch(QuoteInvoiceBatchRequest) returns (QuoteInvoiceBatchResponse);
+
+  // Compares an invoice batch.
+  rpc CompareInvoiceBatchOptions(CompareInvoiceBatchOptionsRequest) returns (CompareInvoiceBatchOptionsResponse);
+
+  // Recalculates an invoice batch.
+  rpc RecalculateInvoiceBatches(RecalculateInvoiceBatchesRequest) returns (RecalculateInvoiceBatchesResponse);
+
+  // Simulates an invoice batch.
+  rpc SimulateInvoiceBatch(SimulateInvoiceBatchRequest) returns (SimulateInvoiceBatchResponse);
+
+  // Explains an invoice batch.
+  rpc ExplainInvoiceBatchCalculation(ExplainInvoiceBatchCalculationRequest) returns (ExplainInvoiceBatchCalculationResponse);
+
+  // Returns an invoice batch.
+  rpc GetInvoiceBatchRates(GetInvoiceBatchRatesRequest) returns (GetInvoiceBatchRatesResponse);
+}
+
+// The request of `CalculateInvoiceBatch`.
+message CalculateInvoiceBatchRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  CalculateInvoiceBatchRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateInvoiceBatch`.
+message CalculateInvoiceBatchResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateInvoiceBatchResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  CalculateInvoiceBatchResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateInvoiceBatch`.
+message EstimateInvoiceBatchRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  EstimateInvoiceBatchRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateInvoiceBatch`.
+message EstimateInvoiceBatchResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateInvoiceBatchResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  EstimateInvoiceBatchResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteInvoiceBatch`.
+message QuoteInvoiceBatchRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  QuoteInvoiceBatchRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteInvoiceBatch`.
+message QuoteInvoiceBatchResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteInvoiceBatchResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  QuoteInvoiceBatchResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareInvoiceBatchOptions`.
+message CompareInvoiceBatchOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  CompareInvoiceBatchOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareInvoiceBatchOptions`.
+message CompareInvoiceBatchOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareInvoiceBatchOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  CompareInvoiceBatchOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateInvoiceBatches`.
+message RecalculateInvoiceBatchesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  RecalculateInvoiceBatchesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateInvoiceBatches`.
+message RecalculateInvoiceBatchesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateInvoiceBatchesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  RecalculateInvoiceBatchesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateInvoiceBatch`.
+message SimulateInvoiceBatchRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  SimulateInvoiceBatchRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateInvoiceBatch`.
+message SimulateInvoiceBatchResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateInvoiceBatchResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  SimulateInvoiceBatchResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainInvoiceBatchCalculation`.
+message ExplainInvoiceBatchCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  InvoiceBatch invoice_batch = 3;
+  ExplainInvoiceBatchCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainInvoiceBatchCalculation`.
+message ExplainInvoiceBatchCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  InvoiceBatch invoice_batch = 1;
+  ExplainInvoiceBatchCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetInvoiceBatchRates`.
+message GetInvoiceBatchRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string invoice_batch_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetInvoiceBatchRates`.
+message GetInvoiceBatchRatesResponse {
+  InvoiceBatch invoice_batch = 1;
+  acme.common.v1.OperationResult result = 2;
+}

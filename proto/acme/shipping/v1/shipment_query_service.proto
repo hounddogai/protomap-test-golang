@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShipmentQueryServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Answers read-only questions about shipments, for screens and reports.
+service ShipmentQueryService {
+  // Returns a shipment.
+  rpc LookupShipment(LookupShipmentRequest) returns (LookupShipmentResponse);
+
+  // Lists shipments a page at a time.
+  rpc BrowseShipments(BrowseShipmentsRequest) returns (BrowseShipmentsResponse);
+
+  // Lists shipments a page at a time.
+  rpc FindShipments(FindShipmentsRequest) returns (FindShipmentsResponse);
+
+  // Counts shipments by status.
+  rpc CountShipments(CountShipmentsRequest) returns (CountShipmentsResponse);
+
+  // Returns several shipments at once.
+  rpc ResolveShipments(ResolveShipmentsRequest) returns (ResolveShipmentsResponse);
+
+  // Streams every matching shipment.
+  rpc ExportShipments(ExportShipmentsRequest) returns (stream ExportShipmentsResponse);
+
+  // Summarizes a shipment.
+  rpc SummarizeShipments(SummarizeShipmentsRequest) returns (SummarizeShipmentsResponse);
+
+  // Lists shipments a page at a time.
+  rpc SuggestShipments(SuggestShipmentsRequest) returns (SuggestShipmentsResponse);
+
+  // Returns a shipment.
+  rpc PeekShipment(PeekShipmentRequest) returns (PeekShipmentResponse);
+}
+
+// The request of `LookupShipment`.
+message LookupShipmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupShipment`.
+message LookupShipmentResponse {
+  Shipment shipment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseShipments`.
+message BrowseShipmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShipmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseShipmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseShipments`.
+message BrowseShipmentsResponse {
+  repeated Shipment shipments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindShipments`.
+message FindShipmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShipmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindShipmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindShipments`.
+message FindShipmentsResponse {
+  repeated Shipment shipments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountShipments`.
+message CountShipmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShipmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountShipmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountShipments`.
+message CountShipmentsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveShipments`.
+message ResolveShipmentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string shipment_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveShipments`.
+message ResolveShipmentsResponse {
+  repeated Shipment shipments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportShipments`.
+message ExportShipmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShipmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportShipmentsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportShipments`.
+message ExportShipmentsResponse {
+  Shipment shipment = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeShipments`.
+message SummarizeShipmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  SummarizeShipmentsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeShipments`.
+message SummarizeShipmentsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestShipments`.
+message SuggestShipmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShipmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestShipmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestShipments`.
+message SuggestShipmentsResponse {
+  repeated Shipment shipments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekShipment`.
+message PeekShipmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekShipment`.
+message PeekShipmentResponse {
+  Shipment shipment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoyaltyMemberApprovalServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Routes loyalty members through approval, with escalation and delegation.
+service LoyaltyMemberApprovalService {
+  // Submits a loyalty member.
+  rpc SubmitLoyaltyMember(SubmitLoyaltyMemberRequest) returns (SubmitLoyaltyMemberResponse);
+
+  // Approves a loyalty member.
+  rpc ApproveLoyaltyMember(ApproveLoyaltyMemberRequest) returns (ApproveLoyaltyMemberResponse);
+
+  // Rejects a loyalty member.
+  rpc RejectLoyaltyMember(RejectLoyaltyMemberRequest) returns (RejectLoyaltyMemberResponse);
+
+  // Escalates a loyalty member.
+  rpc EscalateLoyaltyMember(EscalateLoyaltyMemberRequest) returns (EscalateLoyaltyMemberResponse);
+
+  // Lists loyalty members a page at a time.
+  rpc ListPendingLoyaltyMembers(ListPendingLoyaltyMembersRequest) returns (ListPendingLoyaltyMembersResponse);
+
+  // Delegates a loyalty member.
+  rpc DelegateLoyaltyMemberApproval(DelegateLoyaltyMemberApprovalRequest) returns (DelegateLoyaltyMemberApprovalResponse);
+
+  // Recalls a loyalty member.
+  rpc RecallLoyaltyMember(RecallLoyaltyMemberRequest) returns (RecallLoyaltyMemberResponse);
+
+  // Returns a loyalty member.
+  rpc GetLoyaltyMemberApprovalStatus(GetLoyaltyMemberApprovalStatusRequest) returns (GetLoyaltyMemberApprovalStatusResponse);
+
+  // Comments a loyalty member.
+  rpc CommentLoyaltyMemberApproval(CommentLoyaltyMemberApprovalRequest) returns (CommentLoyaltyMemberApprovalResponse);
+}
+
+// The request of `SubmitLoyaltyMember`.
+message SubmitLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  SubmitLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitLoyaltyMember`.
+message SubmitLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  SubmitLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveLoyaltyMember`.
+message ApproveLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  ApproveLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveLoyaltyMember`.
+message ApproveLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  ApproveLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectLoyaltyMember`.
+message RejectLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  RejectLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectLoyaltyMember`.
+message RejectLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  RejectLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateLoyaltyMember`.
+message EscalateLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  EscalateLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateLoyaltyMember`.
+message EscalateLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  EscalateLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingLoyaltyMembers`.
+message ListPendingLoyaltyMembersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoyaltyMemberStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingLoyaltyMembersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingLoyaltyMembers`.
+message ListPendingLoyaltyMembersResponse {
+  repeated LoyaltyMember loyalty_members = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateLoyaltyMemberApproval`.
+message DelegateLoyaltyMemberApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  DelegateLoyaltyMemberApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateLoyaltyMemberApproval`.
+message DelegateLoyaltyMemberApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  DelegateLoyaltyMemberApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallLoyaltyMember`.
+message RecallLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  RecallLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallLoyaltyMember`.
+message RecallLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  RecallLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLoyaltyMemberApprovalStatus`.
+message GetLoyaltyMemberApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLoyaltyMemberApprovalStatus`.
+message GetLoyaltyMemberApprovalStatusResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentLoyaltyMemberApproval`.
+message CommentLoyaltyMemberApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  CommentLoyaltyMemberApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentLoyaltyMemberApproval`.
+message CommentLoyaltyMemberApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  CommentLoyaltyMemberApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

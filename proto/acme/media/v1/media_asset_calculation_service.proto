@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.media.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/media/v1/media.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Media.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/media/v1;mediav1";
+option java_multiple_files = true;
+option java_outer_classname = "MediaAssetCalculationServiceProto";
+option java_package = "com.acme.media.v1";
+
+// Computes the figures of a media asset, such as totals, taxes, and estimates.
+service MediaAssetCalculationService {
+  // Calculates a media asset.
+  rpc CalculateMediaAsset(CalculateMediaAssetRequest) returns (CalculateMediaAssetResponse);
+
+  // Estimates a media asset.
+  rpc EstimateMediaAsset(EstimateMediaAssetRequest) returns (EstimateMediaAssetResponse);
+
+  // Quotes a media asset.
+  rpc QuoteMediaAsset(QuoteMediaAssetRequest) returns (QuoteMediaAssetResponse);
+
+  // Compares a media asset.
+  rpc CompareMediaAssetOptions(CompareMediaAssetOptionsRequest) returns (CompareMediaAssetOptionsResponse);
+
+  // Recalculates a media asset.
+  rpc RecalculateMediaAssets(RecalculateMediaAssetsRequest) returns (RecalculateMediaAssetsResponse);
+
+  // Simulates a media asset.
+  rpc SimulateMediaAsset(SimulateMediaAssetRequest) returns (SimulateMediaAssetResponse);
+
+  // Explains a media asset.
+  rpc ExplainMediaAssetCalculation(ExplainMediaAssetCalculationRequest) returns (ExplainMediaAssetCalculationResponse);
+
+  // Returns a media asset.
+  rpc GetMediaAssetRates(GetMediaAssetRatesRequest) returns (GetMediaAssetRatesResponse);
+}
+
+// The request of `CalculateMediaAsset`.
+message CalculateMediaAssetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  CalculateMediaAssetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateMediaAsset`.
+message CalculateMediaAssetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateMediaAssetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MediaAsset media_asset = 1;
+  CalculateMediaAssetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateMediaAsset`.
+message EstimateMediaAssetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  EstimateMediaAssetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateMediaAsset`.
+message EstimateMediaAssetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateMediaAssetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MediaAsset media_asset = 1;
+  EstimateMediaAssetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteMediaAsset`.
+message QuoteMediaAssetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  QuoteMediaAssetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteMediaAsset`.
+message QuoteMediaAssetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteMediaAssetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MediaAsset media_asset = 1;
+  QuoteMediaAssetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareMediaAssetOptions`.
+message CompareMediaAssetOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  CompareMediaAssetOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareMediaAssetOptions`.
+message CompareMediaAssetOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareMediaAssetOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MediaAsset media_asset = 1;
+  CompareMediaAssetOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateMediaAssets`.
+message RecalculateMediaAssetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  RecalculateMediaAssetsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateMediaAssets`.
+message RecalculateMediaAssetsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateMediaAssetsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MediaAsset media_asset = 1;
+  RecalculateMediaAssetsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateMediaAsset`.
+message SimulateMediaAssetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  SimulateMediaAssetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateMediaAsset`.
+message SimulateMediaAssetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateMediaAssetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MediaAsset media_asset = 1;
+  SimulateMediaAssetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainMediaAssetCalculation`.
+message ExplainMediaAssetCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  MediaAsset media_asset = 3;
+  ExplainMediaAssetCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainMediaAssetCalculation`.
+message ExplainMediaAssetCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MediaAsset media_asset = 1;
+  ExplainMediaAssetCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMediaAssetRates`.
+message GetMediaAssetRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMediaAssetRates`.
+message GetMediaAssetRatesResponse {
+  MediaAsset media_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}

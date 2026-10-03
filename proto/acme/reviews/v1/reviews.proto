@@ -1,0 +1,192 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewsProto";
+option java_package = "com.acme.reviews.v1";
+
+// Where a product review is in its lifecycle.
+enum ProductReviewStatus {
+  PRODUCT_REVIEW_STATUS_UNSPECIFIED = 0;
+  PRODUCT_REVIEW_STATUS_DRAFT = 1;
+  PRODUCT_REVIEW_STATUS_ISSUED = 2;
+  PRODUCT_REVIEW_STATUS_APPROVED = 3;
+  PRODUCT_REVIEW_STATUS_PAID = 4;
+  PRODUCT_REVIEW_STATUS_VOID = 5;
+}
+
+// Where a review moderation is in its lifecycle.
+enum ReviewModerationStatus {
+  REVIEW_MODERATION_STATUS_UNSPECIFIED = 0;
+  REVIEW_MODERATION_STATUS_NEW = 1;
+  REVIEW_MODERATION_STATUS_OPEN = 2;
+  REVIEW_MODERATION_STATUS_WAITING = 3;
+  REVIEW_MODERATION_STATUS_RESOLVED = 4;
+  REVIEW_MODERATION_STATUS_CLOSED = 5;
+}
+
+// Where a review vote is in its lifecycle.
+enum ReviewVoteStatus {
+  REVIEW_VOTE_STATUS_UNSPECIFIED = 0;
+  REVIEW_VOTE_STATUS_RECEIVED = 1;
+  REVIEW_VOTE_STATUS_PROCESSED = 2;
+  REVIEW_VOTE_STATUS_DISCARDED = 3;
+}
+
+// The line of a product review.
+message ProductReviewLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ProductReviewLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a product review line.
+message ProductReviewLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a product review.
+message ProductReviewCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a product review.
+message ProductReviewBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a product review.
+message ProductReviewAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A product review of the reviews domain.
+message ProductReview {
+  string product_review_id = 1;
+  string number = 2;
+  ProductReviewStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated ProductReviewLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ProductReviewCardSettlement card = 8;
+    ProductReviewBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ProductReviewAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a review moderation.
+message ReviewModerationComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a review moderation.
+message ReviewModerationSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a review moderation.
+message ReviewModerationChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a review moderation.
+message ReviewModerationStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A review moderation of the reviews domain.
+message ReviewModeration {
+  string review_moderation_id = 1;
+  string subject = 2;
+  ReviewModerationStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated ReviewModerationComment comments = 7;
+  ReviewModerationSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    ReviewModerationChannelOrigin channel = 11;
+  }
+  repeated ReviewModerationStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a review vote.
+message ReviewVoteMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A review vote of the reviews domain.
+message ReviewVote {
+  string review_vote_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ReviewVoteMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

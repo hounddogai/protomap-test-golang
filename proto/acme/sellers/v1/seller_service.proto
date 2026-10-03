@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Manages sellers: creates, reads, changes, and lists them.
+service SellerService {
+  // Creates a seller.
+  rpc CreateSeller(CreateSellerRequest) returns (CreateSellerResponse);
+
+  // Returns a seller.
+  rpc GetSeller(GetSellerRequest) returns (GetSellerResponse);
+
+  // Changes a seller.
+  rpc UpdateSeller(UpdateSellerRequest) returns (UpdateSellerResponse);
+
+  // Deletes a seller.
+  rpc DeleteSeller(DeleteSellerRequest) returns (DeleteSellerResponse);
+
+  // Lists sellers a page at a time.
+  rpc ListSellers(ListSellersRequest) returns (ListSellersResponse);
+
+  // Returns several sellers at once.
+  rpc BatchGetSellers(BatchGetSellersRequest) returns (BatchGetSellersResponse);
+
+  // Lists sellers a page at a time.
+  rpc SearchSellers(SearchSellersRequest) returns (SearchSellersResponse);
+
+  // Streams the changes of sellers as they happen.
+  rpc WatchSellers(WatchSellersRequest) returns (stream WatchSellersResponse);
+
+  // Takes a stream of sellers and answers once at the end.
+  rpc BatchCreateSellers(stream BatchCreateSellersRequest) returns (BatchCreateSellersResponse);
+
+  // Creates a seller.
+  rpc CloneSeller(CloneSellerRequest) returns (CloneSellerResponse);
+}
+
+// The request of `CreateSeller`.
+message CreateSellerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Seller seller = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSeller`.
+message CreateSellerResponse {
+  Seller seller = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSeller`.
+message GetSellerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSeller`.
+message GetSellerResponse {
+  Seller seller = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateSeller`.
+message UpdateSellerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Seller seller = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateSeller`.
+message UpdateSellerResponse {
+  Seller seller = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteSeller`.
+message DeleteSellerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteSeller`.
+message DeleteSellerResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListSellers`.
+message ListSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSellersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSellers`.
+message ListSellersResponse {
+  repeated Seller sellers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetSellers`.
+message BatchGetSellersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string seller_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetSellers`.
+message BatchGetSellersResponse {
+  repeated Seller sellers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchSellers`.
+message SearchSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchSellersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchSellers`.
+message SearchSellersResponse {
+  repeated Seller sellers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchSellers`.
+message WatchSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchSellersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchSellers`.
+message WatchSellersResponse {
+  Seller seller = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateSellers`.
+message BatchCreateSellersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSellersRequest.StreamHeader header = 2;
+    Seller record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSellers`.
+message BatchCreateSellersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string seller_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSellersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneSeller`.
+message CloneSellerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Seller seller = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneSeller`.
+message CloneSellerResponse {
+  Seller seller = 1;
+  acme.common.v1.OperationResult result = 2;
+}

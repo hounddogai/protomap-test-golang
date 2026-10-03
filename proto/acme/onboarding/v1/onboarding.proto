@@ -1,0 +1,205 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.onboarding.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/onboarding/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Onboarding.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/onboarding/v1;onboardingv1";
+option java_multiple_files = true;
+option java_outer_classname = "OnboardingProto";
+option java_package = "com.acme.onboarding.v1";
+
+// Where an onboarding plan is in its lifecycle.
+enum OnboardingPlanStatus {
+  ONBOARDING_PLAN_STATUS_UNSPECIFIED = 0;
+  ONBOARDING_PLAN_STATUS_DRAFT = 1;
+  ONBOARDING_PLAN_STATUS_ISSUED = 2;
+  ONBOARDING_PLAN_STATUS_APPROVED = 3;
+  ONBOARDING_PLAN_STATUS_PAID = 4;
+  ONBOARDING_PLAN_STATUS_VOID = 5;
+}
+
+// Where an onboarding task is in its lifecycle.
+enum OnboardingTaskStatus {
+  ONBOARDING_TASK_STATUS_UNSPECIFIED = 0;
+  ONBOARDING_TASK_STATUS_NEW = 1;
+  ONBOARDING_TASK_STATUS_OPEN = 2;
+  ONBOARDING_TASK_STATUS_WAITING = 3;
+  ONBOARDING_TASK_STATUS_RESOLVED = 4;
+  ONBOARDING_TASK_STATUS_CLOSED = 5;
+}
+
+// Where an equipment is in its lifecycle.
+enum EquipmentStatus {
+  EQUIPMENT_STATUS_UNSPECIFIED = 0;
+  EQUIPMENT_STATUS_PLANNED = 1;
+  EQUIPMENT_STATUS_AVAILABLE = 2;
+  EQUIPMENT_STATUS_RESERVED = 3;
+  EQUIPMENT_STATUS_RETIRED = 4;
+}
+
+// The line of an onboarding plan.
+message OnboardingPlanLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  OnboardingPlanLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an onboarding plan line.
+message OnboardingPlanLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an onboarding plan.
+message OnboardingPlanCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an onboarding plan.
+message OnboardingPlanBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an onboarding plan.
+message OnboardingPlanAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An onboarding plan of the onboarding domain.
+message OnboardingPlan {
+  string onboarding_plan_id = 1;
+  string number = 2;
+  OnboardingPlanStatus status = 3;
+  EquipmentRef counterparty = 4;
+  repeated OnboardingPlanLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    OnboardingPlanCardSettlement card = 8;
+    OnboardingPlanBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated OnboardingPlanAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of an onboarding task.
+message OnboardingTaskComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of an onboarding task.
+message OnboardingTaskSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of an onboarding task.
+message OnboardingTaskChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of an onboarding task.
+message OnboardingTaskStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// An onboarding task of the onboarding domain.
+message OnboardingTask {
+  string onboarding_task_id = 1;
+  string subject = 2;
+  OnboardingTaskStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated OnboardingTaskComment comments = 7;
+  OnboardingTaskSla sla = 8;
+  oneof origin {
+    EquipmentRef customer = 9;
+    string external_reference = 10;
+    OnboardingTaskChannelOrigin channel = 11;
+  }
+  repeated OnboardingTaskStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The dimensions of an equipment.
+message EquipmentDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of an equipment.
+message EquipmentComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// An equipment of the onboarding domain.
+message Equipment {
+  string equipment_id = 1;
+  string code = 2;
+  string name = 3;
+  EquipmentStatus status = 4;
+  repeated string category_path = 5;
+  EquipmentDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, EquipmentComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

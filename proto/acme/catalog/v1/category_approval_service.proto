@@ -1,0 +1,228 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "CategoryApprovalServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Routes categories through approval, with escalation and delegation.
+service CategoryApprovalService {
+  // Submits a category.
+  rpc SubmitCategory(SubmitCategoryRequest) returns (SubmitCategoryResponse);
+
+  // Approves a category.
+  rpc ApproveCategory(ApproveCategoryRequest) returns (ApproveCategoryResponse);
+
+  // Rejects a category.
+  rpc RejectCategory(RejectCategoryRequest) returns (RejectCategoryResponse);
+
+  // Delegates a category.
+  rpc DelegateCategoryApproval(DelegateCategoryApprovalRequest) returns (DelegateCategoryApprovalResponse);
+
+  // Returns a category.
+  rpc GetCategoryApprovalStatus(GetCategoryApprovalStatusRequest) returns (GetCategoryApprovalStatusResponse);
+
+  // Comments a category.
+  rpc CommentCategoryApproval(CommentCategoryApprovalRequest) returns (CommentCategoryApprovalResponse);
+}
+
+// The request of `SubmitCategory`.
+message SubmitCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  SubmitCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCategory`.
+message SubmitCategoryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  SubmitCategoryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCategory`.
+message ApproveCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  ApproveCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCategory`.
+message ApproveCategoryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  ApproveCategoryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCategory`.
+message RejectCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  RejectCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCategory`.
+message RejectCategoryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  RejectCategoryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCategoryApproval`.
+message DelegateCategoryApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  DelegateCategoryApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCategoryApproval`.
+message DelegateCategoryApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  DelegateCategoryApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCategoryApprovalStatus`.
+message GetCategoryApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCategoryApprovalStatus`.
+message GetCategoryApprovalStatusResponse {
+  Category category = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCategoryApproval`.
+message CommentCategoryApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  CommentCategoryApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCategoryApproval`.
+message CommentCategoryApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  CommentCategoryApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

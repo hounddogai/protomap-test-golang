@@ -1,0 +1,42 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.promotions.v1";
+
+// A reference to a promotion of the promotions domain.
+message PromotionRef {
+  string promotion_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a coupon of the promotions domain.
+message CouponRef {
+  string coupon_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a campaign of the promotions domain.
+message CampaignRef {
+  string campaign_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a redemption of the promotions domain.
+message RedemptionRef {
+  string redemption_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}

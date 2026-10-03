@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.recruiting.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/recruiting/v1/recruiting.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Recruiting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/recruiting/v1;recruitingv1";
+option java_multiple_files = true;
+option java_outer_classname = "JobOpeningServiceProto";
+option java_package = "com.acme.recruiting.v1";
+
+// Manages job openings: creates, reads, changes, and lists them.
+service JobOpeningService {
+  // Creates a job opening.
+  rpc CreateJobOpening(CreateJobOpeningRequest) returns (CreateJobOpeningResponse);
+
+  // Returns a job opening.
+  rpc GetJobOpening(GetJobOpeningRequest) returns (GetJobOpeningResponse);
+
+  // Changes a job opening.
+  rpc UpdateJobOpening(UpdateJobOpeningRequest) returns (UpdateJobOpeningResponse);
+
+  // Deletes a job opening.
+  rpc DeleteJobOpening(DeleteJobOpeningRequest) returns (DeleteJobOpeningResponse);
+
+  // Lists job openings a page at a time.
+  rpc ListJobOpenings(ListJobOpeningsRequest) returns (ListJobOpeningsResponse);
+
+  // Returns several job openings at once.
+  rpc BatchGetJobOpenings(BatchGetJobOpeningsRequest) returns (BatchGetJobOpeningsResponse);
+
+  // Lists job openings a page at a time.
+  rpc SearchJobOpenings(SearchJobOpeningsRequest) returns (SearchJobOpeningsResponse);
+
+  // Streams the changes of job openings as they happen.
+  rpc WatchJobOpenings(WatchJobOpeningsRequest) returns (stream WatchJobOpeningsResponse);
+
+  // Takes a stream of job openings and answers once at the end.
+  rpc BatchCreateJobOpenings(stream BatchCreateJobOpeningsRequest) returns (BatchCreateJobOpeningsResponse);
+
+  // Creates a job opening.
+  rpc CloneJobOpening(CloneJobOpeningRequest) returns (CloneJobOpeningResponse);
+}
+
+// The request of `CreateJobOpening`.
+message CreateJobOpeningRequest {
+  acme.common.v1.RequestContext context = 1;
+  JobOpening job_opening = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateJobOpening`.
+message CreateJobOpeningResponse {
+  JobOpening job_opening = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetJobOpening`.
+message GetJobOpeningRequest {
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetJobOpening`.
+message GetJobOpeningResponse {
+  JobOpening job_opening = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateJobOpening`.
+message UpdateJobOpeningRequest {
+  acme.common.v1.RequestContext context = 1;
+  JobOpening job_opening = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateJobOpening`.
+message UpdateJobOpeningResponse {
+  JobOpening job_opening = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteJobOpening`.
+message DeleteJobOpeningRequest {
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteJobOpening`.
+message DeleteJobOpeningResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListJobOpenings`.
+message ListJobOpeningsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated JobOpeningStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListJobOpeningsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListJobOpenings`.
+message ListJobOpeningsResponse {
+  repeated JobOpening job_openings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetJobOpenings`.
+message BatchGetJobOpeningsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string job_opening_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetJobOpenings`.
+message BatchGetJobOpeningsResponse {
+  repeated JobOpening job_openings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchJobOpenings`.
+message SearchJobOpeningsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated JobOpeningStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchJobOpeningsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchJobOpenings`.
+message SearchJobOpeningsResponse {
+  repeated JobOpening job_openings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchJobOpenings`.
+message WatchJobOpeningsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated JobOpeningStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchJobOpeningsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchJobOpenings`.
+message WatchJobOpeningsResponse {
+  JobOpening job_opening = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateJobOpenings`.
+message BatchCreateJobOpeningsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateJobOpeningsRequest.StreamHeader header = 2;
+    JobOpening record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateJobOpenings`.
+message BatchCreateJobOpeningsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string job_opening_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateJobOpeningsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneJobOpening`.
+message CloneJobOpeningRequest {
+  acme.common.v1.RequestContext context = 1;
+  JobOpening job_opening = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneJobOpening`.
+message CloneJobOpeningResponse {
+  JobOpening job_opening = 1;
+  acme.common.v1.OperationResult result = 2;
+}

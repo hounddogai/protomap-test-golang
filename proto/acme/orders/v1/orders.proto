@@ -1,0 +1,269 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/orders/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrdersProto";
+option java_package = "com.acme.orders.v1";
+
+// Where an order is in its lifecycle.
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_DRAFT = 1;
+  ORDER_STATUS_ISSUED = 2;
+  ORDER_STATUS_APPROVED = 3;
+  ORDER_STATUS_PAID = 4;
+  ORDER_STATUS_VOID = 5;
+}
+
+// Where an order amendment is in its lifecycle.
+enum OrderAmendmentStatus {
+  ORDER_AMENDMENT_STATUS_UNSPECIFIED = 0;
+  ORDER_AMENDMENT_STATUS_DRAFT = 1;
+  ORDER_AMENDMENT_STATUS_ISSUED = 2;
+  ORDER_AMENDMENT_STATUS_APPROVED = 3;
+  ORDER_AMENDMENT_STATUS_PAID = 4;
+  ORDER_AMENDMENT_STATUS_VOID = 5;
+}
+
+// Where a backorder is in its lifecycle.
+enum BackorderStatus {
+  BACKORDER_STATUS_UNSPECIFIED = 0;
+  BACKORDER_STATUS_NEW = 1;
+  BACKORDER_STATUS_OPEN = 2;
+  BACKORDER_STATUS_WAITING = 3;
+  BACKORDER_STATUS_RESOLVED = 4;
+  BACKORDER_STATUS_CLOSED = 5;
+}
+
+// Where an order note is in its lifecycle.
+enum OrderNoteStatus {
+  ORDER_NOTE_STATUS_UNSPECIFIED = 0;
+  ORDER_NOTE_STATUS_RECEIVED = 1;
+  ORDER_NOTE_STATUS_PROCESSED = 2;
+  ORDER_NOTE_STATUS_DISCARDED = 3;
+}
+
+// The line of an order.
+message OrderLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  OrderLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an order line.
+message OrderLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an order.
+message OrderCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an order.
+message OrderBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an order.
+message OrderAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An order of the orders domain.
+message Order {
+  string order_id = 1;
+  string number = 2;
+  OrderStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated OrderLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    OrderCardSettlement card = 8;
+    OrderBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated OrderAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of an order amendment.
+message OrderAmendmentLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  OrderAmendmentLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an order amendment line.
+message OrderAmendmentLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an order amendment.
+message OrderAmendmentCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an order amendment.
+message OrderAmendmentBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an order amendment.
+message OrderAmendmentAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An order amendment of the orders domain.
+message OrderAmendment {
+  string order_amendment_id = 1;
+  string number = 2;
+  OrderAmendmentStatus status = 3;
+  BackorderRef counterparty = 4;
+  repeated OrderAmendmentLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    OrderAmendmentCardSettlement card = 8;
+    OrderAmendmentBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated OrderAmendmentAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a backorder.
+message BackorderComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a backorder.
+message BackorderSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a backorder.
+message BackorderChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a backorder.
+message BackorderStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A backorder of the orders domain.
+message Backorder {
+  string backorder_id = 1;
+  string subject = 2;
+  BackorderStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated BackorderComment comments = 7;
+  BackorderSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    BackorderChannelOrigin channel = 11;
+  }
+  repeated BackorderStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of an order note.
+message OrderNoteMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// An order note of the orders domain.
+message OrderNote {
+  string order_note_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  OrderRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated OrderNoteMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

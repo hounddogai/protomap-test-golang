@@ -1,0 +1,152 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.seating.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/seating/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Seating.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/seating/v1;seatingv1";
+option java_multiple_files = true;
+option java_outer_classname = "SeatingProto";
+option java_package = "com.acme.seating.v1";
+
+// Where a seat map is in its lifecycle.
+enum SeatMapStatus {
+  SEAT_MAP_STATUS_UNSPECIFIED = 0;
+  SEAT_MAP_STATUS_ACTIVE = 1;
+  SEAT_MAP_STATUS_INACTIVE = 2;
+}
+
+// Where a seat hold is in its lifecycle.
+enum SeatHoldStatus {
+  SEAT_HOLD_STATUS_UNSPECIFIED = 0;
+  SEAT_HOLD_STATUS_TENTATIVE = 1;
+  SEAT_HOLD_STATUS_CONFIRMED = 2;
+  SEAT_HOLD_STATUS_CANCELLED = 3;
+  SEAT_HOLD_STATUS_COMPLETED = 4;
+}
+
+// Where a seat assignment is in its lifecycle.
+enum SeatAssignmentStatus {
+  SEAT_ASSIGNMENT_STATUS_UNSPECIFIED = 0;
+  SEAT_ASSIGNMENT_STATUS_NEW = 1;
+  SEAT_ASSIGNMENT_STATUS_OPEN = 2;
+  SEAT_ASSIGNMENT_STATUS_WAITING = 3;
+  SEAT_ASSIGNMENT_STATUS_RESOLVED = 4;
+  SEAT_ASSIGNMENT_STATUS_CLOSED = 5;
+}
+
+// A seat map of the seating domain.
+message SeatMap {
+  string seat_map_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated SeatMap children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  SeatMapStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The participant of a seat hold.
+message SeatHoldParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a seat hold.
+message SeatHoldDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a seat hold.
+message SeatHoldWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A seat hold of the seating domain.
+message SeatHold {
+  string seat_hold_id = 1;
+  string title = 2;
+  SeatHoldStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated SeatHoldParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    SeatHoldDailyRule daily = 7;
+    SeatHoldWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The comment of a seat assignment.
+message SeatAssignmentComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a seat assignment.
+message SeatAssignmentSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a seat assignment.
+message SeatAssignmentChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a seat assignment.
+message SeatAssignmentStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A seat assignment of the seating domain.
+message SeatAssignment {
+  string seat_assignment_id = 1;
+  string subject = 2;
+  SeatAssignmentStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated SeatAssignmentComment comments = 7;
+  SeatAssignmentSla sla = 8;
+  oneof origin {
+    SeatMapRef customer = 9;
+    string external_reference = 10;
+    SeatAssignmentChannelOrigin channel = 11;
+  }
+  repeated SeatAssignmentStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,212 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.timekeeping.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/timekeeping/v1/timekeeping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Timekeeping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/timekeeping/v1;timekeepingv1";
+option java_multiple_files = true;
+option java_outer_classname = "TimesheetQueryServiceProto";
+option java_package = "com.acme.timekeeping.v1";
+
+// Answers read-only questions about timesheets, for screens and reports.
+service TimesheetQueryService {
+  // Returns a timesheet.
+  rpc LookupTimesheet(LookupTimesheetRequest) returns (LookupTimesheetResponse);
+
+  // Lists timesheets a page at a time.
+  rpc BrowseTimesheets(BrowseTimesheetsRequest) returns (BrowseTimesheetsResponse);
+
+  // Lists timesheets a page at a time.
+  rpc FindTimesheets(FindTimesheetsRequest) returns (FindTimesheetsResponse);
+
+  // Counts timesheets by status.
+  rpc CountTimesheets(CountTimesheetsRequest) returns (CountTimesheetsResponse);
+
+  // Streams every matching timesheet.
+  rpc ExportTimesheets(ExportTimesheetsRequest) returns (stream ExportTimesheetsResponse);
+
+  // Summarizes a timesheet.
+  rpc SummarizeTimesheets(SummarizeTimesheetsRequest) returns (SummarizeTimesheetsResponse);
+
+  // Lists timesheets a page at a time.
+  rpc SuggestTimesheets(SuggestTimesheetsRequest) returns (SuggestTimesheetsResponse);
+}
+
+// The request of `LookupTimesheet`.
+message LookupTimesheetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string timesheet_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupTimesheet`.
+message LookupTimesheetResponse {
+  Timesheet timesheet = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseTimesheets`.
+message BrowseTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseTimesheetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseTimesheets`.
+message BrowseTimesheetsResponse {
+  repeated Timesheet timesheets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindTimesheets`.
+message FindTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindTimesheetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindTimesheets`.
+message FindTimesheetsResponse {
+  repeated Timesheet timesheets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountTimesheets`.
+message CountTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountTimesheetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountTimesheets`.
+message CountTimesheetsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportTimesheets`.
+message ExportTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportTimesheetsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportTimesheets`.
+message ExportTimesheetsResponse {
+  Timesheet timesheet = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeTimesheets`.
+message SummarizeTimesheetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string timesheet_id = 2;
+  SummarizeTimesheetsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeTimesheets`.
+message SummarizeTimesheetsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestTimesheets`.
+message SuggestTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestTimesheetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestTimesheets`.
+message SuggestTimesheetsResponse {
+  repeated Timesheet timesheets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

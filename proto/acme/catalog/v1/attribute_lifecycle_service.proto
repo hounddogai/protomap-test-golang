@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "AttributeLifecycleServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Moves an attribute between the states of its lifecycle.
+service AttributeLifecycleService {
+  // Activates an attribute.
+  rpc ActivateAttribute(ActivateAttributeRequest) returns (ActivateAttributeResponse);
+
+  // Suspends an attribute.
+  rpc SuspendAttribute(SuspendAttributeRequest) returns (SuspendAttributeResponse);
+
+  // Reinstates an attribute.
+  rpc ReinstateAttribute(ReinstateAttributeRequest) returns (ReinstateAttributeResponse);
+
+  // Terminates an attribute.
+  rpc TerminateAttribute(TerminateAttributeRequest) returns (TerminateAttributeResponse);
+
+  // Renews an attribute.
+  rpc RenewAttribute(RenewAttributeRequest) returns (RenewAttributeResponse);
+
+  // Expires an attribute.
+  rpc ExpireAttribute(ExpireAttributeRequest) returns (ExpireAttributeResponse);
+
+  // Returns an attribute.
+  rpc GetAttributeLifecycle(GetAttributeLifecycleRequest) returns (GetAttributeLifecycleResponse);
+
+  // Schedules an attribute.
+  rpc ScheduleAttributeExpiry(ScheduleAttributeExpiryRequest) returns (ScheduleAttributeExpiryResponse);
+}
+
+// The request of `ActivateAttribute`.
+message ActivateAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  ActivateAttributeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateAttribute`.
+message ActivateAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  ActivateAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendAttribute`.
+message SuspendAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  SuspendAttributeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendAttribute`.
+message SuspendAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  SuspendAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateAttribute`.
+message ReinstateAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  ReinstateAttributeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateAttribute`.
+message ReinstateAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  ReinstateAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateAttribute`.
+message TerminateAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  TerminateAttributeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateAttribute`.
+message TerminateAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  TerminateAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewAttribute`.
+message RenewAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  RenewAttributeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewAttribute`.
+message RenewAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  RenewAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireAttribute`.
+message ExpireAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  ExpireAttributeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireAttribute`.
+message ExpireAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  ExpireAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAttributeLifecycle`.
+message GetAttributeLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAttributeLifecycle`.
+message GetAttributeLifecycleResponse {
+  Attribute attribute = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleAttributeExpiry`.
+message ScheduleAttributeExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  ScheduleAttributeExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleAttributeExpiry`.
+message ScheduleAttributeExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  ScheduleAttributeExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

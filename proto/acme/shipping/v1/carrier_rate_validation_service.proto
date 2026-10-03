@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarrierRateValidationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Checks carrier rates against the rules before anything acts on them.
+service CarrierRateValidationService {
+  // Validates a carrier rate.
+  rpc ValidateCarrierRate(ValidateCarrierRateRequest) returns (ValidateCarrierRateResponse);
+
+  // Previews a carrier rate.
+  rpc PreviewCarrierRate(PreviewCarrierRateRequest) returns (PreviewCarrierRateResponse);
+
+  // Checks a carrier rate.
+  rpc CheckCarrierRateEligibility(CheckCarrierRateEligibilityRequest) returns (CheckCarrierRateEligibilityResponse);
+
+  // Normalizes a carrier rate.
+  rpc NormalizeCarrierRate(NormalizeCarrierRateRequest) returns (NormalizeCarrierRateResponse);
+
+  // Explains a carrier rate.
+  rpc ExplainCarrierRateDecision(ExplainCarrierRateDecisionRequest) returns (ExplainCarrierRateDecisionResponse);
+
+  // Scores a carrier rate.
+  rpc ScoreCarrierRate(ScoreCarrierRateRequest) returns (ScoreCarrierRateResponse);
+
+  // Lints a carrier rate.
+  rpc LintCarrierRates(LintCarrierRatesRequest) returns (LintCarrierRatesResponse);
+
+  // Returns a carrier rate.
+  rpc GetCarrierRateRules(GetCarrierRateRulesRequest) returns (GetCarrierRateRulesResponse);
+}
+
+// The request of `ValidateCarrierRate`.
+message ValidateCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  ValidateCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateCarrierRate`.
+message ValidateCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  ValidateCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewCarrierRate`.
+message PreviewCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  PreviewCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewCarrierRate`.
+message PreviewCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  PreviewCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckCarrierRateEligibility`.
+message CheckCarrierRateEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  CheckCarrierRateEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckCarrierRateEligibility`.
+message CheckCarrierRateEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  CheckCarrierRateEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeCarrierRate`.
+message NormalizeCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  NormalizeCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeCarrierRate`.
+message NormalizeCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  NormalizeCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCarrierRateDecision`.
+message ExplainCarrierRateDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  ExplainCarrierRateDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCarrierRateDecision`.
+message ExplainCarrierRateDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  ExplainCarrierRateDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreCarrierRate`.
+message ScoreCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  ScoreCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreCarrierRate`.
+message ScoreCarrierRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreCarrierRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  ScoreCarrierRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintCarrierRates`.
+message LintCarrierRatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  LintCarrierRatesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintCarrierRates`.
+message LintCarrierRatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  LintCarrierRatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCarrierRateRules`.
+message GetCarrierRateRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCarrierRateRules`.
+message GetCarrierRateRulesResponse {
+  CarrierRate carrier_rate = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,203 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.budgeting.v1;
+
+import "acme/budgeting/v1/budgeting.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Budgeting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/budgeting/v1;budgetingv1";
+option java_multiple_files = true;
+option java_outer_classname = "BudgetServiceProto";
+option java_package = "com.acme.budgeting.v1";
+
+// Manages budgets: creates, reads, changes, and lists them.
+service BudgetService {
+  // Creates a budget.
+  rpc CreateBudget(CreateBudgetRequest) returns (CreateBudgetResponse);
+
+  // Returns a budget.
+  rpc GetBudget(GetBudgetRequest) returns (GetBudgetResponse);
+
+  // Changes a budget.
+  rpc UpdateBudget(UpdateBudgetRequest) returns (UpdateBudgetResponse);
+
+  // Deletes a budget.
+  rpc DeleteBudget(DeleteBudgetRequest) returns (DeleteBudgetResponse);
+
+  // Lists budgets a page at a time.
+  rpc ListBudgets(ListBudgetsRequest) returns (ListBudgetsResponse);
+
+  // Returns several budgets at once.
+  rpc BatchGetBudgets(BatchGetBudgetsRequest) returns (BatchGetBudgetsResponse);
+
+  // Streams the changes of budgets as they happen.
+  rpc WatchBudgets(WatchBudgetsRequest) returns (stream WatchBudgetsResponse);
+
+  // Takes a stream of budgets and answers once at the end.
+  rpc BatchCreateBudgets(stream BatchCreateBudgetsRequest) returns (BatchCreateBudgetsResponse);
+}
+
+// The request of `CreateBudget`.
+message CreateBudgetRequest {
+  acme.common.v1.RequestContext context = 1;
+  Budget budget = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateBudget`.
+message CreateBudgetResponse {
+  Budget budget = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetBudget`.
+message GetBudgetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBudget`.
+message GetBudgetResponse {
+  Budget budget = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateBudget`.
+message UpdateBudgetRequest {
+  acme.common.v1.RequestContext context = 1;
+  Budget budget = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateBudget`.
+message UpdateBudgetResponse {
+  Budget budget = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteBudget`.
+message DeleteBudgetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteBudget`.
+message DeleteBudgetResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListBudgets`.
+message ListBudgetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BudgetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListBudgetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListBudgets`.
+message ListBudgetsResponse {
+  repeated Budget budgets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetBudgets`.
+message BatchGetBudgetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string budget_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetBudgets`.
+message BatchGetBudgetsResponse {
+  repeated Budget budgets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchBudgets`.
+message WatchBudgetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BudgetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchBudgetsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchBudgets`.
+message WatchBudgetsResponse {
+  Budget budget = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateBudgets`.
+message BatchCreateBudgetsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateBudgetsRequest.StreamHeader header = 2;
+    Budget record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateBudgets`.
+message BatchCreateBudgetsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string budget_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateBudgetsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

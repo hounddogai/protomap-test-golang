@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.surveys.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/surveys/v1/surveys.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Surveys.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/surveys/v1;surveysv1";
+option java_multiple_files = true;
+option java_outer_classname = "SurveyServiceProto";
+option java_package = "com.acme.surveys.v1";
+
+// Manages surveys: creates, reads, changes, and lists them.
+service SurveyService {
+  // Creates a survey.
+  rpc CreateSurvey(CreateSurveyRequest) returns (CreateSurveyResponse);
+
+  // Returns a survey.
+  rpc GetSurvey(GetSurveyRequest) returns (GetSurveyResponse);
+
+  // Changes a survey.
+  rpc UpdateSurvey(UpdateSurveyRequest) returns (UpdateSurveyResponse);
+
+  // Deletes a survey.
+  rpc DeleteSurvey(DeleteSurveyRequest) returns (DeleteSurveyResponse);
+
+  // Lists surveys a page at a time.
+  rpc ListSurveys(ListSurveysRequest) returns (ListSurveysResponse);
+
+  // Returns several surveys at once.
+  rpc BatchGetSurveys(BatchGetSurveysRequest) returns (BatchGetSurveysResponse);
+
+  // Streams the changes of surveys as they happen.
+  rpc WatchSurveys(WatchSurveysRequest) returns (stream WatchSurveysResponse);
+
+  // Takes a stream of surveys and answers once at the end.
+  rpc BatchCreateSurveys(stream BatchCreateSurveysRequest) returns (BatchCreateSurveysResponse);
+
+  // Creates a survey.
+  rpc CloneSurvey(CloneSurveyRequest) returns (CloneSurveyResponse);
+}
+
+// The request of `CreateSurvey`.
+message CreateSurveyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Survey survey = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSurvey`.
+message CreateSurveyResponse {
+  Survey survey = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSurvey`.
+message GetSurveyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string survey_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSurvey`.
+message GetSurveyResponse {
+  Survey survey = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateSurvey`.
+message UpdateSurveyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Survey survey = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateSurvey`.
+message UpdateSurveyResponse {
+  Survey survey = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteSurvey`.
+message DeleteSurveyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string survey_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteSurvey`.
+message DeleteSurveyResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListSurveys`.
+message ListSurveysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SurveyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSurveysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSurveys`.
+message ListSurveysResponse {
+  repeated Survey surveys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetSurveys`.
+message BatchGetSurveysRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string survey_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetSurveys`.
+message BatchGetSurveysResponse {
+  repeated Survey surveys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchSurveys`.
+message WatchSurveysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SurveyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchSurveysRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchSurveys`.
+message WatchSurveysResponse {
+  Survey survey = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateSurveys`.
+message BatchCreateSurveysRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSurveysRequest.StreamHeader header = 2;
+    Survey record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSurveys`.
+message BatchCreateSurveysResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string survey_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSurveysResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneSurvey`.
+message CloneSurveyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Survey survey = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneSurvey`.
+message CloneSurveyResponse {
+  Survey survey = 1;
+  acme.common.v1.OperationResult result = 2;
+}

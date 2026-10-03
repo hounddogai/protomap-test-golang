@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "PointsLedgerWorkflowServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Runs the long-lived workflow that takes a points ledger from start to finish.
+service PointsLedgerWorkflowService {
+  // Starts a points ledger.
+  rpc StartPointsLedgerWorkflow(StartPointsLedgerWorkflowRequest) returns (StartPointsLedgerWorkflowResponse);
+
+  // Advances a points ledger.
+  rpc AdvancePointsLedgerWorkflow(AdvancePointsLedgerWorkflowRequest) returns (AdvancePointsLedgerWorkflowResponse);
+
+  // Cancels a points ledger.
+  rpc CancelPointsLedgerWorkflow(CancelPointsLedgerWorkflowRequest) returns (CancelPointsLedgerWorkflowResponse);
+
+  // Retrys a points ledger.
+  rpc RetryPointsLedgerWorkflow(RetryPointsLedgerWorkflowRequest) returns (RetryPointsLedgerWorkflowResponse);
+
+  // Pauses a points ledger.
+  rpc PausePointsLedgerWorkflow(PausePointsLedgerWorkflowRequest) returns (PausePointsLedgerWorkflowResponse);
+
+  // Returns a points ledger.
+  rpc InspectPointsLedgerWorkflow(InspectPointsLedgerWorkflowRequest) returns (InspectPointsLedgerWorkflowResponse);
+
+  // Lists points ledgers a page at a time.
+  rpc ListPointsLedgerWorkflows(ListPointsLedgerWorkflowsRequest) returns (ListPointsLedgerWorkflowsResponse);
+
+  // Signals a points ledger.
+  rpc SignalPointsLedgerWorkflow(SignalPointsLedgerWorkflowRequest) returns (SignalPointsLedgerWorkflowResponse);
+}
+
+// The request of `StartPointsLedgerWorkflow`.
+message StartPointsLedgerWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  StartPointsLedgerWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPointsLedgerWorkflow`.
+message StartPointsLedgerWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  StartPointsLedgerWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePointsLedgerWorkflow`.
+message AdvancePointsLedgerWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  AdvancePointsLedgerWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePointsLedgerWorkflow`.
+message AdvancePointsLedgerWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  AdvancePointsLedgerWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPointsLedgerWorkflow`.
+message CancelPointsLedgerWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  CancelPointsLedgerWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPointsLedgerWorkflow`.
+message CancelPointsLedgerWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  CancelPointsLedgerWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPointsLedgerWorkflow`.
+message RetryPointsLedgerWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  RetryPointsLedgerWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPointsLedgerWorkflow`.
+message RetryPointsLedgerWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  RetryPointsLedgerWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePointsLedgerWorkflow`.
+message PausePointsLedgerWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  PausePointsLedgerWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePointsLedgerWorkflow`.
+message PausePointsLedgerWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  PausePointsLedgerWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPointsLedgerWorkflow`.
+message InspectPointsLedgerWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPointsLedgerWorkflow`.
+message InspectPointsLedgerWorkflowResponse {
+  PointsLedger points_ledger = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPointsLedgerWorkflows`.
+message ListPointsLedgerWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PointsLedgerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPointsLedgerWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPointsLedgerWorkflows`.
+message ListPointsLedgerWorkflowsResponse {
+  repeated PointsLedger points_ledgers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPointsLedgerWorkflow`.
+message SignalPointsLedgerWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  SignalPointsLedgerWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPointsLedgerWorkflow`.
+message SignalPointsLedgerWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  SignalPointsLedgerWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

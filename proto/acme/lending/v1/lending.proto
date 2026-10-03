@@ -1,0 +1,243 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.lending.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/lending/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Lending.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/lending/v1;lendingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LendingProto";
+option java_package = "com.acme.lending.v1";
+
+// Where a loan application is in its lifecycle.
+enum LoanApplicationStatus {
+  LOAN_APPLICATION_STATUS_UNSPECIFIED = 0;
+  LOAN_APPLICATION_STATUS_DRAFT = 1;
+  LOAN_APPLICATION_STATUS_ISSUED = 2;
+  LOAN_APPLICATION_STATUS_APPROVED = 3;
+  LOAN_APPLICATION_STATUS_PAID = 4;
+  LOAN_APPLICATION_STATUS_VOID = 5;
+}
+
+// Where a loan is in its lifecycle.
+enum LoanStatus {
+  LOAN_STATUS_UNSPECIFIED = 0;
+  LOAN_STATUS_PENDING = 1;
+  LOAN_STATUS_OPEN = 2;
+  LOAN_STATUS_FROZEN = 3;
+  LOAN_STATUS_CLOSED = 4;
+}
+
+// Where a collateral is in its lifecycle.
+enum CollateralStatus {
+  COLLATERAL_STATUS_UNSPECIFIED = 0;
+  COLLATERAL_STATUS_PLANNED = 1;
+  COLLATERAL_STATUS_AVAILABLE = 2;
+  COLLATERAL_STATUS_RESERVED = 3;
+  COLLATERAL_STATUS_RETIRED = 4;
+}
+
+// Where a repayment is in its lifecycle.
+enum RepaymentStatus {
+  REPAYMENT_STATUS_UNSPECIFIED = 0;
+  REPAYMENT_STATUS_TENTATIVE = 1;
+  REPAYMENT_STATUS_CONFIRMED = 2;
+  REPAYMENT_STATUS_CANCELLED = 3;
+  REPAYMENT_STATUS_COMPLETED = 4;
+}
+
+// The line of a loan application.
+message LoanApplicationLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  LoanApplicationLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a loan application line.
+message LoanApplicationLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a loan application.
+message LoanApplicationCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a loan application.
+message LoanApplicationBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a loan application.
+message LoanApplicationAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A loan application of the lending domain.
+message LoanApplication {
+  string loan_application_id = 1;
+  string number = 2;
+  LoanApplicationStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated LoanApplicationLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    LoanApplicationCardSettlement card = 8;
+    LoanApplicationBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated LoanApplicationAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The limit of a loan.
+message LoanLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a loan.
+message LoanCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a loan.
+message LoanBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A loan of the lending domain.
+message Loan {
+  string loan_id = 1;
+  LoanApplicationRef holder = 2;
+  LoanStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated LoanLimit limits = 7;
+  oneof funding {
+    LoanCardFunding card = 8;
+    LoanBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The dimensions of a collateral.
+message CollateralDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a collateral.
+message CollateralComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A collateral of the lending domain.
+message Collateral {
+  string collateral_id = 1;
+  string code = 2;
+  string name = 3;
+  CollateralStatus status = 4;
+  repeated string category_path = 5;
+  CollateralDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, CollateralComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a repayment.
+message RepaymentParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a repayment.
+message RepaymentDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a repayment.
+message RepaymentWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A repayment of the lending domain.
+message Repayment {
+  string repayment_id = 1;
+  string title = 2;
+  RepaymentStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated RepaymentParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    RepaymentDailyRule daily = 7;
+    RepaymentWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}

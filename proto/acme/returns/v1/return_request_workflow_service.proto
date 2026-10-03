@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnRequestWorkflowServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Runs the long-lived workflow that takes a return request from start to finish.
+service ReturnRequestWorkflowService {
+  // Starts a return request.
+  rpc StartReturnRequestWorkflow(StartReturnRequestWorkflowRequest) returns (StartReturnRequestWorkflowResponse);
+
+  // Advances a return request.
+  rpc AdvanceReturnRequestWorkflow(AdvanceReturnRequestWorkflowRequest) returns (AdvanceReturnRequestWorkflowResponse);
+
+  // Cancels a return request.
+  rpc CancelReturnRequestWorkflow(CancelReturnRequestWorkflowRequest) returns (CancelReturnRequestWorkflowResponse);
+
+  // Returns a return request.
+  rpc InspectReturnRequestWorkflow(InspectReturnRequestWorkflowRequest) returns (InspectReturnRequestWorkflowResponse);
+
+  // Lists return requests a page at a time.
+  rpc ListReturnRequestWorkflows(ListReturnRequestWorkflowsRequest) returns (ListReturnRequestWorkflowsResponse);
+
+  // Signals a return request.
+  rpc SignalReturnRequestWorkflow(SignalReturnRequestWorkflowRequest) returns (SignalReturnRequestWorkflowResponse);
+}
+
+// The request of `StartReturnRequestWorkflow`.
+message StartReturnRequestWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  StartReturnRequestWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartReturnRequestWorkflow`.
+message StartReturnRequestWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  StartReturnRequestWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceReturnRequestWorkflow`.
+message AdvanceReturnRequestWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  AdvanceReturnRequestWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceReturnRequestWorkflow`.
+message AdvanceReturnRequestWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  AdvanceReturnRequestWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelReturnRequestWorkflow`.
+message CancelReturnRequestWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  CancelReturnRequestWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelReturnRequestWorkflow`.
+message CancelReturnRequestWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  CancelReturnRequestWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectReturnRequestWorkflow`.
+message InspectReturnRequestWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectReturnRequestWorkflow`.
+message InspectReturnRequestWorkflowResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListReturnRequestWorkflows`.
+message ListReturnRequestWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnRequestStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListReturnRequestWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListReturnRequestWorkflows`.
+message ListReturnRequestWorkflowsResponse {
+  repeated ReturnRequest return_requests = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalReturnRequestWorkflow`.
+message SignalReturnRequestWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  SignalReturnRequestWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalReturnRequestWorkflow`.
+message SignalReturnRequestWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  SignalReturnRequestWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

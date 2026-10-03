@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shows.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shows.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shows/v1;showsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.shows.v1";
+
+// A reference to a show of the shows domain.
+message ShowRef {
+  string show_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a performance of the shows domain.
+message PerformanceRef {
+  string performance_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a lineup of the shows domain.
+message LineupRef {
+  string lineup_id = 1;
+  string display_name = 2;
+  string number = 3;
+}

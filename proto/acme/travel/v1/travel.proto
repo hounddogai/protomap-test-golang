@@ -1,0 +1,304 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.travel.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/employees/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/travel/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Travel.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/travel/v1;travelv1";
+option java_multiple_files = true;
+option java_outer_classname = "TravelProto";
+option java_package = "com.acme.travel.v1";
+
+// Where a trip is in its lifecycle.
+enum TripStatus {
+  TRIP_STATUS_UNSPECIFIED = 0;
+  TRIP_STATUS_DRAFT = 1;
+  TRIP_STATUS_ISSUED = 2;
+  TRIP_STATUS_APPROVED = 3;
+  TRIP_STATUS_PAID = 4;
+  TRIP_STATUS_VOID = 5;
+}
+
+// Where a travel booking is in its lifecycle.
+enum TravelBookingStatus {
+  TRAVEL_BOOKING_STATUS_UNSPECIFIED = 0;
+  TRAVEL_BOOKING_STATUS_DRAFT = 1;
+  TRAVEL_BOOKING_STATUS_ISSUED = 2;
+  TRAVEL_BOOKING_STATUS_APPROVED = 3;
+  TRAVEL_BOOKING_STATUS_PAID = 4;
+  TRAVEL_BOOKING_STATUS_VOID = 5;
+}
+
+// Where a travel policy is in its lifecycle.
+enum TravelPolicyStatus {
+  TRAVEL_POLICY_STATUS_UNSPECIFIED = 0;
+  TRAVEL_POLICY_STATUS_DRAFT = 1;
+  TRAVEL_POLICY_STATUS_ENABLED = 2;
+  TRAVEL_POLICY_STATUS_DISABLED = 3;
+  TRAVEL_POLICY_STATUS_RETIRED = 4;
+}
+
+// Where an itinerary is in its lifecycle.
+enum ItineraryStatus {
+  ITINERARY_STATUS_UNSPECIFIED = 0;
+  ITINERARY_STATUS_DRAFT = 1;
+  ITINERARY_STATUS_ISSUED = 2;
+  ITINERARY_STATUS_APPROVED = 3;
+  ITINERARY_STATUS_PAID = 4;
+  ITINERARY_STATUS_VOID = 5;
+}
+
+// The line of a trip.
+message TripLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  TripLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a trip line.
+message TripLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a trip.
+message TripCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a trip.
+message TripBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a trip.
+message TripAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A trip of the travel domain.
+message Trip {
+  string trip_id = 1;
+  string number = 2;
+  TripStatus status = 3;
+  acme.employees.v1.EmployeeRef counterparty = 4;
+  repeated TripLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    TripCardSettlement card = 8;
+    TripBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated TripAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a travel booking.
+message TravelBookingLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  TravelBookingLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a travel booking line.
+message TravelBookingLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a travel booking.
+message TravelBookingCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a travel booking.
+message TravelBookingBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a travel booking.
+message TravelBookingAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A travel booking of the travel domain.
+message TravelBooking {
+  string travel_booking_id = 1;
+  string number = 2;
+  TravelBookingStatus status = 3;
+  acme.employees.v1.EmployeeRef counterparty = 4;
+  repeated TravelBookingLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    TravelBookingCardSettlement card = 8;
+    TravelBookingBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated TravelBookingAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of a travel policy.
+message TravelPolicyCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a travel policy.
+message TravelPolicyDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a travel policy.
+message TravelPolicyRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a travel policy.
+message TravelPolicyBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A travel policy of the travel domain.
+message TravelPolicy {
+  string travel_policy_id = 1;
+  string name = 2;
+  string description = 3;
+  TravelPolicyStatus status = 4;
+  int32 priority = 5;
+  repeated TravelPolicyCondition conditions = 6;
+  oneof action {
+    TravelPolicyDiscountAction discount = 7;
+    TravelPolicyRouteAction route = 8;
+    TravelPolicyBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of an itinerary.
+message ItineraryLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ItineraryLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an itinerary line.
+message ItineraryLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an itinerary.
+message ItineraryCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an itinerary.
+message ItineraryBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an itinerary.
+message ItineraryAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An itinerary of the travel domain.
+message Itinerary {
+  string itinerary_id = 1;
+  string number = 2;
+  ItineraryStatus status = 3;
+  TravelBookingRef counterparty = 4;
+  repeated ItineraryLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ItineraryCardSettlement card = 8;
+    ItineraryBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ItineraryAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

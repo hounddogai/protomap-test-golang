@@ -1,0 +1,317 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CollectionWorkflowServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Runs the long-lived workflow that takes a collection from start to finish.
+service CollectionWorkflowService {
+  // Starts a collection.
+  rpc StartCollectionWorkflow(StartCollectionWorkflowRequest) returns (StartCollectionWorkflowResponse);
+
+  // Advances a collection.
+  rpc AdvanceCollectionWorkflow(AdvanceCollectionWorkflowRequest) returns (AdvanceCollectionWorkflowResponse);
+
+  // Cancels a collection.
+  rpc CancelCollectionWorkflow(CancelCollectionWorkflowRequest) returns (CancelCollectionWorkflowResponse);
+
+  // Retrys a collection.
+  rpc RetryCollectionWorkflow(RetryCollectionWorkflowRequest) returns (RetryCollectionWorkflowResponse);
+
+  // Pauses a collection.
+  rpc PauseCollectionWorkflow(PauseCollectionWorkflowRequest) returns (PauseCollectionWorkflowResponse);
+
+  // Resumes a collection.
+  rpc ResumeCollectionWorkflow(ResumeCollectionWorkflowRequest) returns (ResumeCollectionWorkflowResponse);
+
+  // Lists collections a page at a time.
+  rpc ListCollectionWorkflows(ListCollectionWorkflowsRequest) returns (ListCollectionWorkflowsResponse);
+
+  // Signals a collection.
+  rpc SignalCollectionWorkflow(SignalCollectionWorkflowRequest) returns (SignalCollectionWorkflowResponse);
+}
+
+// The request of `StartCollectionWorkflow`.
+message StartCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  StartCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCollectionWorkflow`.
+message StartCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  StartCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCollectionWorkflow`.
+message AdvanceCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  AdvanceCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCollectionWorkflow`.
+message AdvanceCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  AdvanceCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCollectionWorkflow`.
+message CancelCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  CancelCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCollectionWorkflow`.
+message CancelCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  CancelCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryCollectionWorkflow`.
+message RetryCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  RetryCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryCollectionWorkflow`.
+message RetryCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  RetryCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCollectionWorkflow`.
+message PauseCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  PauseCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCollectionWorkflow`.
+message PauseCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  PauseCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeCollectionWorkflow`.
+message ResumeCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  ResumeCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeCollectionWorkflow`.
+message ResumeCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  ResumeCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListCollectionWorkflows`.
+message ListCollectionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCollectionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCollectionWorkflows`.
+message ListCollectionWorkflowsResponse {
+  repeated Collection collections = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCollectionWorkflow`.
+message SignalCollectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  SignalCollectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCollectionWorkflow`.
+message SignalCollectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  SignalCollectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.timekeeping.v1;
+
+option csharp_namespace = "Acme.Timekeeping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/timekeeping/v1;timekeepingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.timekeeping.v1";
+
+// A reference to a timesheet of the timekeeping domain.
+message TimesheetRef {
+  string timesheet_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a clock event of the timekeeping domain.
+message ClockEventRef {
+  string clock_event_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to an overtime of the timekeeping domain.
+message OvertimeRef {
+  string overtime_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

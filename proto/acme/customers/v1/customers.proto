@@ -1,0 +1,236 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomersProto";
+option java_package = "com.acme.customers.v1";
+
+// Where a customer is in its lifecycle.
+enum CustomerStatus {
+  CUSTOMER_STATUS_UNSPECIFIED = 0;
+  CUSTOMER_STATUS_PROSPECT = 1;
+  CUSTOMER_STATUS_ACTIVE = 2;
+  CUSTOMER_STATUS_SUSPENDED = 3;
+  CUSTOMER_STATUS_CLOSED = 4;
+}
+
+// Where a household is in its lifecycle.
+enum HouseholdStatus {
+  HOUSEHOLD_STATUS_UNSPECIFIED = 0;
+  HOUSEHOLD_STATUS_ACTIVE = 1;
+  HOUSEHOLD_STATUS_INACTIVE = 2;
+}
+
+// Where a consent record is in its lifecycle.
+enum ConsentRecordStatus {
+  CONSENT_RECORD_STATUS_UNSPECIFIED = 0;
+  CONSENT_RECORD_STATUS_RECEIVED = 1;
+  CONSENT_RECORD_STATUS_PROCESSED = 2;
+  CONSENT_RECORD_STATUS_DISCARDED = 3;
+}
+
+// Where a customer segment is in its lifecycle.
+enum CustomerSegmentStatus {
+  CUSTOMER_SEGMENT_STATUS_UNSPECIFIED = 0;
+  CUSTOMER_SEGMENT_STATUS_DRAFT = 1;
+  CUSTOMER_SEGMENT_STATUS_ENABLED = 2;
+  CUSTOMER_SEGMENT_STATUS_DISABLED = 3;
+  CUSTOMER_SEGMENT_STATUS_RETIRED = 4;
+}
+
+// Where a preference is in its lifecycle.
+enum PreferenceStatus {
+  PREFERENCE_STATUS_UNSPECIFIED = 0;
+  PREFERENCE_STATUS_DRAFT = 1;
+  PREFERENCE_STATUS_ENABLED = 2;
+  PREFERENCE_STATUS_DISABLED = 3;
+  PREFERENCE_STATUS_RETIRED = 4;
+}
+
+// The preferences of a customer.
+message CustomerPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a customer.
+message CustomerPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a customer.
+message CustomerNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A customer of the customers domain.
+message Customer {
+  string customer_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  CustomerStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  CustomerPreferences preferences = 8;
+  oneof identity_document {
+    CustomerPassport passport = 9;
+    CustomerNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// A household of the customers domain.
+message Household {
+  string household_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Household children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  HouseholdStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The measurement of a consent record.
+message ConsentRecordMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A consent record of the customers domain.
+message ConsentRecord {
+  string consent_record_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  HouseholdRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ConsentRecordMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The condition of a customer segment.
+message CustomerSegmentCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a customer segment.
+message CustomerSegmentDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a customer segment.
+message CustomerSegmentRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a customer segment.
+message CustomerSegmentBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A customer segment of the customers domain.
+message CustomerSegment {
+  string customer_segment_id = 1;
+  string name = 2;
+  string description = 3;
+  CustomerSegmentStatus status = 4;
+  int32 priority = 5;
+  repeated CustomerSegmentCondition conditions = 6;
+  oneof action {
+    CustomerSegmentDiscountAction discount = 7;
+    CustomerSegmentRouteAction route = 8;
+    CustomerSegmentBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a preference.
+message PreferenceCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a preference.
+message PreferenceDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a preference.
+message PreferenceRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a preference.
+message PreferenceBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A preference of the customers domain.
+message Preference {
+  string preference_id = 1;
+  string name = 2;
+  string description = 3;
+  PreferenceStatus status = 4;
+  int32 priority = 5;
+  repeated PreferenceCondition conditions = 6;
+  oneof action {
+    PreferenceDiscountAction discount = 7;
+    PreferenceRouteAction route = 8;
+    PreferenceBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

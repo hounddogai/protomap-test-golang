@@ -1,0 +1,147 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.featurestore.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/datasets/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Featurestore.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/featurestore/v1;featurestorev1";
+option java_multiple_files = true;
+option java_outer_classname = "FeaturestoreProto";
+option java_package = "com.acme.featurestore.v1";
+
+// Where a feature view is in its lifecycle.
+enum FeatureViewStatus {
+  FEATURE_VIEW_STATUS_UNSPECIFIED = 0;
+  FEATURE_VIEW_STATUS_PLANNED = 1;
+  FEATURE_VIEW_STATUS_AVAILABLE = 2;
+  FEATURE_VIEW_STATUS_RESERVED = 3;
+  FEATURE_VIEW_STATUS_RETIRED = 4;
+}
+
+// Where a feature value is in its lifecycle.
+enum FeatureValueStatus {
+  FEATURE_VALUE_STATUS_UNSPECIFIED = 0;
+  FEATURE_VALUE_STATUS_RECEIVED = 1;
+  FEATURE_VALUE_STATUS_PROCESSED = 2;
+  FEATURE_VALUE_STATUS_DISCARDED = 3;
+}
+
+// Where an entity is in its lifecycle.
+enum EntityStatus {
+  ENTITY_STATUS_UNSPECIFIED = 0;
+  ENTITY_STATUS_PROSPECT = 1;
+  ENTITY_STATUS_ACTIVE = 2;
+  ENTITY_STATUS_SUSPENDED = 3;
+  ENTITY_STATUS_CLOSED = 4;
+}
+
+// The dimensions of a feature view.
+message FeatureViewDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a feature view.
+message FeatureViewComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A feature view of the featurestore domain.
+message FeatureView {
+  string feature_view_id = 1;
+  string code = 2;
+  string name = 3;
+  FeatureViewStatus status = 4;
+  repeated string category_path = 5;
+  FeatureViewDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, FeatureViewComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a feature value.
+message FeatureValueMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A feature value of the featurestore domain.
+message FeatureValue {
+  string feature_value_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.datasets.v1.DatasetRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated FeatureValueMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The preferences of an entity.
+message EntityPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of an entity.
+message EntityPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of an entity.
+message EntityNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// An entity of the featurestore domain.
+message Entity {
+  string entity_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  EntityStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  EntityPreferences preferences = 8;
+  oneof identity_document {
+    EntityPassport passport = 9;
+    EntityNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}

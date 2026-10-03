@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.assets.v1;
+
+import "acme/assets/v1/assets.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Assets.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/assets/v1;assetsv1";
+option java_multiple_files = true;
+option java_outer_classname = "FixedAssetServiceProto";
+option java_package = "com.acme.assets.v1";
+
+// Manages fixed assets: creates, reads, changes, and lists them.
+service FixedAssetService {
+  // Creates a fixed asset.
+  rpc CreateFixedAsset(CreateFixedAssetRequest) returns (CreateFixedAssetResponse);
+
+  // Returns a fixed asset.
+  rpc GetFixedAsset(GetFixedAssetRequest) returns (GetFixedAssetResponse);
+
+  // Deletes a fixed asset.
+  rpc DeleteFixedAsset(DeleteFixedAssetRequest) returns (DeleteFixedAssetResponse);
+
+  // Lists fixed assets a page at a time.
+  rpc ListFixedAssets(ListFixedAssetsRequest) returns (ListFixedAssetsResponse);
+
+  // Returns several fixed assets at once.
+  rpc BatchGetFixedAssets(BatchGetFixedAssetsRequest) returns (BatchGetFixedAssetsResponse);
+
+  // Lists fixed assets a page at a time.
+  rpc SearchFixedAssets(SearchFixedAssetsRequest) returns (SearchFixedAssetsResponse);
+
+  // Streams the changes of fixed assets as they happen.
+  rpc WatchFixedAssets(WatchFixedAssetsRequest) returns (stream WatchFixedAssetsResponse);
+
+  // Takes a stream of fixed assets and answers once at the end.
+  rpc BatchCreateFixedAssets(stream BatchCreateFixedAssetsRequest) returns (BatchCreateFixedAssetsResponse);
+}
+
+// The request of `CreateFixedAsset`.
+message CreateFixedAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  FixedAsset fixed_asset = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateFixedAsset`.
+message CreateFixedAssetResponse {
+  FixedAsset fixed_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetFixedAsset`.
+message GetFixedAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fixed_asset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFixedAsset`.
+message GetFixedAssetResponse {
+  FixedAsset fixed_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteFixedAsset`.
+message DeleteFixedAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fixed_asset_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteFixedAsset`.
+message DeleteFixedAssetResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListFixedAssets`.
+message ListFixedAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FixedAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFixedAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFixedAssets`.
+message ListFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetFixedAssets`.
+message BatchGetFixedAssetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string fixed_asset_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetFixedAssets`.
+message BatchGetFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchFixedAssets`.
+message SearchFixedAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FixedAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchFixedAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchFixedAssets`.
+message SearchFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchFixedAssets`.
+message WatchFixedAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FixedAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchFixedAssetsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchFixedAssets`.
+message WatchFixedAssetsResponse {
+  FixedAsset fixed_asset = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateFixedAssets`.
+message BatchCreateFixedAssetsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateFixedAssetsRequest.StreamHeader header = 2;
+    FixedAsset record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateFixedAssets`.
+message BatchCreateFixedAssetsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string fixed_asset_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateFixedAssetsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

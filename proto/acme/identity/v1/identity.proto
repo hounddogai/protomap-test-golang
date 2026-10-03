@@ -1,0 +1,260 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "IdentityProto";
+option java_package = "com.acme.identity.v1";
+
+// Where a user is in its lifecycle.
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_PROSPECT = 1;
+  USER_STATUS_ACTIVE = 2;
+  USER_STATUS_SUSPENDED = 3;
+  USER_STATUS_CLOSED = 4;
+}
+
+// Where a session is in its lifecycle.
+enum SessionStatus {
+  SESSION_STATUS_UNSPECIFIED = 0;
+  SESSION_STATUS_NEW = 1;
+  SESSION_STATUS_OPEN = 2;
+  SESSION_STATUS_WAITING = 3;
+  SESSION_STATUS_RESOLVED = 4;
+  SESSION_STATUS_CLOSED = 5;
+}
+
+// Where an api credential is in its lifecycle.
+enum ApiCredentialStatus {
+  API_CREDENTIAL_STATUS_UNSPECIFIED = 0;
+  API_CREDENTIAL_STATUS_PENDING = 1;
+  API_CREDENTIAL_STATUS_OPEN = 2;
+  API_CREDENTIAL_STATUS_FROZEN = 3;
+  API_CREDENTIAL_STATUS_CLOSED = 4;
+}
+
+// Where a role is in its lifecycle.
+enum RoleStatus {
+  ROLE_STATUS_UNSPECIFIED = 0;
+  ROLE_STATUS_DRAFT = 1;
+  ROLE_STATUS_ENABLED = 2;
+  ROLE_STATUS_DISABLED = 3;
+  ROLE_STATUS_RETIRED = 4;
+}
+
+// Where a tenant is in its lifecycle.
+enum TenantStatus {
+  TENANT_STATUS_UNSPECIFIED = 0;
+  TENANT_STATUS_ACTIVE = 1;
+  TENANT_STATUS_INACTIVE = 2;
+}
+
+// The preferences of a user.
+message UserPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a user.
+message UserPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a user.
+message UserNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A user of the identity domain.
+message User {
+  string user_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  UserStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  UserPreferences preferences = 8;
+  oneof identity_document {
+    UserPassport passport = 9;
+    UserNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The comment of a session.
+message SessionComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a session.
+message SessionSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a session.
+message SessionChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a session.
+message SessionStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A session of the identity domain.
+message Session {
+  string session_id = 1;
+  string subject = 2;
+  SessionStatus status = 3;
+  int32 priority = 4;
+  UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated SessionComment comments = 7;
+  SessionSla sla = 8;
+  oneof origin {
+    ApiCredentialRef customer = 9;
+    string external_reference = 10;
+    SessionChannelOrigin channel = 11;
+  }
+  repeated SessionStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The limit of an api credential.
+message ApiCredentialLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of an api credential.
+message ApiCredentialCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of an api credential.
+message ApiCredentialBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// An api credential of the identity domain.
+message ApiCredential {
+  string api_credential_id = 1;
+  SessionRef holder = 2;
+  ApiCredentialStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated ApiCredentialLimit limits = 7;
+  oneof funding {
+    ApiCredentialCardFunding card = 8;
+    ApiCredentialBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The condition of a role.
+message RoleCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a role.
+message RoleDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a role.
+message RoleRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a role.
+message RoleBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A role of the identity domain.
+message Role {
+  string role_id = 1;
+  string name = 2;
+  string description = 3;
+  RoleStatus status = 4;
+  int32 priority = 5;
+  repeated RoleCondition conditions = 6;
+  oneof action {
+    RoleDiscountAction discount = 7;
+    RoleRouteAction route = 8;
+    RoleBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// A tenant of the identity domain.
+message Tenant {
+  string tenant_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Tenant children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  UserRef manager = 8;
+  TenantStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}

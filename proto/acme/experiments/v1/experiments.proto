@@ -1,0 +1,158 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.experiments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/experiments/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Experiments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/experiments/v1;experimentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ExperimentsProto";
+option java_package = "com.acme.experiments.v1";
+
+// Where an experiment is in its lifecycle.
+enum ExperimentStatus {
+  EXPERIMENT_STATUS_UNSPECIFIED = 0;
+  EXPERIMENT_STATUS_TENTATIVE = 1;
+  EXPERIMENT_STATUS_CONFIRMED = 2;
+  EXPERIMENT_STATUS_CANCELLED = 3;
+  EXPERIMENT_STATUS_COMPLETED = 4;
+}
+
+// Where a variant is in its lifecycle.
+enum VariantStatus {
+  VARIANT_STATUS_UNSPECIFIED = 0;
+  VARIANT_STATUS_DRAFT = 1;
+  VARIANT_STATUS_ENABLED = 2;
+  VARIANT_STATUS_DISABLED = 3;
+  VARIANT_STATUS_RETIRED = 4;
+}
+
+// Where an exposure is in its lifecycle.
+enum ExposureStatus {
+  EXPOSURE_STATUS_UNSPECIFIED = 0;
+  EXPOSURE_STATUS_RECEIVED = 1;
+  EXPOSURE_STATUS_PROCESSED = 2;
+  EXPOSURE_STATUS_DISCARDED = 3;
+}
+
+// The participant of an experiment.
+message ExperimentParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of an experiment.
+message ExperimentDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of an experiment.
+message ExperimentWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// An experiment of the experiments domain.
+message Experiment {
+  string experiment_id = 1;
+  string title = 2;
+  ExperimentStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated ExperimentParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    ExperimentDailyRule daily = 7;
+    ExperimentWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The condition of a variant.
+message VariantCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a variant.
+message VariantDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a variant.
+message VariantRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a variant.
+message VariantBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A variant of the experiments domain.
+message Variant {
+  string variant_id = 1;
+  string name = 2;
+  string description = 3;
+  VariantStatus status = 4;
+  int32 priority = 5;
+  repeated VariantCondition conditions = 6;
+  oneof action {
+    VariantDiscountAction discount = 7;
+    VariantRouteAction route = 8;
+    VariantBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of an exposure.
+message ExposureMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// An exposure of the experiments domain.
+message Exposure {
+  string exposure_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  ExperimentRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ExposureMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

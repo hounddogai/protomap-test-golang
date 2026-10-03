@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnRequestServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Manages return requests: creates, reads, changes, and lists them.
+service ReturnRequestService {
+  // Creates a return request.
+  rpc CreateReturnRequest(CreateReturnRequestRequest) returns (CreateReturnRequestResponse);
+
+  // Returns a return request.
+  rpc GetReturnRequest(GetReturnRequestRequest) returns (GetReturnRequestResponse);
+
+  // Changes a return request.
+  rpc UpdateReturnRequest(UpdateReturnRequestRequest) returns (UpdateReturnRequestResponse);
+
+  // Deletes a return request.
+  rpc DeleteReturnRequest(DeleteReturnRequestRequest) returns (DeleteReturnRequestResponse);
+
+  // Lists return requests a page at a time.
+  rpc ListReturnRequests(ListReturnRequestsRequest) returns (ListReturnRequestsResponse);
+
+  // Returns several return requests at once.
+  rpc BatchGetReturnRequests(BatchGetReturnRequestsRequest) returns (BatchGetReturnRequestsResponse);
+
+  // Lists return requests a page at a time.
+  rpc SearchReturnRequests(SearchReturnRequestsRequest) returns (SearchReturnRequestsResponse);
+
+  // Streams the changes of return requests as they happen.
+  rpc WatchReturnRequests(WatchReturnRequestsRequest) returns (stream WatchReturnRequestsResponse);
+
+  // Takes a stream of return requests and answers once at the end.
+  rpc BatchCreateReturnRequests(stream BatchCreateReturnRequestsRequest) returns (BatchCreateReturnRequestsResponse);
+
+  // Creates a return request.
+  rpc CloneReturnRequest(CloneReturnRequestRequest) returns (CloneReturnRequestResponse);
+}
+
+// The request of `CreateReturnRequest`.
+message CreateReturnRequestRequest {
+  acme.common.v1.RequestContext context = 1;
+  ReturnRequest return_request = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateReturnRequest`.
+message CreateReturnRequestResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetReturnRequest`.
+message GetReturnRequestRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnRequest`.
+message GetReturnRequestResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateReturnRequest`.
+message UpdateReturnRequestRequest {
+  acme.common.v1.RequestContext context = 1;
+  ReturnRequest return_request = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateReturnRequest`.
+message UpdateReturnRequestResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteReturnRequest`.
+message DeleteReturnRequestRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteReturnRequest`.
+message DeleteReturnRequestResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListReturnRequests`.
+message ListReturnRequestsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnRequestStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListReturnRequestsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListReturnRequests`.
+message ListReturnRequestsResponse {
+  repeated ReturnRequest return_requests = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetReturnRequests`.
+message BatchGetReturnRequestsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string return_request_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetReturnRequests`.
+message BatchGetReturnRequestsResponse {
+  repeated ReturnRequest return_requests = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchReturnRequests`.
+message SearchReturnRequestsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnRequestStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchReturnRequestsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchReturnRequests`.
+message SearchReturnRequestsResponse {
+  repeated ReturnRequest return_requests = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchReturnRequests`.
+message WatchReturnRequestsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnRequestStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchReturnRequestsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchReturnRequests`.
+message WatchReturnRequestsResponse {
+  ReturnRequest return_request = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateReturnRequests`.
+message BatchCreateReturnRequestsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateReturnRequestsRequest.StreamHeader header = 2;
+    ReturnRequest record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateReturnRequests`.
+message BatchCreateReturnRequestsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string return_request_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateReturnRequestsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneReturnRequest`.
+message CloneReturnRequestRequest {
+  acme.common.v1.RequestContext context = 1;
+  ReturnRequest return_request = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneReturnRequest`.
+message CloneReturnRequestResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}

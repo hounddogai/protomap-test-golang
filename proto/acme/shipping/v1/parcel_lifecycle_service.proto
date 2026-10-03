@@ -1,0 +1,238 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ParcelLifecycleServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Moves a parcel between the states of its lifecycle.
+service ParcelLifecycleService {
+  // Activates a parcel.
+  rpc ActivateParcel(ActivateParcelRequest) returns (ActivateParcelResponse);
+
+  // Suspends a parcel.
+  rpc SuspendParcel(SuspendParcelRequest) returns (SuspendParcelResponse);
+
+  // Reinstates a parcel.
+  rpc ReinstateParcel(ReinstateParcelRequest) returns (ReinstateParcelResponse);
+
+  // Terminates a parcel.
+  rpc TerminateParcel(TerminateParcelRequest) returns (TerminateParcelResponse);
+
+  // Renews a parcel.
+  rpc RenewParcel(RenewParcelRequest) returns (RenewParcelResponse);
+
+  // Expires a parcel.
+  rpc ExpireParcel(ExpireParcelRequest) returns (ExpireParcelResponse);
+}
+
+// The request of `ActivateParcel`.
+message ActivateParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  ActivateParcelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateParcel`.
+message ActivateParcelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  ActivateParcelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendParcel`.
+message SuspendParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  SuspendParcelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendParcel`.
+message SuspendParcelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  SuspendParcelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateParcel`.
+message ReinstateParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  ReinstateParcelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateParcel`.
+message ReinstateParcelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  ReinstateParcelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateParcel`.
+message TerminateParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  TerminateParcelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateParcel`.
+message TerminateParcelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  TerminateParcelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewParcel`.
+message RenewParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  RenewParcelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewParcel`.
+message RenewParcelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  RenewParcelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireParcel`.
+message ExpireParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  ExpireParcelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireParcel`.
+message ExpireParcelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  ExpireParcelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

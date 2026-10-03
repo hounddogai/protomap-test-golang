@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.documents.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/documents/v1/documents.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Documents.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/documents/v1;documentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DocumentQueryServiceProto";
+option java_package = "com.acme.documents.v1";
+
+// Answers read-only questions about documents, for screens and reports.
+service DocumentQueryService {
+  // Returns a document.
+  rpc LookupDocument(LookupDocumentRequest) returns (LookupDocumentResponse);
+
+  // Lists documents a page at a time.
+  rpc BrowseDocuments(BrowseDocumentsRequest) returns (BrowseDocumentsResponse);
+
+  // Lists documents a page at a time.
+  rpc FindDocuments(FindDocumentsRequest) returns (FindDocumentsResponse);
+
+  // Counts documents by status.
+  rpc CountDocuments(CountDocumentsRequest) returns (CountDocumentsResponse);
+
+  // Returns several documents at once.
+  rpc ResolveDocuments(ResolveDocumentsRequest) returns (ResolveDocumentsResponse);
+
+  // Streams every matching document.
+  rpc ExportDocuments(ExportDocumentsRequest) returns (stream ExportDocumentsResponse);
+
+  // Summarizes a document.
+  rpc SummarizeDocuments(SummarizeDocumentsRequest) returns (SummarizeDocumentsResponse);
+
+  // Lists documents a page at a time.
+  rpc SuggestDocuments(SuggestDocumentsRequest) returns (SuggestDocumentsResponse);
+
+  // Returns a document.
+  rpc PeekDocument(PeekDocumentRequest) returns (PeekDocumentResponse);
+}
+
+// The request of `LookupDocument`.
+message LookupDocumentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string document_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupDocument`.
+message LookupDocumentResponse {
+  Document document = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseDocuments`.
+message BrowseDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseDocumentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseDocuments`.
+message BrowseDocumentsResponse {
+  repeated Document documents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindDocuments`.
+message FindDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindDocumentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindDocuments`.
+message FindDocumentsResponse {
+  repeated Document documents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountDocuments`.
+message CountDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountDocumentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountDocuments`.
+message CountDocumentsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveDocuments`.
+message ResolveDocumentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string document_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveDocuments`.
+message ResolveDocumentsResponse {
+  repeated Document documents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportDocuments`.
+message ExportDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportDocumentsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportDocuments`.
+message ExportDocumentsResponse {
+  Document document = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeDocuments`.
+message SummarizeDocumentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string document_id = 2;
+  SummarizeDocumentsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeDocuments`.
+message SummarizeDocumentsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestDocuments`.
+message SuggestDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestDocumentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestDocuments`.
+message SuggestDocumentsResponse {
+  repeated Document documents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekDocument`.
+message PeekDocumentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string document_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekDocument`.
+message PeekDocumentResponse {
+  Document document = 1;
+  acme.common.v1.OperationResult result = 2;
+}

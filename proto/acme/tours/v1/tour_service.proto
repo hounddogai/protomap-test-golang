@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.tours.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/tours/v1/tours.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Tours.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/tours/v1;toursv1";
+option java_multiple_files = true;
+option java_outer_classname = "TourServiceProto";
+option java_package = "com.acme.tours.v1";
+
+// Manages tours: creates, reads, changes, and lists them.
+service TourService {
+  // Creates a tour.
+  rpc CreateTour(CreateTourRequest) returns (CreateTourResponse);
+
+  // Returns a tour.
+  rpc GetTour(GetTourRequest) returns (GetTourResponse);
+
+  // Changes a tour.
+  rpc UpdateTour(UpdateTourRequest) returns (UpdateTourResponse);
+
+  // Deletes a tour.
+  rpc DeleteTour(DeleteTourRequest) returns (DeleteTourResponse);
+
+  // Lists tours a page at a time.
+  rpc ListTours(ListToursRequest) returns (ListToursResponse);
+
+  // Lists tours a page at a time.
+  rpc SearchTours(SearchToursRequest) returns (SearchToursResponse);
+
+  // Streams the changes of tours as they happen.
+  rpc WatchTours(WatchToursRequest) returns (stream WatchToursResponse);
+
+  // Takes a stream of tours and answers once at the end.
+  rpc BatchCreateTours(stream BatchCreateToursRequest) returns (BatchCreateToursResponse);
+}
+
+// The request of `CreateTour`.
+message CreateTourRequest {
+  acme.common.v1.RequestContext context = 1;
+  Tour tour = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateTour`.
+message CreateTourResponse {
+  Tour tour = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetTour`.
+message GetTourRequest {
+  acme.common.v1.RequestContext context = 1;
+  string tour_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTour`.
+message GetTourResponse {
+  Tour tour = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateTour`.
+message UpdateTourRequest {
+  acme.common.v1.RequestContext context = 1;
+  Tour tour = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateTour`.
+message UpdateTourResponse {
+  Tour tour = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteTour`.
+message DeleteTourRequest {
+  acme.common.v1.RequestContext context = 1;
+  string tour_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteTour`.
+message DeleteTourResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListTours`.
+message ListToursRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TourStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListToursRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListTours`.
+message ListToursResponse {
+  repeated Tour tours = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchTours`.
+message SearchToursRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TourStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchToursRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchTours`.
+message SearchToursResponse {
+  repeated Tour tours = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchTours`.
+message WatchToursRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TourStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchToursRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchTours`.
+message WatchToursResponse {
+  Tour tour = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateTours`.
+message BatchCreateToursRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateToursRequest.StreamHeader header = 2;
+    Tour record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateTours`.
+message BatchCreateToursResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string tour_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateToursResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

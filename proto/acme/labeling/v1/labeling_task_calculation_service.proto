@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.labeling.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/labeling/v1/labeling.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Labeling.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/labeling/v1;labelingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LabelingTaskCalculationServiceProto";
+option java_package = "com.acme.labeling.v1";
+
+// Computes the figures of a labeling task, such as totals, taxes, and estimates.
+service LabelingTaskCalculationService {
+  // Calculates a labeling task.
+  rpc CalculateLabelingTask(CalculateLabelingTaskRequest) returns (CalculateLabelingTaskResponse);
+
+  // Estimates a labeling task.
+  rpc EstimateLabelingTask(EstimateLabelingTaskRequest) returns (EstimateLabelingTaskResponse);
+
+  // Quotes a labeling task.
+  rpc QuoteLabelingTask(QuoteLabelingTaskRequest) returns (QuoteLabelingTaskResponse);
+
+  // Compares a labeling task.
+  rpc CompareLabelingTaskOptions(CompareLabelingTaskOptionsRequest) returns (CompareLabelingTaskOptionsResponse);
+
+  // Recalculates a labeling task.
+  rpc RecalculateLabelingTasks(RecalculateLabelingTasksRequest) returns (RecalculateLabelingTasksResponse);
+
+  // Simulates a labeling task.
+  rpc SimulateLabelingTask(SimulateLabelingTaskRequest) returns (SimulateLabelingTaskResponse);
+
+  // Explains a labeling task.
+  rpc ExplainLabelingTaskCalculation(ExplainLabelingTaskCalculationRequest) returns (ExplainLabelingTaskCalculationResponse);
+
+  // Returns a labeling task.
+  rpc GetLabelingTaskRates(GetLabelingTaskRatesRequest) returns (GetLabelingTaskRatesResponse);
+}
+
+// The request of `CalculateLabelingTask`.
+message CalculateLabelingTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  CalculateLabelingTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateLabelingTask`.
+message CalculateLabelingTaskResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateLabelingTaskResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LabelingTask labeling_task = 1;
+  CalculateLabelingTaskResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateLabelingTask`.
+message EstimateLabelingTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  EstimateLabelingTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateLabelingTask`.
+message EstimateLabelingTaskResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateLabelingTaskResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LabelingTask labeling_task = 1;
+  EstimateLabelingTaskResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteLabelingTask`.
+message QuoteLabelingTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  QuoteLabelingTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteLabelingTask`.
+message QuoteLabelingTaskResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteLabelingTaskResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LabelingTask labeling_task = 1;
+  QuoteLabelingTaskResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareLabelingTaskOptions`.
+message CompareLabelingTaskOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  CompareLabelingTaskOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareLabelingTaskOptions`.
+message CompareLabelingTaskOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareLabelingTaskOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LabelingTask labeling_task = 1;
+  CompareLabelingTaskOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateLabelingTasks`.
+message RecalculateLabelingTasksRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  RecalculateLabelingTasksRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateLabelingTasks`.
+message RecalculateLabelingTasksResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateLabelingTasksResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LabelingTask labeling_task = 1;
+  RecalculateLabelingTasksResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateLabelingTask`.
+message SimulateLabelingTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  SimulateLabelingTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateLabelingTask`.
+message SimulateLabelingTaskResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateLabelingTaskResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LabelingTask labeling_task = 1;
+  SimulateLabelingTaskResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainLabelingTaskCalculation`.
+message ExplainLabelingTaskCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  LabelingTask labeling_task = 3;
+  ExplainLabelingTaskCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainLabelingTaskCalculation`.
+message ExplainLabelingTaskCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LabelingTask labeling_task = 1;
+  ExplainLabelingTaskCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLabelingTaskRates`.
+message GetLabelingTaskRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLabelingTaskRates`.
+message GetLabelingTaskRatesResponse {
+  LabelingTask labeling_task = 1;
+  acme.common.v1.OperationResult result = 2;
+}

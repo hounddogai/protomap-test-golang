@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductReviewValidationServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Checks product reviews against the rules before anything acts on them.
+service ProductReviewValidationService {
+  // Validates a product review.
+  rpc ValidateProductReview(ValidateProductReviewRequest) returns (ValidateProductReviewResponse);
+
+  // Previews a product review.
+  rpc PreviewProductReview(PreviewProductReviewRequest) returns (PreviewProductReviewResponse);
+
+  // Checks a product review.
+  rpc CheckProductReviewEligibility(CheckProductReviewEligibilityRequest) returns (CheckProductReviewEligibilityResponse);
+
+  // Explains a product review.
+  rpc ExplainProductReviewDecision(ExplainProductReviewDecisionRequest) returns (ExplainProductReviewDecisionResponse);
+
+  // Scores a product review.
+  rpc ScoreProductReview(ScoreProductReviewRequest) returns (ScoreProductReviewResponse);
+
+  // Returns a product review.
+  rpc GetProductReviewRules(GetProductReviewRulesRequest) returns (GetProductReviewRulesResponse);
+}
+
+// The request of `ValidateProductReview`.
+message ValidateProductReviewRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  ValidateProductReviewRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateProductReview`.
+message ValidateProductReviewResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  ValidateProductReviewResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewProductReview`.
+message PreviewProductReviewRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  PreviewProductReviewRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewProductReview`.
+message PreviewProductReviewResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  PreviewProductReviewResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckProductReviewEligibility`.
+message CheckProductReviewEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  CheckProductReviewEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckProductReviewEligibility`.
+message CheckProductReviewEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  CheckProductReviewEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainProductReviewDecision`.
+message ExplainProductReviewDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  ExplainProductReviewDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainProductReviewDecision`.
+message ExplainProductReviewDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  ExplainProductReviewDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreProductReview`.
+message ScoreProductReviewRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  ScoreProductReviewRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreProductReview`.
+message ScoreProductReviewResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreProductReviewResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ProductReview product_review = 1;
+  ScoreProductReviewResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetProductReviewRules`.
+message GetProductReviewRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProductReviewRules`.
+message GetProductReviewRulesResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}

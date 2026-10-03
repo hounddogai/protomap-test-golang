@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/returns/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnsProto";
+option java_package = "com.acme.returns.v1";
+
+// Where a return request is in its lifecycle.
+enum ReturnRequestStatus {
+  RETURN_REQUEST_STATUS_UNSPECIFIED = 0;
+  RETURN_REQUEST_STATUS_DRAFT = 1;
+  RETURN_REQUEST_STATUS_ISSUED = 2;
+  RETURN_REQUEST_STATUS_APPROVED = 3;
+  RETURN_REQUEST_STATUS_PAID = 4;
+  RETURN_REQUEST_STATUS_VOID = 5;
+}
+
+// Where a return label is in its lifecycle.
+enum ReturnLabelStatus {
+  RETURN_LABEL_STATUS_UNSPECIFIED = 0;
+  RETURN_LABEL_STATUS_DRAFT = 1;
+  RETURN_LABEL_STATUS_ISSUED = 2;
+  RETURN_LABEL_STATUS_APPROVED = 3;
+  RETURN_LABEL_STATUS_PAID = 4;
+  RETURN_LABEL_STATUS_VOID = 5;
+}
+
+// Where an inspection is in its lifecycle.
+enum InspectionStatus {
+  INSPECTION_STATUS_UNSPECIFIED = 0;
+  INSPECTION_STATUS_NEW = 1;
+  INSPECTION_STATUS_OPEN = 2;
+  INSPECTION_STATUS_WAITING = 3;
+  INSPECTION_STATUS_RESOLVED = 4;
+  INSPECTION_STATUS_CLOSED = 5;
+}
+
+// Where a restock decision is in its lifecycle.
+enum RestockDecisionStatus {
+  RESTOCK_DECISION_STATUS_UNSPECIFIED = 0;
+  RESTOCK_DECISION_STATUS_DRAFT = 1;
+  RESTOCK_DECISION_STATUS_ENABLED = 2;
+  RESTOCK_DECISION_STATUS_DISABLED = 3;
+  RESTOCK_DECISION_STATUS_RETIRED = 4;
+}
+
+// The line of a return request.
+message ReturnRequestLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ReturnRequestLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a return request line.
+message ReturnRequestLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a return request.
+message ReturnRequestCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a return request.
+message ReturnRequestBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a return request.
+message ReturnRequestAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A return request of the returns domain.
+message ReturnRequest {
+  string return_request_id = 1;
+  string number = 2;
+  ReturnRequestStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated ReturnRequestLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ReturnRequestCardSettlement card = 8;
+    ReturnRequestBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ReturnRequestAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a return label.
+message ReturnLabelLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ReturnLabelLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a return label line.
+message ReturnLabelLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a return label.
+message ReturnLabelCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a return label.
+message ReturnLabelBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a return label.
+message ReturnLabelAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A return label of the returns domain.
+message ReturnLabel {
+  string return_label_id = 1;
+  string number = 2;
+  ReturnLabelStatus status = 3;
+  InspectionRef counterparty = 4;
+  repeated ReturnLabelLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ReturnLabelCardSettlement card = 8;
+    ReturnLabelBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ReturnLabelAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of an inspection.
+message InspectionComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of an inspection.
+message InspectionSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of an inspection.
+message InspectionChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of an inspection.
+message InspectionStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// An inspection of the returns domain.
+message Inspection {
+  string inspection_id = 1;
+  string subject = 2;
+  InspectionStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated InspectionComment comments = 7;
+  InspectionSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    InspectionChannelOrigin channel = 11;
+  }
+  repeated InspectionStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a restock decision.
+message RestockDecisionCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a restock decision.
+message RestockDecisionDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a restock decision.
+message RestockDecisionRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a restock decision.
+message RestockDecisionBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A restock decision of the returns domain.
+message RestockDecision {
+  string restock_decision_id = 1;
+  string name = 2;
+  string description = 3;
+  RestockDecisionStatus status = 4;
+  int32 priority = 5;
+  repeated RestockDecisionCondition conditions = 6;
+  oneof action {
+    RestockDecisionDiscountAction discount = 7;
+    RestockDecisionRouteAction route = 8;
+    RestockDecisionBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

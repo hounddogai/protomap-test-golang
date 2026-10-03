@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "WatchlistApprovalServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Routes watchlists through approval, with escalation and delegation.
+service WatchlistApprovalService {
+  // Submits a watchlist.
+  rpc SubmitWatchlist(SubmitWatchlistRequest) returns (SubmitWatchlistResponse);
+
+  // Approves a watchlist.
+  rpc ApproveWatchlist(ApproveWatchlistRequest) returns (ApproveWatchlistResponse);
+
+  // Rejects a watchlist.
+  rpc RejectWatchlist(RejectWatchlistRequest) returns (RejectWatchlistResponse);
+
+  // Lists watchlists a page at a time.
+  rpc ListPendingWatchlists(ListPendingWatchlistsRequest) returns (ListPendingWatchlistsResponse);
+
+  // Delegates a watchlist.
+  rpc DelegateWatchlistApproval(DelegateWatchlistApprovalRequest) returns (DelegateWatchlistApprovalResponse);
+
+  // Recalls a watchlist.
+  rpc RecallWatchlist(RecallWatchlistRequest) returns (RecallWatchlistResponse);
+
+  // Returns a watchlist.
+  rpc GetWatchlistApprovalStatus(GetWatchlistApprovalStatusRequest) returns (GetWatchlistApprovalStatusResponse);
+
+  // Comments a watchlist.
+  rpc CommentWatchlistApproval(CommentWatchlistApprovalRequest) returns (CommentWatchlistApprovalResponse);
+}
+
+// The request of `SubmitWatchlist`.
+message SubmitWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  SubmitWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitWatchlist`.
+message SubmitWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  SubmitWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveWatchlist`.
+message ApproveWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  ApproveWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveWatchlist`.
+message ApproveWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ApproveWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectWatchlist`.
+message RejectWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  RejectWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectWatchlist`.
+message RejectWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  RejectWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingWatchlists`.
+message ListPendingWatchlistsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WatchlistStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingWatchlistsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingWatchlists`.
+message ListPendingWatchlistsResponse {
+  repeated Watchlist watchlists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateWatchlistApproval`.
+message DelegateWatchlistApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  DelegateWatchlistApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateWatchlistApproval`.
+message DelegateWatchlistApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  DelegateWatchlistApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallWatchlist`.
+message RecallWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  RecallWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallWatchlist`.
+message RecallWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  RecallWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetWatchlistApprovalStatus`.
+message GetWatchlistApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetWatchlistApprovalStatus`.
+message GetWatchlistApprovalStatusResponse {
+  Watchlist watchlist = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentWatchlistApproval`.
+message CommentWatchlistApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  CommentWatchlistApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentWatchlistApproval`.
+message CommentWatchlistApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  CommentWatchlistApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

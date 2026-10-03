@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductVariantWorkflowServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Runs the long-lived workflow that takes a product variant from start to finish.
+service ProductVariantWorkflowService {
+  // Starts a product variant.
+  rpc StartProductVariantWorkflow(StartProductVariantWorkflowRequest) returns (StartProductVariantWorkflowResponse);
+
+  // Advances a product variant.
+  rpc AdvanceProductVariantWorkflow(AdvanceProductVariantWorkflowRequest) returns (AdvanceProductVariantWorkflowResponse);
+
+  // Cancels a product variant.
+  rpc CancelProductVariantWorkflow(CancelProductVariantWorkflowRequest) returns (CancelProductVariantWorkflowResponse);
+
+  // Retrys a product variant.
+  rpc RetryProductVariantWorkflow(RetryProductVariantWorkflowRequest) returns (RetryProductVariantWorkflowResponse);
+
+  // Pauses a product variant.
+  rpc PauseProductVariantWorkflow(PauseProductVariantWorkflowRequest) returns (PauseProductVariantWorkflowResponse);
+
+  // Resumes a product variant.
+  rpc ResumeProductVariantWorkflow(ResumeProductVariantWorkflowRequest) returns (ResumeProductVariantWorkflowResponse);
+
+  // Returns a product variant.
+  rpc InspectProductVariantWorkflow(InspectProductVariantWorkflowRequest) returns (InspectProductVariantWorkflowResponse);
+
+  // Lists product variants a page at a time.
+  rpc ListProductVariantWorkflows(ListProductVariantWorkflowsRequest) returns (ListProductVariantWorkflowsResponse);
+
+  // Signals a product variant.
+  rpc SignalProductVariantWorkflow(SignalProductVariantWorkflowRequest) returns (SignalProductVariantWorkflowResponse);
+}
+
+// The request of `StartProductVariantWorkflow`.
+message StartProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  StartProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartProductVariantWorkflow`.
+message StartProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  StartProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceProductVariantWorkflow`.
+message AdvanceProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  AdvanceProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceProductVariantWorkflow`.
+message AdvanceProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  AdvanceProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelProductVariantWorkflow`.
+message CancelProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  CancelProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelProductVariantWorkflow`.
+message CancelProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  CancelProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryProductVariantWorkflow`.
+message RetryProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  RetryProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryProductVariantWorkflow`.
+message RetryProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  RetryProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseProductVariantWorkflow`.
+message PauseProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  PauseProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseProductVariantWorkflow`.
+message PauseProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  PauseProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeProductVariantWorkflow`.
+message ResumeProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  ResumeProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeProductVariantWorkflow`.
+message ResumeProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  ResumeProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectProductVariantWorkflow`.
+message InspectProductVariantWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectProductVariantWorkflow`.
+message InspectProductVariantWorkflowResponse {
+  ProductVariant product_variant = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListProductVariantWorkflows`.
+message ListProductVariantWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductVariantStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListProductVariantWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListProductVariantWorkflows`.
+message ListProductVariantWorkflowsResponse {
+  repeated ProductVariant product_variants = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalProductVariantWorkflow`.
+message SignalProductVariantWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  SignalProductVariantWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalProductVariantWorkflow`.
+message SignalProductVariantWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  SignalProductVariantWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

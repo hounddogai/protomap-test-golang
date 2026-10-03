@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.localization.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/localization/v1/localization.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Localization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/localization/v1;localizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "TranslationKeyQueryServiceProto";
+option java_package = "com.acme.localization.v1";
+
+// Answers read-only questions about translation keys, for screens and reports.
+service TranslationKeyQueryService {
+  // Returns a translation key.
+  rpc LookupTranslationKey(LookupTranslationKeyRequest) returns (LookupTranslationKeyResponse);
+
+  // Lists translation keys a page at a time.
+  rpc BrowseTranslationKeys(BrowseTranslationKeysRequest) returns (BrowseTranslationKeysResponse);
+
+  // Lists translation keys a page at a time.
+  rpc FindTranslationKeys(FindTranslationKeysRequest) returns (FindTranslationKeysResponse);
+
+  // Counts translation keys by status.
+  rpc CountTranslationKeys(CountTranslationKeysRequest) returns (CountTranslationKeysResponse);
+
+  // Returns several translation keys at once.
+  rpc ResolveTranslationKeys(ResolveTranslationKeysRequest) returns (ResolveTranslationKeysResponse);
+
+  // Streams every matching translation key.
+  rpc ExportTranslationKeys(ExportTranslationKeysRequest) returns (stream ExportTranslationKeysResponse);
+
+  // Summarizes a translation key.
+  rpc SummarizeTranslationKeys(SummarizeTranslationKeysRequest) returns (SummarizeTranslationKeysResponse);
+
+  // Lists translation keys a page at a time.
+  rpc SuggestTranslationKeys(SuggestTranslationKeysRequest) returns (SuggestTranslationKeysResponse);
+
+  // Returns a translation key.
+  rpc PeekTranslationKey(PeekTranslationKeyRequest) returns (PeekTranslationKeyResponse);
+}
+
+// The request of `LookupTranslationKey`.
+message LookupTranslationKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupTranslationKey`.
+message LookupTranslationKeyResponse {
+  TranslationKey translation_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseTranslationKeys`.
+message BrowseTranslationKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TranslationKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseTranslationKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseTranslationKeys`.
+message BrowseTranslationKeysResponse {
+  repeated TranslationKey translation_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindTranslationKeys`.
+message FindTranslationKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TranslationKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindTranslationKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindTranslationKeys`.
+message FindTranslationKeysResponse {
+  repeated TranslationKey translation_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountTranslationKeys`.
+message CountTranslationKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TranslationKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountTranslationKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountTranslationKeys`.
+message CountTranslationKeysResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveTranslationKeys`.
+message ResolveTranslationKeysRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string translation_key_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveTranslationKeys`.
+message ResolveTranslationKeysResponse {
+  repeated TranslationKey translation_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportTranslationKeys`.
+message ExportTranslationKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TranslationKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportTranslationKeysRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportTranslationKeys`.
+message ExportTranslationKeysResponse {
+  TranslationKey translation_key = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeTranslationKeys`.
+message SummarizeTranslationKeysRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  SummarizeTranslationKeysRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeTranslationKeys`.
+message SummarizeTranslationKeysResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestTranslationKeys`.
+message SuggestTranslationKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TranslationKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestTranslationKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestTranslationKeys`.
+message SuggestTranslationKeysResponse {
+  repeated TranslationKey translation_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekTranslationKey`.
+message PeekTranslationKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekTranslationKey`.
+message PeekTranslationKeyResponse {
+  TranslationKey translation_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}

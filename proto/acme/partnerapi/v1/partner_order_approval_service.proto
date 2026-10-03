@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerOrderApprovalServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Routes partner orders through approval, with escalation and delegation.
+service PartnerOrderApprovalService {
+  // Submits a partner order.
+  rpc SubmitPartnerOrder(SubmitPartnerOrderRequest) returns (SubmitPartnerOrderResponse);
+
+  // Approves a partner order.
+  rpc ApprovePartnerOrder(ApprovePartnerOrderRequest) returns (ApprovePartnerOrderResponse);
+
+  // Rejects a partner order.
+  rpc RejectPartnerOrder(RejectPartnerOrderRequest) returns (RejectPartnerOrderResponse);
+
+  // Escalates a partner order.
+  rpc EscalatePartnerOrder(EscalatePartnerOrderRequest) returns (EscalatePartnerOrderResponse);
+
+  // Lists partner orders a page at a time.
+  rpc ListPendingPartnerOrders(ListPendingPartnerOrdersRequest) returns (ListPendingPartnerOrdersResponse);
+
+  // Delegates a partner order.
+  rpc DelegatePartnerOrderApproval(DelegatePartnerOrderApprovalRequest) returns (DelegatePartnerOrderApprovalResponse);
+
+  // Recalls a partner order.
+  rpc RecallPartnerOrder(RecallPartnerOrderRequest) returns (RecallPartnerOrderResponse);
+
+  // Returns a partner order.
+  rpc GetPartnerOrderApprovalStatus(GetPartnerOrderApprovalStatusRequest) returns (GetPartnerOrderApprovalStatusResponse);
+
+  // Comments a partner order.
+  rpc CommentPartnerOrderApproval(CommentPartnerOrderApprovalRequest) returns (CommentPartnerOrderApprovalResponse);
+}
+
+// The request of `SubmitPartnerOrder`.
+message SubmitPartnerOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  SubmitPartnerOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPartnerOrder`.
+message SubmitPartnerOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  SubmitPartnerOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePartnerOrder`.
+message ApprovePartnerOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  ApprovePartnerOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePartnerOrder`.
+message ApprovePartnerOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  ApprovePartnerOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPartnerOrder`.
+message RejectPartnerOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  RejectPartnerOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPartnerOrder`.
+message RejectPartnerOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  RejectPartnerOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePartnerOrder`.
+message EscalatePartnerOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  EscalatePartnerOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePartnerOrder`.
+message EscalatePartnerOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  EscalatePartnerOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPartnerOrders`.
+message ListPendingPartnerOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPartnerOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPartnerOrders`.
+message ListPendingPartnerOrdersResponse {
+  repeated PartnerOrder partner_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePartnerOrderApproval`.
+message DelegatePartnerOrderApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  DelegatePartnerOrderApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePartnerOrderApproval`.
+message DelegatePartnerOrderApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  DelegatePartnerOrderApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPartnerOrder`.
+message RecallPartnerOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  RecallPartnerOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPartnerOrder`.
+message RecallPartnerOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  RecallPartnerOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPartnerOrderApprovalStatus`.
+message GetPartnerOrderApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPartnerOrderApprovalStatus`.
+message GetPartnerOrderApprovalStatusResponse {
+  PartnerOrder partner_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPartnerOrderApproval`.
+message CommentPartnerOrderApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  CommentPartnerOrderApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPartnerOrderApproval`.
+message CommentPartnerOrderApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  CommentPartnerOrderApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

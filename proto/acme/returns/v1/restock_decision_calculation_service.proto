@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RestockDecisionCalculationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Computes the figures of a restock decision, such as totals, taxes, and estimates.
+service RestockDecisionCalculationService {
+  // Calculates a restock decision.
+  rpc CalculateRestockDecision(CalculateRestockDecisionRequest) returns (CalculateRestockDecisionResponse);
+
+  // Estimates a restock decision.
+  rpc EstimateRestockDecision(EstimateRestockDecisionRequest) returns (EstimateRestockDecisionResponse);
+
+  // Quotes a restock decision.
+  rpc QuoteRestockDecision(QuoteRestockDecisionRequest) returns (QuoteRestockDecisionResponse);
+
+  // Compares a restock decision.
+  rpc CompareRestockDecisionOptions(CompareRestockDecisionOptionsRequest) returns (CompareRestockDecisionOptionsResponse);
+
+  // Simulates a restock decision.
+  rpc SimulateRestockDecision(SimulateRestockDecisionRequest) returns (SimulateRestockDecisionResponse);
+
+  // Explains a restock decision.
+  rpc ExplainRestockDecisionCalculation(ExplainRestockDecisionCalculationRequest) returns (ExplainRestockDecisionCalculationResponse);
+
+  // Returns a restock decision.
+  rpc GetRestockDecisionRates(GetRestockDecisionRatesRequest) returns (GetRestockDecisionRatesResponse);
+}
+
+// The request of `CalculateRestockDecision`.
+message CalculateRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  CalculateRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRestockDecision`.
+message CalculateRestockDecisionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRestockDecisionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RestockDecision restock_decision = 1;
+  CalculateRestockDecisionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRestockDecision`.
+message EstimateRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  EstimateRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRestockDecision`.
+message EstimateRestockDecisionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRestockDecisionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RestockDecision restock_decision = 1;
+  EstimateRestockDecisionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRestockDecision`.
+message QuoteRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  QuoteRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRestockDecision`.
+message QuoteRestockDecisionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRestockDecisionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RestockDecision restock_decision = 1;
+  QuoteRestockDecisionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRestockDecisionOptions`.
+message CompareRestockDecisionOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  CompareRestockDecisionOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRestockDecisionOptions`.
+message CompareRestockDecisionOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRestockDecisionOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RestockDecision restock_decision = 1;
+  CompareRestockDecisionOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRestockDecision`.
+message SimulateRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  SimulateRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRestockDecision`.
+message SimulateRestockDecisionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRestockDecisionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RestockDecision restock_decision = 1;
+  SimulateRestockDecisionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRestockDecisionCalculation`.
+message ExplainRestockDecisionCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  ExplainRestockDecisionCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRestockDecisionCalculation`.
+message ExplainRestockDecisionCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  ExplainRestockDecisionCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRestockDecisionRates`.
+message GetRestockDecisionRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRestockDecisionRates`.
+message GetRestockDecisionRatesResponse {
+  RestockDecision restock_decision = 1;
+  acme.common.v1.OperationResult result = 2;
+}

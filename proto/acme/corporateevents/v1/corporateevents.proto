@@ -1,0 +1,166 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.corporateevents.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/corporateevents/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Corporateevents.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/corporateevents/v1;corporateeventsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CorporateeventsProto";
+option java_package = "com.acme.corporateevents.v1";
+
+// Where a corporate event is in its lifecycle.
+enum CorporateEventStatus {
+  CORPORATE_EVENT_STATUS_UNSPECIFIED = 0;
+  CORPORATE_EVENT_STATUS_TENTATIVE = 1;
+  CORPORATE_EVENT_STATUS_CONFIRMED = 2;
+  CORPORATE_EVENT_STATUS_CANCELLED = 3;
+  CORPORATE_EVENT_STATUS_COMPLETED = 4;
+}
+
+// Where a registration is in its lifecycle.
+enum RegistrationStatus {
+  REGISTRATION_STATUS_UNSPECIFIED = 0;
+  REGISTRATION_STATUS_PENDING = 1;
+  REGISTRATION_STATUS_OPEN = 2;
+  REGISTRATION_STATUS_FROZEN = 3;
+  REGISTRATION_STATUS_CLOSED = 4;
+}
+
+// Where a venue is in its lifecycle.
+enum VenueStatus {
+  VENUE_STATUS_UNSPECIFIED = 0;
+  VENUE_STATUS_PLANNED = 1;
+  VENUE_STATUS_AVAILABLE = 2;
+  VENUE_STATUS_RESERVED = 3;
+  VENUE_STATUS_RETIRED = 4;
+}
+
+// The participant of a corporate event.
+message CorporateEventParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a corporate event.
+message CorporateEventDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a corporate event.
+message CorporateEventWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A corporate event of the corporateevents domain.
+message CorporateEvent {
+  string corporate_event_id = 1;
+  string title = 2;
+  CorporateEventStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated CorporateEventParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    CorporateEventDailyRule daily = 7;
+    CorporateEventWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The limit of a registration.
+message RegistrationLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a registration.
+message RegistrationCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a registration.
+message RegistrationBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A registration of the corporateevents domain.
+message Registration {
+  string registration_id = 1;
+  CorporateEventRef holder = 2;
+  RegistrationStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated RegistrationLimit limits = 7;
+  oneof funding {
+    RegistrationCardFunding card = 8;
+    RegistrationBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The dimensions of a venue.
+message VenueDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a venue.
+message VenueComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A venue of the corporateevents domain.
+message Venue {
+  string venue_id = 1;
+  string code = 2;
+  string name = 3;
+  VenueStatus status = 4;
+  repeated string category_path = 5;
+  VenueDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, VenueComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

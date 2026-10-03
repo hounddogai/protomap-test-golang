@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "BackorderWorkflowServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Runs the long-lived workflow that takes a backorder from start to finish.
+service BackorderWorkflowService {
+  // Starts a backorder.
+  rpc StartBackorderWorkflow(StartBackorderWorkflowRequest) returns (StartBackorderWorkflowResponse);
+
+  // Advances a backorder.
+  rpc AdvanceBackorderWorkflow(AdvanceBackorderWorkflowRequest) returns (AdvanceBackorderWorkflowResponse);
+
+  // Cancels a backorder.
+  rpc CancelBackorderWorkflow(CancelBackorderWorkflowRequest) returns (CancelBackorderWorkflowResponse);
+
+  // Retrys a backorder.
+  rpc RetryBackorderWorkflow(RetryBackorderWorkflowRequest) returns (RetryBackorderWorkflowResponse);
+
+  // Pauses a backorder.
+  rpc PauseBackorderWorkflow(PauseBackorderWorkflowRequest) returns (PauseBackorderWorkflowResponse);
+
+  // Resumes a backorder.
+  rpc ResumeBackorderWorkflow(ResumeBackorderWorkflowRequest) returns (ResumeBackorderWorkflowResponse);
+
+  // Returns a backorder.
+  rpc InspectBackorderWorkflow(InspectBackorderWorkflowRequest) returns (InspectBackorderWorkflowResponse);
+
+  // Signals a backorder.
+  rpc SignalBackorderWorkflow(SignalBackorderWorkflowRequest) returns (SignalBackorderWorkflowResponse);
+}
+
+// The request of `StartBackorderWorkflow`.
+message StartBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  StartBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartBackorderWorkflow`.
+message StartBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  StartBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceBackorderWorkflow`.
+message AdvanceBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  AdvanceBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceBackorderWorkflow`.
+message AdvanceBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  AdvanceBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelBackorderWorkflow`.
+message CancelBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  CancelBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelBackorderWorkflow`.
+message CancelBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  CancelBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryBackorderWorkflow`.
+message RetryBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  RetryBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryBackorderWorkflow`.
+message RetryBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  RetryBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseBackorderWorkflow`.
+message PauseBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  PauseBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseBackorderWorkflow`.
+message PauseBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  PauseBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeBackorderWorkflow`.
+message ResumeBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ResumeBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeBackorderWorkflow`.
+message ResumeBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ResumeBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectBackorderWorkflow`.
+message InspectBackorderWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectBackorderWorkflow`.
+message InspectBackorderWorkflowResponse {
+  Backorder backorder = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SignalBackorderWorkflow`.
+message SignalBackorderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  SignalBackorderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalBackorderWorkflow`.
+message SignalBackorderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  SignalBackorderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

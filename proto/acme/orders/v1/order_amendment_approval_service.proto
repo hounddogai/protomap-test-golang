@@ -1,0 +1,278 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderAmendmentApprovalServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Routes order amendments through approval, with escalation and delegation.
+service OrderAmendmentApprovalService {
+  // Submits an order amendment.
+  rpc SubmitOrderAmendment(SubmitOrderAmendmentRequest) returns (SubmitOrderAmendmentResponse);
+
+  // Approves an order amendment.
+  rpc ApproveOrderAmendment(ApproveOrderAmendmentRequest) returns (ApproveOrderAmendmentResponse);
+
+  // Rejects an order amendment.
+  rpc RejectOrderAmendment(RejectOrderAmendmentRequest) returns (RejectOrderAmendmentResponse);
+
+  // Escalates an order amendment.
+  rpc EscalateOrderAmendment(EscalateOrderAmendmentRequest) returns (EscalateOrderAmendmentResponse);
+
+  // Lists order amendments a page at a time.
+  rpc ListPendingOrderAmendments(ListPendingOrderAmendmentsRequest) returns (ListPendingOrderAmendmentsResponse);
+
+  // Recalls an order amendment.
+  rpc RecallOrderAmendment(RecallOrderAmendmentRequest) returns (RecallOrderAmendmentResponse);
+
+  // Comments an order amendment.
+  rpc CommentOrderAmendmentApproval(CommentOrderAmendmentApprovalRequest) returns (CommentOrderAmendmentApprovalResponse);
+}
+
+// The request of `SubmitOrderAmendment`.
+message SubmitOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  SubmitOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitOrderAmendment`.
+message SubmitOrderAmendmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  SubmitOrderAmendmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveOrderAmendment`.
+message ApproveOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  ApproveOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveOrderAmendment`.
+message ApproveOrderAmendmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  ApproveOrderAmendmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectOrderAmendment`.
+message RejectOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  RejectOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectOrderAmendment`.
+message RejectOrderAmendmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  RejectOrderAmendmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateOrderAmendment`.
+message EscalateOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  EscalateOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateOrderAmendment`.
+message EscalateOrderAmendmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  EscalateOrderAmendmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingOrderAmendments`.
+message ListPendingOrderAmendmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingOrderAmendmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingOrderAmendments`.
+message ListPendingOrderAmendmentsResponse {
+  repeated OrderAmendment order_amendments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallOrderAmendment`.
+message RecallOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  RecallOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallOrderAmendment`.
+message RecallOrderAmendmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  RecallOrderAmendmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CommentOrderAmendmentApproval`.
+message CommentOrderAmendmentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  CommentOrderAmendmentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentOrderAmendmentApproval`.
+message CommentOrderAmendmentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  CommentOrderAmendmentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

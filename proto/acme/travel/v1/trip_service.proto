@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.travel.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/travel/v1/travel.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Travel.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/travel/v1;travelv1";
+option java_multiple_files = true;
+option java_outer_classname = "TripServiceProto";
+option java_package = "com.acme.travel.v1";
+
+// Manages trips: creates, reads, changes, and lists them.
+service TripService {
+  // Creates a trip.
+  rpc CreateTrip(CreateTripRequest) returns (CreateTripResponse);
+
+  // Returns a trip.
+  rpc GetTrip(GetTripRequest) returns (GetTripResponse);
+
+  // Changes a trip.
+  rpc UpdateTrip(UpdateTripRequest) returns (UpdateTripResponse);
+
+  // Deletes a trip.
+  rpc DeleteTrip(DeleteTripRequest) returns (DeleteTripResponse);
+
+  // Lists trips a page at a time.
+  rpc ListTrips(ListTripsRequest) returns (ListTripsResponse);
+
+  // Lists trips a page at a time.
+  rpc SearchTrips(SearchTripsRequest) returns (SearchTripsResponse);
+
+  // Streams the changes of trips as they happen.
+  rpc WatchTrips(WatchTripsRequest) returns (stream WatchTripsResponse);
+
+  // Takes a stream of trips and answers once at the end.
+  rpc BatchCreateTrips(stream BatchCreateTripsRequest) returns (BatchCreateTripsResponse);
+
+  // Creates a trip.
+  rpc CloneTrip(CloneTripRequest) returns (CloneTripResponse);
+}
+
+// The request of `CreateTrip`.
+message CreateTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  Trip trip = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateTrip`.
+message CreateTripResponse {
+  Trip trip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetTrip`.
+message GetTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  string trip_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTrip`.
+message GetTripResponse {
+  Trip trip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateTrip`.
+message UpdateTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  Trip trip = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateTrip`.
+message UpdateTripResponse {
+  Trip trip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteTrip`.
+message DeleteTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  string trip_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteTrip`.
+message DeleteTripResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListTrips`.
+message ListTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListTripsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListTrips`.
+message ListTripsResponse {
+  repeated Trip trips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchTrips`.
+message SearchTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchTripsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchTrips`.
+message SearchTripsResponse {
+  repeated Trip trips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchTrips`.
+message WatchTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchTripsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchTrips`.
+message WatchTripsResponse {
+  Trip trip = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateTrips`.
+message BatchCreateTripsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateTripsRequest.StreamHeader header = 2;
+    Trip record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateTrips`.
+message BatchCreateTripsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string trip_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateTripsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneTrip`.
+message CloneTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  Trip trip = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneTrip`.
+message CloneTripResponse {
+  Trip trip = 1;
+  acme.common.v1.OperationResult result = 2;
+}

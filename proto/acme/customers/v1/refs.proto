@@ -1,0 +1,47 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.customers.v1";
+
+// A reference to a customer of the customers domain.
+message CustomerRef {
+  string customer_id = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+// A reference to a household of the customers domain.
+message HouseholdRef {
+  string household_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a consent record of the customers domain.
+message ConsentRecordRef {
+  string consent_record_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a customer segment of the customers domain.
+message CustomerSegmentRef {
+  string customer_segment_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a preference of the customers domain.
+message PreferenceRef {
+  string preference_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

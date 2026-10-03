@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ManifestValidationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Checks manifests against the rules before anything acts on them.
+service ManifestValidationService {
+  // Validates a manifest.
+  rpc ValidateManifest(ValidateManifestRequest) returns (ValidateManifestResponse);
+
+  // Previews a manifest.
+  rpc PreviewManifest(PreviewManifestRequest) returns (PreviewManifestResponse);
+
+  // Checks a manifest.
+  rpc CheckManifestEligibility(CheckManifestEligibilityRequest) returns (CheckManifestEligibilityResponse);
+
+  // Normalizes a manifest.
+  rpc NormalizeManifest(NormalizeManifestRequest) returns (NormalizeManifestResponse);
+
+  // Scores a manifest.
+  rpc ScoreManifest(ScoreManifestRequest) returns (ScoreManifestResponse);
+
+  // Lints a manifest.
+  rpc LintManifests(LintManifestsRequest) returns (LintManifestsResponse);
+
+  // Returns a manifest.
+  rpc GetManifestRules(GetManifestRulesRequest) returns (GetManifestRulesResponse);
+}
+
+// The request of `ValidateManifest`.
+message ValidateManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  ValidateManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateManifest`.
+message ValidateManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ValidateManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewManifest`.
+message PreviewManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  PreviewManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewManifest`.
+message PreviewManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  PreviewManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckManifestEligibility`.
+message CheckManifestEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  CheckManifestEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckManifestEligibility`.
+message CheckManifestEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  CheckManifestEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeManifest`.
+message NormalizeManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  NormalizeManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeManifest`.
+message NormalizeManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  NormalizeManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreManifest`.
+message ScoreManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  ScoreManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreManifest`.
+message ScoreManifestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreManifestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  ScoreManifestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintManifests`.
+message LintManifestsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  LintManifestsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintManifests`.
+message LintManifestsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  LintManifestsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetManifestRules`.
+message GetManifestRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetManifestRules`.
+message GetManifestRulesResponse {
+  Manifest manifest = 1;
+  acme.common.v1.OperationResult result = 2;
+}

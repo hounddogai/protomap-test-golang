@@ -1,0 +1,154 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.anomalies.v1;
+
+import "acme/anomalies/v1/anomalies.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Anomalies.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/anomalies/v1;anomaliesv1";
+option java_multiple_files = true;
+option java_outer_classname = "AnomalyServiceProto";
+option java_package = "com.acme.anomalies.v1";
+
+// Manages anomalies: creates, reads, changes, and lists them.
+service AnomalyService {
+  // Creates an anomaly.
+  rpc CreateAnomaly(CreateAnomalyRequest) returns (CreateAnomalyResponse);
+
+  // Returns an anomaly.
+  rpc GetAnomaly(GetAnomalyRequest) returns (GetAnomalyResponse);
+
+  // Changes an anomaly.
+  rpc UpdateAnomaly(UpdateAnomalyRequest) returns (UpdateAnomalyResponse);
+
+  // Returns several anomalies at once.
+  rpc BatchGetAnomalies(BatchGetAnomaliesRequest) returns (BatchGetAnomaliesResponse);
+
+  // Lists anomalies a page at a time.
+  rpc SearchAnomalies(SearchAnomaliesRequest) returns (SearchAnomaliesResponse);
+
+  // Takes a stream of anomalies and answers once at the end.
+  rpc BatchCreateAnomalies(stream BatchCreateAnomaliesRequest) returns (BatchCreateAnomaliesResponse);
+}
+
+// The request of `CreateAnomaly`.
+message CreateAnomalyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Anomaly anomaly = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateAnomaly`.
+message CreateAnomalyResponse {
+  Anomaly anomaly = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetAnomaly`.
+message GetAnomalyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string anomaly_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAnomaly`.
+message GetAnomalyResponse {
+  Anomaly anomaly = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateAnomaly`.
+message UpdateAnomalyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Anomaly anomaly = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateAnomaly`.
+message UpdateAnomalyResponse {
+  Anomaly anomaly = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BatchGetAnomalies`.
+message BatchGetAnomaliesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string anomaly_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetAnomalies`.
+message BatchGetAnomaliesResponse {
+  repeated Anomaly anomalies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchAnomalies`.
+message SearchAnomaliesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnomalyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchAnomaliesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchAnomalies`.
+message SearchAnomaliesResponse {
+  repeated Anomaly anomalies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateAnomalies`.
+message BatchCreateAnomaliesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateAnomaliesRequest.StreamHeader header = 2;
+    Anomaly record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateAnomalies`.
+message BatchCreateAnomaliesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string anomaly_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateAnomaliesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

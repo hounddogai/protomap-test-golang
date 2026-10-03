@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.cart.v1";
+
+// A reference to a cart of the cart domain.
+message CartRef {
+  string cart_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a saved list of the cart domain.
+message SavedListRef {
+  string saved_list_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a cart rule of the cart domain.
+message CartRuleRef {
+  string cart_rule_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

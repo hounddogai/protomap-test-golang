@@ -1,0 +1,241 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/pricing/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PricingProto";
+option java_package = "com.acme.pricing.v1";
+
+// Where a price list is in its lifecycle.
+enum PriceListStatus {
+  PRICE_LIST_STATUS_UNSPECIFIED = 0;
+  PRICE_LIST_STATUS_DRAFT = 1;
+  PRICE_LIST_STATUS_ENABLED = 2;
+  PRICE_LIST_STATUS_DISABLED = 3;
+  PRICE_LIST_STATUS_RETIRED = 4;
+}
+
+// Where a price quote is in its lifecycle.
+enum PriceQuoteStatus {
+  PRICE_QUOTE_STATUS_UNSPECIFIED = 0;
+  PRICE_QUOTE_STATUS_DRAFT = 1;
+  PRICE_QUOTE_STATUS_ISSUED = 2;
+  PRICE_QUOTE_STATUS_APPROVED = 3;
+  PRICE_QUOTE_STATUS_PAID = 4;
+  PRICE_QUOTE_STATUS_VOID = 5;
+}
+
+// Where a price override is in its lifecycle.
+enum PriceOverrideStatus {
+  PRICE_OVERRIDE_STATUS_UNSPECIFIED = 0;
+  PRICE_OVERRIDE_STATUS_DRAFT = 1;
+  PRICE_OVERRIDE_STATUS_ENABLED = 2;
+  PRICE_OVERRIDE_STATUS_DISABLED = 3;
+  PRICE_OVERRIDE_STATUS_RETIRED = 4;
+}
+
+// Where a currency rate is in its lifecycle.
+enum CurrencyRateStatus {
+  CURRENCY_RATE_STATUS_UNSPECIFIED = 0;
+  CURRENCY_RATE_STATUS_RECEIVED = 1;
+  CURRENCY_RATE_STATUS_PROCESSED = 2;
+  CURRENCY_RATE_STATUS_DISCARDED = 3;
+}
+
+// The condition of a price list.
+message PriceListCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a price list.
+message PriceListDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a price list.
+message PriceListRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a price list.
+message PriceListBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A price list of the pricing domain.
+message PriceList {
+  string price_list_id = 1;
+  string name = 2;
+  string description = 3;
+  PriceListStatus status = 4;
+  int32 priority = 5;
+  repeated PriceListCondition conditions = 6;
+  oneof action {
+    PriceListDiscountAction discount = 7;
+    PriceListRouteAction route = 8;
+    PriceListBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of a price quote.
+message PriceQuoteLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PriceQuoteLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a price quote line.
+message PriceQuoteLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a price quote.
+message PriceQuoteCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a price quote.
+message PriceQuoteBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a price quote.
+message PriceQuoteAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A price quote of the pricing domain.
+message PriceQuote {
+  string price_quote_id = 1;
+  string number = 2;
+  PriceQuoteStatus status = 3;
+  PriceListRef counterparty = 4;
+  repeated PriceQuoteLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PriceQuoteCardSettlement card = 8;
+    PriceQuoteBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PriceQuoteAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of a price override.
+message PriceOverrideCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a price override.
+message PriceOverrideDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a price override.
+message PriceOverrideRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a price override.
+message PriceOverrideBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A price override of the pricing domain.
+message PriceOverride {
+  string price_override_id = 1;
+  string name = 2;
+  string description = 3;
+  PriceOverrideStatus status = 4;
+  int32 priority = 5;
+  repeated PriceOverrideCondition conditions = 6;
+  oneof action {
+    PriceOverrideDiscountAction discount = 7;
+    PriceOverrideRouteAction route = 8;
+    PriceOverrideBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a currency rate.
+message CurrencyRateMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A currency rate of the pricing domain.
+message CurrencyRate {
+  string currency_rate_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated CurrencyRateMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

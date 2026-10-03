@@ -1,0 +1,279 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "StorageBinWorkflowServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Runs the long-lived workflow that takes a storage bin from start to finish.
+service StorageBinWorkflowService {
+  // Starts a storage bin.
+  rpc StartStorageBinWorkflow(StartStorageBinWorkflowRequest) returns (StartStorageBinWorkflowResponse);
+
+  // Advances a storage bin.
+  rpc AdvanceStorageBinWorkflow(AdvanceStorageBinWorkflowRequest) returns (AdvanceStorageBinWorkflowResponse);
+
+  // Cancels a storage bin.
+  rpc CancelStorageBinWorkflow(CancelStorageBinWorkflowRequest) returns (CancelStorageBinWorkflowResponse);
+
+  // Retrys a storage bin.
+  rpc RetryStorageBinWorkflow(RetryStorageBinWorkflowRequest) returns (RetryStorageBinWorkflowResponse);
+
+  // Resumes a storage bin.
+  rpc ResumeStorageBinWorkflow(ResumeStorageBinWorkflowRequest) returns (ResumeStorageBinWorkflowResponse);
+
+  // Lists storage bins a page at a time.
+  rpc ListStorageBinWorkflows(ListStorageBinWorkflowsRequest) returns (ListStorageBinWorkflowsResponse);
+
+  // Signals a storage bin.
+  rpc SignalStorageBinWorkflow(SignalStorageBinWorkflowRequest) returns (SignalStorageBinWorkflowResponse);
+}
+
+// The request of `StartStorageBinWorkflow`.
+message StartStorageBinWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  StartStorageBinWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartStorageBinWorkflow`.
+message StartStorageBinWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  StartStorageBinWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceStorageBinWorkflow`.
+message AdvanceStorageBinWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  AdvanceStorageBinWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceStorageBinWorkflow`.
+message AdvanceStorageBinWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  AdvanceStorageBinWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelStorageBinWorkflow`.
+message CancelStorageBinWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  CancelStorageBinWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelStorageBinWorkflow`.
+message CancelStorageBinWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  CancelStorageBinWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryStorageBinWorkflow`.
+message RetryStorageBinWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  RetryStorageBinWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryStorageBinWorkflow`.
+message RetryStorageBinWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  RetryStorageBinWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeStorageBinWorkflow`.
+message ResumeStorageBinWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  ResumeStorageBinWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeStorageBinWorkflow`.
+message ResumeStorageBinWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  ResumeStorageBinWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListStorageBinWorkflows`.
+message ListStorageBinWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorageBinStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListStorageBinWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListStorageBinWorkflows`.
+message ListStorageBinWorkflowsResponse {
+  repeated StorageBin storage_bins = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalStorageBinWorkflow`.
+message SignalStorageBinWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  SignalStorageBinWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalStorageBinWorkflow`.
+message SignalStorageBinWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  SignalStorageBinWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

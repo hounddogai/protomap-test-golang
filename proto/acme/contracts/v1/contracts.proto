@@ -1,0 +1,264 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.contracts.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/contracts/v1/refs.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Contracts.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/contracts/v1;contractsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ContractsProto";
+option java_package = "com.acme.contracts.v1";
+
+// Where a contract is in its lifecycle.
+enum ContractStatus {
+  CONTRACT_STATUS_UNSPECIFIED = 0;
+  CONTRACT_STATUS_DRAFT = 1;
+  CONTRACT_STATUS_ISSUED = 2;
+  CONTRACT_STATUS_APPROVED = 3;
+  CONTRACT_STATUS_PAID = 4;
+  CONTRACT_STATUS_VOID = 5;
+}
+
+// Where a contract clause is in its lifecycle.
+enum ContractClauseStatus {
+  CONTRACT_CLAUSE_STATUS_UNSPECIFIED = 0;
+  CONTRACT_CLAUSE_STATUS_DRAFT = 1;
+  CONTRACT_CLAUSE_STATUS_ENABLED = 2;
+  CONTRACT_CLAUSE_STATUS_DISABLED = 3;
+  CONTRACT_CLAUSE_STATUS_RETIRED = 4;
+}
+
+// Where a renewal is in its lifecycle.
+enum RenewalStatus {
+  RENEWAL_STATUS_UNSPECIFIED = 0;
+  RENEWAL_STATUS_TENTATIVE = 1;
+  RENEWAL_STATUS_CONFIRMED = 2;
+  RENEWAL_STATUS_CANCELLED = 3;
+  RENEWAL_STATUS_COMPLETED = 4;
+}
+
+// Where an obligation is in its lifecycle.
+enum ObligationStatus {
+  OBLIGATION_STATUS_UNSPECIFIED = 0;
+  OBLIGATION_STATUS_NEW = 1;
+  OBLIGATION_STATUS_OPEN = 2;
+  OBLIGATION_STATUS_WAITING = 3;
+  OBLIGATION_STATUS_RESOLVED = 4;
+  OBLIGATION_STATUS_CLOSED = 5;
+}
+
+// The line of a contract.
+message ContractLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ContractLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a contract line.
+message ContractLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a contract.
+message ContractCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a contract.
+message ContractBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a contract.
+message ContractAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A contract of the contracts domain.
+message Contract {
+  string contract_id = 1;
+  string number = 2;
+  ContractStatus status = 3;
+  RenewalRef counterparty = 4;
+  repeated ContractLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ContractCardSettlement card = 8;
+    ContractBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ContractAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of a contract clause.
+message ContractClauseCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a contract clause.
+message ContractClauseDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a contract clause.
+message ContractClauseRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a contract clause.
+message ContractClauseBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A contract clause of the contracts domain.
+message ContractClause {
+  string contract_clause_id = 1;
+  string name = 2;
+  string description = 3;
+  ContractClauseStatus status = 4;
+  int32 priority = 5;
+  repeated ContractClauseCondition conditions = 6;
+  oneof action {
+    ContractClauseDiscountAction discount = 7;
+    ContractClauseRouteAction route = 8;
+    ContractClauseBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a renewal.
+message RenewalParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a renewal.
+message RenewalDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a renewal.
+message RenewalWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A renewal of the contracts domain.
+message Renewal {
+  string renewal_id = 1;
+  string title = 2;
+  RenewalStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated RenewalParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    RenewalDailyRule daily = 7;
+    RenewalWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The comment of an obligation.
+message ObligationComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of an obligation.
+message ObligationSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of an obligation.
+message ObligationChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of an obligation.
+message ObligationStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// An obligation of the contracts domain.
+message Obligation {
+  string obligation_id = 1;
+  string subject = 2;
+  ObligationStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated ObligationComment comments = 7;
+  ObligationSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    ObligationChannelOrigin channel = 11;
+  }
+  repeated ObligationStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

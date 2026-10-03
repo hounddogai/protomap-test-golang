@@ -1,0 +1,317 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PlacementWorkflowServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Runs the long-lived workflow that takes a placement from start to finish.
+service PlacementWorkflowService {
+  // Starts a placement.
+  rpc StartPlacementWorkflow(StartPlacementWorkflowRequest) returns (StartPlacementWorkflowResponse);
+
+  // Advances a placement.
+  rpc AdvancePlacementWorkflow(AdvancePlacementWorkflowRequest) returns (AdvancePlacementWorkflowResponse);
+
+  // Cancels a placement.
+  rpc CancelPlacementWorkflow(CancelPlacementWorkflowRequest) returns (CancelPlacementWorkflowResponse);
+
+  // Retrys a placement.
+  rpc RetryPlacementWorkflow(RetryPlacementWorkflowRequest) returns (RetryPlacementWorkflowResponse);
+
+  // Pauses a placement.
+  rpc PausePlacementWorkflow(PausePlacementWorkflowRequest) returns (PausePlacementWorkflowResponse);
+
+  // Resumes a placement.
+  rpc ResumePlacementWorkflow(ResumePlacementWorkflowRequest) returns (ResumePlacementWorkflowResponse);
+
+  // Lists placements a page at a time.
+  rpc ListPlacementWorkflows(ListPlacementWorkflowsRequest) returns (ListPlacementWorkflowsResponse);
+
+  // Signals a placement.
+  rpc SignalPlacementWorkflow(SignalPlacementWorkflowRequest) returns (SignalPlacementWorkflowResponse);
+}
+
+// The request of `StartPlacementWorkflow`.
+message StartPlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  StartPlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPlacementWorkflow`.
+message StartPlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  StartPlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePlacementWorkflow`.
+message AdvancePlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  AdvancePlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePlacementWorkflow`.
+message AdvancePlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  AdvancePlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPlacementWorkflow`.
+message CancelPlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  CancelPlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPlacementWorkflow`.
+message CancelPlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  CancelPlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPlacementWorkflow`.
+message RetryPlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  RetryPlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPlacementWorkflow`.
+message RetryPlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  RetryPlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePlacementWorkflow`.
+message PausePlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  PausePlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePlacementWorkflow`.
+message PausePlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  PausePlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePlacementWorkflow`.
+message ResumePlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  ResumePlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePlacementWorkflow`.
+message ResumePlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  ResumePlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPlacementWorkflows`.
+message ListPlacementWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PlacementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPlacementWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPlacementWorkflows`.
+message ListPlacementWorkflowsResponse {
+  repeated Placement placements = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPlacementWorkflow`.
+message SignalPlacementWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  SignalPlacementWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPlacementWorkflow`.
+message SignalPlacementWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  SignalPlacementWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

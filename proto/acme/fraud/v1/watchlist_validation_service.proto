@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "WatchlistValidationServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Checks watchlists against the rules before anything acts on them.
+service WatchlistValidationService {
+  // Validates a watchlist.
+  rpc ValidateWatchlist(ValidateWatchlistRequest) returns (ValidateWatchlistResponse);
+
+  // Previews a watchlist.
+  rpc PreviewWatchlist(PreviewWatchlistRequest) returns (PreviewWatchlistResponse);
+
+  // Checks a watchlist.
+  rpc CheckWatchlistEligibility(CheckWatchlistEligibilityRequest) returns (CheckWatchlistEligibilityResponse);
+
+  // Normalizes a watchlist.
+  rpc NormalizeWatchlist(NormalizeWatchlistRequest) returns (NormalizeWatchlistResponse);
+
+  // Explains a watchlist.
+  rpc ExplainWatchlistDecision(ExplainWatchlistDecisionRequest) returns (ExplainWatchlistDecisionResponse);
+
+  // Scores a watchlist.
+  rpc ScoreWatchlist(ScoreWatchlistRequest) returns (ScoreWatchlistResponse);
+
+  // Lints a watchlist.
+  rpc LintWatchlists(LintWatchlistsRequest) returns (LintWatchlistsResponse);
+
+  // Returns a watchlist.
+  rpc GetWatchlistRules(GetWatchlistRulesRequest) returns (GetWatchlistRulesResponse);
+}
+
+// The request of `ValidateWatchlist`.
+message ValidateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  ValidateWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateWatchlist`.
+message ValidateWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ValidateWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewWatchlist`.
+message PreviewWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  PreviewWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewWatchlist`.
+message PreviewWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  PreviewWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckWatchlistEligibility`.
+message CheckWatchlistEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  CheckWatchlistEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckWatchlistEligibility`.
+message CheckWatchlistEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  CheckWatchlistEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeWatchlist`.
+message NormalizeWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  NormalizeWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeWatchlist`.
+message NormalizeWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  NormalizeWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainWatchlistDecision`.
+message ExplainWatchlistDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  ExplainWatchlistDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainWatchlistDecision`.
+message ExplainWatchlistDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ExplainWatchlistDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreWatchlist`.
+message ScoreWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  ScoreWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreWatchlist`.
+message ScoreWatchlistResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreWatchlistResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  ScoreWatchlistResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintWatchlists`.
+message LintWatchlistsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  LintWatchlistsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintWatchlists`.
+message LintWatchlistsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  LintWatchlistsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetWatchlistRules`.
+message GetWatchlistRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetWatchlistRules`.
+message GetWatchlistRulesResponse {
+  Watchlist watchlist = 1;
+  acme.common.v1.OperationResult result = 2;
+}

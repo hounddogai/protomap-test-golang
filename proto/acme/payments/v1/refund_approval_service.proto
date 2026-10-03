@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefundApprovalServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Routes refunds through approval, with escalation and delegation.
+service RefundApprovalService {
+  // Submits a refund.
+  rpc SubmitRefund(SubmitRefundRequest) returns (SubmitRefundResponse);
+
+  // Approves a refund.
+  rpc ApproveRefund(ApproveRefundRequest) returns (ApproveRefundResponse);
+
+  // Lists refunds a page at a time.
+  rpc ListPendingRefunds(ListPendingRefundsRequest) returns (ListPendingRefundsResponse);
+
+  // Delegates a refund.
+  rpc DelegateRefundApproval(DelegateRefundApprovalRequest) returns (DelegateRefundApprovalResponse);
+
+  // Recalls a refund.
+  rpc RecallRefund(RecallRefundRequest) returns (RecallRefundResponse);
+
+  // Returns a refund.
+  rpc GetRefundApprovalStatus(GetRefundApprovalStatusRequest) returns (GetRefundApprovalStatusResponse);
+
+  // Comments a refund.
+  rpc CommentRefundApproval(CommentRefundApprovalRequest) returns (CommentRefundApprovalResponse);
+}
+
+// The request of `SubmitRefund`.
+message SubmitRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  SubmitRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitRefund`.
+message SubmitRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  SubmitRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveRefund`.
+message ApproveRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  ApproveRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveRefund`.
+message ApproveRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  ApproveRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingRefunds`.
+message ListPendingRefundsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RefundStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingRefundsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingRefunds`.
+message ListPendingRefundsResponse {
+  repeated Refund refunds = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateRefundApproval`.
+message DelegateRefundApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  DelegateRefundApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateRefundApproval`.
+message DelegateRefundApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  DelegateRefundApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallRefund`.
+message RecallRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  RecallRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallRefund`.
+message RecallRefundResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  RecallRefundResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefundApprovalStatus`.
+message GetRefundApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefundApprovalStatus`.
+message GetRefundApprovalStatusResponse {
+  Refund refund = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentRefundApproval`.
+message CommentRefundApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  CommentRefundApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentRefundApproval`.
+message CommentRefundApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  CommentRefundApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

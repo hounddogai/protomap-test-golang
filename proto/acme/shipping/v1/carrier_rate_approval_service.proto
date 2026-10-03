@@ -1,0 +1,228 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarrierRateApprovalServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Routes carrier rates through approval, with escalation and delegation.
+service CarrierRateApprovalService {
+  // Submits a carrier rate.
+  rpc SubmitCarrierRate(SubmitCarrierRateRequest) returns (SubmitCarrierRateResponse);
+
+  // Approves a carrier rate.
+  rpc ApproveCarrierRate(ApproveCarrierRateRequest) returns (ApproveCarrierRateResponse);
+
+  // Rejects a carrier rate.
+  rpc RejectCarrierRate(RejectCarrierRateRequest) returns (RejectCarrierRateResponse);
+
+  // Escalates a carrier rate.
+  rpc EscalateCarrierRate(EscalateCarrierRateRequest) returns (EscalateCarrierRateResponse);
+
+  // Delegates a carrier rate.
+  rpc DelegateCarrierRateApproval(DelegateCarrierRateApprovalRequest) returns (DelegateCarrierRateApprovalResponse);
+
+  // Returns a carrier rate.
+  rpc GetCarrierRateApprovalStatus(GetCarrierRateApprovalStatusRequest) returns (GetCarrierRateApprovalStatusResponse);
+}
+
+// The request of `SubmitCarrierRate`.
+message SubmitCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  SubmitCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCarrierRate`.
+message SubmitCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  SubmitCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCarrierRate`.
+message ApproveCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  ApproveCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCarrierRate`.
+message ApproveCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  ApproveCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCarrierRate`.
+message RejectCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  RejectCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCarrierRate`.
+message RejectCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  RejectCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCarrierRate`.
+message EscalateCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  EscalateCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCarrierRate`.
+message EscalateCarrierRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  EscalateCarrierRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCarrierRateApproval`.
+message DelegateCarrierRateApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  DelegateCarrierRateApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCarrierRateApproval`.
+message DelegateCarrierRateApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  DelegateCarrierRateApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCarrierRateApprovalStatus`.
+message GetCarrierRateApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCarrierRateApprovalStatus`.
+message GetCarrierRateApprovalStatusResponse {
+  CarrierRate carrier_rate = 1;
+  acme.common.v1.OperationResult result = 2;
+}

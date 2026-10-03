@@ -1,0 +1,203 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PrescriptionServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Manages prescriptions: creates, reads, changes, and lists them.
+service PrescriptionService {
+  // Creates a prescription.
+  rpc CreatePrescription(CreatePrescriptionRequest) returns (CreatePrescriptionResponse);
+
+  // Returns a prescription.
+  rpc GetPrescription(GetPrescriptionRequest) returns (GetPrescriptionResponse);
+
+  // Changes a prescription.
+  rpc UpdatePrescription(UpdatePrescriptionRequest) returns (UpdatePrescriptionResponse);
+
+  // Deletes a prescription.
+  rpc DeletePrescription(DeletePrescriptionRequest) returns (DeletePrescriptionResponse);
+
+  // Lists prescriptions a page at a time.
+  rpc ListPrescriptions(ListPrescriptionsRequest) returns (ListPrescriptionsResponse);
+
+  // Returns several prescriptions at once.
+  rpc BatchGetPrescriptions(BatchGetPrescriptionsRequest) returns (BatchGetPrescriptionsResponse);
+
+  // Streams the changes of prescriptions as they happen.
+  rpc WatchPrescriptions(WatchPrescriptionsRequest) returns (stream WatchPrescriptionsResponse);
+
+  // Takes a stream of prescriptions and answers once at the end.
+  rpc BatchCreatePrescriptions(stream BatchCreatePrescriptionsRequest) returns (BatchCreatePrescriptionsResponse);
+}
+
+// The request of `CreatePrescription`.
+message CreatePrescriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Prescription prescription = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePrescription`.
+message CreatePrescriptionResponse {
+  Prescription prescription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPrescription`.
+message GetPrescriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPrescription`.
+message GetPrescriptionResponse {
+  Prescription prescription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePrescription`.
+message UpdatePrescriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Prescription prescription = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePrescription`.
+message UpdatePrescriptionResponse {
+  Prescription prescription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePrescription`.
+message DeletePrescriptionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePrescription`.
+message DeletePrescriptionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPrescriptions`.
+message ListPrescriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PrescriptionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPrescriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPrescriptions`.
+message ListPrescriptionsResponse {
+  repeated Prescription prescriptions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPrescriptions`.
+message BatchGetPrescriptionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string prescription_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPrescriptions`.
+message BatchGetPrescriptionsResponse {
+  repeated Prescription prescriptions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPrescriptions`.
+message WatchPrescriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PrescriptionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPrescriptionsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPrescriptions`.
+message WatchPrescriptionsResponse {
+  Prescription prescription = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreatePrescriptions`.
+message BatchCreatePrescriptionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePrescriptionsRequest.StreamHeader header = 2;
+    Prescription record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePrescriptions`.
+message BatchCreatePrescriptionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string prescription_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePrescriptionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

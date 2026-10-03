@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerPayoutScheduleApprovalServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Routes seller payout schedules through approval, with escalation and delegation.
+service SellerPayoutScheduleApprovalService {
+  // Submits a seller payout schedule.
+  rpc SubmitSellerPayoutSchedule(SubmitSellerPayoutScheduleRequest) returns (SubmitSellerPayoutScheduleResponse);
+
+  // Approves a seller payout schedule.
+  rpc ApproveSellerPayoutSchedule(ApproveSellerPayoutScheduleRequest) returns (ApproveSellerPayoutScheduleResponse);
+
+  // Escalates a seller payout schedule.
+  rpc EscalateSellerPayoutSchedule(EscalateSellerPayoutScheduleRequest) returns (EscalateSellerPayoutScheduleResponse);
+
+  // Lists seller payout schedules a page at a time.
+  rpc ListPendingSellerPayoutSchedules(ListPendingSellerPayoutSchedulesRequest) returns (ListPendingSellerPayoutSchedulesResponse);
+
+  // Delegates a seller payout schedule.
+  rpc DelegateSellerPayoutScheduleApproval(DelegateSellerPayoutScheduleApprovalRequest) returns (DelegateSellerPayoutScheduleApprovalResponse);
+
+  // Recalls a seller payout schedule.
+  rpc RecallSellerPayoutSchedule(RecallSellerPayoutScheduleRequest) returns (RecallSellerPayoutScheduleResponse);
+
+  // Returns a seller payout schedule.
+  rpc GetSellerPayoutScheduleApprovalStatus(GetSellerPayoutScheduleApprovalStatusRequest) returns (GetSellerPayoutScheduleApprovalStatusResponse);
+
+  // Comments a seller payout schedule.
+  rpc CommentSellerPayoutScheduleApproval(CommentSellerPayoutScheduleApprovalRequest) returns (CommentSellerPayoutScheduleApprovalResponse);
+}
+
+// The request of `SubmitSellerPayoutSchedule`.
+message SubmitSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  SubmitSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitSellerPayoutSchedule`.
+message SubmitSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  SubmitSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveSellerPayoutSchedule`.
+message ApproveSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  ApproveSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveSellerPayoutSchedule`.
+message ApproveSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ApproveSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateSellerPayoutSchedule`.
+message EscalateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  EscalateSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateSellerPayoutSchedule`.
+message EscalateSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  EscalateSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingSellerPayoutSchedules`.
+message ListPendingSellerPayoutSchedulesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerPayoutScheduleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingSellerPayoutSchedulesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingSellerPayoutSchedules`.
+message ListPendingSellerPayoutSchedulesResponse {
+  repeated SellerPayoutSchedule seller_payout_schedules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateSellerPayoutScheduleApproval`.
+message DelegateSellerPayoutScheduleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  DelegateSellerPayoutScheduleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateSellerPayoutScheduleApproval`.
+message DelegateSellerPayoutScheduleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  DelegateSellerPayoutScheduleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallSellerPayoutSchedule`.
+message RecallSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  RecallSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallSellerPayoutSchedule`.
+message RecallSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  RecallSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerPayoutScheduleApprovalStatus`.
+message GetSellerPayoutScheduleApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerPayoutScheduleApprovalStatus`.
+message GetSellerPayoutScheduleApprovalStatusResponse {
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentSellerPayoutScheduleApproval`.
+message CommentSellerPayoutScheduleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  CommentSellerPayoutScheduleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentSellerPayoutScheduleApproval`.
+message CommentSellerPayoutScheduleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  CommentSellerPayoutScheduleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

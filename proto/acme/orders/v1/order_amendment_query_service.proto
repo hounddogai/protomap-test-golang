@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderAmendmentQueryServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Answers read-only questions about order amendments, for screens and reports.
+service OrderAmendmentQueryService {
+  // Returns an order amendment.
+  rpc LookupOrderAmendment(LookupOrderAmendmentRequest) returns (LookupOrderAmendmentResponse);
+
+  // Lists order amendments a page at a time.
+  rpc BrowseOrderAmendments(BrowseOrderAmendmentsRequest) returns (BrowseOrderAmendmentsResponse);
+
+  // Lists order amendments a page at a time.
+  rpc FindOrderAmendments(FindOrderAmendmentsRequest) returns (FindOrderAmendmentsResponse);
+
+  // Counts order amendments by status.
+  rpc CountOrderAmendments(CountOrderAmendmentsRequest) returns (CountOrderAmendmentsResponse);
+
+  // Returns several order amendments at once.
+  rpc ResolveOrderAmendments(ResolveOrderAmendmentsRequest) returns (ResolveOrderAmendmentsResponse);
+
+  // Streams every matching order amendment.
+  rpc ExportOrderAmendments(ExportOrderAmendmentsRequest) returns (stream ExportOrderAmendmentsResponse);
+
+  // Summarizes an order amendment.
+  rpc SummarizeOrderAmendments(SummarizeOrderAmendmentsRequest) returns (SummarizeOrderAmendmentsResponse);
+
+  // Lists order amendments a page at a time.
+  rpc SuggestOrderAmendments(SuggestOrderAmendmentsRequest) returns (SuggestOrderAmendmentsResponse);
+
+  // Returns an order amendment.
+  rpc PeekOrderAmendment(PeekOrderAmendmentRequest) returns (PeekOrderAmendmentResponse);
+}
+
+// The request of `LookupOrderAmendment`.
+message LookupOrderAmendmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupOrderAmendment`.
+message LookupOrderAmendmentResponse {
+  OrderAmendment order_amendment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseOrderAmendments`.
+message BrowseOrderAmendmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseOrderAmendmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseOrderAmendments`.
+message BrowseOrderAmendmentsResponse {
+  repeated OrderAmendment order_amendments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindOrderAmendments`.
+message FindOrderAmendmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindOrderAmendmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindOrderAmendments`.
+message FindOrderAmendmentsResponse {
+  repeated OrderAmendment order_amendments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountOrderAmendments`.
+message CountOrderAmendmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountOrderAmendmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountOrderAmendments`.
+message CountOrderAmendmentsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveOrderAmendments`.
+message ResolveOrderAmendmentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string order_amendment_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveOrderAmendments`.
+message ResolveOrderAmendmentsResponse {
+  repeated OrderAmendment order_amendments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportOrderAmendments`.
+message ExportOrderAmendmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportOrderAmendmentsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportOrderAmendments`.
+message ExportOrderAmendmentsResponse {
+  OrderAmendment order_amendment = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeOrderAmendments`.
+message SummarizeOrderAmendmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  SummarizeOrderAmendmentsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeOrderAmendments`.
+message SummarizeOrderAmendmentsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestOrderAmendments`.
+message SuggestOrderAmendmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestOrderAmendmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestOrderAmendments`.
+message SuggestOrderAmendmentsResponse {
+  repeated OrderAmendment order_amendments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekOrderAmendment`.
+message PeekOrderAmendmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekOrderAmendment`.
+message PeekOrderAmendmentResponse {
+  OrderAmendment order_amendment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

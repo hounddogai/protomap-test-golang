@@ -1,0 +1,223 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "InspectionValidationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Checks inspections against the rules before anything acts on them.
+service InspectionValidationService {
+  // Validates an inspection.
+  rpc ValidateInspection(ValidateInspectionRequest) returns (ValidateInspectionResponse);
+
+  // Previews an inspection.
+  rpc PreviewInspection(PreviewInspectionRequest) returns (PreviewInspectionResponse);
+
+  // Checks an inspection.
+  rpc CheckInspectionEligibility(CheckInspectionEligibilityRequest) returns (CheckInspectionEligibilityResponse);
+
+  // Explains an inspection.
+  rpc ExplainInspectionDecision(ExplainInspectionDecisionRequest) returns (ExplainInspectionDecisionResponse);
+
+  // Lints an inspection.
+  rpc LintInspections(LintInspectionsRequest) returns (LintInspectionsResponse);
+
+  // Returns an inspection.
+  rpc GetInspectionRules(GetInspectionRulesRequest) returns (GetInspectionRulesResponse);
+}
+
+// The request of `ValidateInspection`.
+message ValidateInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  ValidateInspectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateInspection`.
+message ValidateInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ValidateInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewInspection`.
+message PreviewInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  PreviewInspectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewInspection`.
+message PreviewInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  PreviewInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckInspectionEligibility`.
+message CheckInspectionEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  CheckInspectionEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckInspectionEligibility`.
+message CheckInspectionEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  CheckInspectionEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainInspectionDecision`.
+message ExplainInspectionDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  ExplainInspectionDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainInspectionDecision`.
+message ExplainInspectionDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ExplainInspectionDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintInspections`.
+message LintInspectionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  LintInspectionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintInspections`.
+message LintInspectionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  LintInspectionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetInspectionRules`.
+message GetInspectionRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetInspectionRules`.
+message GetInspectionRulesResponse {
+  Inspection inspection = 1;
+  acme.common.v1.OperationResult result = 2;
+}

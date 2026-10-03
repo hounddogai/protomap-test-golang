@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.onboarding.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/onboarding/v1/onboarding.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Onboarding.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/onboarding/v1;onboardingv1";
+option java_multiple_files = true;
+option java_outer_classname = "OnboardingPlanServiceProto";
+option java_package = "com.acme.onboarding.v1";
+
+// Manages onboarding plans: creates, reads, changes, and lists them.
+service OnboardingPlanService {
+  // Creates an onboarding plan.
+  rpc CreateOnboardingPlan(CreateOnboardingPlanRequest) returns (CreateOnboardingPlanResponse);
+
+  // Returns an onboarding plan.
+  rpc GetOnboardingPlan(GetOnboardingPlanRequest) returns (GetOnboardingPlanResponse);
+
+  // Changes an onboarding plan.
+  rpc UpdateOnboardingPlan(UpdateOnboardingPlanRequest) returns (UpdateOnboardingPlanResponse);
+
+  // Deletes an onboarding plan.
+  rpc DeleteOnboardingPlan(DeleteOnboardingPlanRequest) returns (DeleteOnboardingPlanResponse);
+
+  // Lists onboarding plans a page at a time.
+  rpc ListOnboardingPlans(ListOnboardingPlansRequest) returns (ListOnboardingPlansResponse);
+
+  // Returns several onboarding plans at once.
+  rpc BatchGetOnboardingPlans(BatchGetOnboardingPlansRequest) returns (BatchGetOnboardingPlansResponse);
+
+  // Lists onboarding plans a page at a time.
+  rpc SearchOnboardingPlans(SearchOnboardingPlansRequest) returns (SearchOnboardingPlansResponse);
+
+  // Streams the changes of onboarding plans as they happen.
+  rpc WatchOnboardingPlans(WatchOnboardingPlansRequest) returns (stream WatchOnboardingPlansResponse);
+
+  // Takes a stream of onboarding plans and answers once at the end.
+  rpc BatchCreateOnboardingPlans(stream BatchCreateOnboardingPlansRequest) returns (BatchCreateOnboardingPlansResponse);
+
+  // Creates an onboarding plan.
+  rpc CloneOnboardingPlan(CloneOnboardingPlanRequest) returns (CloneOnboardingPlanResponse);
+}
+
+// The request of `CreateOnboardingPlan`.
+message CreateOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  OnboardingPlan onboarding_plan = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateOnboardingPlan`.
+message CreateOnboardingPlanResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetOnboardingPlan`.
+message GetOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOnboardingPlan`.
+message GetOnboardingPlanResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateOnboardingPlan`.
+message UpdateOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  OnboardingPlan onboarding_plan = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateOnboardingPlan`.
+message UpdateOnboardingPlanResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteOnboardingPlan`.
+message DeleteOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteOnboardingPlan`.
+message DeleteOnboardingPlanResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListOnboardingPlans`.
+message ListOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListOnboardingPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListOnboardingPlans`.
+message ListOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetOnboardingPlans`.
+message BatchGetOnboardingPlansRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string onboarding_plan_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetOnboardingPlans`.
+message BatchGetOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchOnboardingPlans`.
+message SearchOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchOnboardingPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchOnboardingPlans`.
+message SearchOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchOnboardingPlans`.
+message WatchOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchOnboardingPlansRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchOnboardingPlans`.
+message WatchOnboardingPlansResponse {
+  OnboardingPlan onboarding_plan = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateOnboardingPlans`.
+message BatchCreateOnboardingPlansRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateOnboardingPlansRequest.StreamHeader header = 2;
+    OnboardingPlan record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateOnboardingPlans`.
+message BatchCreateOnboardingPlansResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string onboarding_plan_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateOnboardingPlansResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneOnboardingPlan`.
+message CloneOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  OnboardingPlan onboarding_plan = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneOnboardingPlan`.
+message CloneOnboardingPlanResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.billing.v1;
+
+import "acme/billing/v1/billing.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Billing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/billing/v1;billingv1";
+option java_multiple_files = true;
+option java_outer_classname = "BillingAccountQueryServiceProto";
+option java_package = "com.acme.billing.v1";
+
+// Answers read-only questions about billing accounts, for screens and reports.
+service BillingAccountQueryService {
+  // Returns a billing account.
+  rpc LookupBillingAccount(LookupBillingAccountRequest) returns (LookupBillingAccountResponse);
+
+  // Lists billing accounts a page at a time.
+  rpc BrowseBillingAccounts(BrowseBillingAccountsRequest) returns (BrowseBillingAccountsResponse);
+
+  // Lists billing accounts a page at a time.
+  rpc FindBillingAccounts(FindBillingAccountsRequest) returns (FindBillingAccountsResponse);
+
+  // Counts billing accounts by status.
+  rpc CountBillingAccounts(CountBillingAccountsRequest) returns (CountBillingAccountsResponse);
+
+  // Returns several billing accounts at once.
+  rpc ResolveBillingAccounts(ResolveBillingAccountsRequest) returns (ResolveBillingAccountsResponse);
+
+  // Streams every matching billing account.
+  rpc ExportBillingAccounts(ExportBillingAccountsRequest) returns (stream ExportBillingAccountsResponse);
+
+  // Lists billing accounts a page at a time.
+  rpc SuggestBillingAccounts(SuggestBillingAccountsRequest) returns (SuggestBillingAccountsResponse);
+
+  // Returns a billing account.
+  rpc PeekBillingAccount(PeekBillingAccountRequest) returns (PeekBillingAccountResponse);
+}
+
+// The request of `LookupBillingAccount`.
+message LookupBillingAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  string billing_account_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupBillingAccount`.
+message LookupBillingAccountResponse {
+  BillingAccount billing_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseBillingAccounts`.
+message BrowseBillingAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BillingAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseBillingAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseBillingAccounts`.
+message BrowseBillingAccountsResponse {
+  repeated BillingAccount billing_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindBillingAccounts`.
+message FindBillingAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BillingAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindBillingAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindBillingAccounts`.
+message FindBillingAccountsResponse {
+  repeated BillingAccount billing_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountBillingAccounts`.
+message CountBillingAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BillingAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountBillingAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountBillingAccounts`.
+message CountBillingAccountsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveBillingAccounts`.
+message ResolveBillingAccountsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string billing_account_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveBillingAccounts`.
+message ResolveBillingAccountsResponse {
+  repeated BillingAccount billing_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportBillingAccounts`.
+message ExportBillingAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BillingAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportBillingAccountsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportBillingAccounts`.
+message ExportBillingAccountsResponse {
+  BillingAccount billing_account = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestBillingAccounts`.
+message SuggestBillingAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BillingAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestBillingAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestBillingAccounts`.
+message SuggestBillingAccountsResponse {
+  repeated BillingAccount billing_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekBillingAccount`.
+message PeekBillingAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  string billing_account_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekBillingAccount`.
+message PeekBillingAccountResponse {
+  BillingAccount billing_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}

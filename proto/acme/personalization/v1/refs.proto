@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.personalization.v1;
+
+option csharp_namespace = "Acme.Personalization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/personalization/v1;personalizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.personalization.v1";
+
+// A reference to a profile of the personalization domain.
+message ProfileRef {
+  string profile_id = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+// A reference to a recommendation of the personalization domain.
+message RecommendationRef {
+  string recommendation_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to an affinity of the personalization domain.
+message AffinityRef {
+  string affinity_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}

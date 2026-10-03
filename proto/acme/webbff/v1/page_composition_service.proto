@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.webbff.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/webbff/v1/webbff.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Webbff.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/webbff/v1;webbffv1";
+option java_multiple_files = true;
+option java_outer_classname = "PageCompositionServiceProto";
+option java_package = "com.acme.webbff.v1";
+
+// Manages page compositions: creates, reads, changes, and lists them.
+service PageCompositionService {
+  // Creates a page composition.
+  rpc CreatePageComposition(CreatePageCompositionRequest) returns (CreatePageCompositionResponse);
+
+  // Returns a page composition.
+  rpc GetPageComposition(GetPageCompositionRequest) returns (GetPageCompositionResponse);
+
+  // Changes a page composition.
+  rpc UpdatePageComposition(UpdatePageCompositionRequest) returns (UpdatePageCompositionResponse);
+
+  // Deletes a page composition.
+  rpc DeletePageComposition(DeletePageCompositionRequest) returns (DeletePageCompositionResponse);
+
+  // Lists page compositions a page at a time.
+  rpc ListPageCompositions(ListPageCompositionsRequest) returns (ListPageCompositionsResponse);
+
+  // Returns several page compositions at once.
+  rpc BatchGetPageCompositions(BatchGetPageCompositionsRequest) returns (BatchGetPageCompositionsResponse);
+
+  // Lists page compositions a page at a time.
+  rpc SearchPageCompositions(SearchPageCompositionsRequest) returns (SearchPageCompositionsResponse);
+
+  // Streams the changes of page compositions as they happen.
+  rpc WatchPageCompositions(WatchPageCompositionsRequest) returns (stream WatchPageCompositionsResponse);
+
+  // Takes a stream of page compositions and answers once at the end.
+  rpc BatchCreatePageCompositions(stream BatchCreatePageCompositionsRequest) returns (BatchCreatePageCompositionsResponse);
+
+  // Creates a page composition.
+  rpc ClonePageComposition(ClonePageCompositionRequest) returns (ClonePageCompositionResponse);
+}
+
+// The request of `CreatePageComposition`.
+message CreatePageCompositionRequest {
+  acme.common.v1.RequestContext context = 1;
+  PageComposition page_composition = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePageComposition`.
+message CreatePageCompositionResponse {
+  PageComposition page_composition = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPageComposition`.
+message GetPageCompositionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string page_composition_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPageComposition`.
+message GetPageCompositionResponse {
+  PageComposition page_composition = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePageComposition`.
+message UpdatePageCompositionRequest {
+  acme.common.v1.RequestContext context = 1;
+  PageComposition page_composition = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePageComposition`.
+message UpdatePageCompositionResponse {
+  PageComposition page_composition = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePageComposition`.
+message DeletePageCompositionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string page_composition_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePageComposition`.
+message DeletePageCompositionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPageCompositions`.
+message ListPageCompositionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PageCompositionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPageCompositionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPageCompositions`.
+message ListPageCompositionsResponse {
+  repeated PageComposition page_compositions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPageCompositions`.
+message BatchGetPageCompositionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string page_composition_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPageCompositions`.
+message BatchGetPageCompositionsResponse {
+  repeated PageComposition page_compositions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPageCompositions`.
+message SearchPageCompositionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PageCompositionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPageCompositionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPageCompositions`.
+message SearchPageCompositionsResponse {
+  repeated PageComposition page_compositions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPageCompositions`.
+message WatchPageCompositionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PageCompositionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPageCompositionsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPageCompositions`.
+message WatchPageCompositionsResponse {
+  PageComposition page_composition = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreatePageCompositions`.
+message BatchCreatePageCompositionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePageCompositionsRequest.StreamHeader header = 2;
+    PageComposition record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePageCompositions`.
+message BatchCreatePageCompositionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string page_composition_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePageCompositionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePageComposition`.
+message ClonePageCompositionRequest {
+  acme.common.v1.RequestContext context = 1;
+  PageComposition page_composition = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePageComposition`.
+message ClonePageCompositionResponse {
+  PageComposition page_composition = 1;
+  acme.common.v1.OperationResult result = 2;
+}

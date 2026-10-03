@@ -1,0 +1,180 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.recommendations.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/recommendations/v1/recommendations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Recommendations.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/recommendations/v1;recommendationsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RecommendationSetServiceProto";
+option java_package = "com.acme.recommendations.v1";
+
+// Manages recommendation sets: creates, reads, changes, and lists them.
+service RecommendationSetService {
+  // Creates a recommendation set.
+  rpc CreateRecommendationSet(CreateRecommendationSetRequest) returns (CreateRecommendationSetResponse);
+
+  // Returns a recommendation set.
+  rpc GetRecommendationSet(GetRecommendationSetRequest) returns (GetRecommendationSetResponse);
+
+  // Changes a recommendation set.
+  rpc UpdateRecommendationSet(UpdateRecommendationSetRequest) returns (UpdateRecommendationSetResponse);
+
+  // Deletes a recommendation set.
+  rpc DeleteRecommendationSet(DeleteRecommendationSetRequest) returns (DeleteRecommendationSetResponse);
+
+  // Lists recommendation sets a page at a time.
+  rpc ListRecommendationSets(ListRecommendationSetsRequest) returns (ListRecommendationSetsResponse);
+
+  // Returns several recommendation sets at once.
+  rpc BatchGetRecommendationSets(BatchGetRecommendationSetsRequest) returns (BatchGetRecommendationSetsResponse);
+
+  // Lists recommendation sets a page at a time.
+  rpc SearchRecommendationSets(SearchRecommendationSetsRequest) returns (SearchRecommendationSetsResponse);
+
+  // Creates a recommendation set.
+  rpc CloneRecommendationSet(CloneRecommendationSetRequest) returns (CloneRecommendationSetResponse);
+}
+
+// The request of `CreateRecommendationSet`.
+message CreateRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  RecommendationSet recommendation_set = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateRecommendationSet`.
+message CreateRecommendationSetResponse {
+  RecommendationSet recommendation_set = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetRecommendationSet`.
+message GetRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string recommendation_set_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRecommendationSet`.
+message GetRecommendationSetResponse {
+  RecommendationSet recommendation_set = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateRecommendationSet`.
+message UpdateRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  RecommendationSet recommendation_set = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateRecommendationSet`.
+message UpdateRecommendationSetResponse {
+  RecommendationSet recommendation_set = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteRecommendationSet`.
+message DeleteRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string recommendation_set_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteRecommendationSet`.
+message DeleteRecommendationSetResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListRecommendationSets`.
+message ListRecommendationSetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RecommendationSetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRecommendationSetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRecommendationSets`.
+message ListRecommendationSetsResponse {
+  repeated RecommendationSet recommendation_sets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetRecommendationSets`.
+message BatchGetRecommendationSetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string recommendation_set_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetRecommendationSets`.
+message BatchGetRecommendationSetsResponse {
+  repeated RecommendationSet recommendation_sets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchRecommendationSets`.
+message SearchRecommendationSetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RecommendationSetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchRecommendationSetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchRecommendationSets`.
+message SearchRecommendationSetsResponse {
+  repeated RecommendationSet recommendation_sets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneRecommendationSet`.
+message CloneRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  RecommendationSet recommendation_set = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneRecommendationSet`.
+message CloneRecommendationSetResponse {
+  RecommendationSet recommendation_set = 1;
+  acme.common.v1.OperationResult result = 2;
+}

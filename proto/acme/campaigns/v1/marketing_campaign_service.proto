@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.campaigns.v1;
+
+import "acme/campaigns/v1/campaigns.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Campaigns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/campaigns/v1;campaignsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MarketingCampaignServiceProto";
+option java_package = "com.acme.campaigns.v1";
+
+// Manages marketing campaigns: creates, reads, changes, and lists them.
+service MarketingCampaignService {
+  // Creates a marketing campaign.
+  rpc CreateMarketingCampaign(CreateMarketingCampaignRequest) returns (CreateMarketingCampaignResponse);
+
+  // Returns a marketing campaign.
+  rpc GetMarketingCampaign(GetMarketingCampaignRequest) returns (GetMarketingCampaignResponse);
+
+  // Changes a marketing campaign.
+  rpc UpdateMarketingCampaign(UpdateMarketingCampaignRequest) returns (UpdateMarketingCampaignResponse);
+
+  // Deletes a marketing campaign.
+  rpc DeleteMarketingCampaign(DeleteMarketingCampaignRequest) returns (DeleteMarketingCampaignResponse);
+
+  // Lists marketing campaigns a page at a time.
+  rpc ListMarketingCampaigns(ListMarketingCampaignsRequest) returns (ListMarketingCampaignsResponse);
+
+  // Returns several marketing campaigns at once.
+  rpc BatchGetMarketingCampaigns(BatchGetMarketingCampaignsRequest) returns (BatchGetMarketingCampaignsResponse);
+
+  // Lists marketing campaigns a page at a time.
+  rpc SearchMarketingCampaigns(SearchMarketingCampaignsRequest) returns (SearchMarketingCampaignsResponse);
+
+  // Streams the changes of marketing campaigns as they happen.
+  rpc WatchMarketingCampaigns(WatchMarketingCampaignsRequest) returns (stream WatchMarketingCampaignsResponse);
+
+  // Takes a stream of marketing campaigns and answers once at the end.
+  rpc BatchCreateMarketingCampaigns(stream BatchCreateMarketingCampaignsRequest) returns (BatchCreateMarketingCampaignsResponse);
+
+  // Creates a marketing campaign.
+  rpc CloneMarketingCampaign(CloneMarketingCampaignRequest) returns (CloneMarketingCampaignResponse);
+}
+
+// The request of `CreateMarketingCampaign`.
+message CreateMarketingCampaignRequest {
+  acme.common.v1.RequestContext context = 1;
+  MarketingCampaign marketing_campaign = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateMarketingCampaign`.
+message CreateMarketingCampaignResponse {
+  MarketingCampaign marketing_campaign = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetMarketingCampaign`.
+message GetMarketingCampaignRequest {
+  acme.common.v1.RequestContext context = 1;
+  string marketing_campaign_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMarketingCampaign`.
+message GetMarketingCampaignResponse {
+  MarketingCampaign marketing_campaign = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateMarketingCampaign`.
+message UpdateMarketingCampaignRequest {
+  acme.common.v1.RequestContext context = 1;
+  MarketingCampaign marketing_campaign = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateMarketingCampaign`.
+message UpdateMarketingCampaignResponse {
+  MarketingCampaign marketing_campaign = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteMarketingCampaign`.
+message DeleteMarketingCampaignRequest {
+  acme.common.v1.RequestContext context = 1;
+  string marketing_campaign_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteMarketingCampaign`.
+message DeleteMarketingCampaignResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListMarketingCampaigns`.
+message ListMarketingCampaignsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MarketingCampaignStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMarketingCampaignsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMarketingCampaigns`.
+message ListMarketingCampaignsResponse {
+  repeated MarketingCampaign marketing_campaigns = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetMarketingCampaigns`.
+message BatchGetMarketingCampaignsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string marketing_campaign_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetMarketingCampaigns`.
+message BatchGetMarketingCampaignsResponse {
+  repeated MarketingCampaign marketing_campaigns = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchMarketingCampaigns`.
+message SearchMarketingCampaignsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MarketingCampaignStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchMarketingCampaignsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchMarketingCampaigns`.
+message SearchMarketingCampaignsResponse {
+  repeated MarketingCampaign marketing_campaigns = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchMarketingCampaigns`.
+message WatchMarketingCampaignsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MarketingCampaignStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchMarketingCampaignsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchMarketingCampaigns`.
+message WatchMarketingCampaignsResponse {
+  MarketingCampaign marketing_campaign = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateMarketingCampaigns`.
+message BatchCreateMarketingCampaignsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateMarketingCampaignsRequest.StreamHeader header = 2;
+    MarketingCampaign record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateMarketingCampaigns`.
+message BatchCreateMarketingCampaignsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string marketing_campaign_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateMarketingCampaignsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneMarketingCampaign`.
+message CloneMarketingCampaignRequest {
+  acme.common.v1.RequestContext context = 1;
+  MarketingCampaign marketing_campaign = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneMarketingCampaign`.
+message CloneMarketingCampaignResponse {
+  MarketingCampaign marketing_campaign = 1;
+  acme.common.v1.OperationResult result = 2;
+}

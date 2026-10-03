@@ -1,0 +1,230 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.deliveries.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/deliveries/v1/deliveries.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Deliveries.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/deliveries/v1;deliveriesv1";
+option java_multiple_files = true;
+option java_outer_classname = "DeliveryServiceProto";
+option java_package = "com.acme.deliveries.v1";
+
+// Manages deliveries: creates, reads, changes, and lists them.
+service DeliveryService {
+  // Creates a delivery.
+  rpc CreateDelivery(CreateDeliveryRequest) returns (CreateDeliveryResponse);
+
+  // Returns a delivery.
+  rpc GetDelivery(GetDeliveryRequest) returns (GetDeliveryResponse);
+
+  // Changes a delivery.
+  rpc UpdateDelivery(UpdateDeliveryRequest) returns (UpdateDeliveryResponse);
+
+  // Lists deliveries a page at a time.
+  rpc ListDeliveries(ListDeliveriesRequest) returns (ListDeliveriesResponse);
+
+  // Returns several deliveries at once.
+  rpc BatchGetDeliveries(BatchGetDeliveriesRequest) returns (BatchGetDeliveriesResponse);
+
+  // Lists deliveries a page at a time.
+  rpc SearchDeliveries(SearchDeliveriesRequest) returns (SearchDeliveriesResponse);
+
+  // Streams the changes of deliveries as they happen.
+  rpc WatchDeliveries(WatchDeliveriesRequest) returns (stream WatchDeliveriesResponse);
+
+  // Takes a stream of deliveries and answers once at the end.
+  rpc BatchCreateDeliveries(stream BatchCreateDeliveriesRequest) returns (BatchCreateDeliveriesResponse);
+
+  // Creates a delivery.
+  rpc CloneDelivery(CloneDeliveryRequest) returns (CloneDeliveryResponse);
+}
+
+// The request of `CreateDelivery`.
+message CreateDeliveryRequest {
+  acme.common.v1.RequestContext context = 1;
+  Delivery delivery = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateDelivery`.
+message CreateDeliveryResponse {
+  Delivery delivery = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetDelivery`.
+message GetDeliveryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string delivery_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDelivery`.
+message GetDeliveryResponse {
+  Delivery delivery = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateDelivery`.
+message UpdateDeliveryRequest {
+  acme.common.v1.RequestContext context = 1;
+  Delivery delivery = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateDelivery`.
+message UpdateDeliveryResponse {
+  Delivery delivery = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListDeliveries`.
+message ListDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListDeliveriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListDeliveries`.
+message ListDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetDeliveries`.
+message BatchGetDeliveriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string delivery_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetDeliveries`.
+message BatchGetDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchDeliveries`.
+message SearchDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchDeliveriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchDeliveries`.
+message SearchDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchDeliveries`.
+message WatchDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchDeliveriesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchDeliveries`.
+message WatchDeliveriesResponse {
+  Delivery delivery = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateDeliveries`.
+message BatchCreateDeliveriesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateDeliveriesRequest.StreamHeader header = 2;
+    Delivery record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateDeliveries`.
+message BatchCreateDeliveriesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string delivery_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateDeliveriesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneDelivery`.
+message CloneDeliveryRequest {
+  acme.common.v1.RequestContext context = 1;
+  Delivery delivery = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneDelivery`.
+message CloneDeliveryResponse {
+  Delivery delivery = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DisputeValidationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Checks disputes against the rules before anything acts on them.
+service DisputeValidationService {
+  // Validates a dispute.
+  rpc ValidateDispute(ValidateDisputeRequest) returns (ValidateDisputeResponse);
+
+  // Previews a dispute.
+  rpc PreviewDispute(PreviewDisputeRequest) returns (PreviewDisputeResponse);
+
+  // Checks a dispute.
+  rpc CheckDisputeEligibility(CheckDisputeEligibilityRequest) returns (CheckDisputeEligibilityResponse);
+
+  // Normalizes a dispute.
+  rpc NormalizeDispute(NormalizeDisputeRequest) returns (NormalizeDisputeResponse);
+
+  // Explains a dispute.
+  rpc ExplainDisputeDecision(ExplainDisputeDecisionRequest) returns (ExplainDisputeDecisionResponse);
+
+  // Scores a dispute.
+  rpc ScoreDispute(ScoreDisputeRequest) returns (ScoreDisputeResponse);
+
+  // Lints a dispute.
+  rpc LintDisputes(LintDisputesRequest) returns (LintDisputesResponse);
+
+  // Returns a dispute.
+  rpc GetDisputeRules(GetDisputeRulesRequest) returns (GetDisputeRulesResponse);
+}
+
+// The request of `ValidateDispute`.
+message ValidateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  ValidateDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateDispute`.
+message ValidateDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ValidateDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewDispute`.
+message PreviewDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  PreviewDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewDispute`.
+message PreviewDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  PreviewDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckDisputeEligibility`.
+message CheckDisputeEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  CheckDisputeEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckDisputeEligibility`.
+message CheckDisputeEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  CheckDisputeEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeDispute`.
+message NormalizeDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  NormalizeDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeDispute`.
+message NormalizeDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  NormalizeDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainDisputeDecision`.
+message ExplainDisputeDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  ExplainDisputeDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainDisputeDecision`.
+message ExplainDisputeDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ExplainDisputeDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreDispute`.
+message ScoreDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  ScoreDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreDispute`.
+message ScoreDisputeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreDisputeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  ScoreDisputeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintDisputes`.
+message LintDisputesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  LintDisputesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintDisputes`.
+message LintDisputesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  LintDisputesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetDisputeRules`.
+message GetDisputeRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDisputeRules`.
+message GetDisputeRulesResponse {
+  Dispute dispute = 1;
+  acme.common.v1.OperationResult result = 2;
+}

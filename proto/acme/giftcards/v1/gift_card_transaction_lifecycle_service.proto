@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/giftcards/v1/giftcards.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftCardTransactionLifecycleServiceProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Moves a gift card transaction between the states of its lifecycle.
+service GiftCardTransactionLifecycleService {
+  // Activates a gift card transaction.
+  rpc ActivateGiftCardTransaction(ActivateGiftCardTransactionRequest) returns (ActivateGiftCardTransactionResponse);
+
+  // Suspends a gift card transaction.
+  rpc SuspendGiftCardTransaction(SuspendGiftCardTransactionRequest) returns (SuspendGiftCardTransactionResponse);
+
+  // Reinstates a gift card transaction.
+  rpc ReinstateGiftCardTransaction(ReinstateGiftCardTransactionRequest) returns (ReinstateGiftCardTransactionResponse);
+
+  // Terminates a gift card transaction.
+  rpc TerminateGiftCardTransaction(TerminateGiftCardTransactionRequest) returns (TerminateGiftCardTransactionResponse);
+
+  // Renews a gift card transaction.
+  rpc RenewGiftCardTransaction(RenewGiftCardTransactionRequest) returns (RenewGiftCardTransactionResponse);
+
+  // Expires a gift card transaction.
+  rpc ExpireGiftCardTransaction(ExpireGiftCardTransactionRequest) returns (ExpireGiftCardTransactionResponse);
+
+  // Returns a gift card transaction.
+  rpc GetGiftCardTransactionLifecycle(GetGiftCardTransactionLifecycleRequest) returns (GetGiftCardTransactionLifecycleResponse);
+
+  // Schedules a gift card transaction.
+  rpc ScheduleGiftCardTransactionExpiry(ScheduleGiftCardTransactionExpiryRequest) returns (ScheduleGiftCardTransactionExpiryResponse);
+}
+
+// The request of `ActivateGiftCardTransaction`.
+message ActivateGiftCardTransactionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  ActivateGiftCardTransactionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateGiftCardTransaction`.
+message ActivateGiftCardTransactionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  ActivateGiftCardTransactionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendGiftCardTransaction`.
+message SuspendGiftCardTransactionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  SuspendGiftCardTransactionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendGiftCardTransaction`.
+message SuspendGiftCardTransactionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  SuspendGiftCardTransactionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateGiftCardTransaction`.
+message ReinstateGiftCardTransactionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  ReinstateGiftCardTransactionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateGiftCardTransaction`.
+message ReinstateGiftCardTransactionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  ReinstateGiftCardTransactionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateGiftCardTransaction`.
+message TerminateGiftCardTransactionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  TerminateGiftCardTransactionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateGiftCardTransaction`.
+message TerminateGiftCardTransactionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  TerminateGiftCardTransactionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewGiftCardTransaction`.
+message RenewGiftCardTransactionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  RenewGiftCardTransactionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewGiftCardTransaction`.
+message RenewGiftCardTransactionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  RenewGiftCardTransactionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireGiftCardTransaction`.
+message ExpireGiftCardTransactionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  ExpireGiftCardTransactionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireGiftCardTransaction`.
+message ExpireGiftCardTransactionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  ExpireGiftCardTransactionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetGiftCardTransactionLifecycle`.
+message GetGiftCardTransactionLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetGiftCardTransactionLifecycle`.
+message GetGiftCardTransactionLifecycleResponse {
+  GiftCardTransaction gift_card_transaction = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleGiftCardTransactionExpiry`.
+message ScheduleGiftCardTransactionExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  ScheduleGiftCardTransactionExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleGiftCardTransactionExpiry`.
+message ScheduleGiftCardTransactionExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  ScheduleGiftCardTransactionExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,260 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PickListValidationServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Checks pick lists against the rules before anything acts on them.
+service PickListValidationService {
+  // Validates a pick list.
+  rpc ValidatePickList(ValidatePickListRequest) returns (ValidatePickListResponse);
+
+  // Previews a pick list.
+  rpc PreviewPickList(PreviewPickListRequest) returns (PreviewPickListResponse);
+
+  // Checks a pick list.
+  rpc CheckPickListEligibility(CheckPickListEligibilityRequest) returns (CheckPickListEligibilityResponse);
+
+  // Normalizes a pick list.
+  rpc NormalizePickList(NormalizePickListRequest) returns (NormalizePickListResponse);
+
+  // Explains a pick list.
+  rpc ExplainPickListDecision(ExplainPickListDecisionRequest) returns (ExplainPickListDecisionResponse);
+
+  // Lints a pick list.
+  rpc LintPickLists(LintPickListsRequest) returns (LintPickListsResponse);
+
+  // Returns a pick list.
+  rpc GetPickListRules(GetPickListRulesRequest) returns (GetPickListRulesResponse);
+}
+
+// The request of `ValidatePickList`.
+message ValidatePickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  ValidatePickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePickList`.
+message ValidatePickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  ValidatePickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPickList`.
+message PreviewPickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  PreviewPickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPickList`.
+message PreviewPickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  PreviewPickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPickListEligibility`.
+message CheckPickListEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  CheckPickListEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPickListEligibility`.
+message CheckPickListEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  CheckPickListEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePickList`.
+message NormalizePickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  NormalizePickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePickList`.
+message NormalizePickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  NormalizePickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPickListDecision`.
+message ExplainPickListDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  ExplainPickListDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPickListDecision`.
+message ExplainPickListDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  ExplainPickListDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPickLists`.
+message LintPickListsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  LintPickListsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPickLists`.
+message LintPickListsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  LintPickListsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPickListRules`.
+message GetPickListRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPickListRules`.
+message GetPickListRulesResponse {
+  PickList pick_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}

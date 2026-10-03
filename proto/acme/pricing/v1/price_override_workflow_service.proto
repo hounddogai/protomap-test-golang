@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceOverrideWorkflowServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Runs the long-lived workflow that takes a price override from start to finish.
+service PriceOverrideWorkflowService {
+  // Starts a price override.
+  rpc StartPriceOverrideWorkflow(StartPriceOverrideWorkflowRequest) returns (StartPriceOverrideWorkflowResponse);
+
+  // Advances a price override.
+  rpc AdvancePriceOverrideWorkflow(AdvancePriceOverrideWorkflowRequest) returns (AdvancePriceOverrideWorkflowResponse);
+
+  // Cancels a price override.
+  rpc CancelPriceOverrideWorkflow(CancelPriceOverrideWorkflowRequest) returns (CancelPriceOverrideWorkflowResponse);
+
+  // Retrys a price override.
+  rpc RetryPriceOverrideWorkflow(RetryPriceOverrideWorkflowRequest) returns (RetryPriceOverrideWorkflowResponse);
+
+  // Pauses a price override.
+  rpc PausePriceOverrideWorkflow(PausePriceOverrideWorkflowRequest) returns (PausePriceOverrideWorkflowResponse);
+
+  // Resumes a price override.
+  rpc ResumePriceOverrideWorkflow(ResumePriceOverrideWorkflowRequest) returns (ResumePriceOverrideWorkflowResponse);
+
+  // Returns a price override.
+  rpc InspectPriceOverrideWorkflow(InspectPriceOverrideWorkflowRequest) returns (InspectPriceOverrideWorkflowResponse);
+
+  // Lists price overrides a page at a time.
+  rpc ListPriceOverrideWorkflows(ListPriceOverrideWorkflowsRequest) returns (ListPriceOverrideWorkflowsResponse);
+
+  // Signals a price override.
+  rpc SignalPriceOverrideWorkflow(SignalPriceOverrideWorkflowRequest) returns (SignalPriceOverrideWorkflowResponse);
+}
+
+// The request of `StartPriceOverrideWorkflow`.
+message StartPriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  StartPriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPriceOverrideWorkflow`.
+message StartPriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  StartPriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePriceOverrideWorkflow`.
+message AdvancePriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  AdvancePriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePriceOverrideWorkflow`.
+message AdvancePriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  AdvancePriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPriceOverrideWorkflow`.
+message CancelPriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  CancelPriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPriceOverrideWorkflow`.
+message CancelPriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  CancelPriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPriceOverrideWorkflow`.
+message RetryPriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  RetryPriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPriceOverrideWorkflow`.
+message RetryPriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  RetryPriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePriceOverrideWorkflow`.
+message PausePriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  PausePriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePriceOverrideWorkflow`.
+message PausePriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  PausePriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePriceOverrideWorkflow`.
+message ResumePriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  ResumePriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePriceOverrideWorkflow`.
+message ResumePriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  ResumePriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPriceOverrideWorkflow`.
+message InspectPriceOverrideWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPriceOverrideWorkflow`.
+message InspectPriceOverrideWorkflowResponse {
+  PriceOverride price_override = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPriceOverrideWorkflows`.
+message ListPriceOverrideWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceOverrideStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPriceOverrideWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPriceOverrideWorkflows`.
+message ListPriceOverrideWorkflowsResponse {
+  repeated PriceOverride price_overrides = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPriceOverrideWorkflow`.
+message SignalPriceOverrideWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  SignalPriceOverrideWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPriceOverrideWorkflow`.
+message SignalPriceOverrideWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  SignalPriceOverrideWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

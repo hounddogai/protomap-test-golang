@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.personalization.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/personalization/v1/personalization.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Personalization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/personalization/v1;personalizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProfileServiceProto";
+option java_package = "com.acme.personalization.v1";
+
+// Manages profiles: creates, reads, changes, and lists them.
+service ProfileService {
+  // Creates a profile.
+  rpc CreateProfile(CreateProfileRequest) returns (CreateProfileResponse);
+
+  // Returns a profile.
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
+
+  // Changes a profile.
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+
+  // Deletes a profile.
+  rpc DeleteProfile(DeleteProfileRequest) returns (DeleteProfileResponse);
+
+  // Lists profiles a page at a time.
+  rpc ListProfiles(ListProfilesRequest) returns (ListProfilesResponse);
+
+  // Returns several profiles at once.
+  rpc BatchGetProfiles(BatchGetProfilesRequest) returns (BatchGetProfilesResponse);
+
+  // Lists profiles a page at a time.
+  rpc SearchProfiles(SearchProfilesRequest) returns (SearchProfilesResponse);
+
+  // Streams the changes of profiles as they happen.
+  rpc WatchProfiles(WatchProfilesRequest) returns (stream WatchProfilesResponse);
+
+  // Takes a stream of profiles and answers once at the end.
+  rpc BatchCreateProfiles(stream BatchCreateProfilesRequest) returns (BatchCreateProfilesResponse);
+
+  // Creates a profile.
+  rpc CloneProfile(CloneProfileRequest) returns (CloneProfileResponse);
+}
+
+// The request of `CreateProfile`.
+message CreateProfileRequest {
+  acme.common.v1.RequestContext context = 1;
+  Profile profile = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateProfile`.
+message CreateProfileResponse {
+  Profile profile = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetProfile`.
+message GetProfileRequest {
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProfile`.
+message GetProfileResponse {
+  Profile profile = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateProfile`.
+message UpdateProfileRequest {
+  acme.common.v1.RequestContext context = 1;
+  Profile profile = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateProfile`.
+message UpdateProfileResponse {
+  Profile profile = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteProfile`.
+message DeleteProfileRequest {
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteProfile`.
+message DeleteProfileResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListProfiles`.
+message ListProfilesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProfileStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListProfilesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListProfiles`.
+message ListProfilesResponse {
+  repeated Profile profiles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetProfiles`.
+message BatchGetProfilesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string profile_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetProfiles`.
+message BatchGetProfilesResponse {
+  repeated Profile profiles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchProfiles`.
+message SearchProfilesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProfileStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchProfilesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchProfiles`.
+message SearchProfilesResponse {
+  repeated Profile profiles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchProfiles`.
+message WatchProfilesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProfileStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchProfilesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchProfiles`.
+message WatchProfilesResponse {
+  Profile profile = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateProfiles`.
+message BatchCreateProfilesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateProfilesRequest.StreamHeader header = 2;
+    Profile record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateProfiles`.
+message BatchCreateProfilesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string profile_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateProfilesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneProfile`.
+message CloneProfileRequest {
+  acme.common.v1.RequestContext context = 1;
+  Profile profile = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneProfile`.
+message CloneProfileResponse {
+  Profile profile = 1;
+  acme.common.v1.OperationResult result = 2;
+}

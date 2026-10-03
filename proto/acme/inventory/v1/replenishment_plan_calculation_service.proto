@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReplenishmentPlanCalculationServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Computes the figures of a replenishment plan, such as totals, taxes, and estimates.
+service ReplenishmentPlanCalculationService {
+  // Calculates a replenishment plan.
+  rpc CalculateReplenishmentPlan(CalculateReplenishmentPlanRequest) returns (CalculateReplenishmentPlanResponse);
+
+  // Estimates a replenishment plan.
+  rpc EstimateReplenishmentPlan(EstimateReplenishmentPlanRequest) returns (EstimateReplenishmentPlanResponse);
+
+  // Quotes a replenishment plan.
+  rpc QuoteReplenishmentPlan(QuoteReplenishmentPlanRequest) returns (QuoteReplenishmentPlanResponse);
+
+  // Compares a replenishment plan.
+  rpc CompareReplenishmentPlanOptions(CompareReplenishmentPlanOptionsRequest) returns (CompareReplenishmentPlanOptionsResponse);
+
+  // Recalculates a replenishment plan.
+  rpc RecalculateReplenishmentPlans(RecalculateReplenishmentPlansRequest) returns (RecalculateReplenishmentPlansResponse);
+
+  // Simulates a replenishment plan.
+  rpc SimulateReplenishmentPlan(SimulateReplenishmentPlanRequest) returns (SimulateReplenishmentPlanResponse);
+
+  // Explains a replenishment plan.
+  rpc ExplainReplenishmentPlanCalculation(ExplainReplenishmentPlanCalculationRequest) returns (ExplainReplenishmentPlanCalculationResponse);
+
+  // Returns a replenishment plan.
+  rpc GetReplenishmentPlanRates(GetReplenishmentPlanRatesRequest) returns (GetReplenishmentPlanRatesResponse);
+}
+
+// The request of `CalculateReplenishmentPlan`.
+message CalculateReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  CalculateReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateReplenishmentPlan`.
+message CalculateReplenishmentPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateReplenishmentPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  CalculateReplenishmentPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateReplenishmentPlan`.
+message EstimateReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  EstimateReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateReplenishmentPlan`.
+message EstimateReplenishmentPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateReplenishmentPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  EstimateReplenishmentPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteReplenishmentPlan`.
+message QuoteReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  QuoteReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteReplenishmentPlan`.
+message QuoteReplenishmentPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteReplenishmentPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  QuoteReplenishmentPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareReplenishmentPlanOptions`.
+message CompareReplenishmentPlanOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  CompareReplenishmentPlanOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareReplenishmentPlanOptions`.
+message CompareReplenishmentPlanOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareReplenishmentPlanOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  CompareReplenishmentPlanOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateReplenishmentPlans`.
+message RecalculateReplenishmentPlansRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  RecalculateReplenishmentPlansRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateReplenishmentPlans`.
+message RecalculateReplenishmentPlansResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateReplenishmentPlansResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  RecalculateReplenishmentPlansResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateReplenishmentPlan`.
+message SimulateReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  SimulateReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateReplenishmentPlan`.
+message SimulateReplenishmentPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateReplenishmentPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  SimulateReplenishmentPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReplenishmentPlanCalculation`.
+message ExplainReplenishmentPlanCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  ExplainReplenishmentPlanCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReplenishmentPlanCalculation`.
+message ExplainReplenishmentPlanCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  ExplainReplenishmentPlanCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReplenishmentPlanRates`.
+message GetReplenishmentPlanRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReplenishmentPlanRates`.
+message GetReplenishmentPlanRatesResponse {
+  ReplenishmentPlan replenishment_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductWorkflowServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Runs the long-lived workflow that takes a product from start to finish.
+service ProductWorkflowService {
+  // Starts a product.
+  rpc StartProductWorkflow(StartProductWorkflowRequest) returns (StartProductWorkflowResponse);
+
+  // Advances a product.
+  rpc AdvanceProductWorkflow(AdvanceProductWorkflowRequest) returns (AdvanceProductWorkflowResponse);
+
+  // Cancels a product.
+  rpc CancelProductWorkflow(CancelProductWorkflowRequest) returns (CancelProductWorkflowResponse);
+
+  // Retrys a product.
+  rpc RetryProductWorkflow(RetryProductWorkflowRequest) returns (RetryProductWorkflowResponse);
+
+  // Pauses a product.
+  rpc PauseProductWorkflow(PauseProductWorkflowRequest) returns (PauseProductWorkflowResponse);
+
+  // Resumes a product.
+  rpc ResumeProductWorkflow(ResumeProductWorkflowRequest) returns (ResumeProductWorkflowResponse);
+
+  // Returns a product.
+  rpc InspectProductWorkflow(InspectProductWorkflowRequest) returns (InspectProductWorkflowResponse);
+
+  // Lists products a page at a time.
+  rpc ListProductWorkflows(ListProductWorkflowsRequest) returns (ListProductWorkflowsResponse);
+
+  // Signals a product.
+  rpc SignalProductWorkflow(SignalProductWorkflowRequest) returns (SignalProductWorkflowResponse);
+}
+
+// The request of `StartProductWorkflow`.
+message StartProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  StartProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartProductWorkflow`.
+message StartProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  StartProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceProductWorkflow`.
+message AdvanceProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  AdvanceProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceProductWorkflow`.
+message AdvanceProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  AdvanceProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelProductWorkflow`.
+message CancelProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  CancelProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelProductWorkflow`.
+message CancelProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  CancelProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryProductWorkflow`.
+message RetryProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  RetryProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryProductWorkflow`.
+message RetryProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  RetryProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseProductWorkflow`.
+message PauseProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  PauseProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseProductWorkflow`.
+message PauseProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  PauseProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeProductWorkflow`.
+message ResumeProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  ResumeProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeProductWorkflow`.
+message ResumeProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  ResumeProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectProductWorkflow`.
+message InspectProductWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectProductWorkflow`.
+message InspectProductWorkflowResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListProductWorkflows`.
+message ListProductWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListProductWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListProductWorkflows`.
+message ListProductWorkflowsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalProductWorkflow`.
+message SignalProductWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  SignalProductWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalProductWorkflow`.
+message SignalProductWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  SignalProductWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

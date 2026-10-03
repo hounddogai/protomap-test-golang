@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShipmentWorkflowServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Runs the long-lived workflow that takes a shipment from start to finish.
+service ShipmentWorkflowService {
+  // Starts a shipment.
+  rpc StartShipmentWorkflow(StartShipmentWorkflowRequest) returns (StartShipmentWorkflowResponse);
+
+  // Advances a shipment.
+  rpc AdvanceShipmentWorkflow(AdvanceShipmentWorkflowRequest) returns (AdvanceShipmentWorkflowResponse);
+
+  // Cancels a shipment.
+  rpc CancelShipmentWorkflow(CancelShipmentWorkflowRequest) returns (CancelShipmentWorkflowResponse);
+
+  // Retrys a shipment.
+  rpc RetryShipmentWorkflow(RetryShipmentWorkflowRequest) returns (RetryShipmentWorkflowResponse);
+
+  // Pauses a shipment.
+  rpc PauseShipmentWorkflow(PauseShipmentWorkflowRequest) returns (PauseShipmentWorkflowResponse);
+
+  // Resumes a shipment.
+  rpc ResumeShipmentWorkflow(ResumeShipmentWorkflowRequest) returns (ResumeShipmentWorkflowResponse);
+
+  // Returns a shipment.
+  rpc InspectShipmentWorkflow(InspectShipmentWorkflowRequest) returns (InspectShipmentWorkflowResponse);
+
+  // Lists shipments a page at a time.
+  rpc ListShipmentWorkflows(ListShipmentWorkflowsRequest) returns (ListShipmentWorkflowsResponse);
+
+  // Signals a shipment.
+  rpc SignalShipmentWorkflow(SignalShipmentWorkflowRequest) returns (SignalShipmentWorkflowResponse);
+}
+
+// The request of `StartShipmentWorkflow`.
+message StartShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  StartShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartShipmentWorkflow`.
+message StartShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  StartShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceShipmentWorkflow`.
+message AdvanceShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  AdvanceShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceShipmentWorkflow`.
+message AdvanceShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  AdvanceShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelShipmentWorkflow`.
+message CancelShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  CancelShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelShipmentWorkflow`.
+message CancelShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  CancelShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryShipmentWorkflow`.
+message RetryShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  RetryShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryShipmentWorkflow`.
+message RetryShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  RetryShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseShipmentWorkflow`.
+message PauseShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  PauseShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseShipmentWorkflow`.
+message PauseShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  PauseShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeShipmentWorkflow`.
+message ResumeShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  ResumeShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeShipmentWorkflow`.
+message ResumeShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  ResumeShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectShipmentWorkflow`.
+message InspectShipmentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectShipmentWorkflow`.
+message InspectShipmentWorkflowResponse {
+  Shipment shipment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListShipmentWorkflows`.
+message ListShipmentWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShipmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListShipmentWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListShipmentWorkflows`.
+message ListShipmentWorkflowsResponse {
+  repeated Shipment shipments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalShipmentWorkflow`.
+message SignalShipmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  SignalShipmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalShipmentWorkflow`.
+message SignalShipmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  SignalShipmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

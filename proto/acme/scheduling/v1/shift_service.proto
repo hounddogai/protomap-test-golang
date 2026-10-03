@@ -1,0 +1,183 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.scheduling.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/scheduling/v1/scheduling.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Scheduling.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/scheduling/v1;schedulingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShiftServiceProto";
+option java_package = "com.acme.scheduling.v1";
+
+// Manages shifts: creates, reads, changes, and lists them.
+service ShiftService {
+  // Creates a shift.
+  rpc CreateShift(CreateShiftRequest) returns (CreateShiftResponse);
+
+  // Returns a shift.
+  rpc GetShift(GetShiftRequest) returns (GetShiftResponse);
+
+  // Changes a shift.
+  rpc UpdateShift(UpdateShiftRequest) returns (UpdateShiftResponse);
+
+  // Deletes a shift.
+  rpc DeleteShift(DeleteShiftRequest) returns (DeleteShiftResponse);
+
+  // Lists shifts a page at a time.
+  rpc ListShifts(ListShiftsRequest) returns (ListShiftsResponse);
+
+  // Lists shifts a page at a time.
+  rpc SearchShifts(SearchShiftsRequest) returns (SearchShiftsResponse);
+
+  // Takes a stream of shifts and answers once at the end.
+  rpc BatchCreateShifts(stream BatchCreateShiftsRequest) returns (BatchCreateShiftsResponse);
+}
+
+// The request of `CreateShift`.
+message CreateShiftRequest {
+  acme.common.v1.RequestContext context = 1;
+  Shift shift = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateShift`.
+message CreateShiftResponse {
+  Shift shift = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetShift`.
+message GetShiftRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shift_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetShift`.
+message GetShiftResponse {
+  Shift shift = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateShift`.
+message UpdateShiftRequest {
+  acme.common.v1.RequestContext context = 1;
+  Shift shift = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateShift`.
+message UpdateShiftResponse {
+  Shift shift = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteShift`.
+message DeleteShiftRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shift_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteShift`.
+message DeleteShiftResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListShifts`.
+message ListShiftsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShiftStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListShiftsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListShifts`.
+message ListShiftsResponse {
+  repeated Shift shifts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchShifts`.
+message SearchShiftsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShiftStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchShiftsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchShifts`.
+message SearchShiftsResponse {
+  repeated Shift shifts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateShifts`.
+message BatchCreateShiftsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateShiftsRequest.StreamHeader header = 2;
+    Shift record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateShifts`.
+message BatchCreateShiftsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string shift_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateShiftsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

@@ -1,0 +1,266 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CurrencyRateApprovalServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Routes currency rates through approval, with escalation and delegation.
+service CurrencyRateApprovalService {
+  // Submits a currency rate.
+  rpc SubmitCurrencyRate(SubmitCurrencyRateRequest) returns (SubmitCurrencyRateResponse);
+
+  // Approves a currency rate.
+  rpc ApproveCurrencyRate(ApproveCurrencyRateRequest) returns (ApproveCurrencyRateResponse);
+
+  // Rejects a currency rate.
+  rpc RejectCurrencyRate(RejectCurrencyRateRequest) returns (RejectCurrencyRateResponse);
+
+  // Escalates a currency rate.
+  rpc EscalateCurrencyRate(EscalateCurrencyRateRequest) returns (EscalateCurrencyRateResponse);
+
+  // Recalls a currency rate.
+  rpc RecallCurrencyRate(RecallCurrencyRateRequest) returns (RecallCurrencyRateResponse);
+
+  // Returns a currency rate.
+  rpc GetCurrencyRateApprovalStatus(GetCurrencyRateApprovalStatusRequest) returns (GetCurrencyRateApprovalStatusResponse);
+
+  // Comments a currency rate.
+  rpc CommentCurrencyRateApproval(CommentCurrencyRateApprovalRequest) returns (CommentCurrencyRateApprovalResponse);
+}
+
+// The request of `SubmitCurrencyRate`.
+message SubmitCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  SubmitCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCurrencyRate`.
+message SubmitCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  SubmitCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCurrencyRate`.
+message ApproveCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  ApproveCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCurrencyRate`.
+message ApproveCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  ApproveCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCurrencyRate`.
+message RejectCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  RejectCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCurrencyRate`.
+message RejectCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  RejectCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCurrencyRate`.
+message EscalateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  EscalateCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCurrencyRate`.
+message EscalateCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  EscalateCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallCurrencyRate`.
+message RecallCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  RecallCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallCurrencyRate`.
+message RecallCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  RecallCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCurrencyRateApprovalStatus`.
+message GetCurrencyRateApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCurrencyRateApprovalStatus`.
+message GetCurrencyRateApprovalStatusResponse {
+  CurrencyRate currency_rate = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCurrencyRateApproval`.
+message CommentCurrencyRateApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  CommentCurrencyRateApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCurrencyRateApproval`.
+message CommentCurrencyRateApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  CommentCurrencyRateApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

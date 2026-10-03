@@ -1,0 +1,176 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.maintenance.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/drivers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Maintenance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/maintenance/v1;maintenancev1";
+option java_multiple_files = true;
+option java_outer_classname = "MaintenanceProto";
+option java_package = "com.acme.maintenance.v1";
+
+// Where a work order is in its lifecycle.
+enum WorkOrderStatus {
+  WORK_ORDER_STATUS_UNSPECIFIED = 0;
+  WORK_ORDER_STATUS_NEW = 1;
+  WORK_ORDER_STATUS_OPEN = 2;
+  WORK_ORDER_STATUS_WAITING = 3;
+  WORK_ORDER_STATUS_RESOLVED = 4;
+  WORK_ORDER_STATUS_CLOSED = 5;
+}
+
+// Where a service schedule is in its lifecycle.
+enum ServiceScheduleStatus {
+  SERVICE_SCHEDULE_STATUS_UNSPECIFIED = 0;
+  SERVICE_SCHEDULE_STATUS_TENTATIVE = 1;
+  SERVICE_SCHEDULE_STATUS_CONFIRMED = 2;
+  SERVICE_SCHEDULE_STATUS_CANCELLED = 3;
+  SERVICE_SCHEDULE_STATUS_COMPLETED = 4;
+}
+
+// Where a part is in its lifecycle.
+enum PartStatus {
+  PART_STATUS_UNSPECIFIED = 0;
+  PART_STATUS_PLANNED = 1;
+  PART_STATUS_AVAILABLE = 2;
+  PART_STATUS_RESERVED = 3;
+  PART_STATUS_RETIRED = 4;
+}
+
+// The comment of a work order.
+message WorkOrderComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a work order.
+message WorkOrderSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a work order.
+message WorkOrderChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a work order.
+message WorkOrderStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A work order of the maintenance domain.
+message WorkOrder {
+  string work_order_id = 1;
+  string subject = 2;
+  WorkOrderStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated WorkOrderComment comments = 7;
+  WorkOrderSla sla = 8;
+  oneof origin {
+    acme.drivers.v1.DriverRef customer = 9;
+    string external_reference = 10;
+    WorkOrderChannelOrigin channel = 11;
+  }
+  repeated WorkOrderStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a service schedule.
+message ServiceScheduleParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a service schedule.
+message ServiceScheduleDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a service schedule.
+message ServiceScheduleWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A service schedule of the maintenance domain.
+message ServiceSchedule {
+  string service_schedule_id = 1;
+  string title = 2;
+  ServiceScheduleStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated ServiceScheduleParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    ServiceScheduleDailyRule daily = 7;
+    ServiceScheduleWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The dimensions of a part.
+message PartDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a part.
+message PartComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A part of the maintenance domain.
+message Part {
+  string part_id = 1;
+  string code = 2;
+  string name = 3;
+  PartStatus status = 4;
+  repeated string category_path = 5;
+  PartDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, PartComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.chat.v1;
+
+import "acme/chat/v1/chat.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Chat.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/chat/v1;chatv1";
+option java_multiple_files = true;
+option java_outer_classname = "ChatRoomQueryServiceProto";
+option java_package = "com.acme.chat.v1";
+
+// Answers read-only questions about chat rooms, for screens and reports.
+service ChatRoomQueryService {
+  // Returns a chat room.
+  rpc LookupChatRoom(LookupChatRoomRequest) returns (LookupChatRoomResponse);
+
+  // Lists chat rooms a page at a time.
+  rpc BrowseChatRooms(BrowseChatRoomsRequest) returns (BrowseChatRoomsResponse);
+
+  // Lists chat rooms a page at a time.
+  rpc FindChatRooms(FindChatRoomsRequest) returns (FindChatRoomsResponse);
+
+  // Counts chat rooms by status.
+  rpc CountChatRooms(CountChatRoomsRequest) returns (CountChatRoomsResponse);
+
+  // Returns several chat rooms at once.
+  rpc ResolveChatRooms(ResolveChatRoomsRequest) returns (ResolveChatRoomsResponse);
+
+  // Streams every matching chat room.
+  rpc ExportChatRooms(ExportChatRoomsRequest) returns (stream ExportChatRoomsResponse);
+
+  // Summarizes a chat room.
+  rpc SummarizeChatRooms(SummarizeChatRoomsRequest) returns (SummarizeChatRoomsResponse);
+
+  // Lists chat rooms a page at a time.
+  rpc SuggestChatRooms(SuggestChatRoomsRequest) returns (SuggestChatRoomsResponse);
+
+  // Returns a chat room.
+  rpc PeekChatRoom(PeekChatRoomRequest) returns (PeekChatRoomResponse);
+}
+
+// The request of `LookupChatRoom`.
+message LookupChatRoomRequest {
+  acme.common.v1.RequestContext context = 1;
+  string chat_room_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupChatRoom`.
+message LookupChatRoomResponse {
+  ChatRoom chat_room = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseChatRooms`.
+message BrowseChatRoomsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ChatRoomStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseChatRoomsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseChatRooms`.
+message BrowseChatRoomsResponse {
+  repeated ChatRoom chat_rooms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindChatRooms`.
+message FindChatRoomsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ChatRoomStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindChatRoomsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindChatRooms`.
+message FindChatRoomsResponse {
+  repeated ChatRoom chat_rooms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountChatRooms`.
+message CountChatRoomsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ChatRoomStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountChatRoomsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountChatRooms`.
+message CountChatRoomsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveChatRooms`.
+message ResolveChatRoomsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string chat_room_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveChatRooms`.
+message ResolveChatRoomsResponse {
+  repeated ChatRoom chat_rooms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportChatRooms`.
+message ExportChatRoomsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ChatRoomStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportChatRoomsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportChatRooms`.
+message ExportChatRoomsResponse {
+  ChatRoom chat_room = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeChatRooms`.
+message SummarizeChatRoomsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string chat_room_id = 2;
+  SummarizeChatRoomsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeChatRooms`.
+message SummarizeChatRoomsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestChatRooms`.
+message SuggestChatRoomsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ChatRoomStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestChatRoomsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestChatRooms`.
+message SuggestChatRoomsResponse {
+  repeated ChatRoom chat_rooms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekChatRoom`.
+message PeekChatRoomRequest {
+  acme.common.v1.RequestContext context = 1;
+  string chat_room_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekChatRoom`.
+message PeekChatRoomResponse {
+  ChatRoom chat_room = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "MerchandisingRuleValidationServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Checks merchandising rules against the rules before anything acts on them.
+service MerchandisingRuleValidationService {
+  // Validates a merchandising rule.
+  rpc ValidateMerchandisingRule(ValidateMerchandisingRuleRequest) returns (ValidateMerchandisingRuleResponse);
+
+  // Previews a merchandising rule.
+  rpc PreviewMerchandisingRule(PreviewMerchandisingRuleRequest) returns (PreviewMerchandisingRuleResponse);
+
+  // Checks a merchandising rule.
+  rpc CheckMerchandisingRuleEligibility(CheckMerchandisingRuleEligibilityRequest) returns (CheckMerchandisingRuleEligibilityResponse);
+
+  // Normalizes a merchandising rule.
+  rpc NormalizeMerchandisingRule(NormalizeMerchandisingRuleRequest) returns (NormalizeMerchandisingRuleResponse);
+
+  // Explains a merchandising rule.
+  rpc ExplainMerchandisingRuleDecision(ExplainMerchandisingRuleDecisionRequest) returns (ExplainMerchandisingRuleDecisionResponse);
+
+  // Scores a merchandising rule.
+  rpc ScoreMerchandisingRule(ScoreMerchandisingRuleRequest) returns (ScoreMerchandisingRuleResponse);
+
+  // Lints a merchandising rule.
+  rpc LintMerchandisingRules(LintMerchandisingRulesRequest) returns (LintMerchandisingRulesResponse);
+
+  // Returns a merchandising rule.
+  rpc GetMerchandisingRuleRules(GetMerchandisingRuleRulesRequest) returns (GetMerchandisingRuleRulesResponse);
+}
+
+// The request of `ValidateMerchandisingRule`.
+message ValidateMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  ValidateMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateMerchandisingRule`.
+message ValidateMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  ValidateMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewMerchandisingRule`.
+message PreviewMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  PreviewMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewMerchandisingRule`.
+message PreviewMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  PreviewMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckMerchandisingRuleEligibility`.
+message CheckMerchandisingRuleEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  CheckMerchandisingRuleEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckMerchandisingRuleEligibility`.
+message CheckMerchandisingRuleEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  CheckMerchandisingRuleEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeMerchandisingRule`.
+message NormalizeMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  NormalizeMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeMerchandisingRule`.
+message NormalizeMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  NormalizeMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainMerchandisingRuleDecision`.
+message ExplainMerchandisingRuleDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  ExplainMerchandisingRuleDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainMerchandisingRuleDecision`.
+message ExplainMerchandisingRuleDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  ExplainMerchandisingRuleDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreMerchandisingRule`.
+message ScoreMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  ScoreMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreMerchandisingRule`.
+message ScoreMerchandisingRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreMerchandisingRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  ScoreMerchandisingRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintMerchandisingRules`.
+message LintMerchandisingRulesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  LintMerchandisingRulesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintMerchandisingRules`.
+message LintMerchandisingRulesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  LintMerchandisingRulesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMerchandisingRuleRules`.
+message GetMerchandisingRuleRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMerchandisingRuleRules`.
+message GetMerchandisingRuleRulesResponse {
+  MerchandisingRule merchandising_rule = 1;
+  acme.common.v1.OperationResult result = 2;
+}

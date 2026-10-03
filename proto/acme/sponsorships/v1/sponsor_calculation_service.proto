@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sponsorships.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/sponsorships/v1/sponsorships.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sponsorships.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sponsorships/v1;sponsorshipsv1";
+option java_multiple_files = true;
+option java_outer_classname = "SponsorCalculationServiceProto";
+option java_package = "com.acme.sponsorships.v1";
+
+// Computes the figures of a sponsor, such as totals, taxes, and estimates.
+service SponsorCalculationService {
+  // Calculates a sponsor.
+  rpc CalculateSponsor(CalculateSponsorRequest) returns (CalculateSponsorResponse);
+
+  // Estimates a sponsor.
+  rpc EstimateSponsor(EstimateSponsorRequest) returns (EstimateSponsorResponse);
+
+  // Quotes a sponsor.
+  rpc QuoteSponsor(QuoteSponsorRequest) returns (QuoteSponsorResponse);
+
+  // Compares a sponsor.
+  rpc CompareSponsorOptions(CompareSponsorOptionsRequest) returns (CompareSponsorOptionsResponse);
+
+  // Recalculates a sponsor.
+  rpc RecalculateSponsors(RecalculateSponsorsRequest) returns (RecalculateSponsorsResponse);
+
+  // Simulates a sponsor.
+  rpc SimulateSponsor(SimulateSponsorRequest) returns (SimulateSponsorResponse);
+
+  // Explains a sponsor.
+  rpc ExplainSponsorCalculation(ExplainSponsorCalculationRequest) returns (ExplainSponsorCalculationResponse);
+
+  // Returns a sponsor.
+  rpc GetSponsorRates(GetSponsorRatesRequest) returns (GetSponsorRatesResponse);
+}
+
+// The request of `CalculateSponsor`.
+message CalculateSponsorRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  CalculateSponsorRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateSponsor`.
+message CalculateSponsorResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateSponsorResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Sponsor sponsor = 1;
+  CalculateSponsorResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateSponsor`.
+message EstimateSponsorRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  EstimateSponsorRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateSponsor`.
+message EstimateSponsorResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateSponsorResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Sponsor sponsor = 1;
+  EstimateSponsorResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteSponsor`.
+message QuoteSponsorRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  QuoteSponsorRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteSponsor`.
+message QuoteSponsorResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteSponsorResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Sponsor sponsor = 1;
+  QuoteSponsorResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareSponsorOptions`.
+message CompareSponsorOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  CompareSponsorOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSponsorOptions`.
+message CompareSponsorOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareSponsorOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Sponsor sponsor = 1;
+  CompareSponsorOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateSponsors`.
+message RecalculateSponsorsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  RecalculateSponsorsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateSponsors`.
+message RecalculateSponsorsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateSponsorsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Sponsor sponsor = 1;
+  RecalculateSponsorsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateSponsor`.
+message SimulateSponsorRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  SimulateSponsorRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateSponsor`.
+message SimulateSponsorResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateSponsorResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Sponsor sponsor = 1;
+  SimulateSponsorResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSponsorCalculation`.
+message ExplainSponsorCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  Sponsor sponsor = 3;
+  ExplainSponsorCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSponsorCalculation`.
+message ExplainSponsorCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Sponsor sponsor = 1;
+  ExplainSponsorCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSponsorRates`.
+message GetSponsorRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string sponsor_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSponsorRates`.
+message GetSponsorRatesResponse {
+  Sponsor sponsor = 1;
+  acme.common.v1.OperationResult result = 2;
+}

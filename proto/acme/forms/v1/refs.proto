@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.forms.v1;
+
+option csharp_namespace = "Acme.Forms.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/forms/v1;formsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.forms.v1";
+
+// A reference to a form of the forms domain.
+message FormRef {
+  string form_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a form submission of the forms domain.
+message FormSubmissionRef {
+  string form_submission_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a form field of the forms domain.
+message FormFieldRef {
+  string form_field_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

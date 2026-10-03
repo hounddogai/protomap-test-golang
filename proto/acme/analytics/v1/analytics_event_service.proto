@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.analytics.v1;
+
+import "acme/analytics/v1/analytics.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Analytics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/analytics/v1;analyticsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AnalyticsEventServiceProto";
+option java_package = "com.acme.analytics.v1";
+
+// Manages analytics events: creates, reads, changes, and lists them.
+service AnalyticsEventService {
+  // Creates an analytics event.
+  rpc CreateAnalyticsEvent(CreateAnalyticsEventRequest) returns (CreateAnalyticsEventResponse);
+
+  // Returns an analytics event.
+  rpc GetAnalyticsEvent(GetAnalyticsEventRequest) returns (GetAnalyticsEventResponse);
+
+  // Changes an analytics event.
+  rpc UpdateAnalyticsEvent(UpdateAnalyticsEventRequest) returns (UpdateAnalyticsEventResponse);
+
+  // Deletes an analytics event.
+  rpc DeleteAnalyticsEvent(DeleteAnalyticsEventRequest) returns (DeleteAnalyticsEventResponse);
+
+  // Lists analytics events a page at a time.
+  rpc ListAnalyticsEvents(ListAnalyticsEventsRequest) returns (ListAnalyticsEventsResponse);
+
+  // Lists analytics events a page at a time.
+  rpc SearchAnalyticsEvents(SearchAnalyticsEventsRequest) returns (SearchAnalyticsEventsResponse);
+
+  // Streams the changes of analytics events as they happen.
+  rpc WatchAnalyticsEvents(WatchAnalyticsEventsRequest) returns (stream WatchAnalyticsEventsResponse);
+
+  // Takes a stream of analytics events and answers once at the end.
+  rpc BatchCreateAnalyticsEvents(stream BatchCreateAnalyticsEventsRequest) returns (BatchCreateAnalyticsEventsResponse);
+}
+
+// The request of `CreateAnalyticsEvent`.
+message CreateAnalyticsEventRequest {
+  acme.common.v1.RequestContext context = 1;
+  AnalyticsEvent analytics_event = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateAnalyticsEvent`.
+message CreateAnalyticsEventResponse {
+  AnalyticsEvent analytics_event = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetAnalyticsEvent`.
+message GetAnalyticsEventRequest {
+  acme.common.v1.RequestContext context = 1;
+  string analytics_event_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAnalyticsEvent`.
+message GetAnalyticsEventResponse {
+  AnalyticsEvent analytics_event = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateAnalyticsEvent`.
+message UpdateAnalyticsEventRequest {
+  acme.common.v1.RequestContext context = 1;
+  AnalyticsEvent analytics_event = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateAnalyticsEvent`.
+message UpdateAnalyticsEventResponse {
+  AnalyticsEvent analytics_event = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteAnalyticsEvent`.
+message DeleteAnalyticsEventRequest {
+  acme.common.v1.RequestContext context = 1;
+  string analytics_event_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteAnalyticsEvent`.
+message DeleteAnalyticsEventResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListAnalyticsEvents`.
+message ListAnalyticsEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnalyticsEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAnalyticsEventsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAnalyticsEvents`.
+message ListAnalyticsEventsResponse {
+  repeated AnalyticsEvent analytics_events = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchAnalyticsEvents`.
+message SearchAnalyticsEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnalyticsEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchAnalyticsEventsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchAnalyticsEvents`.
+message SearchAnalyticsEventsResponse {
+  repeated AnalyticsEvent analytics_events = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchAnalyticsEvents`.
+message WatchAnalyticsEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnalyticsEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchAnalyticsEventsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchAnalyticsEvents`.
+message WatchAnalyticsEventsResponse {
+  AnalyticsEvent analytics_event = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateAnalyticsEvents`.
+message BatchCreateAnalyticsEventsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateAnalyticsEventsRequest.StreamHeader header = 2;
+    AnalyticsEvent record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateAnalyticsEvents`.
+message BatchCreateAnalyticsEventsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string analytics_event_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateAnalyticsEventsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

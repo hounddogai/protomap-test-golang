@@ -1,0 +1,284 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "BackorderSyncServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Keeps backorders in step with the systems of record in other regions.
+service BackorderSyncService {
+  // Syncs a backorder.
+  rpc SyncBackorders(SyncBackordersRequest) returns (SyncBackordersResponse);
+
+  // Pushs a backorder.
+  rpc PushBackorder(PushBackorderRequest) returns (PushBackorderResponse);
+
+  // Pulls a backorder.
+  rpc PullBackorders(PullBackordersRequest) returns (PullBackordersResponse);
+
+  // Reconciles a backorder.
+  rpc ReconcileBackorders(ReconcileBackordersRequest) returns (ReconcileBackordersResponse);
+
+  // Exchanges changes of backorders with a peer.
+  rpc StreamBackorderChanges(stream StreamBackorderChangesRequest) returns (stream StreamBackorderChangesResponse);
+
+  // Resolves a backorder.
+  rpc ResolveBackorderConflict(ResolveBackorderConflictRequest) returns (ResolveBackorderConflictResponse);
+
+  // Returns a backorder.
+  rpc GetBackorderSyncState(GetBackorderSyncStateRequest) returns (GetBackorderSyncStateResponse);
+
+  // Lists backorders a page at a time.
+  rpc ListBackorderConflicts(ListBackorderConflictsRequest) returns (ListBackorderConflictsResponse);
+}
+
+// The request of `SyncBackorders`.
+message SyncBackordersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  SyncBackordersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncBackorders`.
+message SyncBackordersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  SyncBackordersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushBackorder`.
+message PushBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  PushBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushBackorder`.
+message PushBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  PushBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullBackorders`.
+message PullBackordersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  PullBackordersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullBackorders`.
+message PullBackordersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  PullBackordersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileBackorders`.
+message ReconcileBackordersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ReconcileBackordersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileBackorders`.
+message ReconcileBackordersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ReconcileBackordersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamBackorderChanges`.
+message StreamBackorderChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Backorder change = 2;
+    StreamBackorderChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamBackorderChanges`.
+message StreamBackorderChangesResponse {
+  Backorder backorder = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveBackorderConflict`.
+message ResolveBackorderConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ResolveBackorderConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveBackorderConflict`.
+message ResolveBackorderConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ResolveBackorderConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBackorderSyncState`.
+message GetBackorderSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBackorderSyncState`.
+message GetBackorderSyncStateResponse {
+  Backorder backorder = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListBackorderConflicts`.
+message ListBackorderConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BackorderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListBackorderConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListBackorderConflicts`.
+message ListBackorderConflictsResponse {
+  repeated Backorder backorders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

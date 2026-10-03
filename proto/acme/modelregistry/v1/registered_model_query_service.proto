@@ -1,0 +1,155 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.modelregistry.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/modelregistry/v1/modelregistry.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Modelregistry.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/modelregistry/v1;modelregistryv1";
+option java_multiple_files = true;
+option java_outer_classname = "RegisteredModelQueryServiceProto";
+option java_package = "com.acme.modelregistry.v1";
+
+// Answers read-only questions about registered models, for screens and reports.
+service RegisteredModelQueryService {
+  // Returns a registered model.
+  rpc LookupRegisteredModel(LookupRegisteredModelRequest) returns (LookupRegisteredModelResponse);
+
+  // Lists registered models a page at a time.
+  rpc BrowseRegisteredModels(BrowseRegisteredModelsRequest) returns (BrowseRegisteredModelsResponse);
+
+  // Lists registered models a page at a time.
+  rpc FindRegisteredModels(FindRegisteredModelsRequest) returns (FindRegisteredModelsResponse);
+
+  // Counts registered models by status.
+  rpc CountRegisteredModels(CountRegisteredModelsRequest) returns (CountRegisteredModelsResponse);
+
+  // Returns several registered models at once.
+  rpc ResolveRegisteredModels(ResolveRegisteredModelsRequest) returns (ResolveRegisteredModelsResponse);
+
+  // Returns a registered model.
+  rpc PeekRegisteredModel(PeekRegisteredModelRequest) returns (PeekRegisteredModelResponse);
+}
+
+// The request of `LookupRegisteredModel`.
+message LookupRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupRegisteredModel`.
+message LookupRegisteredModelResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseRegisteredModels`.
+message BrowseRegisteredModelsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RegisteredModelStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseRegisteredModelsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseRegisteredModels`.
+message BrowseRegisteredModelsResponse {
+  repeated RegisteredModel registered_models = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindRegisteredModels`.
+message FindRegisteredModelsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RegisteredModelStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindRegisteredModelsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindRegisteredModels`.
+message FindRegisteredModelsResponse {
+  repeated RegisteredModel registered_models = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountRegisteredModels`.
+message CountRegisteredModelsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RegisteredModelStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountRegisteredModelsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountRegisteredModels`.
+message CountRegisteredModelsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveRegisteredModels`.
+message ResolveRegisteredModelsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string registered_model_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveRegisteredModels`.
+message ResolveRegisteredModelsResponse {
+  repeated RegisteredModel registered_models = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekRegisteredModel`.
+message PeekRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekRegisteredModel`.
+message PeekRegisteredModelResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}

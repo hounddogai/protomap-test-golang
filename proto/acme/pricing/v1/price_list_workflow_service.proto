@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceListWorkflowServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Runs the long-lived workflow that takes a price list from start to finish.
+service PriceListWorkflowService {
+  // Starts a price list.
+  rpc StartPriceListWorkflow(StartPriceListWorkflowRequest) returns (StartPriceListWorkflowResponse);
+
+  // Advances a price list.
+  rpc AdvancePriceListWorkflow(AdvancePriceListWorkflowRequest) returns (AdvancePriceListWorkflowResponse);
+
+  // Cancels a price list.
+  rpc CancelPriceListWorkflow(CancelPriceListWorkflowRequest) returns (CancelPriceListWorkflowResponse);
+
+  // Retrys a price list.
+  rpc RetryPriceListWorkflow(RetryPriceListWorkflowRequest) returns (RetryPriceListWorkflowResponse);
+
+  // Returns a price list.
+  rpc InspectPriceListWorkflow(InspectPriceListWorkflowRequest) returns (InspectPriceListWorkflowResponse);
+
+  // Lists price lists a page at a time.
+  rpc ListPriceListWorkflows(ListPriceListWorkflowsRequest) returns (ListPriceListWorkflowsResponse);
+}
+
+// The request of `StartPriceListWorkflow`.
+message StartPriceListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  StartPriceListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPriceListWorkflow`.
+message StartPriceListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  StartPriceListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePriceListWorkflow`.
+message AdvancePriceListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  AdvancePriceListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePriceListWorkflow`.
+message AdvancePriceListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  AdvancePriceListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPriceListWorkflow`.
+message CancelPriceListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  CancelPriceListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPriceListWorkflow`.
+message CancelPriceListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  CancelPriceListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPriceListWorkflow`.
+message RetryPriceListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  RetryPriceListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPriceListWorkflow`.
+message RetryPriceListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  RetryPriceListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPriceListWorkflow`.
+message InspectPriceListWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPriceListWorkflow`.
+message InspectPriceListWorkflowResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPriceListWorkflows`.
+message ListPriceListWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPriceListWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPriceListWorkflows`.
+message ListPriceListWorkflowsResponse {
+  repeated PriceList price_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

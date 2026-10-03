@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShipmentValidationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Checks shipments against the rules before anything acts on them.
+service ShipmentValidationService {
+  // Validates a shipment.
+  rpc ValidateShipment(ValidateShipmentRequest) returns (ValidateShipmentResponse);
+
+  // Previews a shipment.
+  rpc PreviewShipment(PreviewShipmentRequest) returns (PreviewShipmentResponse);
+
+  // Checks a shipment.
+  rpc CheckShipmentEligibility(CheckShipmentEligibilityRequest) returns (CheckShipmentEligibilityResponse);
+
+  // Normalizes a shipment.
+  rpc NormalizeShipment(NormalizeShipmentRequest) returns (NormalizeShipmentResponse);
+
+  // Explains a shipment.
+  rpc ExplainShipmentDecision(ExplainShipmentDecisionRequest) returns (ExplainShipmentDecisionResponse);
+
+  // Scores a shipment.
+  rpc ScoreShipment(ScoreShipmentRequest) returns (ScoreShipmentResponse);
+
+  // Lints a shipment.
+  rpc LintShipments(LintShipmentsRequest) returns (LintShipmentsResponse);
+
+  // Returns a shipment.
+  rpc GetShipmentRules(GetShipmentRulesRequest) returns (GetShipmentRulesResponse);
+}
+
+// The request of `ValidateShipment`.
+message ValidateShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  ValidateShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateShipment`.
+message ValidateShipmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  ValidateShipmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewShipment`.
+message PreviewShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  PreviewShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewShipment`.
+message PreviewShipmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  PreviewShipmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckShipmentEligibility`.
+message CheckShipmentEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  CheckShipmentEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckShipmentEligibility`.
+message CheckShipmentEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  CheckShipmentEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeShipment`.
+message NormalizeShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  NormalizeShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeShipment`.
+message NormalizeShipmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  NormalizeShipmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainShipmentDecision`.
+message ExplainShipmentDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  ExplainShipmentDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainShipmentDecision`.
+message ExplainShipmentDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  ExplainShipmentDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreShipment`.
+message ScoreShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  ScoreShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreShipment`.
+message ScoreShipmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreShipmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  ScoreShipmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintShipments`.
+message LintShipmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  LintShipmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintShipments`.
+message LintShipmentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  LintShipmentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetShipmentRules`.
+message GetShipmentRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetShipmentRules`.
+message GetShipmentRulesResponse {
+  Shipment shipment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

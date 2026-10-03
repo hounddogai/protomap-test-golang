@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.boxoffice.v1;
+
+import "acme/boxoffice/v1/boxoffice.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Boxoffice.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/boxoffice/v1;boxofficev1";
+option java_multiple_files = true;
+option java_outer_classname = "BoxOfficeSaleServiceProto";
+option java_package = "com.acme.boxoffice.v1";
+
+// Manages box office sales: creates, reads, changes, and lists them.
+service BoxOfficeSaleService {
+  // Creates a box office sale.
+  rpc CreateBoxOfficeSale(CreateBoxOfficeSaleRequest) returns (CreateBoxOfficeSaleResponse);
+
+  // Returns a box office sale.
+  rpc GetBoxOfficeSale(GetBoxOfficeSaleRequest) returns (GetBoxOfficeSaleResponse);
+
+  // Changes a box office sale.
+  rpc UpdateBoxOfficeSale(UpdateBoxOfficeSaleRequest) returns (UpdateBoxOfficeSaleResponse);
+
+  // Deletes a box office sale.
+  rpc DeleteBoxOfficeSale(DeleteBoxOfficeSaleRequest) returns (DeleteBoxOfficeSaleResponse);
+
+  // Lists box office sales a page at a time.
+  rpc ListBoxOfficeSales(ListBoxOfficeSalesRequest) returns (ListBoxOfficeSalesResponse);
+
+  // Lists box office sales a page at a time.
+  rpc SearchBoxOfficeSales(SearchBoxOfficeSalesRequest) returns (SearchBoxOfficeSalesResponse);
+
+  // Streams the changes of box office sales as they happen.
+  rpc WatchBoxOfficeSales(WatchBoxOfficeSalesRequest) returns (stream WatchBoxOfficeSalesResponse);
+
+  // Takes a stream of box office sales and answers once at the end.
+  rpc BatchCreateBoxOfficeSales(stream BatchCreateBoxOfficeSalesRequest) returns (BatchCreateBoxOfficeSalesResponse);
+
+  // Creates a box office sale.
+  rpc CloneBoxOfficeSale(CloneBoxOfficeSaleRequest) returns (CloneBoxOfficeSaleResponse);
+}
+
+// The request of `CreateBoxOfficeSale`.
+message CreateBoxOfficeSaleRequest {
+  acme.common.v1.RequestContext context = 1;
+  BoxOfficeSale box_office_sale = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateBoxOfficeSale`.
+message CreateBoxOfficeSaleResponse {
+  BoxOfficeSale box_office_sale = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetBoxOfficeSale`.
+message GetBoxOfficeSaleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBoxOfficeSale`.
+message GetBoxOfficeSaleResponse {
+  BoxOfficeSale box_office_sale = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateBoxOfficeSale`.
+message UpdateBoxOfficeSaleRequest {
+  acme.common.v1.RequestContext context = 1;
+  BoxOfficeSale box_office_sale = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateBoxOfficeSale`.
+message UpdateBoxOfficeSaleResponse {
+  BoxOfficeSale box_office_sale = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteBoxOfficeSale`.
+message DeleteBoxOfficeSaleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteBoxOfficeSale`.
+message DeleteBoxOfficeSaleResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListBoxOfficeSales`.
+message ListBoxOfficeSalesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BoxOfficeSaleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListBoxOfficeSalesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListBoxOfficeSales`.
+message ListBoxOfficeSalesResponse {
+  repeated BoxOfficeSale box_office_sales = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchBoxOfficeSales`.
+message SearchBoxOfficeSalesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BoxOfficeSaleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchBoxOfficeSalesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchBoxOfficeSales`.
+message SearchBoxOfficeSalesResponse {
+  repeated BoxOfficeSale box_office_sales = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchBoxOfficeSales`.
+message WatchBoxOfficeSalesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BoxOfficeSaleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchBoxOfficeSalesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchBoxOfficeSales`.
+message WatchBoxOfficeSalesResponse {
+  BoxOfficeSale box_office_sale = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateBoxOfficeSales`.
+message BatchCreateBoxOfficeSalesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateBoxOfficeSalesRequest.StreamHeader header = 2;
+    BoxOfficeSale record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateBoxOfficeSales`.
+message BatchCreateBoxOfficeSalesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string box_office_sale_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateBoxOfficeSalesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneBoxOfficeSale`.
+message CloneBoxOfficeSaleRequest {
+  acme.common.v1.RequestContext context = 1;
+  BoxOfficeSale box_office_sale = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneBoxOfficeSale`.
+message CloneBoxOfficeSaleResponse {
+  BoxOfficeSale box_office_sale = 1;
+  acme.common.v1.OperationResult result = 2;
+}

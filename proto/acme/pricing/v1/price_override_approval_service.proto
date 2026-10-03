@@ -1,0 +1,266 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceOverrideApprovalServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Routes price overrides through approval, with escalation and delegation.
+service PriceOverrideApprovalService {
+  // Submits a price override.
+  rpc SubmitPriceOverride(SubmitPriceOverrideRequest) returns (SubmitPriceOverrideResponse);
+
+  // Approves a price override.
+  rpc ApprovePriceOverride(ApprovePriceOverrideRequest) returns (ApprovePriceOverrideResponse);
+
+  // Rejects a price override.
+  rpc RejectPriceOverride(RejectPriceOverrideRequest) returns (RejectPriceOverrideResponse);
+
+  // Escalates a price override.
+  rpc EscalatePriceOverride(EscalatePriceOverrideRequest) returns (EscalatePriceOverrideResponse);
+
+  // Delegates a price override.
+  rpc DelegatePriceOverrideApproval(DelegatePriceOverrideApprovalRequest) returns (DelegatePriceOverrideApprovalResponse);
+
+  // Returns a price override.
+  rpc GetPriceOverrideApprovalStatus(GetPriceOverrideApprovalStatusRequest) returns (GetPriceOverrideApprovalStatusResponse);
+
+  // Comments a price override.
+  rpc CommentPriceOverrideApproval(CommentPriceOverrideApprovalRequest) returns (CommentPriceOverrideApprovalResponse);
+}
+
+// The request of `SubmitPriceOverride`.
+message SubmitPriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  SubmitPriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPriceOverride`.
+message SubmitPriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  SubmitPriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePriceOverride`.
+message ApprovePriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  ApprovePriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePriceOverride`.
+message ApprovePriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  ApprovePriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPriceOverride`.
+message RejectPriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  RejectPriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPriceOverride`.
+message RejectPriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  RejectPriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePriceOverride`.
+message EscalatePriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  EscalatePriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePriceOverride`.
+message EscalatePriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  EscalatePriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePriceOverrideApproval`.
+message DelegatePriceOverrideApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  DelegatePriceOverrideApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePriceOverrideApproval`.
+message DelegatePriceOverrideApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  DelegatePriceOverrideApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPriceOverrideApprovalStatus`.
+message GetPriceOverrideApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPriceOverrideApprovalStatus`.
+message GetPriceOverrideApprovalStatusResponse {
+  PriceOverride price_override = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPriceOverrideApproval`.
+message CommentPriceOverrideApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  CommentPriceOverrideApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPriceOverrideApproval`.
+message CommentPriceOverrideApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  CommentPriceOverrideApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

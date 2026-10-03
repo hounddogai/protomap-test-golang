@@ -1,0 +1,164 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AppointmentsProto";
+option java_package = "com.acme.appointments.v1";
+
+// Where an appointment is in its lifecycle.
+enum AppointmentStatus {
+  APPOINTMENT_STATUS_UNSPECIFIED = 0;
+  APPOINTMENT_STATUS_TENTATIVE = 1;
+  APPOINTMENT_STATUS_CONFIRMED = 2;
+  APPOINTMENT_STATUS_CANCELLED = 3;
+  APPOINTMENT_STATUS_COMPLETED = 4;
+}
+
+// Where a provider is in its lifecycle.
+enum ProviderStatus {
+  PROVIDER_STATUS_UNSPECIFIED = 0;
+  PROVIDER_STATUS_PROSPECT = 1;
+  PROVIDER_STATUS_ACTIVE = 2;
+  PROVIDER_STATUS_SUSPENDED = 3;
+  PROVIDER_STATUS_CLOSED = 4;
+}
+
+// Where a clinic slot is in its lifecycle.
+enum ClinicSlotStatus {
+  CLINIC_SLOT_STATUS_UNSPECIFIED = 0;
+  CLINIC_SLOT_STATUS_TENTATIVE = 1;
+  CLINIC_SLOT_STATUS_CONFIRMED = 2;
+  CLINIC_SLOT_STATUS_CANCELLED = 3;
+  CLINIC_SLOT_STATUS_COMPLETED = 4;
+}
+
+// The participant of an appointment.
+message AppointmentParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of an appointment.
+message AppointmentDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of an appointment.
+message AppointmentWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// An appointment of the appointments domain.
+message Appointment {
+  string appointment_id = 1;
+  string title = 2;
+  AppointmentStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated AppointmentParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    AppointmentDailyRule daily = 7;
+    AppointmentWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The preferences of a provider.
+message ProviderPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a provider.
+message ProviderPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a provider.
+message ProviderNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A provider of the appointments domain.
+message Provider {
+  string provider_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  ProviderStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  ProviderPreferences preferences = 8;
+  oneof identity_document {
+    ProviderPassport passport = 9;
+    ProviderNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The participant of a clinic slot.
+message ClinicSlotParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a clinic slot.
+message ClinicSlotDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a clinic slot.
+message ClinicSlotWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A clinic slot of the appointments domain.
+message ClinicSlot {
+  string clinic_slot_id = 1;
+  string title = 2;
+  ClinicSlotStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated ClinicSlotParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    ClinicSlotDailyRule daily = 7;
+    ClinicSlotWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}

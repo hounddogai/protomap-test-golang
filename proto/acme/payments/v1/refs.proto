@@ -1,0 +1,47 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.payments.v1";
+
+// A reference to a payment of the payments domain.
+message PaymentRef {
+  string payment_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a refund of the payments domain.
+message RefundRef {
+  string refund_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a payment instrument of the payments domain.
+message PaymentInstrumentRef {
+  string payment_instrument_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a payout of the payments domain.
+message PayoutRef {
+  string payout_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a dispute of the payments domain.
+message DisputeRef {
+  string dispute_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

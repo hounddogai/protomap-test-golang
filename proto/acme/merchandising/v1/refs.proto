@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.merchandising.v1";
+
+// A reference to a collection of the merchandising domain.
+message CollectionRef {
+  string collection_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a placement of the merchandising domain.
+message PlacementRef {
+  string placement_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a merchandising rule of the merchandising domain.
+message MerchandisingRuleRef {
+  string merchandising_rule_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

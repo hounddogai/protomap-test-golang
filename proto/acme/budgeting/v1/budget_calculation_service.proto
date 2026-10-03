@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.budgeting.v1;
+
+import "acme/budgeting/v1/budgeting.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Budgeting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/budgeting/v1;budgetingv1";
+option java_multiple_files = true;
+option java_outer_classname = "BudgetCalculationServiceProto";
+option java_package = "com.acme.budgeting.v1";
+
+// Computes the figures of a budget, such as totals, taxes, and estimates.
+service BudgetCalculationService {
+  // Calculates a budget.
+  rpc CalculateBudget(CalculateBudgetRequest) returns (CalculateBudgetResponse);
+
+  // Estimates a budget.
+  rpc EstimateBudget(EstimateBudgetRequest) returns (EstimateBudgetResponse);
+
+  // Quotes a budget.
+  rpc QuoteBudget(QuoteBudgetRequest) returns (QuoteBudgetResponse);
+
+  // Compares a budget.
+  rpc CompareBudgetOptions(CompareBudgetOptionsRequest) returns (CompareBudgetOptionsResponse);
+
+  // Recalculates a budget.
+  rpc RecalculateBudgets(RecalculateBudgetsRequest) returns (RecalculateBudgetsResponse);
+
+  // Simulates a budget.
+  rpc SimulateBudget(SimulateBudgetRequest) returns (SimulateBudgetResponse);
+
+  // Explains a budget.
+  rpc ExplainBudgetCalculation(ExplainBudgetCalculationRequest) returns (ExplainBudgetCalculationResponse);
+
+  // Returns a budget.
+  rpc GetBudgetRates(GetBudgetRatesRequest) returns (GetBudgetRatesResponse);
+}
+
+// The request of `CalculateBudget`.
+message CalculateBudgetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  CalculateBudgetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateBudget`.
+message CalculateBudgetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateBudgetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Budget budget = 1;
+  CalculateBudgetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateBudget`.
+message EstimateBudgetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  EstimateBudgetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateBudget`.
+message EstimateBudgetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateBudgetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Budget budget = 1;
+  EstimateBudgetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteBudget`.
+message QuoteBudgetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  QuoteBudgetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteBudget`.
+message QuoteBudgetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteBudgetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Budget budget = 1;
+  QuoteBudgetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareBudgetOptions`.
+message CompareBudgetOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  CompareBudgetOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareBudgetOptions`.
+message CompareBudgetOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareBudgetOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Budget budget = 1;
+  CompareBudgetOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateBudgets`.
+message RecalculateBudgetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  RecalculateBudgetsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateBudgets`.
+message RecalculateBudgetsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateBudgetsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Budget budget = 1;
+  RecalculateBudgetsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateBudget`.
+message SimulateBudgetRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  SimulateBudgetRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateBudget`.
+message SimulateBudgetResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateBudgetResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Budget budget = 1;
+  SimulateBudgetResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainBudgetCalculation`.
+message ExplainBudgetCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  Budget budget = 3;
+  ExplainBudgetCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainBudgetCalculation`.
+message ExplainBudgetCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Budget budget = 1;
+  ExplainBudgetCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBudgetRates`.
+message GetBudgetRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string budget_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBudgetRates`.
+message GetBudgetRatesResponse {
+  Budget budget = 1;
+  acme.common.v1.OperationResult result = 2;
+}

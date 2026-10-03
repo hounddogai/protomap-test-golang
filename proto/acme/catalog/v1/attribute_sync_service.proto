@@ -1,0 +1,246 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "AttributeSyncServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Keeps attributes in step with the systems of record in other regions.
+service AttributeSyncService {
+  // Syncs an attribute.
+  rpc SyncAttributes(SyncAttributesRequest) returns (SyncAttributesResponse);
+
+  // Pushs an attribute.
+  rpc PushAttribute(PushAttributeRequest) returns (PushAttributeResponse);
+
+  // Pulls an attribute.
+  rpc PullAttributes(PullAttributesRequest) returns (PullAttributesResponse);
+
+  // Exchanges changes of attributes with a peer.
+  rpc StreamAttributeChanges(stream StreamAttributeChangesRequest) returns (stream StreamAttributeChangesResponse);
+
+  // Resolves an attribute.
+  rpc ResolveAttributeConflict(ResolveAttributeConflictRequest) returns (ResolveAttributeConflictResponse);
+
+  // Returns an attribute.
+  rpc GetAttributeSyncState(GetAttributeSyncStateRequest) returns (GetAttributeSyncStateResponse);
+
+  // Lists attributes a page at a time.
+  rpc ListAttributeConflicts(ListAttributeConflictsRequest) returns (ListAttributeConflictsResponse);
+}
+
+// The request of `SyncAttributes`.
+message SyncAttributesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  SyncAttributesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncAttributes`.
+message SyncAttributesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  SyncAttributesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushAttribute`.
+message PushAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  PushAttributeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushAttribute`.
+message PushAttributeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  PushAttributeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullAttributes`.
+message PullAttributesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  PullAttributesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullAttributes`.
+message PullAttributesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  PullAttributesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamAttributeChanges`.
+message StreamAttributeChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Attribute change = 2;
+    StreamAttributeChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamAttributeChanges`.
+message StreamAttributeChangesResponse {
+  Attribute attribute = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveAttributeConflict`.
+message ResolveAttributeConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  ResolveAttributeConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveAttributeConflict`.
+message ResolveAttributeConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  ResolveAttributeConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAttributeSyncState`.
+message GetAttributeSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAttributeSyncState`.
+message GetAttributeSyncStateResponse {
+  Attribute attribute = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListAttributeConflicts`.
+message ListAttributeConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AttributeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAttributeConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAttributeConflicts`.
+message ListAttributeConflictsResponse {
+  repeated Attribute attributes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,161 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.modelregistry.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/modelregistry/v1/modelregistry.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Modelregistry.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/modelregistry/v1;modelregistryv1";
+option java_multiple_files = true;
+option java_outer_classname = "RegisteredModelServiceProto";
+option java_package = "com.acme.modelregistry.v1";
+
+// Manages registered models: creates, reads, changes, and lists them.
+service RegisteredModelService {
+  // Creates a registered model.
+  rpc CreateRegisteredModel(CreateRegisteredModelRequest) returns (CreateRegisteredModelResponse);
+
+  // Returns a registered model.
+  rpc GetRegisteredModel(GetRegisteredModelRequest) returns (GetRegisteredModelResponse);
+
+  // Changes a registered model.
+  rpc UpdateRegisteredModel(UpdateRegisteredModelRequest) returns (UpdateRegisteredModelResponse);
+
+  // Deletes a registered model.
+  rpc DeleteRegisteredModel(DeleteRegisteredModelRequest) returns (DeleteRegisteredModelResponse);
+
+  // Returns several registered models at once.
+  rpc BatchGetRegisteredModels(BatchGetRegisteredModelsRequest) returns (BatchGetRegisteredModelsResponse);
+
+  // Takes a stream of registered models and answers once at the end.
+  rpc BatchCreateRegisteredModels(stream BatchCreateRegisteredModelsRequest) returns (BatchCreateRegisteredModelsResponse);
+
+  // Creates a registered model.
+  rpc CloneRegisteredModel(CloneRegisteredModelRequest) returns (CloneRegisteredModelResponse);
+}
+
+// The request of `CreateRegisteredModel`.
+message CreateRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  RegisteredModel registered_model = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateRegisteredModel`.
+message CreateRegisteredModelResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetRegisteredModel`.
+message GetRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRegisteredModel`.
+message GetRegisteredModelResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateRegisteredModel`.
+message UpdateRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  RegisteredModel registered_model = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateRegisteredModel`.
+message UpdateRegisteredModelResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteRegisteredModel`.
+message DeleteRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteRegisteredModel`.
+message DeleteRegisteredModelResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetRegisteredModels`.
+message BatchGetRegisteredModelsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string registered_model_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetRegisteredModels`.
+message BatchGetRegisteredModelsResponse {
+  repeated RegisteredModel registered_models = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateRegisteredModels`.
+message BatchCreateRegisteredModelsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateRegisteredModelsRequest.StreamHeader header = 2;
+    RegisteredModel record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateRegisteredModels`.
+message BatchCreateRegisteredModelsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string registered_model_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateRegisteredModelsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneRegisteredModel`.
+message CloneRegisteredModelRequest {
+  acme.common.v1.RequestContext context = 1;
+  RegisteredModel registered_model = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneRegisteredModel`.
+message CloneRegisteredModelResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}

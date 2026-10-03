@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchIndexAdminServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Operator actions on search indexes that support staff run by hand.
+service SearchIndexAdminService {
+  // Archives a search index.
+  rpc ArchiveSearchIndex(ArchiveSearchIndexRequest) returns (ArchiveSearchIndexResponse);
+
+  // Restores a search index.
+  rpc RestoreSearchIndex(RestoreSearchIndexRequest) returns (RestoreSearchIndexResponse);
+
+  // Reassigns a search index.
+  rpc ReassignSearchIndex(ReassignSearchIndexRequest) returns (ReassignSearchIndexResponse);
+
+  // Unlocks a search index.
+  rpc UnlockSearchIndex(UnlockSearchIndexRequest) returns (UnlockSearchIndexResponse);
+
+  // Transfers a search index.
+  rpc TransferSearchIndex(TransferSearchIndexRequest) returns (TransferSearchIndexResponse);
+
+  // Repairs a search index.
+  rpc RepairSearchIndex(RepairSearchIndexRequest) returns (RepairSearchIndexResponse);
+
+  // Returns a search index.
+  rpc InspectSearchIndex(InspectSearchIndexRequest) returns (InspectSearchIndexResponse);
+}
+
+// The request of `ArchiveSearchIndex`.
+message ArchiveSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  ArchiveSearchIndexRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ArchiveSearchIndex`.
+message ArchiveSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  ArchiveSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RestoreSearchIndex`.
+message RestoreSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  RestoreSearchIndexRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RestoreSearchIndex`.
+message RestoreSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  RestoreSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReassignSearchIndex`.
+message ReassignSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.identity.v1.UserRef assignee = 1;
+    string queue = 2;
+    int32 capacity = 3;
+    string assignee_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  ReassignSearchIndexRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReassignSearchIndex`.
+message ReassignSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  ReassignSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnlockSearchIndex`.
+message UnlockSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  UnlockSearchIndexRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnlockSearchIndex`.
+message UnlockSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  UnlockSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TransferSearchIndex`.
+message TransferSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  TransferSearchIndexRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TransferSearchIndex`.
+message TransferSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  TransferSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RepairSearchIndex`.
+message RepairSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  RepairSearchIndexRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RepairSearchIndex`.
+message RepairSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  RepairSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSearchIndex`.
+message InspectSearchIndexRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSearchIndex`.
+message InspectSearchIndexResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}

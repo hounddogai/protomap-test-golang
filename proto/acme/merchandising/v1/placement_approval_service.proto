@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PlacementApprovalServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Routes placements through approval, with escalation and delegation.
+service PlacementApprovalService {
+  // Submits a placement.
+  rpc SubmitPlacement(SubmitPlacementRequest) returns (SubmitPlacementResponse);
+
+  // Approves a placement.
+  rpc ApprovePlacement(ApprovePlacementRequest) returns (ApprovePlacementResponse);
+
+  // Rejects a placement.
+  rpc RejectPlacement(RejectPlacementRequest) returns (RejectPlacementResponse);
+
+  // Lists placements a page at a time.
+  rpc ListPendingPlacements(ListPendingPlacementsRequest) returns (ListPendingPlacementsResponse);
+
+  // Delegates a placement.
+  rpc DelegatePlacementApproval(DelegatePlacementApprovalRequest) returns (DelegatePlacementApprovalResponse);
+
+  // Recalls a placement.
+  rpc RecallPlacement(RecallPlacementRequest) returns (RecallPlacementResponse);
+
+  // Returns a placement.
+  rpc GetPlacementApprovalStatus(GetPlacementApprovalStatusRequest) returns (GetPlacementApprovalStatusResponse);
+}
+
+// The request of `SubmitPlacement`.
+message SubmitPlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  SubmitPlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPlacement`.
+message SubmitPlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  SubmitPlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePlacement`.
+message ApprovePlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  ApprovePlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePlacement`.
+message ApprovePlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  ApprovePlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPlacement`.
+message RejectPlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  RejectPlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPlacement`.
+message RejectPlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  RejectPlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPlacements`.
+message ListPendingPlacementsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PlacementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPlacementsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPlacements`.
+message ListPendingPlacementsResponse {
+  repeated Placement placements = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePlacementApproval`.
+message DelegatePlacementApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  DelegatePlacementApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePlacementApproval`.
+message DelegatePlacementApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  DelegatePlacementApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPlacement`.
+message RecallPlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  RecallPlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPlacement`.
+message RecallPlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  RecallPlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPlacementApprovalStatus`.
+message GetPlacementApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPlacementApprovalStatus`.
+message GetPlacementApprovalStatusResponse {
+  Placement placement = 1;
+  acme.common.v1.OperationResult result = 2;
+}

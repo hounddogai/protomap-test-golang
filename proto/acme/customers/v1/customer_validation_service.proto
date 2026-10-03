@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerValidationServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Checks customers against the rules before anything acts on them.
+service CustomerValidationService {
+  // Validates a customer.
+  rpc ValidateCustomer(ValidateCustomerRequest) returns (ValidateCustomerResponse);
+
+  // Previews a customer.
+  rpc PreviewCustomer(PreviewCustomerRequest) returns (PreviewCustomerResponse);
+
+  // Checks a customer.
+  rpc CheckCustomerEligibility(CheckCustomerEligibilityRequest) returns (CheckCustomerEligibilityResponse);
+
+  // Explains a customer.
+  rpc ExplainCustomerDecision(ExplainCustomerDecisionRequest) returns (ExplainCustomerDecisionResponse);
+
+  // Scores a customer.
+  rpc ScoreCustomer(ScoreCustomerRequest) returns (ScoreCustomerResponse);
+
+  // Lints a customer.
+  rpc LintCustomers(LintCustomersRequest) returns (LintCustomersResponse);
+
+  // Returns a customer.
+  rpc GetCustomerRules(GetCustomerRulesRequest) returns (GetCustomerRulesResponse);
+}
+
+// The request of `ValidateCustomer`.
+message ValidateCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  ValidateCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateCustomer`.
+message ValidateCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  ValidateCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewCustomer`.
+message PreviewCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  PreviewCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewCustomer`.
+message PreviewCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  PreviewCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckCustomerEligibility`.
+message CheckCustomerEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  CheckCustomerEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckCustomerEligibility`.
+message CheckCustomerEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  CheckCustomerEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCustomerDecision`.
+message ExplainCustomerDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  ExplainCustomerDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCustomerDecision`.
+message ExplainCustomerDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  ExplainCustomerDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreCustomer`.
+message ScoreCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  ScoreCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreCustomer`.
+message ScoreCustomerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreCustomerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Customer customer = 1;
+  ScoreCustomerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintCustomers`.
+message LintCustomersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  LintCustomersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintCustomers`.
+message LintCustomersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  LintCustomersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCustomerRules`.
+message GetCustomerRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomerRules`.
+message GetCustomerRulesResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}

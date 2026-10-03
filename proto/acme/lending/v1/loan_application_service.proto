@@ -1,0 +1,135 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.lending.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/lending/v1/lending.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Lending.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/lending/v1;lendingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoanApplicationServiceProto";
+option java_package = "com.acme.lending.v1";
+
+// Manages loan applications: creates, reads, changes, and lists them.
+service LoanApplicationService {
+  // Creates a loan application.
+  rpc CreateLoanApplication(CreateLoanApplicationRequest) returns (CreateLoanApplicationResponse);
+
+  // Returns a loan application.
+  rpc GetLoanApplication(GetLoanApplicationRequest) returns (GetLoanApplicationResponse);
+
+  // Deletes a loan application.
+  rpc DeleteLoanApplication(DeleteLoanApplicationRequest) returns (DeleteLoanApplicationResponse);
+
+  // Returns several loan applications at once.
+  rpc BatchGetLoanApplications(BatchGetLoanApplicationsRequest) returns (BatchGetLoanApplicationsResponse);
+
+  // Lists loan applications a page at a time.
+  rpc SearchLoanApplications(SearchLoanApplicationsRequest) returns (SearchLoanApplicationsResponse);
+
+  // Creates a loan application.
+  rpc CloneLoanApplication(CloneLoanApplicationRequest) returns (CloneLoanApplicationResponse);
+}
+
+// The request of `CreateLoanApplication`.
+message CreateLoanApplicationRequest {
+  acme.common.v1.RequestContext context = 1;
+  LoanApplication loan_application = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateLoanApplication`.
+message CreateLoanApplicationResponse {
+  LoanApplication loan_application = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetLoanApplication`.
+message GetLoanApplicationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLoanApplication`.
+message GetLoanApplicationResponse {
+  LoanApplication loan_application = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteLoanApplication`.
+message DeleteLoanApplicationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteLoanApplication`.
+message DeleteLoanApplicationResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetLoanApplications`.
+message BatchGetLoanApplicationsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string loan_application_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetLoanApplications`.
+message BatchGetLoanApplicationsResponse {
+  repeated LoanApplication loan_applications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchLoanApplications`.
+message SearchLoanApplicationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoanApplicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchLoanApplicationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchLoanApplications`.
+message SearchLoanApplicationsResponse {
+  repeated LoanApplication loan_applications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneLoanApplication`.
+message CloneLoanApplicationRequest {
+  acme.common.v1.RequestContext context = 1;
+  LoanApplication loan_application = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneLoanApplication`.
+message CloneLoanApplicationResponse {
+  LoanApplication loan_application = 1;
+  acme.common.v1.OperationResult result = 2;
+}

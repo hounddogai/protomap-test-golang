@@ -1,0 +1,146 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.itsm.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/itsm/v1/itsm.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Itsm.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/itsm/v1;itsmv1";
+option java_multiple_files = true;
+option java_outer_classname = "IncidentServiceProto";
+option java_package = "com.acme.itsm.v1";
+
+// Manages incidents: creates, reads, changes, and lists them.
+service IncidentService {
+  // Creates an incident.
+  rpc CreateIncident(CreateIncidentRequest) returns (CreateIncidentResponse);
+
+  // Returns an incident.
+  rpc GetIncident(GetIncidentRequest) returns (GetIncidentResponse);
+
+  // Deletes an incident.
+  rpc DeleteIncident(DeleteIncidentRequest) returns (DeleteIncidentResponse);
+
+  // Lists incidents a page at a time.
+  rpc ListIncidents(ListIncidentsRequest) returns (ListIncidentsResponse);
+
+  // Lists incidents a page at a time.
+  rpc SearchIncidents(SearchIncidentsRequest) returns (SearchIncidentsResponse);
+
+  // Creates an incident.
+  rpc CloneIncident(CloneIncidentRequest) returns (CloneIncidentResponse);
+}
+
+// The request of `CreateIncident`.
+message CreateIncidentRequest {
+  acme.common.v1.RequestContext context = 1;
+  Incident incident = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateIncident`.
+message CreateIncidentResponse {
+  Incident incident = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetIncident`.
+message GetIncidentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string incident_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetIncident`.
+message GetIncidentResponse {
+  Incident incident = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteIncident`.
+message DeleteIncidentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string incident_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteIncident`.
+message DeleteIncidentResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListIncidents`.
+message ListIncidentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated IncidentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListIncidentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListIncidents`.
+message ListIncidentsResponse {
+  repeated Incident incidents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchIncidents`.
+message SearchIncidentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated IncidentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchIncidentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchIncidents`.
+message SearchIncidentsResponse {
+  repeated Incident incidents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneIncident`.
+message CloneIncidentRequest {
+  acme.common.v1.RequestContext context = 1;
+  Incident incident = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneIncident`.
+message CloneIncidentResponse {
+  Incident incident = 1;
+  acme.common.v1.OperationResult result = 2;
+}

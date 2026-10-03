@@ -1,0 +1,260 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RestockDecisionValidationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Checks restock decisions against the rules before anything acts on them.
+service RestockDecisionValidationService {
+  // Validates a restock decision.
+  rpc ValidateRestockDecision(ValidateRestockDecisionRequest) returns (ValidateRestockDecisionResponse);
+
+  // Previews a restock decision.
+  rpc PreviewRestockDecision(PreviewRestockDecisionRequest) returns (PreviewRestockDecisionResponse);
+
+  // Checks a restock decision.
+  rpc CheckRestockDecisionEligibility(CheckRestockDecisionEligibilityRequest) returns (CheckRestockDecisionEligibilityResponse);
+
+  // Normalizes a restock decision.
+  rpc NormalizeRestockDecision(NormalizeRestockDecisionRequest) returns (NormalizeRestockDecisionResponse);
+
+  // Explains a restock decision.
+  rpc ExplainRestockDecisionDecision(ExplainRestockDecisionDecisionRequest) returns (ExplainRestockDecisionDecisionResponse);
+
+  // Lints a restock decision.
+  rpc LintRestockDecisions(LintRestockDecisionsRequest) returns (LintRestockDecisionsResponse);
+
+  // Returns a restock decision.
+  rpc GetRestockDecisionRules(GetRestockDecisionRulesRequest) returns (GetRestockDecisionRulesResponse);
+}
+
+// The request of `ValidateRestockDecision`.
+message ValidateRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  ValidateRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateRestockDecision`.
+message ValidateRestockDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  ValidateRestockDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewRestockDecision`.
+message PreviewRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  PreviewRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewRestockDecision`.
+message PreviewRestockDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  PreviewRestockDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckRestockDecisionEligibility`.
+message CheckRestockDecisionEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  CheckRestockDecisionEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckRestockDecisionEligibility`.
+message CheckRestockDecisionEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  CheckRestockDecisionEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeRestockDecision`.
+message NormalizeRestockDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  NormalizeRestockDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeRestockDecision`.
+message NormalizeRestockDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  NormalizeRestockDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRestockDecisionDecision`.
+message ExplainRestockDecisionDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  ExplainRestockDecisionDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRestockDecisionDecision`.
+message ExplainRestockDecisionDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  ExplainRestockDecisionDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintRestockDecisions`.
+message LintRestockDecisionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  RestockDecision restock_decision = 3;
+  LintRestockDecisionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintRestockDecisions`.
+message LintRestockDecisionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RestockDecision restock_decision = 1;
+  LintRestockDecisionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRestockDecisionRules`.
+message GetRestockDecisionRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string restock_decision_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRestockDecisionRules`.
+message GetRestockDecisionRulesResponse {
+  RestockDecision restock_decision = 1;
+  acme.common.v1.OperationResult result = 2;
+}

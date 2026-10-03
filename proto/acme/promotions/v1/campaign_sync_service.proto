@@ -1,0 +1,255 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CampaignSyncServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Keeps campaigns in step with the systems of record in other regions.
+service CampaignSyncService {
+  // Syncs a campaign.
+  rpc SyncCampaigns(SyncCampaignsRequest) returns (SyncCampaignsResponse);
+
+  // Pushs a campaign.
+  rpc PushCampaign(PushCampaignRequest) returns (PushCampaignResponse);
+
+  // Pulls a campaign.
+  rpc PullCampaigns(PullCampaignsRequest) returns (PullCampaignsResponse);
+
+  // Reconciles a campaign.
+  rpc ReconcileCampaigns(ReconcileCampaignsRequest) returns (ReconcileCampaignsResponse);
+
+  // Exchanges changes of campaigns with a peer.
+  rpc StreamCampaignChanges(stream StreamCampaignChangesRequest) returns (stream StreamCampaignChangesResponse);
+
+  // Resolves a campaign.
+  rpc ResolveCampaignConflict(ResolveCampaignConflictRequest) returns (ResolveCampaignConflictResponse);
+
+  // Returns a campaign.
+  rpc GetCampaignSyncState(GetCampaignSyncStateRequest) returns (GetCampaignSyncStateResponse);
+}
+
+// The request of `SyncCampaigns`.
+message SyncCampaignsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  SyncCampaignsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncCampaigns`.
+message SyncCampaignsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  SyncCampaignsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushCampaign`.
+message PushCampaignRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  PushCampaignRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushCampaign`.
+message PushCampaignResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  PushCampaignResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullCampaigns`.
+message PullCampaignsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  PullCampaignsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullCampaigns`.
+message PullCampaignsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  PullCampaignsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileCampaigns`.
+message ReconcileCampaignsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  ReconcileCampaignsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileCampaigns`.
+message ReconcileCampaignsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  ReconcileCampaignsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamCampaignChanges`.
+message StreamCampaignChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Campaign change = 2;
+    StreamCampaignChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamCampaignChanges`.
+message StreamCampaignChangesResponse {
+  Campaign campaign = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveCampaignConflict`.
+message ResolveCampaignConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  ResolveCampaignConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveCampaignConflict`.
+message ResolveCampaignConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  ResolveCampaignConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCampaignSyncState`.
+message GetCampaignSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCampaignSyncState`.
+message GetCampaignSyncStateResponse {
+  Campaign campaign = 1;
+  acme.common.v1.OperationResult result = 2;
+}

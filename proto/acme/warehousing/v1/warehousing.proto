@@ -1,0 +1,228 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/warehousing/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "WarehousingProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Where a warehouse is in its lifecycle.
+enum WarehouseStatus {
+  WAREHOUSE_STATUS_UNSPECIFIED = 0;
+  WAREHOUSE_STATUS_PLANNED = 1;
+  WAREHOUSE_STATUS_AVAILABLE = 2;
+  WAREHOUSE_STATUS_RESERVED = 3;
+  WAREHOUSE_STATUS_RETIRED = 4;
+}
+
+// Where a storage bin is in its lifecycle.
+enum StorageBinStatus {
+  STORAGE_BIN_STATUS_UNSPECIFIED = 0;
+  STORAGE_BIN_STATUS_ACTIVE = 1;
+  STORAGE_BIN_STATUS_INACTIVE = 2;
+}
+
+// Where a pick list is in its lifecycle.
+enum PickListStatus {
+  PICK_LIST_STATUS_UNSPECIFIED = 0;
+  PICK_LIST_STATUS_DRAFT = 1;
+  PICK_LIST_STATUS_ISSUED = 2;
+  PICK_LIST_STATUS_APPROVED = 3;
+  PICK_LIST_STATUS_PAID = 4;
+  PICK_LIST_STATUS_VOID = 5;
+}
+
+// Where a putaway task is in its lifecycle.
+enum PutawayTaskStatus {
+  PUTAWAY_TASK_STATUS_UNSPECIFIED = 0;
+  PUTAWAY_TASK_STATUS_NEW = 1;
+  PUTAWAY_TASK_STATUS_OPEN = 2;
+  PUTAWAY_TASK_STATUS_WAITING = 3;
+  PUTAWAY_TASK_STATUS_RESOLVED = 4;
+  PUTAWAY_TASK_STATUS_CLOSED = 5;
+}
+
+// The dimensions of a warehouse.
+message WarehouseDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a warehouse.
+message WarehouseComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A warehouse of the warehousing domain.
+message Warehouse {
+  string warehouse_id = 1;
+  string code = 2;
+  string name = 3;
+  WarehouseStatus status = 4;
+  repeated string category_path = 5;
+  WarehouseDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, WarehouseComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// A storage bin of the warehousing domain.
+message StorageBin {
+  string storage_bin_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated StorageBin children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  StorageBinStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The line of a pick list.
+message PickListLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PickListLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a pick list line.
+message PickListLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a pick list.
+message PickListCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a pick list.
+message PickListBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a pick list.
+message PickListAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A pick list of the warehousing domain.
+message PickList {
+  string pick_list_id = 1;
+  string number = 2;
+  PickListStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated PickListLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PickListCardSettlement card = 8;
+    PickListBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PickListAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a putaway task.
+message PutawayTaskComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a putaway task.
+message PutawayTaskSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a putaway task.
+message PutawayTaskChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a putaway task.
+message PutawayTaskStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A putaway task of the warehousing domain.
+message PutawayTask {
+  string putaway_task_id = 1;
+  string subject = 2;
+  PutawayTaskStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated PutawayTaskComment comments = 7;
+  PutawayTaskSla sla = 8;
+  oneof origin {
+    StorageBinRef customer = 9;
+    string external_reference = 10;
+    PutawayTaskChannelOrigin channel = 11;
+  }
+  repeated PutawayTaskStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

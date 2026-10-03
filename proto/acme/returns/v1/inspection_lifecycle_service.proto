@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "InspectionLifecycleServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Moves an inspection between the states of its lifecycle.
+service InspectionLifecycleService {
+  // Activates an inspection.
+  rpc ActivateInspection(ActivateInspectionRequest) returns (ActivateInspectionResponse);
+
+  // Suspends an inspection.
+  rpc SuspendInspection(SuspendInspectionRequest) returns (SuspendInspectionResponse);
+
+  // Reinstates an inspection.
+  rpc ReinstateInspection(ReinstateInspectionRequest) returns (ReinstateInspectionResponse);
+
+  // Terminates an inspection.
+  rpc TerminateInspection(TerminateInspectionRequest) returns (TerminateInspectionResponse);
+
+  // Renews an inspection.
+  rpc RenewInspection(RenewInspectionRequest) returns (RenewInspectionResponse);
+
+  // Expires an inspection.
+  rpc ExpireInspection(ExpireInspectionRequest) returns (ExpireInspectionResponse);
+
+  // Returns an inspection.
+  rpc GetInspectionLifecycle(GetInspectionLifecycleRequest) returns (GetInspectionLifecycleResponse);
+
+  // Schedules an inspection.
+  rpc ScheduleInspectionExpiry(ScheduleInspectionExpiryRequest) returns (ScheduleInspectionExpiryResponse);
+}
+
+// The request of `ActivateInspection`.
+message ActivateInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  ActivateInspectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateInspection`.
+message ActivateInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ActivateInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendInspection`.
+message SuspendInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  SuspendInspectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendInspection`.
+message SuspendInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  SuspendInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateInspection`.
+message ReinstateInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  ReinstateInspectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateInspection`.
+message ReinstateInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ReinstateInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateInspection`.
+message TerminateInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  TerminateInspectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateInspection`.
+message TerminateInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  TerminateInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewInspection`.
+message RenewInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  RenewInspectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewInspection`.
+message RenewInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  RenewInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireInspection`.
+message ExpireInspectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  ExpireInspectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireInspection`.
+message ExpireInspectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ExpireInspectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetInspectionLifecycle`.
+message GetInspectionLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetInspectionLifecycle`.
+message GetInspectionLifecycleResponse {
+  Inspection inspection = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleInspectionExpiry`.
+message ScheduleInspectionExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  ScheduleInspectionExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleInspectionExpiry`.
+message ScheduleInspectionExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ScheduleInspectionExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,32 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.common.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Common.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/common/v1;commonv1";
+option java_multiple_files = true;
+option java_outer_classname = "ContextProto";
+option java_package = "com.acme.common.v1";
+
+// Who makes a request: a person or a service account.
+message Actor {
+  string user_id = 1;
+  string email = 2;
+  repeated string roles = 3;
+  bool service_account = 4;
+}
+
+// What every request carries about its caller and its tenant.
+message RequestContext {
+  string tenant_id = 1;
+  Actor actor = 2;
+  string trace_id = 3;
+  string locale = 4;
+  google.protobuf.Timestamp deadline = 5;
+  map<string, string> baggage = 6;
+}

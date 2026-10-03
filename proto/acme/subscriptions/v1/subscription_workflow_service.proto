@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "SubscriptionWorkflowServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Runs the long-lived workflow that takes a subscription from start to finish.
+service SubscriptionWorkflowService {
+  // Starts a subscription.
+  rpc StartSubscriptionWorkflow(StartSubscriptionWorkflowRequest) returns (StartSubscriptionWorkflowResponse);
+
+  // Advances a subscription.
+  rpc AdvanceSubscriptionWorkflow(AdvanceSubscriptionWorkflowRequest) returns (AdvanceSubscriptionWorkflowResponse);
+
+  // Retrys a subscription.
+  rpc RetrySubscriptionWorkflow(RetrySubscriptionWorkflowRequest) returns (RetrySubscriptionWorkflowResponse);
+
+  // Pauses a subscription.
+  rpc PauseSubscriptionWorkflow(PauseSubscriptionWorkflowRequest) returns (PauseSubscriptionWorkflowResponse);
+
+  // Resumes a subscription.
+  rpc ResumeSubscriptionWorkflow(ResumeSubscriptionWorkflowRequest) returns (ResumeSubscriptionWorkflowResponse);
+
+  // Returns a subscription.
+  rpc InspectSubscriptionWorkflow(InspectSubscriptionWorkflowRequest) returns (InspectSubscriptionWorkflowResponse);
+
+  // Lists subscriptions a page at a time.
+  rpc ListSubscriptionWorkflows(ListSubscriptionWorkflowsRequest) returns (ListSubscriptionWorkflowsResponse);
+}
+
+// The request of `StartSubscriptionWorkflow`.
+message StartSubscriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  Subscription subscription = 3;
+  StartSubscriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartSubscriptionWorkflow`.
+message StartSubscriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Subscription subscription = 1;
+  StartSubscriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceSubscriptionWorkflow`.
+message AdvanceSubscriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  Subscription subscription = 3;
+  AdvanceSubscriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceSubscriptionWorkflow`.
+message AdvanceSubscriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Subscription subscription = 1;
+  AdvanceSubscriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetrySubscriptionWorkflow`.
+message RetrySubscriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  Subscription subscription = 3;
+  RetrySubscriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetrySubscriptionWorkflow`.
+message RetrySubscriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Subscription subscription = 1;
+  RetrySubscriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseSubscriptionWorkflow`.
+message PauseSubscriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  Subscription subscription = 3;
+  PauseSubscriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseSubscriptionWorkflow`.
+message PauseSubscriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Subscription subscription = 1;
+  PauseSubscriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeSubscriptionWorkflow`.
+message ResumeSubscriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  Subscription subscription = 3;
+  ResumeSubscriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeSubscriptionWorkflow`.
+message ResumeSubscriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Subscription subscription = 1;
+  ResumeSubscriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSubscriptionWorkflow`.
+message InspectSubscriptionWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string subscription_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSubscriptionWorkflow`.
+message InspectSubscriptionWorkflowResponse {
+  Subscription subscription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSubscriptionWorkflows`.
+message ListSubscriptionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SubscriptionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSubscriptionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSubscriptionWorkflows`.
+message ListSubscriptionWorkflowsResponse {
+  repeated Subscription subscriptions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

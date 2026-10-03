@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DisputeImportServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Takes disputes in bulk from partners and legacy systems.
+service DisputeImportService {
+  // Takes a stream of disputes and answers once at the end.
+  rpc ImportDisputes(stream ImportDisputesRequest) returns (ImportDisputesResponse);
+
+  // Returns a dispute.
+  rpc GetDisputeImportStatus(GetDisputeImportStatusRequest) returns (GetDisputeImportStatusResponse);
+
+  // Cancels a dispute.
+  rpc CancelDisputeImport(CancelDisputeImportRequest) returns (CancelDisputeImportResponse);
+
+  // Validates a dispute.
+  rpc ValidateDisputeImport(ValidateDisputeImportRequest) returns (ValidateDisputeImportResponse);
+
+  // Lists disputes a page at a time.
+  rpc ListDisputeImports(ListDisputeImportsRequest) returns (ListDisputeImportsResponse);
+
+  // Maps a dispute.
+  rpc MapDisputeImportColumns(MapDisputeImportColumnsRequest) returns (MapDisputeImportColumnsResponse);
+}
+
+// The request of `ImportDisputes`.
+message ImportDisputesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    ImportDisputesRequest.StreamHeader header = 2;
+    Dispute record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `ImportDisputes`.
+message ImportDisputesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string dispute_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated ImportDisputesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `GetDisputeImportStatus`.
+message GetDisputeImportStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDisputeImportStatus`.
+message GetDisputeImportStatusResponse {
+  Dispute dispute = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CancelDisputeImport`.
+message CancelDisputeImportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  CancelDisputeImportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `CancelDisputeImport`.
+message CancelDisputeImportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  CancelDisputeImportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ValidateDisputeImport`.
+message ValidateDisputeImportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  ValidateDisputeImportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateDisputeImport`.
+message ValidateDisputeImportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ValidateDisputeImportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListDisputeImports`.
+message ListDisputeImportsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DisputeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListDisputeImportsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListDisputeImports`.
+message ListDisputeImportsResponse {
+  repeated Dispute disputes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `MapDisputeImportColumns`.
+message MapDisputeImportColumnsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  MapDisputeImportColumnsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `MapDisputeImportColumns`.
+message MapDisputeImportColumnsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  MapDisputeImportColumnsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

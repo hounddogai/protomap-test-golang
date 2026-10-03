@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoyaltyMemberCalculationServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Computes the figures of a loyalty member, such as totals, taxes, and estimates.
+service LoyaltyMemberCalculationService {
+  // Calculates a loyalty member.
+  rpc CalculateLoyaltyMember(CalculateLoyaltyMemberRequest) returns (CalculateLoyaltyMemberResponse);
+
+  // Estimates a loyalty member.
+  rpc EstimateLoyaltyMember(EstimateLoyaltyMemberRequest) returns (EstimateLoyaltyMemberResponse);
+
+  // Quotes a loyalty member.
+  rpc QuoteLoyaltyMember(QuoteLoyaltyMemberRequest) returns (QuoteLoyaltyMemberResponse);
+
+  // Compares a loyalty member.
+  rpc CompareLoyaltyMemberOptions(CompareLoyaltyMemberOptionsRequest) returns (CompareLoyaltyMemberOptionsResponse);
+
+  // Recalculates a loyalty member.
+  rpc RecalculateLoyaltyMembers(RecalculateLoyaltyMembersRequest) returns (RecalculateLoyaltyMembersResponse);
+
+  // Simulates a loyalty member.
+  rpc SimulateLoyaltyMember(SimulateLoyaltyMemberRequest) returns (SimulateLoyaltyMemberResponse);
+
+  // Explains a loyalty member.
+  rpc ExplainLoyaltyMemberCalculation(ExplainLoyaltyMemberCalculationRequest) returns (ExplainLoyaltyMemberCalculationResponse);
+
+  // Returns a loyalty member.
+  rpc GetLoyaltyMemberRates(GetLoyaltyMemberRatesRequest) returns (GetLoyaltyMemberRatesResponse);
+}
+
+// The request of `CalculateLoyaltyMember`.
+message CalculateLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  CalculateLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateLoyaltyMember`.
+message CalculateLoyaltyMemberResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateLoyaltyMemberResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  CalculateLoyaltyMemberResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateLoyaltyMember`.
+message EstimateLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  EstimateLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateLoyaltyMember`.
+message EstimateLoyaltyMemberResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateLoyaltyMemberResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  EstimateLoyaltyMemberResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteLoyaltyMember`.
+message QuoteLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  QuoteLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteLoyaltyMember`.
+message QuoteLoyaltyMemberResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteLoyaltyMemberResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  QuoteLoyaltyMemberResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareLoyaltyMemberOptions`.
+message CompareLoyaltyMemberOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  CompareLoyaltyMemberOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareLoyaltyMemberOptions`.
+message CompareLoyaltyMemberOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareLoyaltyMemberOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  CompareLoyaltyMemberOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateLoyaltyMembers`.
+message RecalculateLoyaltyMembersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  RecalculateLoyaltyMembersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateLoyaltyMembers`.
+message RecalculateLoyaltyMembersResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateLoyaltyMembersResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  RecalculateLoyaltyMembersResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateLoyaltyMember`.
+message SimulateLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  SimulateLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateLoyaltyMember`.
+message SimulateLoyaltyMemberResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateLoyaltyMemberResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  SimulateLoyaltyMemberResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainLoyaltyMemberCalculation`.
+message ExplainLoyaltyMemberCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  ExplainLoyaltyMemberCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainLoyaltyMemberCalculation`.
+message ExplainLoyaltyMemberCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  ExplainLoyaltyMemberCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLoyaltyMemberRates`.
+message GetLoyaltyMemberRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLoyaltyMemberRates`.
+message GetLoyaltyMemberRatesResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}

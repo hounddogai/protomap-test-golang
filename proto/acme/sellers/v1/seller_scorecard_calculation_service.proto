@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerScorecardCalculationServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Computes the figures of a seller scorecard, such as totals, taxes, and estimates.
+service SellerScorecardCalculationService {
+  // Calculates a seller scorecard.
+  rpc CalculateSellerScorecard(CalculateSellerScorecardRequest) returns (CalculateSellerScorecardResponse);
+
+  // Estimates a seller scorecard.
+  rpc EstimateSellerScorecard(EstimateSellerScorecardRequest) returns (EstimateSellerScorecardResponse);
+
+  // Quotes a seller scorecard.
+  rpc QuoteSellerScorecard(QuoteSellerScorecardRequest) returns (QuoteSellerScorecardResponse);
+
+  // Compares a seller scorecard.
+  rpc CompareSellerScorecardOptions(CompareSellerScorecardOptionsRequest) returns (CompareSellerScorecardOptionsResponse);
+
+  // Recalculates a seller scorecard.
+  rpc RecalculateSellerScorecards(RecalculateSellerScorecardsRequest) returns (RecalculateSellerScorecardsResponse);
+
+  // Explains a seller scorecard.
+  rpc ExplainSellerScorecardCalculation(ExplainSellerScorecardCalculationRequest) returns (ExplainSellerScorecardCalculationResponse);
+
+  // Returns a seller scorecard.
+  rpc GetSellerScorecardRates(GetSellerScorecardRatesRequest) returns (GetSellerScorecardRatesResponse);
+}
+
+// The request of `CalculateSellerScorecard`.
+message CalculateSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  CalculateSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateSellerScorecard`.
+message CalculateSellerScorecardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateSellerScorecardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  CalculateSellerScorecardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateSellerScorecard`.
+message EstimateSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  EstimateSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateSellerScorecard`.
+message EstimateSellerScorecardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateSellerScorecardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  EstimateSellerScorecardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteSellerScorecard`.
+message QuoteSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  QuoteSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteSellerScorecard`.
+message QuoteSellerScorecardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteSellerScorecardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  QuoteSellerScorecardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareSellerScorecardOptions`.
+message CompareSellerScorecardOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  CompareSellerScorecardOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSellerScorecardOptions`.
+message CompareSellerScorecardOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareSellerScorecardOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  CompareSellerScorecardOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateSellerScorecards`.
+message RecalculateSellerScorecardsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  RecalculateSellerScorecardsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateSellerScorecards`.
+message RecalculateSellerScorecardsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateSellerScorecardsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  RecalculateSellerScorecardsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSellerScorecardCalculation`.
+message ExplainSellerScorecardCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  ExplainSellerScorecardCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSellerScorecardCalculation`.
+message ExplainSellerScorecardCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  ExplainSellerScorecardCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerScorecardRates`.
+message GetSellerScorecardRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerScorecardRates`.
+message GetSellerScorecardRatesResponse {
+  SellerScorecard seller_scorecard = 1;
+  acme.common.v1.OperationResult result = 2;
+}

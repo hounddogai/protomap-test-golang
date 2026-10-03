@@ -1,0 +1,186 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.ratelimiting.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/ratelimiting/v1/ratelimiting.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Ratelimiting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/ratelimiting/v1;ratelimitingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RateLimitQueryServiceProto";
+option java_package = "com.acme.ratelimiting.v1";
+
+// Answers read-only questions about rate limits, for screens and reports.
+service RateLimitQueryService {
+  // Returns a rate limit.
+  rpc LookupRateLimit(LookupRateLimitRequest) returns (LookupRateLimitResponse);
+
+  // Lists rate limits a page at a time.
+  rpc BrowseRateLimits(BrowseRateLimitsRequest) returns (BrowseRateLimitsResponse);
+
+  // Lists rate limits a page at a time.
+  rpc FindRateLimits(FindRateLimitsRequest) returns (FindRateLimitsResponse);
+
+  // Returns several rate limits at once.
+  rpc ResolveRateLimits(ResolveRateLimitsRequest) returns (ResolveRateLimitsResponse);
+
+  // Streams every matching rate limit.
+  rpc ExportRateLimits(ExportRateLimitsRequest) returns (stream ExportRateLimitsResponse);
+
+  // Lists rate limits a page at a time.
+  rpc SuggestRateLimits(SuggestRateLimitsRequest) returns (SuggestRateLimitsResponse);
+
+  // Returns a rate limit.
+  rpc PeekRateLimit(PeekRateLimitRequest) returns (PeekRateLimitResponse);
+}
+
+// The request of `LookupRateLimit`.
+message LookupRateLimitRequest {
+  acme.common.v1.RequestContext context = 1;
+  string rate_limit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupRateLimit`.
+message LookupRateLimitResponse {
+  RateLimit rate_limit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseRateLimits`.
+message BrowseRateLimitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RateLimitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseRateLimitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseRateLimits`.
+message BrowseRateLimitsResponse {
+  repeated RateLimit rate_limits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindRateLimits`.
+message FindRateLimitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RateLimitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindRateLimitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindRateLimits`.
+message FindRateLimitsResponse {
+  repeated RateLimit rate_limits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveRateLimits`.
+message ResolveRateLimitsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string rate_limit_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveRateLimits`.
+message ResolveRateLimitsResponse {
+  repeated RateLimit rate_limits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportRateLimits`.
+message ExportRateLimitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RateLimitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportRateLimitsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportRateLimits`.
+message ExportRateLimitsResponse {
+  RateLimit rate_limit = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestRateLimits`.
+message SuggestRateLimitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RateLimitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestRateLimitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestRateLimits`.
+message SuggestRateLimitsResponse {
+  repeated RateLimit rate_limits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekRateLimit`.
+message PeekRateLimitRequest {
+  acme.common.v1.RequestContext context = 1;
+  string rate_limit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekRateLimit`.
+message PeekRateLimitResponse {
+  RateLimit rate_limit = 1;
+  acme.common.v1.OperationResult result = 2;
+}

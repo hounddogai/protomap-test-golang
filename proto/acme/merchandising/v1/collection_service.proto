@@ -1,0 +1,161 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CollectionServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Manages collections: creates, reads, changes, and lists them.
+service CollectionService {
+  // Creates a collection.
+  rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
+
+  // Returns a collection.
+  rpc GetCollection(GetCollectionRequest) returns (GetCollectionResponse);
+
+  // Changes a collection.
+  rpc UpdateCollection(UpdateCollectionRequest) returns (UpdateCollectionResponse);
+
+  // Deletes a collection.
+  rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
+
+  // Returns several collections at once.
+  rpc BatchGetCollections(BatchGetCollectionsRequest) returns (BatchGetCollectionsResponse);
+
+  // Takes a stream of collections and answers once at the end.
+  rpc BatchCreateCollections(stream BatchCreateCollectionsRequest) returns (BatchCreateCollectionsResponse);
+
+  // Creates a collection.
+  rpc CloneCollection(CloneCollectionRequest) returns (CloneCollectionResponse);
+}
+
+// The request of `CreateCollection`.
+message CreateCollectionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Collection collection = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateCollection`.
+message CreateCollectionResponse {
+  Collection collection = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetCollection`.
+message GetCollectionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCollection`.
+message GetCollectionResponse {
+  Collection collection = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateCollection`.
+message UpdateCollectionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Collection collection = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateCollection`.
+message UpdateCollectionResponse {
+  Collection collection = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteCollection`.
+message DeleteCollectionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteCollection`.
+message DeleteCollectionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetCollections`.
+message BatchGetCollectionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string collection_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetCollections`.
+message BatchGetCollectionsResponse {
+  repeated Collection collections = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateCollections`.
+message BatchCreateCollectionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateCollectionsRequest.StreamHeader header = 2;
+    Collection record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateCollections`.
+message BatchCreateCollectionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string collection_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateCollectionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneCollection`.
+message CloneCollectionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Collection collection = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneCollection`.
+message CloneCollectionResponse {
+  Collection collection = 1;
+  acme.common.v1.OperationResult result = 2;
+}

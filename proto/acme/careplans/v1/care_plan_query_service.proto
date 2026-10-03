@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarePlanQueryServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Answers read-only questions about care plans, for screens and reports.
+service CarePlanQueryService {
+  // Returns a care plan.
+  rpc LookupCarePlan(LookupCarePlanRequest) returns (LookupCarePlanResponse);
+
+  // Lists care plans a page at a time.
+  rpc BrowseCarePlans(BrowseCarePlansRequest) returns (BrowseCarePlansResponse);
+
+  // Lists care plans a page at a time.
+  rpc FindCarePlans(FindCarePlansRequest) returns (FindCarePlansResponse);
+
+  // Counts care plans by status.
+  rpc CountCarePlans(CountCarePlansRequest) returns (CountCarePlansResponse);
+
+  // Returns several care plans at once.
+  rpc ResolveCarePlans(ResolveCarePlansRequest) returns (ResolveCarePlansResponse);
+
+  // Streams every matching care plan.
+  rpc ExportCarePlans(ExportCarePlansRequest) returns (stream ExportCarePlansResponse);
+
+  // Summarizes a care plan.
+  rpc SummarizeCarePlans(SummarizeCarePlansRequest) returns (SummarizeCarePlansResponse);
+
+  // Lists care plans a page at a time.
+  rpc SuggestCarePlans(SuggestCarePlansRequest) returns (SuggestCarePlansResponse);
+
+  // Returns a care plan.
+  rpc PeekCarePlan(PeekCarePlanRequest) returns (PeekCarePlanResponse);
+}
+
+// The request of `LookupCarePlan`.
+message LookupCarePlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCarePlan`.
+message LookupCarePlanResponse {
+  CarePlan care_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCarePlans`.
+message BrowseCarePlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCarePlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCarePlans`.
+message BrowseCarePlansResponse {
+  repeated CarePlan care_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCarePlans`.
+message FindCarePlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCarePlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCarePlans`.
+message FindCarePlansResponse {
+  repeated CarePlan care_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCarePlans`.
+message CountCarePlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCarePlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCarePlans`.
+message CountCarePlansResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCarePlans`.
+message ResolveCarePlansRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string care_plan_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCarePlans`.
+message ResolveCarePlansResponse {
+  repeated CarePlan care_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCarePlans`.
+message ExportCarePlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCarePlansRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCarePlans`.
+message ExportCarePlansResponse {
+  CarePlan care_plan = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCarePlans`.
+message SummarizeCarePlansRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  SummarizeCarePlansRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCarePlans`.
+message SummarizeCarePlansResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCarePlans`.
+message SuggestCarePlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCarePlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCarePlans`.
+message SuggestCarePlansResponse {
+  repeated CarePlan care_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCarePlan`.
+message PeekCarePlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCarePlan`.
+message PeekCarePlanResponse {
+  CarePlan care_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,288 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskAssessmentValidationServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Checks risk assessments against the rules before anything acts on them.
+service RiskAssessmentValidationService {
+  // Validates a risk assessment.
+  rpc ValidateRiskAssessment(ValidateRiskAssessmentRequest) returns (ValidateRiskAssessmentResponse);
+
+  // Previews a risk assessment.
+  rpc PreviewRiskAssessment(PreviewRiskAssessmentRequest) returns (PreviewRiskAssessmentResponse);
+
+  // Checks a risk assessment.
+  rpc CheckRiskAssessmentEligibility(CheckRiskAssessmentEligibilityRequest) returns (CheckRiskAssessmentEligibilityResponse);
+
+  // Normalizes a risk assessment.
+  rpc NormalizeRiskAssessment(NormalizeRiskAssessmentRequest) returns (NormalizeRiskAssessmentResponse);
+
+  // Explains a risk assessment.
+  rpc ExplainRiskAssessmentDecision(ExplainRiskAssessmentDecisionRequest) returns (ExplainRiskAssessmentDecisionResponse);
+
+  // Scores a risk assessment.
+  rpc ScoreRiskAssessment(ScoreRiskAssessmentRequest) returns (ScoreRiskAssessmentResponse);
+
+  // Lints a risk assessment.
+  rpc LintRiskAssessments(LintRiskAssessmentsRequest) returns (LintRiskAssessmentsResponse);
+}
+
+// The request of `ValidateRiskAssessment`.
+message ValidateRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  ValidateRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateRiskAssessment`.
+message ValidateRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  ValidateRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewRiskAssessment`.
+message PreviewRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  PreviewRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewRiskAssessment`.
+message PreviewRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  PreviewRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckRiskAssessmentEligibility`.
+message CheckRiskAssessmentEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  CheckRiskAssessmentEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckRiskAssessmentEligibility`.
+message CheckRiskAssessmentEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  CheckRiskAssessmentEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeRiskAssessment`.
+message NormalizeRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  NormalizeRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeRiskAssessment`.
+message NormalizeRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  NormalizeRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRiskAssessmentDecision`.
+message ExplainRiskAssessmentDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  ExplainRiskAssessmentDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRiskAssessmentDecision`.
+message ExplainRiskAssessmentDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  ExplainRiskAssessmentDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreRiskAssessment`.
+message ScoreRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  ScoreRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreRiskAssessment`.
+message ScoreRiskAssessmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreRiskAssessmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  ScoreRiskAssessmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintRiskAssessments`.
+message LintRiskAssessmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  LintRiskAssessmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintRiskAssessments`.
+message LintRiskAssessmentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  LintRiskAssessmentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,199 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payroll.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/payroll/v1/payroll.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payroll.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payroll/v1;payrollv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayRunServiceProto";
+option java_package = "com.acme.payroll.v1";
+
+// Manages pay runs: creates, reads, changes, and lists them.
+service PayRunService {
+  // Creates a pay run.
+  rpc CreatePayRun(CreatePayRunRequest) returns (CreatePayRunResponse);
+
+  // Returns a pay run.
+  rpc GetPayRun(GetPayRunRequest) returns (GetPayRunResponse);
+
+  // Changes a pay run.
+  rpc UpdatePayRun(UpdatePayRunRequest) returns (UpdatePayRunResponse);
+
+  // Lists pay runs a page at a time.
+  rpc ListPayRuns(ListPayRunsRequest) returns (ListPayRunsResponse);
+
+  // Returns several pay runs at once.
+  rpc BatchGetPayRuns(BatchGetPayRunsRequest) returns (BatchGetPayRunsResponse);
+
+  // Lists pay runs a page at a time.
+  rpc SearchPayRuns(SearchPayRunsRequest) returns (SearchPayRunsResponse);
+
+  // Takes a stream of pay runs and answers once at the end.
+  rpc BatchCreatePayRuns(stream BatchCreatePayRunsRequest) returns (BatchCreatePayRunsResponse);
+
+  // Creates a pay run.
+  rpc ClonePayRun(ClonePayRunRequest) returns (ClonePayRunResponse);
+}
+
+// The request of `CreatePayRun`.
+message CreatePayRunRequest {
+  acme.common.v1.RequestContext context = 1;
+  PayRun pay_run = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePayRun`.
+message CreatePayRunResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPayRun`.
+message GetPayRunRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPayRun`.
+message GetPayRunResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePayRun`.
+message UpdatePayRunRequest {
+  acme.common.v1.RequestContext context = 1;
+  PayRun pay_run = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePayRun`.
+message UpdatePayRunResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPayRuns`.
+message ListPayRunsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayRunStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPayRunsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPayRuns`.
+message ListPayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPayRuns`.
+message BatchGetPayRunsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string pay_run_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPayRuns`.
+message BatchGetPayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPayRuns`.
+message SearchPayRunsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayRunStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPayRunsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPayRuns`.
+message SearchPayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreatePayRuns`.
+message BatchCreatePayRunsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePayRunsRequest.StreamHeader header = 2;
+    PayRun record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePayRuns`.
+message BatchCreatePayRunsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string pay_run_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePayRunsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePayRun`.
+message ClonePayRunRequest {
+  acme.common.v1.RequestContext context = 1;
+  PayRun pay_run = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePayRun`.
+message ClonePayRunResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}

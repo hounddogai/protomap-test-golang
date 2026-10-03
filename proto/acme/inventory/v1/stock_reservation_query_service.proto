@@ -1,0 +1,228 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockReservationQueryServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Answers read-only questions about stock reservations, for screens and reports.
+service StockReservationQueryService {
+  // Returns a stock reservation.
+  rpc LookupStockReservation(LookupStockReservationRequest) returns (LookupStockReservationResponse);
+
+  // Lists stock reservations a page at a time.
+  rpc BrowseStockReservations(BrowseStockReservationsRequest) returns (BrowseStockReservationsResponse);
+
+  // Lists stock reservations a page at a time.
+  rpc FindStockReservations(FindStockReservationsRequest) returns (FindStockReservationsResponse);
+
+  // Counts stock reservations by status.
+  rpc CountStockReservations(CountStockReservationsRequest) returns (CountStockReservationsResponse);
+
+  // Streams every matching stock reservation.
+  rpc ExportStockReservations(ExportStockReservationsRequest) returns (stream ExportStockReservationsResponse);
+
+  // Summarizes a stock reservation.
+  rpc SummarizeStockReservations(SummarizeStockReservationsRequest) returns (SummarizeStockReservationsResponse);
+
+  // Lists stock reservations a page at a time.
+  rpc SuggestStockReservations(SuggestStockReservationsRequest) returns (SuggestStockReservationsResponse);
+
+  // Returns a stock reservation.
+  rpc PeekStockReservation(PeekStockReservationRequest) returns (PeekStockReservationResponse);
+}
+
+// The request of `LookupStockReservation`.
+message LookupStockReservationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupStockReservation`.
+message LookupStockReservationResponse {
+  StockReservation stock_reservation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseStockReservations`.
+message BrowseStockReservationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockReservationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseStockReservationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseStockReservations`.
+message BrowseStockReservationsResponse {
+  repeated StockReservation stock_reservations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindStockReservations`.
+message FindStockReservationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockReservationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindStockReservationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindStockReservations`.
+message FindStockReservationsResponse {
+  repeated StockReservation stock_reservations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountStockReservations`.
+message CountStockReservationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockReservationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountStockReservationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountStockReservations`.
+message CountStockReservationsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportStockReservations`.
+message ExportStockReservationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockReservationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportStockReservationsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportStockReservations`.
+message ExportStockReservationsResponse {
+  StockReservation stock_reservation = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeStockReservations`.
+message SummarizeStockReservationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  SummarizeStockReservationsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeStockReservations`.
+message SummarizeStockReservationsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestStockReservations`.
+message SuggestStockReservationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockReservationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestStockReservationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestStockReservations`.
+message SuggestStockReservationsResponse {
+  repeated StockReservation stock_reservations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekStockReservation`.
+message PeekStockReservationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekStockReservation`.
+message PeekStockReservationResponse {
+  StockReservation stock_reservation = 1;
+  acme.common.v1.OperationResult result = 2;
+}

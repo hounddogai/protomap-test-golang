@@ -1,0 +1,250 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "CartRuleWorkflowServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Runs the long-lived workflow that takes a cart rule from start to finish.
+service CartRuleWorkflowService {
+  // Starts a cart rule.
+  rpc StartCartRuleWorkflow(StartCartRuleWorkflowRequest) returns (StartCartRuleWorkflowResponse);
+
+  // Advances a cart rule.
+  rpc AdvanceCartRuleWorkflow(AdvanceCartRuleWorkflowRequest) returns (AdvanceCartRuleWorkflowResponse);
+
+  // Cancels a cart rule.
+  rpc CancelCartRuleWorkflow(CancelCartRuleWorkflowRequest) returns (CancelCartRuleWorkflowResponse);
+
+  // Retrys a cart rule.
+  rpc RetryCartRuleWorkflow(RetryCartRuleWorkflowRequest) returns (RetryCartRuleWorkflowResponse);
+
+  // Pauses a cart rule.
+  rpc PauseCartRuleWorkflow(PauseCartRuleWorkflowRequest) returns (PauseCartRuleWorkflowResponse);
+
+  // Signals a cart rule.
+  rpc SignalCartRuleWorkflow(SignalCartRuleWorkflowRequest) returns (SignalCartRuleWorkflowResponse);
+}
+
+// The request of `StartCartRuleWorkflow`.
+message StartCartRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  StartCartRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCartRuleWorkflow`.
+message StartCartRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  StartCartRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCartRuleWorkflow`.
+message AdvanceCartRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  AdvanceCartRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCartRuleWorkflow`.
+message AdvanceCartRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  AdvanceCartRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCartRuleWorkflow`.
+message CancelCartRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  CancelCartRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCartRuleWorkflow`.
+message CancelCartRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  CancelCartRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryCartRuleWorkflow`.
+message RetryCartRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  RetryCartRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryCartRuleWorkflow`.
+message RetryCartRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  RetryCartRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCartRuleWorkflow`.
+message PauseCartRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  PauseCartRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCartRuleWorkflow`.
+message PauseCartRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  PauseCartRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCartRuleWorkflow`.
+message SignalCartRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  SignalCartRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCartRuleWorkflow`.
+message SignalCartRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  SignalCartRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,212 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerQueryServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Answers read-only questions about sellers, for screens and reports.
+service SellerQueryService {
+  // Returns a seller.
+  rpc LookupSeller(LookupSellerRequest) returns (LookupSellerResponse);
+
+  // Lists sellers a page at a time.
+  rpc BrowseSellers(BrowseSellersRequest) returns (BrowseSellersResponse);
+
+  // Lists sellers a page at a time.
+  rpc FindSellers(FindSellersRequest) returns (FindSellersResponse);
+
+  // Counts sellers by status.
+  rpc CountSellers(CountSellersRequest) returns (CountSellersResponse);
+
+  // Streams every matching seller.
+  rpc ExportSellers(ExportSellersRequest) returns (stream ExportSellersResponse);
+
+  // Summarizes a seller.
+  rpc SummarizeSellers(SummarizeSellersRequest) returns (SummarizeSellersResponse);
+
+  // Lists sellers a page at a time.
+  rpc SuggestSellers(SuggestSellersRequest) returns (SuggestSellersResponse);
+}
+
+// The request of `LookupSeller`.
+message LookupSellerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupSeller`.
+message LookupSellerResponse {
+  Seller seller = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseSellers`.
+message BrowseSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseSellersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseSellers`.
+message BrowseSellersResponse {
+  repeated Seller sellers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindSellers`.
+message FindSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindSellersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindSellers`.
+message FindSellersResponse {
+  repeated Seller sellers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountSellers`.
+message CountSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountSellersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountSellers`.
+message CountSellersResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportSellers`.
+message ExportSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportSellersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportSellers`.
+message ExportSellersResponse {
+  Seller seller = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeSellers`.
+message SummarizeSellersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  SummarizeSellersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeSellers`.
+message SummarizeSellersResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestSellers`.
+message SuggestSellersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestSellersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestSellers`.
+message SuggestSellersResponse {
+  repeated Seller sellers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

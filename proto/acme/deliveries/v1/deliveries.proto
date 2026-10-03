@@ -1,0 +1,236 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.deliveries.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/deliveries/v1/refs.proto";
+import "acme/drivers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Deliveries.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/deliveries/v1;deliveriesv1";
+option java_multiple_files = true;
+option java_outer_classname = "DeliveriesProto";
+option java_package = "com.acme.deliveries.v1";
+
+// Where a delivery is in its lifecycle.
+enum DeliveryStatus {
+  DELIVERY_STATUS_UNSPECIFIED = 0;
+  DELIVERY_STATUS_DRAFT = 1;
+  DELIVERY_STATUS_ISSUED = 2;
+  DELIVERY_STATUS_APPROVED = 3;
+  DELIVERY_STATUS_PAID = 4;
+  DELIVERY_STATUS_VOID = 5;
+}
+
+// Where a proof of delivery is in its lifecycle.
+enum ProofOfDeliveryStatus {
+  PROOF_OF_DELIVERY_STATUS_UNSPECIFIED = 0;
+  PROOF_OF_DELIVERY_STATUS_DRAFT = 1;
+  PROOF_OF_DELIVERY_STATUS_ISSUED = 2;
+  PROOF_OF_DELIVERY_STATUS_APPROVED = 3;
+  PROOF_OF_DELIVERY_STATUS_PAID = 4;
+  PROOF_OF_DELIVERY_STATUS_VOID = 5;
+}
+
+// Where a delivery exception is in its lifecycle.
+enum DeliveryExceptionStatus {
+  DELIVERY_EXCEPTION_STATUS_UNSPECIFIED = 0;
+  DELIVERY_EXCEPTION_STATUS_NEW = 1;
+  DELIVERY_EXCEPTION_STATUS_OPEN = 2;
+  DELIVERY_EXCEPTION_STATUS_WAITING = 3;
+  DELIVERY_EXCEPTION_STATUS_RESOLVED = 4;
+  DELIVERY_EXCEPTION_STATUS_CLOSED = 5;
+}
+
+// The line of a delivery.
+message DeliveryLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  DeliveryLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a delivery line.
+message DeliveryLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a delivery.
+message DeliveryCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a delivery.
+message DeliveryBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a delivery.
+message DeliveryAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A delivery of the deliveries domain.
+message Delivery {
+  string delivery_id = 1;
+  string number = 2;
+  DeliveryStatus status = 3;
+  DeliveryExceptionRef counterparty = 4;
+  repeated DeliveryLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    DeliveryCardSettlement card = 8;
+    DeliveryBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated DeliveryAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a proof of delivery.
+message ProofOfDeliveryLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ProofOfDeliveryLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a proof of delivery line.
+message ProofOfDeliveryLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a proof of delivery.
+message ProofOfDeliveryCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a proof of delivery.
+message ProofOfDeliveryBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a proof of delivery.
+message ProofOfDeliveryAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A proof of delivery of the deliveries domain.
+message ProofOfDelivery {
+  string proof_of_delivery_id = 1;
+  string number = 2;
+  ProofOfDeliveryStatus status = 3;
+  acme.drivers.v1.DriverRef counterparty = 4;
+  repeated ProofOfDeliveryLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ProofOfDeliveryCardSettlement card = 8;
+    ProofOfDeliveryBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ProofOfDeliveryAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a delivery exception.
+message DeliveryExceptionComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a delivery exception.
+message DeliveryExceptionSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a delivery exception.
+message DeliveryExceptionChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a delivery exception.
+message DeliveryExceptionStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A delivery exception of the deliveries domain.
+message DeliveryException {
+  string delivery_exception_id = 1;
+  string subject = 2;
+  DeliveryExceptionStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated DeliveryExceptionComment comments = 7;
+  DeliveryExceptionSla sla = 8;
+  oneof origin {
+    DeliveryRef customer = 9;
+    string external_reference = 10;
+    DeliveryExceptionChannelOrigin channel = 11;
+  }
+  repeated DeliveryExceptionStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

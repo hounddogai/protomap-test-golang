@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnRequestValidationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Checks return requests against the rules before anything acts on them.
+service ReturnRequestValidationService {
+  // Validates a return request.
+  rpc ValidateReturnRequest(ValidateReturnRequestRequest) returns (ValidateReturnRequestResponse);
+
+  // Previews a return request.
+  rpc PreviewReturnRequest(PreviewReturnRequestRequest) returns (PreviewReturnRequestResponse);
+
+  // Checks a return request.
+  rpc CheckReturnRequestEligibility(CheckReturnRequestEligibilityRequest) returns (CheckReturnRequestEligibilityResponse);
+
+  // Normalizes a return request.
+  rpc NormalizeReturnRequest(NormalizeReturnRequestRequest) returns (NormalizeReturnRequestResponse);
+
+  // Explains a return request.
+  rpc ExplainReturnRequestDecision(ExplainReturnRequestDecisionRequest) returns (ExplainReturnRequestDecisionResponse);
+
+  // Scores a return request.
+  rpc ScoreReturnRequest(ScoreReturnRequestRequest) returns (ScoreReturnRequestResponse);
+
+  // Returns a return request.
+  rpc GetReturnRequestRules(GetReturnRequestRulesRequest) returns (GetReturnRequestRulesResponse);
+}
+
+// The request of `ValidateReturnRequest`.
+message ValidateReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  ValidateReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateReturnRequest`.
+message ValidateReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  ValidateReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewReturnRequest`.
+message PreviewReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  PreviewReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewReturnRequest`.
+message PreviewReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  PreviewReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckReturnRequestEligibility`.
+message CheckReturnRequestEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  CheckReturnRequestEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckReturnRequestEligibility`.
+message CheckReturnRequestEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  CheckReturnRequestEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeReturnRequest`.
+message NormalizeReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  NormalizeReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeReturnRequest`.
+message NormalizeReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  NormalizeReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReturnRequestDecision`.
+message ExplainReturnRequestDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  ExplainReturnRequestDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReturnRequestDecision`.
+message ExplainReturnRequestDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  ExplainReturnRequestDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreReturnRequest`.
+message ScoreReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  ScoreReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreReturnRequest`.
+message ScoreReturnRequestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreReturnRequestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  ScoreReturnRequestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnRequestRules`.
+message GetReturnRequestRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnRequestRules`.
+message GetReturnRequestRulesResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}

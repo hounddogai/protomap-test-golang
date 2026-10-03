@@ -1,0 +1,186 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.featurestore.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/featurestore/v1/featurestore.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Featurestore.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/featurestore/v1;featurestorev1";
+option java_multiple_files = true;
+option java_outer_classname = "FeatureViewQueryServiceProto";
+option java_package = "com.acme.featurestore.v1";
+
+// Answers read-only questions about feature views, for screens and reports.
+service FeatureViewQueryService {
+  // Returns a feature view.
+  rpc LookupFeatureView(LookupFeatureViewRequest) returns (LookupFeatureViewResponse);
+
+  // Lists feature views a page at a time.
+  rpc BrowseFeatureViews(BrowseFeatureViewsRequest) returns (BrowseFeatureViewsResponse);
+
+  // Counts feature views by status.
+  rpc CountFeatureViews(CountFeatureViewsRequest) returns (CountFeatureViewsResponse);
+
+  // Returns several feature views at once.
+  rpc ResolveFeatureViews(ResolveFeatureViewsRequest) returns (ResolveFeatureViewsResponse);
+
+  // Summarizes a feature view.
+  rpc SummarizeFeatureViews(SummarizeFeatureViewsRequest) returns (SummarizeFeatureViewsResponse);
+
+  // Lists feature views a page at a time.
+  rpc SuggestFeatureViews(SuggestFeatureViewsRequest) returns (SuggestFeatureViewsResponse);
+
+  // Returns a feature view.
+  rpc PeekFeatureView(PeekFeatureViewRequest) returns (PeekFeatureViewResponse);
+}
+
+// The request of `LookupFeatureView`.
+message LookupFeatureViewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string feature_view_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupFeatureView`.
+message LookupFeatureViewResponse {
+  FeatureView feature_view = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseFeatureViews`.
+message BrowseFeatureViewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FeatureViewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseFeatureViewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseFeatureViews`.
+message BrowseFeatureViewsResponse {
+  repeated FeatureView feature_views = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountFeatureViews`.
+message CountFeatureViewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FeatureViewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountFeatureViewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountFeatureViews`.
+message CountFeatureViewsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveFeatureViews`.
+message ResolveFeatureViewsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string feature_view_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveFeatureViews`.
+message ResolveFeatureViewsResponse {
+  repeated FeatureView feature_views = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeFeatureViews`.
+message SummarizeFeatureViewsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_view_id = 2;
+  SummarizeFeatureViewsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeFeatureViews`.
+message SummarizeFeatureViewsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestFeatureViews`.
+message SuggestFeatureViewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FeatureViewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestFeatureViewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestFeatureViews`.
+message SuggestFeatureViewsResponse {
+  repeated FeatureView feature_views = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekFeatureView`.
+message PeekFeatureViewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string feature_view_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekFeatureView`.
+message PeekFeatureViewResponse {
+  FeatureView feature_view = 1;
+  acme.common.v1.OperationResult result = 2;
+}

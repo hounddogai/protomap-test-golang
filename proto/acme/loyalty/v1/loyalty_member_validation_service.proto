@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoyaltyMemberValidationServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Checks loyalty members against the rules before anything acts on them.
+service LoyaltyMemberValidationService {
+  // Validates a loyalty member.
+  rpc ValidateLoyaltyMember(ValidateLoyaltyMemberRequest) returns (ValidateLoyaltyMemberResponse);
+
+  // Previews a loyalty member.
+  rpc PreviewLoyaltyMember(PreviewLoyaltyMemberRequest) returns (PreviewLoyaltyMemberResponse);
+
+  // Checks a loyalty member.
+  rpc CheckLoyaltyMemberEligibility(CheckLoyaltyMemberEligibilityRequest) returns (CheckLoyaltyMemberEligibilityResponse);
+
+  // Normalizes a loyalty member.
+  rpc NormalizeLoyaltyMember(NormalizeLoyaltyMemberRequest) returns (NormalizeLoyaltyMemberResponse);
+
+  // Explains a loyalty member.
+  rpc ExplainLoyaltyMemberDecision(ExplainLoyaltyMemberDecisionRequest) returns (ExplainLoyaltyMemberDecisionResponse);
+
+  // Scores a loyalty member.
+  rpc ScoreLoyaltyMember(ScoreLoyaltyMemberRequest) returns (ScoreLoyaltyMemberResponse);
+
+  // Lints a loyalty member.
+  rpc LintLoyaltyMembers(LintLoyaltyMembersRequest) returns (LintLoyaltyMembersResponse);
+
+  // Returns a loyalty member.
+  rpc GetLoyaltyMemberRules(GetLoyaltyMemberRulesRequest) returns (GetLoyaltyMemberRulesResponse);
+}
+
+// The request of `ValidateLoyaltyMember`.
+message ValidateLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  ValidateLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateLoyaltyMember`.
+message ValidateLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  ValidateLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewLoyaltyMember`.
+message PreviewLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  PreviewLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewLoyaltyMember`.
+message PreviewLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  PreviewLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckLoyaltyMemberEligibility`.
+message CheckLoyaltyMemberEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  CheckLoyaltyMemberEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckLoyaltyMemberEligibility`.
+message CheckLoyaltyMemberEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  CheckLoyaltyMemberEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeLoyaltyMember`.
+message NormalizeLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  NormalizeLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeLoyaltyMember`.
+message NormalizeLoyaltyMemberResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  NormalizeLoyaltyMemberResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainLoyaltyMemberDecision`.
+message ExplainLoyaltyMemberDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  ExplainLoyaltyMemberDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainLoyaltyMemberDecision`.
+message ExplainLoyaltyMemberDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  ExplainLoyaltyMemberDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreLoyaltyMember`.
+message ScoreLoyaltyMemberRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  ScoreLoyaltyMemberRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreLoyaltyMember`.
+message ScoreLoyaltyMemberResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreLoyaltyMemberResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  ScoreLoyaltyMemberResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintLoyaltyMembers`.
+message LintLoyaltyMembersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  LoyaltyMember loyalty_member = 3;
+  LintLoyaltyMembersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintLoyaltyMembers`.
+message LintLoyaltyMembersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoyaltyMember loyalty_member = 1;
+  LintLoyaltyMembersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLoyaltyMemberRules`.
+message GetLoyaltyMemberRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLoyaltyMemberRules`.
+message GetLoyaltyMemberRulesResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}

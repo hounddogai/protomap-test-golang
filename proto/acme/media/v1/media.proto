@@ -1,0 +1,174 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.media.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Media.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/media/v1;mediav1";
+option java_multiple_files = true;
+option java_outer_classname = "MediaProto";
+option java_package = "com.acme.media.v1";
+
+// Where a media asset is in its lifecycle.
+enum MediaAssetStatus {
+  MEDIA_ASSET_STATUS_UNSPECIFIED = 0;
+  MEDIA_ASSET_STATUS_PLANNED = 1;
+  MEDIA_ASSET_STATUS_AVAILABLE = 2;
+  MEDIA_ASSET_STATUS_RESERVED = 3;
+  MEDIA_ASSET_STATUS_RETIRED = 4;
+}
+
+// Where a rendition is in its lifecycle.
+enum RenditionStatus {
+  RENDITION_STATUS_UNSPECIFIED = 0;
+  RENDITION_STATUS_PLANNED = 1;
+  RENDITION_STATUS_AVAILABLE = 2;
+  RENDITION_STATUS_RESERVED = 3;
+  RENDITION_STATUS_RETIRED = 4;
+}
+
+// Where a transcode job is in its lifecycle.
+enum TranscodeJobStatus {
+  TRANSCODE_JOB_STATUS_UNSPECIFIED = 0;
+  TRANSCODE_JOB_STATUS_NEW = 1;
+  TRANSCODE_JOB_STATUS_OPEN = 2;
+  TRANSCODE_JOB_STATUS_WAITING = 3;
+  TRANSCODE_JOB_STATUS_RESOLVED = 4;
+  TRANSCODE_JOB_STATUS_CLOSED = 5;
+}
+
+// The dimensions of a media asset.
+message MediaAssetDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a media asset.
+message MediaAssetComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A media asset of the media domain.
+message MediaAsset {
+  string media_asset_id = 1;
+  string code = 2;
+  string name = 3;
+  MediaAssetStatus status = 4;
+  repeated string category_path = 5;
+  MediaAssetDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, MediaAssetComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The dimensions of a rendition.
+message RenditionDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a rendition.
+message RenditionComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A rendition of the media domain.
+message Rendition {
+  string rendition_id = 1;
+  string code = 2;
+  string name = 3;
+  RenditionStatus status = 4;
+  repeated string category_path = 5;
+  RenditionDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, RenditionComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a transcode job.
+message TranscodeJobComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a transcode job.
+message TranscodeJobSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a transcode job.
+message TranscodeJobChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a transcode job.
+message TranscodeJobStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A transcode job of the media domain.
+message TranscodeJob {
+  string transcode_job_id = 1;
+  string subject = 2;
+  TranscodeJobStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated TranscodeJobComment comments = 7;
+  TranscodeJobSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    TranscodeJobChannelOrigin channel = 11;
+  }
+  repeated TranscodeJobStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

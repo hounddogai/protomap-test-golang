@@ -1,0 +1,187 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pipelines.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/pipelines/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pipelines.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pipelines/v1;pipelinesv1";
+option java_multiple_files = true;
+option java_outer_classname = "PipelinesProto";
+option java_package = "com.acme.pipelines.v1";
+
+// Where a pipeline is in its lifecycle.
+enum PipelineStatus {
+  PIPELINE_STATUS_UNSPECIFIED = 0;
+  PIPELINE_STATUS_TENTATIVE = 1;
+  PIPELINE_STATUS_CONFIRMED = 2;
+  PIPELINE_STATUS_CANCELLED = 3;
+  PIPELINE_STATUS_COMPLETED = 4;
+}
+
+// Where a pipeline run is in its lifecycle.
+enum PipelineRunStatus {
+  PIPELINE_RUN_STATUS_UNSPECIFIED = 0;
+  PIPELINE_RUN_STATUS_NEW = 1;
+  PIPELINE_RUN_STATUS_OPEN = 2;
+  PIPELINE_RUN_STATUS_WAITING = 3;
+  PIPELINE_RUN_STATUS_RESOLVED = 4;
+  PIPELINE_RUN_STATUS_CLOSED = 5;
+}
+
+// Where a pipeline step is in its lifecycle.
+enum PipelineStepStatus {
+  PIPELINE_STEP_STATUS_UNSPECIFIED = 0;
+  PIPELINE_STEP_STATUS_DRAFT = 1;
+  PIPELINE_STEP_STATUS_ENABLED = 2;
+  PIPELINE_STEP_STATUS_DISABLED = 3;
+  PIPELINE_STEP_STATUS_RETIRED = 4;
+}
+
+// The participant of a pipeline.
+message PipelineParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a pipeline.
+message PipelineDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a pipeline.
+message PipelineWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A pipeline of the pipelines domain.
+message Pipeline {
+  string pipeline_id = 1;
+  string title = 2;
+  PipelineStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated PipelineParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    PipelineDailyRule daily = 7;
+    PipelineWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The comment of a pipeline run.
+message PipelineRunComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a pipeline run.
+message PipelineRunSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a pipeline run.
+message PipelineRunChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a pipeline run.
+message PipelineRunStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A pipeline run of the pipelines domain.
+message PipelineRun {
+  string pipeline_run_id = 1;
+  string subject = 2;
+  PipelineRunStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated PipelineRunComment comments = 7;
+  PipelineRunSla sla = 8;
+  oneof origin {
+    PipelineRef customer = 9;
+    string external_reference = 10;
+    PipelineRunChannelOrigin channel = 11;
+  }
+  repeated PipelineRunStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a pipeline step.
+message PipelineStepCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a pipeline step.
+message PipelineStepDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a pipeline step.
+message PipelineStepRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a pipeline step.
+message PipelineStepBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A pipeline step of the pipelines domain.
+message PipelineStep {
+  string pipeline_step_id = 1;
+  string name = 2;
+  string description = 3;
+  PipelineStepStatus status = 4;
+  int32 priority = 5;
+  repeated PipelineStepCondition conditions = 6;
+  oneof action {
+    PipelineStepDiscountAction discount = 7;
+    PipelineStepRouteAction route = 8;
+    PipelineStepBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

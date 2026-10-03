@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskAssessmentWorkflowServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Runs the long-lived workflow that takes a risk assessment from start to finish.
+service RiskAssessmentWorkflowService {
+  // Starts a risk assessment.
+  rpc StartRiskAssessmentWorkflow(StartRiskAssessmentWorkflowRequest) returns (StartRiskAssessmentWorkflowResponse);
+
+  // Advances a risk assessment.
+  rpc AdvanceRiskAssessmentWorkflow(AdvanceRiskAssessmentWorkflowRequest) returns (AdvanceRiskAssessmentWorkflowResponse);
+
+  // Cancels a risk assessment.
+  rpc CancelRiskAssessmentWorkflow(CancelRiskAssessmentWorkflowRequest) returns (CancelRiskAssessmentWorkflowResponse);
+
+  // Retrys a risk assessment.
+  rpc RetryRiskAssessmentWorkflow(RetryRiskAssessmentWorkflowRequest) returns (RetryRiskAssessmentWorkflowResponse);
+
+  // Pauses a risk assessment.
+  rpc PauseRiskAssessmentWorkflow(PauseRiskAssessmentWorkflowRequest) returns (PauseRiskAssessmentWorkflowResponse);
+
+  // Resumes a risk assessment.
+  rpc ResumeRiskAssessmentWorkflow(ResumeRiskAssessmentWorkflowRequest) returns (ResumeRiskAssessmentWorkflowResponse);
+
+  // Returns a risk assessment.
+  rpc InspectRiskAssessmentWorkflow(InspectRiskAssessmentWorkflowRequest) returns (InspectRiskAssessmentWorkflowResponse);
+
+  // Lists risk assessments a page at a time.
+  rpc ListRiskAssessmentWorkflows(ListRiskAssessmentWorkflowsRequest) returns (ListRiskAssessmentWorkflowsResponse);
+
+  // Signals a risk assessment.
+  rpc SignalRiskAssessmentWorkflow(SignalRiskAssessmentWorkflowRequest) returns (SignalRiskAssessmentWorkflowResponse);
+}
+
+// The request of `StartRiskAssessmentWorkflow`.
+message StartRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  StartRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartRiskAssessmentWorkflow`.
+message StartRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  StartRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceRiskAssessmentWorkflow`.
+message AdvanceRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  AdvanceRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceRiskAssessmentWorkflow`.
+message AdvanceRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  AdvanceRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelRiskAssessmentWorkflow`.
+message CancelRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  CancelRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelRiskAssessmentWorkflow`.
+message CancelRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  CancelRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryRiskAssessmentWorkflow`.
+message RetryRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  RetryRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryRiskAssessmentWorkflow`.
+message RetryRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  RetryRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseRiskAssessmentWorkflow`.
+message PauseRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  PauseRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseRiskAssessmentWorkflow`.
+message PauseRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  PauseRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeRiskAssessmentWorkflow`.
+message ResumeRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  ResumeRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeRiskAssessmentWorkflow`.
+message ResumeRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  ResumeRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectRiskAssessmentWorkflow`.
+message InspectRiskAssessmentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectRiskAssessmentWorkflow`.
+message InspectRiskAssessmentWorkflowResponse {
+  RiskAssessment risk_assessment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListRiskAssessmentWorkflows`.
+message ListRiskAssessmentWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskAssessmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRiskAssessmentWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRiskAssessmentWorkflows`.
+message ListRiskAssessmentWorkflowsResponse {
+  repeated RiskAssessment risk_assessments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalRiskAssessmentWorkflow`.
+message SignalRiskAssessmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  SignalRiskAssessmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalRiskAssessmentWorkflow`.
+message SignalRiskAssessmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  SignalRiskAssessmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

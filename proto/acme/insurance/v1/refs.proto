@@ -1,0 +1,47 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.insurance.v1;
+
+option csharp_namespace = "Acme.Insurance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/insurance/v1;insurancev1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.insurance.v1";
+
+// A reference to a policy of the insurance domain.
+message PolicyRef {
+  string policy_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a claim of the insurance domain.
+message ClaimRef {
+  string claim_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a coverage of the insurance domain.
+message CoverageRef {
+  string coverage_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a premium of the insurance domain.
+message PremiumRef {
+  string premium_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to an underwriting of the insurance domain.
+message UnderwritingRef {
+  string underwriting_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

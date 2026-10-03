@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DisputeCalculationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Computes the figures of a dispute, such as totals, taxes, and estimates.
+service DisputeCalculationService {
+  // Calculates a dispute.
+  rpc CalculateDispute(CalculateDisputeRequest) returns (CalculateDisputeResponse);
+
+  // Estimates a dispute.
+  rpc EstimateDispute(EstimateDisputeRequest) returns (EstimateDisputeResponse);
+
+  // Quotes a dispute.
+  rpc QuoteDispute(QuoteDisputeRequest) returns (QuoteDisputeResponse);
+
+  // Compares a dispute.
+  rpc CompareDisputeOptions(CompareDisputeOptionsRequest) returns (CompareDisputeOptionsResponse);
+
+  // Recalculates a dispute.
+  rpc RecalculateDisputes(RecalculateDisputesRequest) returns (RecalculateDisputesResponse);
+
+  // Simulates a dispute.
+  rpc SimulateDispute(SimulateDisputeRequest) returns (SimulateDisputeResponse);
+
+  // Explains a dispute.
+  rpc ExplainDisputeCalculation(ExplainDisputeCalculationRequest) returns (ExplainDisputeCalculationResponse);
+
+  // Returns a dispute.
+  rpc GetDisputeRates(GetDisputeRatesRequest) returns (GetDisputeRatesResponse);
+}
+
+// The request of `CalculateDispute`.
+message CalculateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  CalculateDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateDispute`.
+message CalculateDisputeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateDisputeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  CalculateDisputeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateDispute`.
+message EstimateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  EstimateDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateDispute`.
+message EstimateDisputeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateDisputeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  EstimateDisputeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteDispute`.
+message QuoteDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  QuoteDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteDispute`.
+message QuoteDisputeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteDisputeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  QuoteDisputeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareDisputeOptions`.
+message CompareDisputeOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  CompareDisputeOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareDisputeOptions`.
+message CompareDisputeOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareDisputeOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  CompareDisputeOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateDisputes`.
+message RecalculateDisputesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  RecalculateDisputesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateDisputes`.
+message RecalculateDisputesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateDisputesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  RecalculateDisputesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateDispute`.
+message SimulateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  SimulateDisputeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateDispute`.
+message SimulateDisputeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateDisputeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Dispute dispute = 1;
+  SimulateDisputeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainDisputeCalculation`.
+message ExplainDisputeCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  ExplainDisputeCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainDisputeCalculation`.
+message ExplainDisputeCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ExplainDisputeCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetDisputeRates`.
+message GetDisputeRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDisputeRates`.
+message GetDisputeRatesResponse {
+  Dispute dispute = 1;
+  acme.common.v1.OperationResult result = 2;
+}

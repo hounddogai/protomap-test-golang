@@ -1,0 +1,210 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.benefits.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/recruiting/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Benefits.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/benefits/v1;benefitsv1";
+option java_multiple_files = true;
+option java_outer_classname = "BenefitsProto";
+option java_package = "com.acme.benefits.v1";
+
+// Where a benefit plan is in its lifecycle.
+enum BenefitPlanStatus {
+  BENEFIT_PLAN_STATUS_UNSPECIFIED = 0;
+  BENEFIT_PLAN_STATUS_DRAFT = 1;
+  BENEFIT_PLAN_STATUS_ENABLED = 2;
+  BENEFIT_PLAN_STATUS_DISABLED = 3;
+  BENEFIT_PLAN_STATUS_RETIRED = 4;
+}
+
+// Where an enrollment is in its lifecycle.
+enum EnrollmentStatus {
+  ENROLLMENT_STATUS_UNSPECIFIED = 0;
+  ENROLLMENT_STATUS_PENDING = 1;
+  ENROLLMENT_STATUS_OPEN = 2;
+  ENROLLMENT_STATUS_FROZEN = 3;
+  ENROLLMENT_STATUS_CLOSED = 4;
+}
+
+// Where a dependent is in its lifecycle.
+enum DependentStatus {
+  DEPENDENT_STATUS_UNSPECIFIED = 0;
+  DEPENDENT_STATUS_PROSPECT = 1;
+  DEPENDENT_STATUS_ACTIVE = 2;
+  DEPENDENT_STATUS_SUSPENDED = 3;
+  DEPENDENT_STATUS_CLOSED = 4;
+}
+
+// Where a life event is in its lifecycle.
+enum LifeEventStatus {
+  LIFE_EVENT_STATUS_UNSPECIFIED = 0;
+  LIFE_EVENT_STATUS_RECEIVED = 1;
+  LIFE_EVENT_STATUS_PROCESSED = 2;
+  LIFE_EVENT_STATUS_DISCARDED = 3;
+}
+
+// The condition of a benefit plan.
+message BenefitPlanCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a benefit plan.
+message BenefitPlanDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a benefit plan.
+message BenefitPlanRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a benefit plan.
+message BenefitPlanBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A benefit plan of the benefits domain.
+message BenefitPlan {
+  string benefit_plan_id = 1;
+  string name = 2;
+  string description = 3;
+  BenefitPlanStatus status = 4;
+  int32 priority = 5;
+  repeated BenefitPlanCondition conditions = 6;
+  oneof action {
+    BenefitPlanDiscountAction discount = 7;
+    BenefitPlanRouteAction route = 8;
+    BenefitPlanBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The limit of an enrollment.
+message EnrollmentLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of an enrollment.
+message EnrollmentCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of an enrollment.
+message EnrollmentBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// An enrollment of the benefits domain.
+message Enrollment {
+  string enrollment_id = 1;
+  acme.recruiting.v1.CandidateRef holder = 2;
+  EnrollmentStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated EnrollmentLimit limits = 7;
+  oneof funding {
+    EnrollmentCardFunding card = 8;
+    EnrollmentBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The preferences of a dependent.
+message DependentPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a dependent.
+message DependentPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a dependent.
+message DependentNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A dependent of the benefits domain.
+message Dependent {
+  string dependent_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  DependentStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  DependentPreferences preferences = 8;
+  oneof identity_document {
+    DependentPassport passport = 9;
+    DependentNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The measurement of a life event.
+message LifeEventMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A life event of the benefits domain.
+message LifeEvent {
+  string life_event_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.recruiting.v1.CandidateRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated LifeEventMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

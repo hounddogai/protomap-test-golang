@@ -1,0 +1,224 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RedemptionImportServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Takes redemptions in bulk from partners and legacy systems.
+service RedemptionImportService {
+  // Takes a stream of redemptions and answers once at the end.
+  rpc ImportRedemptions(stream ImportRedemptionsRequest) returns (ImportRedemptionsResponse);
+
+  // Returns a redemption.
+  rpc GetRedemptionImportStatus(GetRedemptionImportStatusRequest) returns (GetRedemptionImportStatusResponse);
+
+  // Cancels a redemption.
+  rpc CancelRedemptionImport(CancelRedemptionImportRequest) returns (CancelRedemptionImportResponse);
+
+  // Validates a redemption.
+  rpc ValidateRedemptionImport(ValidateRedemptionImportRequest) returns (ValidateRedemptionImportResponse);
+
+  // Retrys a redemption.
+  rpc RetryRedemptionImport(RetryRedemptionImportRequest) returns (RetryRedemptionImportResponse);
+
+  // Maps a redemption.
+  rpc MapRedemptionImportColumns(MapRedemptionImportColumnsRequest) returns (MapRedemptionImportColumnsResponse);
+}
+
+// The request of `ImportRedemptions`.
+message ImportRedemptionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    ImportRedemptionsRequest.StreamHeader header = 2;
+    Redemption record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `ImportRedemptions`.
+message ImportRedemptionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string redemption_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated ImportRedemptionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `GetRedemptionImportStatus`.
+message GetRedemptionImportStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRedemptionImportStatus`.
+message GetRedemptionImportStatusResponse {
+  Redemption redemption = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CancelRedemptionImport`.
+message CancelRedemptionImportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  CancelRedemptionImportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `CancelRedemptionImport`.
+message CancelRedemptionImportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Redemption redemption = 1;
+  CancelRedemptionImportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ValidateRedemptionImport`.
+message ValidateRedemptionImportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  ValidateRedemptionImportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateRedemptionImport`.
+message ValidateRedemptionImportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Redemption redemption = 1;
+  ValidateRedemptionImportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryRedemptionImport`.
+message RetryRedemptionImportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  RetryRedemptionImportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryRedemptionImport`.
+message RetryRedemptionImportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Redemption redemption = 1;
+  RetryRedemptionImportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `MapRedemptionImportColumns`.
+message MapRedemptionImportColumnsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  MapRedemptionImportColumnsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `MapRedemptionImportColumns`.
+message MapRedemptionImportColumnsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Redemption redemption = 1;
+  MapRedemptionImportColumnsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

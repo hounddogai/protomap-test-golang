@@ -1,0 +1,173 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.maintenance.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/maintenance/v1/maintenance.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Maintenance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/maintenance/v1;maintenancev1";
+option java_multiple_files = true;
+option java_outer_classname = "WorkOrderQueryServiceProto";
+option java_package = "com.acme.maintenance.v1";
+
+// Answers read-only questions about work orders, for screens and reports.
+service WorkOrderQueryService {
+  // Returns a work order.
+  rpc LookupWorkOrder(LookupWorkOrderRequest) returns (LookupWorkOrderResponse);
+
+  // Lists work orders a page at a time.
+  rpc BrowseWorkOrders(BrowseWorkOrdersRequest) returns (BrowseWorkOrdersResponse);
+
+  // Lists work orders a page at a time.
+  rpc FindWorkOrders(FindWorkOrdersRequest) returns (FindWorkOrdersResponse);
+
+  // Returns several work orders at once.
+  rpc ResolveWorkOrders(ResolveWorkOrdersRequest) returns (ResolveWorkOrdersResponse);
+
+  // Streams every matching work order.
+  rpc ExportWorkOrders(ExportWorkOrdersRequest) returns (stream ExportWorkOrdersResponse);
+
+  // Summarizes a work order.
+  rpc SummarizeWorkOrders(SummarizeWorkOrdersRequest) returns (SummarizeWorkOrdersResponse);
+}
+
+// The request of `LookupWorkOrder`.
+message LookupWorkOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupWorkOrder`.
+message LookupWorkOrderResponse {
+  WorkOrder work_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseWorkOrders`.
+message BrowseWorkOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseWorkOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseWorkOrders`.
+message BrowseWorkOrdersResponse {
+  repeated WorkOrder work_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindWorkOrders`.
+message FindWorkOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindWorkOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindWorkOrders`.
+message FindWorkOrdersResponse {
+  repeated WorkOrder work_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveWorkOrders`.
+message ResolveWorkOrdersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string work_order_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveWorkOrders`.
+message ResolveWorkOrdersResponse {
+  repeated WorkOrder work_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportWorkOrders`.
+message ExportWorkOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportWorkOrdersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportWorkOrders`.
+message ExportWorkOrdersResponse {
+  WorkOrder work_order = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeWorkOrders`.
+message SummarizeWorkOrdersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  SummarizeWorkOrdersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeWorkOrders`.
+message SummarizeWorkOrdersResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}

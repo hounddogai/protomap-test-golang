@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConsentRecordApprovalServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Routes consent records through approval, with escalation and delegation.
+service ConsentRecordApprovalService {
+  // Submits a consent record.
+  rpc SubmitConsentRecord(SubmitConsentRecordRequest) returns (SubmitConsentRecordResponse);
+
+  // Approves a consent record.
+  rpc ApproveConsentRecord(ApproveConsentRecordRequest) returns (ApproveConsentRecordResponse);
+
+  // Rejects a consent record.
+  rpc RejectConsentRecord(RejectConsentRecordRequest) returns (RejectConsentRecordResponse);
+
+  // Escalates a consent record.
+  rpc EscalateConsentRecord(EscalateConsentRecordRequest) returns (EscalateConsentRecordResponse);
+
+  // Lists consent records a page at a time.
+  rpc ListPendingConsentRecords(ListPendingConsentRecordsRequest) returns (ListPendingConsentRecordsResponse);
+
+  // Delegates a consent record.
+  rpc DelegateConsentRecordApproval(DelegateConsentRecordApprovalRequest) returns (DelegateConsentRecordApprovalResponse);
+
+  // Recalls a consent record.
+  rpc RecallConsentRecord(RecallConsentRecordRequest) returns (RecallConsentRecordResponse);
+
+  // Returns a consent record.
+  rpc GetConsentRecordApprovalStatus(GetConsentRecordApprovalStatusRequest) returns (GetConsentRecordApprovalStatusResponse);
+
+  // Comments a consent record.
+  rpc CommentConsentRecordApproval(CommentConsentRecordApprovalRequest) returns (CommentConsentRecordApprovalResponse);
+}
+
+// The request of `SubmitConsentRecord`.
+message SubmitConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  SubmitConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitConsentRecord`.
+message SubmitConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  SubmitConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveConsentRecord`.
+message ApproveConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  ApproveConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveConsentRecord`.
+message ApproveConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ApproveConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectConsentRecord`.
+message RejectConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  RejectConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectConsentRecord`.
+message RejectConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  RejectConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateConsentRecord`.
+message EscalateConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  EscalateConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateConsentRecord`.
+message EscalateConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  EscalateConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingConsentRecords`.
+message ListPendingConsentRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConsentRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingConsentRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingConsentRecords`.
+message ListPendingConsentRecordsResponse {
+  repeated ConsentRecord consent_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateConsentRecordApproval`.
+message DelegateConsentRecordApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  DelegateConsentRecordApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateConsentRecordApproval`.
+message DelegateConsentRecordApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  DelegateConsentRecordApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallConsentRecord`.
+message RecallConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  RecallConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallConsentRecord`.
+message RecallConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  RecallConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetConsentRecordApprovalStatus`.
+message GetConsentRecordApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConsentRecordApprovalStatus`.
+message GetConsentRecordApprovalStatusResponse {
+  ConsentRecord consent_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentConsentRecordApproval`.
+message CommentConsentRecordApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  CommentConsentRecordApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentConsentRecordApproval`.
+message CommentConsentRecordApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  CommentConsentRecordApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

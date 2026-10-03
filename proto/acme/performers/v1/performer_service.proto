@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.performers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/performers/v1/performers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Performers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/performers/v1;performersv1";
+option java_multiple_files = true;
+option java_outer_classname = "PerformerServiceProto";
+option java_package = "com.acme.performers.v1";
+
+// Manages performers: creates, reads, changes, and lists them.
+service PerformerService {
+  // Creates a performer.
+  rpc CreatePerformer(CreatePerformerRequest) returns (CreatePerformerResponse);
+
+  // Returns a performer.
+  rpc GetPerformer(GetPerformerRequest) returns (GetPerformerResponse);
+
+  // Changes a performer.
+  rpc UpdatePerformer(UpdatePerformerRequest) returns (UpdatePerformerResponse);
+
+  // Deletes a performer.
+  rpc DeletePerformer(DeletePerformerRequest) returns (DeletePerformerResponse);
+
+  // Lists performers a page at a time.
+  rpc ListPerformers(ListPerformersRequest) returns (ListPerformersResponse);
+
+  // Returns several performers at once.
+  rpc BatchGetPerformers(BatchGetPerformersRequest) returns (BatchGetPerformersResponse);
+
+  // Lists performers a page at a time.
+  rpc SearchPerformers(SearchPerformersRequest) returns (SearchPerformersResponse);
+
+  // Streams the changes of performers as they happen.
+  rpc WatchPerformers(WatchPerformersRequest) returns (stream WatchPerformersResponse);
+
+  // Takes a stream of performers and answers once at the end.
+  rpc BatchCreatePerformers(stream BatchCreatePerformersRequest) returns (BatchCreatePerformersResponse);
+
+  // Creates a performer.
+  rpc ClonePerformer(ClonePerformerRequest) returns (ClonePerformerResponse);
+}
+
+// The request of `CreatePerformer`.
+message CreatePerformerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Performer performer = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePerformer`.
+message CreatePerformerResponse {
+  Performer performer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPerformer`.
+message GetPerformerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string performer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPerformer`.
+message GetPerformerResponse {
+  Performer performer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePerformer`.
+message UpdatePerformerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Performer performer = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePerformer`.
+message UpdatePerformerResponse {
+  Performer performer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePerformer`.
+message DeletePerformerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string performer_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePerformer`.
+message DeletePerformerResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPerformers`.
+message ListPerformersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PerformerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPerformersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPerformers`.
+message ListPerformersResponse {
+  repeated Performer performers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPerformers`.
+message BatchGetPerformersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string performer_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPerformers`.
+message BatchGetPerformersResponse {
+  repeated Performer performers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPerformers`.
+message SearchPerformersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PerformerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPerformersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPerformers`.
+message SearchPerformersResponse {
+  repeated Performer performers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPerformers`.
+message WatchPerformersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PerformerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPerformersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPerformers`.
+message WatchPerformersResponse {
+  Performer performer = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreatePerformers`.
+message BatchCreatePerformersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePerformersRequest.StreamHeader header = 2;
+    Performer record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePerformers`.
+message BatchCreatePerformersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string performer_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePerformersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePerformer`.
+message ClonePerformerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Performer performer = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePerformer`.
+message ClonePerformerResponse {
+  Performer performer = 1;
+  acme.common.v1.OperationResult result = 2;
+}

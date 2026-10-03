@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderLifecycleServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Moves an order between the states of its lifecycle.
+service OrderLifecycleService {
+  // Activates an order.
+  rpc ActivateOrder(ActivateOrderRequest) returns (ActivateOrderResponse);
+
+  // Suspends an order.
+  rpc SuspendOrder(SuspendOrderRequest) returns (SuspendOrderResponse);
+
+  // Reinstates an order.
+  rpc ReinstateOrder(ReinstateOrderRequest) returns (ReinstateOrderResponse);
+
+  // Terminates an order.
+  rpc TerminateOrder(TerminateOrderRequest) returns (TerminateOrderResponse);
+
+  // Renews an order.
+  rpc RenewOrder(RenewOrderRequest) returns (RenewOrderResponse);
+
+  // Returns an order.
+  rpc GetOrderLifecycle(GetOrderLifecycleRequest) returns (GetOrderLifecycleResponse);
+
+  // Schedules an order.
+  rpc ScheduleOrderExpiry(ScheduleOrderExpiryRequest) returns (ScheduleOrderExpiryResponse);
+}
+
+// The request of `ActivateOrder`.
+message ActivateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  ActivateOrderRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateOrder`.
+message ActivateOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  ActivateOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendOrder`.
+message SuspendOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  SuspendOrderRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendOrder`.
+message SuspendOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  SuspendOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateOrder`.
+message ReinstateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  ReinstateOrderRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateOrder`.
+message ReinstateOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  ReinstateOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateOrder`.
+message TerminateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  TerminateOrderRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateOrder`.
+message TerminateOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  TerminateOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewOrder`.
+message RenewOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  RenewOrderRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewOrder`.
+message RenewOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  RenewOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderLifecycle`.
+message GetOrderLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderLifecycle`.
+message GetOrderLifecycleResponse {
+  Order order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleOrderExpiry`.
+message ScheduleOrderExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  ScheduleOrderExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleOrderExpiry`.
+message ScheduleOrderExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  ScheduleOrderExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

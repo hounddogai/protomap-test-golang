@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PromotionValidationServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Checks promotions against the rules before anything acts on them.
+service PromotionValidationService {
+  // Validates a promotion.
+  rpc ValidatePromotion(ValidatePromotionRequest) returns (ValidatePromotionResponse);
+
+  // Previews a promotion.
+  rpc PreviewPromotion(PreviewPromotionRequest) returns (PreviewPromotionResponse);
+
+  // Normalizes a promotion.
+  rpc NormalizePromotion(NormalizePromotionRequest) returns (NormalizePromotionResponse);
+
+  // Scores a promotion.
+  rpc ScorePromotion(ScorePromotionRequest) returns (ScorePromotionResponse);
+
+  // Lints a promotion.
+  rpc LintPromotions(LintPromotionsRequest) returns (LintPromotionsResponse);
+
+  // Returns a promotion.
+  rpc GetPromotionRules(GetPromotionRulesRequest) returns (GetPromotionRulesResponse);
+}
+
+// The request of `ValidatePromotion`.
+message ValidatePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  ValidatePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePromotion`.
+message ValidatePromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  ValidatePromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPromotion`.
+message PreviewPromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  PreviewPromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPromotion`.
+message PreviewPromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  PreviewPromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePromotion`.
+message NormalizePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  NormalizePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePromotion`.
+message NormalizePromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  NormalizePromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePromotion`.
+message ScorePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  ScorePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePromotion`.
+message ScorePromotionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePromotionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Promotion promotion = 1;
+  ScorePromotionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPromotions`.
+message LintPromotionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  LintPromotionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPromotions`.
+message LintPromotionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  LintPromotionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPromotionRules`.
+message GetPromotionRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPromotionRules`.
+message GetPromotionRulesResponse {
+  Promotion promotion = 1;
+  acme.common.v1.OperationResult result = 2;
+}

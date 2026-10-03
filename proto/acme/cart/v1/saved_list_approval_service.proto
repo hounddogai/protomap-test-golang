@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "SavedListApprovalServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Routes saved lists through approval, with escalation and delegation.
+service SavedListApprovalService {
+  // Submits a saved list.
+  rpc SubmitSavedList(SubmitSavedListRequest) returns (SubmitSavedListResponse);
+
+  // Approves a saved list.
+  rpc ApproveSavedList(ApproveSavedListRequest) returns (ApproveSavedListResponse);
+
+  // Rejects a saved list.
+  rpc RejectSavedList(RejectSavedListRequest) returns (RejectSavedListResponse);
+
+  // Escalates a saved list.
+  rpc EscalateSavedList(EscalateSavedListRequest) returns (EscalateSavedListResponse);
+
+  // Lists saved lists a page at a time.
+  rpc ListPendingSavedLists(ListPendingSavedListsRequest) returns (ListPendingSavedListsResponse);
+
+  // Delegates a saved list.
+  rpc DelegateSavedListApproval(DelegateSavedListApprovalRequest) returns (DelegateSavedListApprovalResponse);
+
+  // Recalls a saved list.
+  rpc RecallSavedList(RecallSavedListRequest) returns (RecallSavedListResponse);
+
+  // Returns a saved list.
+  rpc GetSavedListApprovalStatus(GetSavedListApprovalStatusRequest) returns (GetSavedListApprovalStatusResponse);
+
+  // Comments a saved list.
+  rpc CommentSavedListApproval(CommentSavedListApprovalRequest) returns (CommentSavedListApprovalResponse);
+}
+
+// The request of `SubmitSavedList`.
+message SubmitSavedListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  SubmitSavedListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitSavedList`.
+message SubmitSavedListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  SubmitSavedListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveSavedList`.
+message ApproveSavedListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  ApproveSavedListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveSavedList`.
+message ApproveSavedListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  ApproveSavedListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectSavedList`.
+message RejectSavedListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  RejectSavedListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectSavedList`.
+message RejectSavedListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  RejectSavedListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateSavedList`.
+message EscalateSavedListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  EscalateSavedListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateSavedList`.
+message EscalateSavedListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  EscalateSavedListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingSavedLists`.
+message ListPendingSavedListsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SavedListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingSavedListsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingSavedLists`.
+message ListPendingSavedListsResponse {
+  repeated SavedList saved_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateSavedListApproval`.
+message DelegateSavedListApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  DelegateSavedListApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateSavedListApproval`.
+message DelegateSavedListApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  DelegateSavedListApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallSavedList`.
+message RecallSavedListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  RecallSavedListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallSavedList`.
+message RecallSavedListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  RecallSavedListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSavedListApprovalStatus`.
+message GetSavedListApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSavedListApprovalStatus`.
+message GetSavedListApprovalStatusResponse {
+  SavedList saved_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentSavedListApproval`.
+message CommentSavedListApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  CommentSavedListApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentSavedListApproval`.
+message CommentSavedListApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  CommentSavedListApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

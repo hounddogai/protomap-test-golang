@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderNoteLifecycleServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Moves an order note between the states of its lifecycle.
+service OrderNoteLifecycleService {
+  // Activates an order note.
+  rpc ActivateOrderNote(ActivateOrderNoteRequest) returns (ActivateOrderNoteResponse);
+
+  // Suspends an order note.
+  rpc SuspendOrderNote(SuspendOrderNoteRequest) returns (SuspendOrderNoteResponse);
+
+  // Reinstates an order note.
+  rpc ReinstateOrderNote(ReinstateOrderNoteRequest) returns (ReinstateOrderNoteResponse);
+
+  // Terminates an order note.
+  rpc TerminateOrderNote(TerminateOrderNoteRequest) returns (TerminateOrderNoteResponse);
+
+  // Renews an order note.
+  rpc RenewOrderNote(RenewOrderNoteRequest) returns (RenewOrderNoteResponse);
+
+  // Expires an order note.
+  rpc ExpireOrderNote(ExpireOrderNoteRequest) returns (ExpireOrderNoteResponse);
+
+  // Returns an order note.
+  rpc GetOrderNoteLifecycle(GetOrderNoteLifecycleRequest) returns (GetOrderNoteLifecycleResponse);
+
+  // Schedules an order note.
+  rpc ScheduleOrderNoteExpiry(ScheduleOrderNoteExpiryRequest) returns (ScheduleOrderNoteExpiryResponse);
+}
+
+// The request of `ActivateOrderNote`.
+message ActivateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  ActivateOrderNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateOrderNote`.
+message ActivateOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ActivateOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendOrderNote`.
+message SuspendOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  SuspendOrderNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendOrderNote`.
+message SuspendOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  SuspendOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateOrderNote`.
+message ReinstateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  ReinstateOrderNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateOrderNote`.
+message ReinstateOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ReinstateOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateOrderNote`.
+message TerminateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  TerminateOrderNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateOrderNote`.
+message TerminateOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  TerminateOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewOrderNote`.
+message RenewOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  RenewOrderNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewOrderNote`.
+message RenewOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  RenewOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireOrderNote`.
+message ExpireOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  ExpireOrderNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireOrderNote`.
+message ExpireOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ExpireOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderNoteLifecycle`.
+message GetOrderNoteLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderNoteLifecycle`.
+message GetOrderNoteLifecycleResponse {
+  OrderNote order_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleOrderNoteExpiry`.
+message ScheduleOrderNoteExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ScheduleOrderNoteExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleOrderNoteExpiry`.
+message ScheduleOrderNoteExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ScheduleOrderNoteExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

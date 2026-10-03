@@ -1,0 +1,230 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.edgegateway.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/edgegateway/v1/edgegateway.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Edgegateway.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/edgegateway/v1;edgegatewayv1";
+option java_multiple_files = true;
+option java_outer_classname = "RouteBindingServiceProto";
+option java_package = "com.acme.edgegateway.v1";
+
+// Manages route bindings: creates, reads, changes, and lists them.
+service RouteBindingService {
+  // Creates a route binding.
+  rpc CreateRouteBinding(CreateRouteBindingRequest) returns (CreateRouteBindingResponse);
+
+  // Returns a route binding.
+  rpc GetRouteBinding(GetRouteBindingRequest) returns (GetRouteBindingResponse);
+
+  // Changes a route binding.
+  rpc UpdateRouteBinding(UpdateRouteBindingRequest) returns (UpdateRouteBindingResponse);
+
+  // Lists route bindings a page at a time.
+  rpc ListRouteBindings(ListRouteBindingsRequest) returns (ListRouteBindingsResponse);
+
+  // Returns several route bindings at once.
+  rpc BatchGetRouteBindings(BatchGetRouteBindingsRequest) returns (BatchGetRouteBindingsResponse);
+
+  // Lists route bindings a page at a time.
+  rpc SearchRouteBindings(SearchRouteBindingsRequest) returns (SearchRouteBindingsResponse);
+
+  // Streams the changes of route bindings as they happen.
+  rpc WatchRouteBindings(WatchRouteBindingsRequest) returns (stream WatchRouteBindingsResponse);
+
+  // Takes a stream of route bindings and answers once at the end.
+  rpc BatchCreateRouteBindings(stream BatchCreateRouteBindingsRequest) returns (BatchCreateRouteBindingsResponse);
+
+  // Creates a route binding.
+  rpc CloneRouteBinding(CloneRouteBindingRequest) returns (CloneRouteBindingResponse);
+}
+
+// The request of `CreateRouteBinding`.
+message CreateRouteBindingRequest {
+  acme.common.v1.RequestContext context = 1;
+  RouteBinding route_binding = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateRouteBinding`.
+message CreateRouteBindingResponse {
+  RouteBinding route_binding = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetRouteBinding`.
+message GetRouteBindingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string route_binding_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRouteBinding`.
+message GetRouteBindingResponse {
+  RouteBinding route_binding = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateRouteBinding`.
+message UpdateRouteBindingRequest {
+  acme.common.v1.RequestContext context = 1;
+  RouteBinding route_binding = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateRouteBinding`.
+message UpdateRouteBindingResponse {
+  RouteBinding route_binding = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListRouteBindings`.
+message ListRouteBindingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RouteBindingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRouteBindingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRouteBindings`.
+message ListRouteBindingsResponse {
+  repeated RouteBinding route_bindings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetRouteBindings`.
+message BatchGetRouteBindingsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string route_binding_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetRouteBindings`.
+message BatchGetRouteBindingsResponse {
+  repeated RouteBinding route_bindings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchRouteBindings`.
+message SearchRouteBindingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RouteBindingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchRouteBindingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchRouteBindings`.
+message SearchRouteBindingsResponse {
+  repeated RouteBinding route_bindings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchRouteBindings`.
+message WatchRouteBindingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RouteBindingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchRouteBindingsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchRouteBindings`.
+message WatchRouteBindingsResponse {
+  RouteBinding route_binding = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateRouteBindings`.
+message BatchCreateRouteBindingsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateRouteBindingsRequest.StreamHeader header = 2;
+    RouteBinding record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateRouteBindings`.
+message BatchCreateRouteBindingsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string route_binding_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateRouteBindingsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneRouteBinding`.
+message CloneRouteBindingRequest {
+  acme.common.v1.RequestContext context = 1;
+  RouteBinding route_binding = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneRouteBinding`.
+message CloneRouteBindingResponse {
+  RouteBinding route_binding = 1;
+  acme.common.v1.OperationResult result = 2;
+}

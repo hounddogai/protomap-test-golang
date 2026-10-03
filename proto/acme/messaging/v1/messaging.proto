@@ -1,0 +1,210 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.messaging.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/messaging/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Messaging.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/messaging/v1;messagingv1";
+option java_multiple_files = true;
+option java_outer_classname = "MessagingProto";
+option java_package = "com.acme.messaging.v1";
+
+// Where a conversation is in its lifecycle.
+enum ConversationStatus {
+  CONVERSATION_STATUS_UNSPECIFIED = 0;
+  CONVERSATION_STATUS_NEW = 1;
+  CONVERSATION_STATUS_OPEN = 2;
+  CONVERSATION_STATUS_WAITING = 3;
+  CONVERSATION_STATUS_RESOLVED = 4;
+  CONVERSATION_STATUS_CLOSED = 5;
+}
+
+// Where a chat message is in its lifecycle.
+enum ChatMessageStatus {
+  CHAT_MESSAGE_STATUS_UNSPECIFIED = 0;
+  CHAT_MESSAGE_STATUS_RECEIVED = 1;
+  CHAT_MESSAGE_STATUS_PROCESSED = 2;
+  CHAT_MESSAGE_STATUS_DISCARDED = 3;
+}
+
+// Where a channel is in its lifecycle.
+enum ChannelStatus {
+  CHANNEL_STATUS_UNSPECIFIED = 0;
+  CHANNEL_STATUS_PLANNED = 1;
+  CHANNEL_STATUS_AVAILABLE = 2;
+  CHANNEL_STATUS_RESERVED = 3;
+  CHANNEL_STATUS_RETIRED = 4;
+}
+
+// Where a participant is in its lifecycle.
+enum ParticipantStatus {
+  PARTICIPANT_STATUS_UNSPECIFIED = 0;
+  PARTICIPANT_STATUS_PROSPECT = 1;
+  PARTICIPANT_STATUS_ACTIVE = 2;
+  PARTICIPANT_STATUS_SUSPENDED = 3;
+  PARTICIPANT_STATUS_CLOSED = 4;
+}
+
+// The comment of a conversation.
+message ConversationComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a conversation.
+message ConversationSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a conversation.
+message ConversationChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a conversation.
+message ConversationStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A conversation of the messaging domain.
+message Conversation {
+  string conversation_id = 1;
+  string subject = 2;
+  ConversationStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated ConversationComment comments = 7;
+  ConversationSla sla = 8;
+  oneof origin {
+    ChannelRef customer = 9;
+    string external_reference = 10;
+    ConversationChannelOrigin channel = 11;
+  }
+  repeated ConversationStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a chat message.
+message ChatMessageMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A chat message of the messaging domain.
+message ChatMessage {
+  string chat_message_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  ChannelRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ChatMessageMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The dimensions of a channel.
+message ChannelDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a channel.
+message ChannelComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A channel of the messaging domain.
+message Channel {
+  string channel_id = 1;
+  string code = 2;
+  string name = 3;
+  ChannelStatus status = 4;
+  repeated string category_path = 5;
+  ChannelDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ChannelComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The preferences of a participant.
+message ParticipantPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a participant.
+message ParticipantPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a participant.
+message ParticipantNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A participant of the messaging domain.
+message Participant {
+  string participant_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  ParticipantStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  ParticipantPreferences preferences = 8;
+  oneof identity_document {
+    ParticipantPassport passport = 9;
+    ParticipantNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}

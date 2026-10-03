@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentInstrumentApprovalServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Routes payment instruments through approval, with escalation and delegation.
+service PaymentInstrumentApprovalService {
+  // Submits a payment instrument.
+  rpc SubmitPaymentInstrument(SubmitPaymentInstrumentRequest) returns (SubmitPaymentInstrumentResponse);
+
+  // Approves a payment instrument.
+  rpc ApprovePaymentInstrument(ApprovePaymentInstrumentRequest) returns (ApprovePaymentInstrumentResponse);
+
+  // Rejects a payment instrument.
+  rpc RejectPaymentInstrument(RejectPaymentInstrumentRequest) returns (RejectPaymentInstrumentResponse);
+
+  // Escalates a payment instrument.
+  rpc EscalatePaymentInstrument(EscalatePaymentInstrumentRequest) returns (EscalatePaymentInstrumentResponse);
+
+  // Lists payment instruments a page at a time.
+  rpc ListPendingPaymentInstruments(ListPendingPaymentInstrumentsRequest) returns (ListPendingPaymentInstrumentsResponse);
+
+  // Delegates a payment instrument.
+  rpc DelegatePaymentInstrumentApproval(DelegatePaymentInstrumentApprovalRequest) returns (DelegatePaymentInstrumentApprovalResponse);
+
+  // Recalls a payment instrument.
+  rpc RecallPaymentInstrument(RecallPaymentInstrumentRequest) returns (RecallPaymentInstrumentResponse);
+
+  // Returns a payment instrument.
+  rpc GetPaymentInstrumentApprovalStatus(GetPaymentInstrumentApprovalStatusRequest) returns (GetPaymentInstrumentApprovalStatusResponse);
+
+  // Comments a payment instrument.
+  rpc CommentPaymentInstrumentApproval(CommentPaymentInstrumentApprovalRequest) returns (CommentPaymentInstrumentApprovalResponse);
+}
+
+// The request of `SubmitPaymentInstrument`.
+message SubmitPaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  SubmitPaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPaymentInstrument`.
+message SubmitPaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  SubmitPaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePaymentInstrument`.
+message ApprovePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  ApprovePaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePaymentInstrument`.
+message ApprovePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ApprovePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPaymentInstrument`.
+message RejectPaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  RejectPaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPaymentInstrument`.
+message RejectPaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  RejectPaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePaymentInstrument`.
+message EscalatePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  EscalatePaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePaymentInstrument`.
+message EscalatePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  EscalatePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPaymentInstruments`.
+message ListPendingPaymentInstrumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentInstrumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPaymentInstrumentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPaymentInstruments`.
+message ListPendingPaymentInstrumentsResponse {
+  repeated PaymentInstrument payment_instruments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePaymentInstrumentApproval`.
+message DelegatePaymentInstrumentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  DelegatePaymentInstrumentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePaymentInstrumentApproval`.
+message DelegatePaymentInstrumentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  DelegatePaymentInstrumentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPaymentInstrument`.
+message RecallPaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  RecallPaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPaymentInstrument`.
+message RecallPaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  RecallPaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPaymentInstrumentApprovalStatus`.
+message GetPaymentInstrumentApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPaymentInstrumentApprovalStatus`.
+message GetPaymentInstrumentApprovalStatusResponse {
+  PaymentInstrument payment_instrument = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPaymentInstrumentApproval`.
+message CommentPaymentInstrumentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  CommentPaymentInstrumentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPaymentInstrumentApproval`.
+message CommentPaymentInstrumentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  CommentPaymentInstrumentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

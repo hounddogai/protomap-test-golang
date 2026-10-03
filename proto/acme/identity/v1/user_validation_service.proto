@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "UserValidationServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Checks users against the rules before anything acts on them.
+service UserValidationService {
+  // Validates a user.
+  rpc ValidateUser(ValidateUserRequest) returns (ValidateUserResponse);
+
+  // Previews a user.
+  rpc PreviewUser(PreviewUserRequest) returns (PreviewUserResponse);
+
+  // Checks a user.
+  rpc CheckUserEligibility(CheckUserEligibilityRequest) returns (CheckUserEligibilityResponse);
+
+  // Normalizes a user.
+  rpc NormalizeUser(NormalizeUserRequest) returns (NormalizeUserResponse);
+
+  // Explains a user.
+  rpc ExplainUserDecision(ExplainUserDecisionRequest) returns (ExplainUserDecisionResponse);
+
+  // Scores a user.
+  rpc ScoreUser(ScoreUserRequest) returns (ScoreUserResponse);
+
+  // Lints a user.
+  rpc LintUsers(LintUsersRequest) returns (LintUsersResponse);
+
+  // Returns a user.
+  rpc GetUserRules(GetUserRulesRequest) returns (GetUserRulesResponse);
+}
+
+// The request of `ValidateUser`.
+message ValidateUserRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  ValidateUserRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateUser`.
+message ValidateUserResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  ValidateUserResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewUser`.
+message PreviewUserRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  PreviewUserRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewUser`.
+message PreviewUserResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  PreviewUserResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckUserEligibility`.
+message CheckUserEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  CheckUserEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckUserEligibility`.
+message CheckUserEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  CheckUserEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeUser`.
+message NormalizeUserRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  NormalizeUserRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeUser`.
+message NormalizeUserResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  NormalizeUserResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainUserDecision`.
+message ExplainUserDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  ExplainUserDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainUserDecision`.
+message ExplainUserDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  ExplainUserDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreUser`.
+message ScoreUserRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  ScoreUserRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreUser`.
+message ScoreUserResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreUserResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  User user = 1;
+  ScoreUserResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintUsers`.
+message LintUsersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  LintUsersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintUsers`.
+message LintUsersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  LintUsersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetUserRules`.
+message GetUserRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetUserRules`.
+message GetUserRulesResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}

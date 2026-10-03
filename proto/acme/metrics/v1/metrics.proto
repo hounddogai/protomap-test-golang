@@ -1,0 +1,197 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.metrics.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/metrics/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Metrics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/metrics/v1;metricsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MetricsProto";
+option java_package = "com.acme.metrics.v1";
+
+// Where a metric series is in its lifecycle.
+enum MetricSeriesStatus {
+  METRIC_SERIES_STATUS_UNSPECIFIED = 0;
+  METRIC_SERIES_STATUS_PLANNED = 1;
+  METRIC_SERIES_STATUS_AVAILABLE = 2;
+  METRIC_SERIES_STATUS_RESERVED = 3;
+  METRIC_SERIES_STATUS_RETIRED = 4;
+}
+
+// Where a metric alert is in its lifecycle.
+enum MetricAlertStatus {
+  METRIC_ALERT_STATUS_UNSPECIFIED = 0;
+  METRIC_ALERT_STATUS_DRAFT = 1;
+  METRIC_ALERT_STATUS_ENABLED = 2;
+  METRIC_ALERT_STATUS_DISABLED = 3;
+  METRIC_ALERT_STATUS_RETIRED = 4;
+}
+
+// Where a dashboard is in its lifecycle.
+enum DashboardStatus {
+  DASHBOARD_STATUS_UNSPECIFIED = 0;
+  DASHBOARD_STATUS_DRAFT = 1;
+  DASHBOARD_STATUS_ISSUED = 2;
+  DASHBOARD_STATUS_APPROVED = 3;
+  DASHBOARD_STATUS_PAID = 4;
+  DASHBOARD_STATUS_VOID = 5;
+}
+
+// The dimensions of a metric series.
+message MetricSeriesDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a metric series.
+message MetricSeriesComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A metric series of the metrics domain.
+message MetricSeries {
+  string metric_series_id = 1;
+  string code = 2;
+  string name = 3;
+  MetricSeriesStatus status = 4;
+  repeated string category_path = 5;
+  MetricSeriesDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, MetricSeriesComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a metric alert.
+message MetricAlertCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a metric alert.
+message MetricAlertDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a metric alert.
+message MetricAlertRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a metric alert.
+message MetricAlertBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A metric alert of the metrics domain.
+message MetricAlert {
+  string metric_alert_id = 1;
+  string name = 2;
+  string description = 3;
+  MetricAlertStatus status = 4;
+  int32 priority = 5;
+  repeated MetricAlertCondition conditions = 6;
+  oneof action {
+    MetricAlertDiscountAction discount = 7;
+    MetricAlertRouteAction route = 8;
+    MetricAlertBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of a dashboard.
+message DashboardLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  DashboardLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a dashboard line.
+message DashboardLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a dashboard.
+message DashboardCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a dashboard.
+message DashboardBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a dashboard.
+message DashboardAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A dashboard of the metrics domain.
+message Dashboard {
+  string dashboard_id = 1;
+  string number = 2;
+  DashboardStatus status = 3;
+  MetricAlertRef counterparty = 4;
+  repeated DashboardLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    DashboardCardSettlement card = 8;
+    DashboardBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated DashboardAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

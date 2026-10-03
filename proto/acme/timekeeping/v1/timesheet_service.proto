@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.timekeeping.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/timekeeping/v1/timekeeping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Timekeeping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/timekeeping/v1;timekeepingv1";
+option java_multiple_files = true;
+option java_outer_classname = "TimesheetServiceProto";
+option java_package = "com.acme.timekeeping.v1";
+
+// Manages timesheets: creates, reads, changes, and lists them.
+service TimesheetService {
+  // Creates a timesheet.
+  rpc CreateTimesheet(CreateTimesheetRequest) returns (CreateTimesheetResponse);
+
+  // Returns a timesheet.
+  rpc GetTimesheet(GetTimesheetRequest) returns (GetTimesheetResponse);
+
+  // Changes a timesheet.
+  rpc UpdateTimesheet(UpdateTimesheetRequest) returns (UpdateTimesheetResponse);
+
+  // Deletes a timesheet.
+  rpc DeleteTimesheet(DeleteTimesheetRequest) returns (DeleteTimesheetResponse);
+
+  // Returns several timesheets at once.
+  rpc BatchGetTimesheets(BatchGetTimesheetsRequest) returns (BatchGetTimesheetsResponse);
+
+  // Lists timesheets a page at a time.
+  rpc SearchTimesheets(SearchTimesheetsRequest) returns (SearchTimesheetsResponse);
+
+  // Streams the changes of timesheets as they happen.
+  rpc WatchTimesheets(WatchTimesheetsRequest) returns (stream WatchTimesheetsResponse);
+
+  // Takes a stream of timesheets and answers once at the end.
+  rpc BatchCreateTimesheets(stream BatchCreateTimesheetsRequest) returns (BatchCreateTimesheetsResponse);
+
+  // Creates a timesheet.
+  rpc CloneTimesheet(CloneTimesheetRequest) returns (CloneTimesheetResponse);
+}
+
+// The request of `CreateTimesheet`.
+message CreateTimesheetRequest {
+  acme.common.v1.RequestContext context = 1;
+  Timesheet timesheet = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateTimesheet`.
+message CreateTimesheetResponse {
+  Timesheet timesheet = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetTimesheet`.
+message GetTimesheetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string timesheet_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTimesheet`.
+message GetTimesheetResponse {
+  Timesheet timesheet = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateTimesheet`.
+message UpdateTimesheetRequest {
+  acme.common.v1.RequestContext context = 1;
+  Timesheet timesheet = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateTimesheet`.
+message UpdateTimesheetResponse {
+  Timesheet timesheet = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteTimesheet`.
+message DeleteTimesheetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string timesheet_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteTimesheet`.
+message DeleteTimesheetResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetTimesheets`.
+message BatchGetTimesheetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string timesheet_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetTimesheets`.
+message BatchGetTimesheetsResponse {
+  repeated Timesheet timesheets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchTimesheets`.
+message SearchTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchTimesheetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchTimesheets`.
+message SearchTimesheetsResponse {
+  repeated Timesheet timesheets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchTimesheets`.
+message WatchTimesheetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TimesheetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchTimesheetsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchTimesheets`.
+message WatchTimesheetsResponse {
+  Timesheet timesheet = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateTimesheets`.
+message BatchCreateTimesheetsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateTimesheetsRequest.StreamHeader header = 2;
+    Timesheet record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateTimesheets`.
+message BatchCreateTimesheetsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string timesheet_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateTimesheetsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneTimesheet`.
+message CloneTimesheetRequest {
+  acme.common.v1.RequestContext context = 1;
+  Timesheet timesheet = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneTimesheet`.
+message CloneTimesheetResponse {
+  Timesheet timesheet = 1;
+  acme.common.v1.OperationResult result = 2;
+}

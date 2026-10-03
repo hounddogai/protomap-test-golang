@@ -1,0 +1,284 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConsentRecordSyncServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Keeps consent records in step with the systems of record in other regions.
+service ConsentRecordSyncService {
+  // Syncs a consent record.
+  rpc SyncConsentRecords(SyncConsentRecordsRequest) returns (SyncConsentRecordsResponse);
+
+  // Pushs a consent record.
+  rpc PushConsentRecord(PushConsentRecordRequest) returns (PushConsentRecordResponse);
+
+  // Pulls a consent record.
+  rpc PullConsentRecords(PullConsentRecordsRequest) returns (PullConsentRecordsResponse);
+
+  // Reconciles a consent record.
+  rpc ReconcileConsentRecords(ReconcileConsentRecordsRequest) returns (ReconcileConsentRecordsResponse);
+
+  // Exchanges changes of consent records with a peer.
+  rpc StreamConsentRecordChanges(stream StreamConsentRecordChangesRequest) returns (stream StreamConsentRecordChangesResponse);
+
+  // Resolves a consent record.
+  rpc ResolveConsentRecordConflict(ResolveConsentRecordConflictRequest) returns (ResolveConsentRecordConflictResponse);
+
+  // Returns a consent record.
+  rpc GetConsentRecordSyncState(GetConsentRecordSyncStateRequest) returns (GetConsentRecordSyncStateResponse);
+
+  // Lists consent records a page at a time.
+  rpc ListConsentRecordConflicts(ListConsentRecordConflictsRequest) returns (ListConsentRecordConflictsResponse);
+}
+
+// The request of `SyncConsentRecords`.
+message SyncConsentRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  SyncConsentRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncConsentRecords`.
+message SyncConsentRecordsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  SyncConsentRecordsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushConsentRecord`.
+message PushConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  PushConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushConsentRecord`.
+message PushConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  PushConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullConsentRecords`.
+message PullConsentRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  PullConsentRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullConsentRecords`.
+message PullConsentRecordsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  PullConsentRecordsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileConsentRecords`.
+message ReconcileConsentRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  ReconcileConsentRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileConsentRecords`.
+message ReconcileConsentRecordsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ReconcileConsentRecordsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamConsentRecordChanges`.
+message StreamConsentRecordChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    ConsentRecord change = 2;
+    StreamConsentRecordChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamConsentRecordChanges`.
+message StreamConsentRecordChangesResponse {
+  ConsentRecord consent_record = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveConsentRecordConflict`.
+message ResolveConsentRecordConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  ResolveConsentRecordConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveConsentRecordConflict`.
+message ResolveConsentRecordConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ResolveConsentRecordConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetConsentRecordSyncState`.
+message GetConsentRecordSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConsentRecordSyncState`.
+message GetConsentRecordSyncStateResponse {
+  ConsentRecord consent_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListConsentRecordConflicts`.
+message ListConsentRecordConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConsentRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListConsentRecordConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListConsentRecordConflicts`.
+message ListConsentRecordConflictsResponse {
+  repeated ConsentRecord consent_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

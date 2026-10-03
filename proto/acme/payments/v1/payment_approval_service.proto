@@ -1,0 +1,266 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentApprovalServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Routes payments through approval, with escalation and delegation.
+service PaymentApprovalService {
+  // Submits a payment.
+  rpc SubmitPayment(SubmitPaymentRequest) returns (SubmitPaymentResponse);
+
+  // Approves a payment.
+  rpc ApprovePayment(ApprovePaymentRequest) returns (ApprovePaymentResponse);
+
+  // Escalates a payment.
+  rpc EscalatePayment(EscalatePaymentRequest) returns (EscalatePaymentResponse);
+
+  // Delegates a payment.
+  rpc DelegatePaymentApproval(DelegatePaymentApprovalRequest) returns (DelegatePaymentApprovalResponse);
+
+  // Recalls a payment.
+  rpc RecallPayment(RecallPaymentRequest) returns (RecallPaymentResponse);
+
+  // Returns a payment.
+  rpc GetPaymentApprovalStatus(GetPaymentApprovalStatusRequest) returns (GetPaymentApprovalStatusResponse);
+
+  // Comments a payment.
+  rpc CommentPaymentApproval(CommentPaymentApprovalRequest) returns (CommentPaymentApprovalResponse);
+}
+
+// The request of `SubmitPayment`.
+message SubmitPaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  SubmitPaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPayment`.
+message SubmitPaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  SubmitPaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePayment`.
+message ApprovePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  ApprovePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePayment`.
+message ApprovePaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  ApprovePaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePayment`.
+message EscalatePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  EscalatePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePayment`.
+message EscalatePaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  EscalatePaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePaymentApproval`.
+message DelegatePaymentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  DelegatePaymentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePaymentApproval`.
+message DelegatePaymentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  DelegatePaymentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPayment`.
+message RecallPaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  RecallPaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPayment`.
+message RecallPaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  RecallPaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPaymentApprovalStatus`.
+message GetPaymentApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPaymentApprovalStatus`.
+message GetPaymentApprovalStatusResponse {
+  Payment payment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPaymentApproval`.
+message CommentPaymentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  CommentPaymentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPaymentApproval`.
+message CommentPaymentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  CommentPaymentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnLabelWorkflowServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Runs the long-lived workflow that takes a return label from start to finish.
+service ReturnLabelWorkflowService {
+  // Starts a return label.
+  rpc StartReturnLabelWorkflow(StartReturnLabelWorkflowRequest) returns (StartReturnLabelWorkflowResponse);
+
+  // Advances a return label.
+  rpc AdvanceReturnLabelWorkflow(AdvanceReturnLabelWorkflowRequest) returns (AdvanceReturnLabelWorkflowResponse);
+
+  // Cancels a return label.
+  rpc CancelReturnLabelWorkflow(CancelReturnLabelWorkflowRequest) returns (CancelReturnLabelWorkflowResponse);
+
+  // Pauses a return label.
+  rpc PauseReturnLabelWorkflow(PauseReturnLabelWorkflowRequest) returns (PauseReturnLabelWorkflowResponse);
+
+  // Returns a return label.
+  rpc InspectReturnLabelWorkflow(InspectReturnLabelWorkflowRequest) returns (InspectReturnLabelWorkflowResponse);
+
+  // Lists return labels a page at a time.
+  rpc ListReturnLabelWorkflows(ListReturnLabelWorkflowsRequest) returns (ListReturnLabelWorkflowsResponse);
+
+  // Signals a return label.
+  rpc SignalReturnLabelWorkflow(SignalReturnLabelWorkflowRequest) returns (SignalReturnLabelWorkflowResponse);
+}
+
+// The request of `StartReturnLabelWorkflow`.
+message StartReturnLabelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  StartReturnLabelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartReturnLabelWorkflow`.
+message StartReturnLabelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  StartReturnLabelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceReturnLabelWorkflow`.
+message AdvanceReturnLabelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  AdvanceReturnLabelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceReturnLabelWorkflow`.
+message AdvanceReturnLabelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  AdvanceReturnLabelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelReturnLabelWorkflow`.
+message CancelReturnLabelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  CancelReturnLabelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelReturnLabelWorkflow`.
+message CancelReturnLabelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  CancelReturnLabelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseReturnLabelWorkflow`.
+message PauseReturnLabelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  PauseReturnLabelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseReturnLabelWorkflow`.
+message PauseReturnLabelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  PauseReturnLabelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectReturnLabelWorkflow`.
+message InspectReturnLabelWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectReturnLabelWorkflow`.
+message InspectReturnLabelWorkflowResponse {
+  ReturnLabel return_label = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListReturnLabelWorkflows`.
+message ListReturnLabelWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnLabelStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListReturnLabelWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListReturnLabelWorkflows`.
+message ListReturnLabelWorkflowsResponse {
+  repeated ReturnLabel return_labels = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalReturnLabelWorkflow`.
+message SignalReturnLabelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  SignalReturnLabelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalReturnLabelWorkflow`.
+message SignalReturnLabelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  SignalReturnLabelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

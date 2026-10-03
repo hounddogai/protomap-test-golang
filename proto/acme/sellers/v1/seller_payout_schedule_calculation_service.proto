@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerPayoutScheduleCalculationServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Computes the figures of a seller payout schedule, such as totals, taxes, and estimates.
+service SellerPayoutScheduleCalculationService {
+  // Calculates a seller payout schedule.
+  rpc CalculateSellerPayoutSchedule(CalculateSellerPayoutScheduleRequest) returns (CalculateSellerPayoutScheduleResponse);
+
+  // Estimates a seller payout schedule.
+  rpc EstimateSellerPayoutSchedule(EstimateSellerPayoutScheduleRequest) returns (EstimateSellerPayoutScheduleResponse);
+
+  // Quotes a seller payout schedule.
+  rpc QuoteSellerPayoutSchedule(QuoteSellerPayoutScheduleRequest) returns (QuoteSellerPayoutScheduleResponse);
+
+  // Compares a seller payout schedule.
+  rpc CompareSellerPayoutScheduleOptions(CompareSellerPayoutScheduleOptionsRequest) returns (CompareSellerPayoutScheduleOptionsResponse);
+
+  // Recalculates a seller payout schedule.
+  rpc RecalculateSellerPayoutSchedules(RecalculateSellerPayoutSchedulesRequest) returns (RecalculateSellerPayoutSchedulesResponse);
+
+  // Simulates a seller payout schedule.
+  rpc SimulateSellerPayoutSchedule(SimulateSellerPayoutScheduleRequest) returns (SimulateSellerPayoutScheduleResponse);
+
+  // Explains a seller payout schedule.
+  rpc ExplainSellerPayoutScheduleCalculation(ExplainSellerPayoutScheduleCalculationRequest) returns (ExplainSellerPayoutScheduleCalculationResponse);
+
+  // Returns a seller payout schedule.
+  rpc GetSellerPayoutScheduleRates(GetSellerPayoutScheduleRatesRequest) returns (GetSellerPayoutScheduleRatesResponse);
+}
+
+// The request of `CalculateSellerPayoutSchedule`.
+message CalculateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  CalculateSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateSellerPayoutSchedule`.
+message CalculateSellerPayoutScheduleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateSellerPayoutScheduleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  CalculateSellerPayoutScheduleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateSellerPayoutSchedule`.
+message EstimateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  EstimateSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateSellerPayoutSchedule`.
+message EstimateSellerPayoutScheduleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateSellerPayoutScheduleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  EstimateSellerPayoutScheduleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteSellerPayoutSchedule`.
+message QuoteSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  QuoteSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteSellerPayoutSchedule`.
+message QuoteSellerPayoutScheduleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteSellerPayoutScheduleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  QuoteSellerPayoutScheduleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareSellerPayoutScheduleOptions`.
+message CompareSellerPayoutScheduleOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  CompareSellerPayoutScheduleOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSellerPayoutScheduleOptions`.
+message CompareSellerPayoutScheduleOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareSellerPayoutScheduleOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  CompareSellerPayoutScheduleOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateSellerPayoutSchedules`.
+message RecalculateSellerPayoutSchedulesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  RecalculateSellerPayoutSchedulesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateSellerPayoutSchedules`.
+message RecalculateSellerPayoutSchedulesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateSellerPayoutSchedulesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  RecalculateSellerPayoutSchedulesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateSellerPayoutSchedule`.
+message SimulateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  SimulateSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateSellerPayoutSchedule`.
+message SimulateSellerPayoutScheduleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateSellerPayoutScheduleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  SimulateSellerPayoutScheduleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSellerPayoutScheduleCalculation`.
+message ExplainSellerPayoutScheduleCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  ExplainSellerPayoutScheduleCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSellerPayoutScheduleCalculation`.
+message ExplainSellerPayoutScheduleCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ExplainSellerPayoutScheduleCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerPayoutScheduleRates`.
+message GetSellerPayoutScheduleRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerPayoutScheduleRates`.
+message GetSellerPayoutScheduleRatesResponse {
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}

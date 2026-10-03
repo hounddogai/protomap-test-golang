@@ -1,0 +1,304 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "HouseholdApprovalServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Routes households through approval, with escalation and delegation.
+service HouseholdApprovalService {
+  // Submits a household.
+  rpc SubmitHousehold(SubmitHouseholdRequest) returns (SubmitHouseholdResponse);
+
+  // Approves a household.
+  rpc ApproveHousehold(ApproveHouseholdRequest) returns (ApproveHouseholdResponse);
+
+  // Rejects a household.
+  rpc RejectHousehold(RejectHouseholdRequest) returns (RejectHouseholdResponse);
+
+  // Escalates a household.
+  rpc EscalateHousehold(EscalateHouseholdRequest) returns (EscalateHouseholdResponse);
+
+  // Delegates a household.
+  rpc DelegateHouseholdApproval(DelegateHouseholdApprovalRequest) returns (DelegateHouseholdApprovalResponse);
+
+  // Recalls a household.
+  rpc RecallHousehold(RecallHouseholdRequest) returns (RecallHouseholdResponse);
+
+  // Returns a household.
+  rpc GetHouseholdApprovalStatus(GetHouseholdApprovalStatusRequest) returns (GetHouseholdApprovalStatusResponse);
+
+  // Comments a household.
+  rpc CommentHouseholdApproval(CommentHouseholdApprovalRequest) returns (CommentHouseholdApprovalResponse);
+}
+
+// The request of `SubmitHousehold`.
+message SubmitHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  SubmitHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitHousehold`.
+message SubmitHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  SubmitHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveHousehold`.
+message ApproveHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  ApproveHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveHousehold`.
+message ApproveHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  ApproveHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectHousehold`.
+message RejectHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  RejectHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectHousehold`.
+message RejectHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  RejectHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateHousehold`.
+message EscalateHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  EscalateHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateHousehold`.
+message EscalateHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  EscalateHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateHouseholdApproval`.
+message DelegateHouseholdApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  DelegateHouseholdApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateHouseholdApproval`.
+message DelegateHouseholdApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  DelegateHouseholdApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallHousehold`.
+message RecallHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  RecallHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallHousehold`.
+message RecallHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  RecallHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetHouseholdApprovalStatus`.
+message GetHouseholdApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetHouseholdApprovalStatus`.
+message GetHouseholdApprovalStatusResponse {
+  Household household = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentHouseholdApproval`.
+message CommentHouseholdApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  CommentHouseholdApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentHouseholdApproval`.
+message CommentHouseholdApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  CommentHouseholdApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

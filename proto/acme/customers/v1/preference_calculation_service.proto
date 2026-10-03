@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "PreferenceCalculationServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Computes the figures of a preference, such as totals, taxes, and estimates.
+service PreferenceCalculationService {
+  // Calculates a preference.
+  rpc CalculatePreference(CalculatePreferenceRequest) returns (CalculatePreferenceResponse);
+
+  // Estimates a preference.
+  rpc EstimatePreference(EstimatePreferenceRequest) returns (EstimatePreferenceResponse);
+
+  // Quotes a preference.
+  rpc QuotePreference(QuotePreferenceRequest) returns (QuotePreferenceResponse);
+
+  // Compares a preference.
+  rpc ComparePreferenceOptions(ComparePreferenceOptionsRequest) returns (ComparePreferenceOptionsResponse);
+
+  // Recalculates a preference.
+  rpc RecalculatePreferences(RecalculatePreferencesRequest) returns (RecalculatePreferencesResponse);
+
+  // Simulates a preference.
+  rpc SimulatePreference(SimulatePreferenceRequest) returns (SimulatePreferenceResponse);
+
+  // Returns a preference.
+  rpc GetPreferenceRates(GetPreferenceRatesRequest) returns (GetPreferenceRatesResponse);
+}
+
+// The request of `CalculatePreference`.
+message CalculatePreferenceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  Preference preference = 3;
+  CalculatePreferenceRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculatePreference`.
+message CalculatePreferenceResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculatePreferenceResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Preference preference = 1;
+  CalculatePreferenceResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimatePreference`.
+message EstimatePreferenceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  Preference preference = 3;
+  EstimatePreferenceRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimatePreference`.
+message EstimatePreferenceResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimatePreferenceResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Preference preference = 1;
+  EstimatePreferenceResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuotePreference`.
+message QuotePreferenceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  Preference preference = 3;
+  QuotePreferenceRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuotePreference`.
+message QuotePreferenceResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuotePreferenceResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Preference preference = 1;
+  QuotePreferenceResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ComparePreferenceOptions`.
+message ComparePreferenceOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  Preference preference = 3;
+  ComparePreferenceOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ComparePreferenceOptions`.
+message ComparePreferenceOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ComparePreferenceOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Preference preference = 1;
+  ComparePreferenceOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculatePreferences`.
+message RecalculatePreferencesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  Preference preference = 3;
+  RecalculatePreferencesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculatePreferences`.
+message RecalculatePreferencesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculatePreferencesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Preference preference = 1;
+  RecalculatePreferencesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulatePreference`.
+message SimulatePreferenceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  Preference preference = 3;
+  SimulatePreferenceRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulatePreference`.
+message SimulatePreferenceResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulatePreferenceResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Preference preference = 1;
+  SimulatePreferenceResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPreferenceRates`.
+message GetPreferenceRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string preference_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPreferenceRates`.
+message GetPreferenceRatesResponse {
+  Preference preference = 1;
+  acme.common.v1.OperationResult result = 2;
+}

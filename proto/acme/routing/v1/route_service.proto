@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.routing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/routing/v1/routing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Routing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/routing/v1;routingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RouteServiceProto";
+option java_package = "com.acme.routing.v1";
+
+// Manages routes: creates, reads, changes, and lists them.
+service RouteService {
+  // Creates a route.
+  rpc CreateRoute(CreateRouteRequest) returns (CreateRouteResponse);
+
+  // Returns a route.
+  rpc GetRoute(GetRouteRequest) returns (GetRouteResponse);
+
+  // Changes a route.
+  rpc UpdateRoute(UpdateRouteRequest) returns (UpdateRouteResponse);
+
+  // Deletes a route.
+  rpc DeleteRoute(DeleteRouteRequest) returns (DeleteRouteResponse);
+
+  // Lists routes a page at a time.
+  rpc ListRoutes(ListRoutesRequest) returns (ListRoutesResponse);
+
+  // Returns several routes at once.
+  rpc BatchGetRoutes(BatchGetRoutesRequest) returns (BatchGetRoutesResponse);
+
+  // Lists routes a page at a time.
+  rpc SearchRoutes(SearchRoutesRequest) returns (SearchRoutesResponse);
+
+  // Streams the changes of routes as they happen.
+  rpc WatchRoutes(WatchRoutesRequest) returns (stream WatchRoutesResponse);
+
+  // Takes a stream of routes and answers once at the end.
+  rpc BatchCreateRoutes(stream BatchCreateRoutesRequest) returns (BatchCreateRoutesResponse);
+
+  // Creates a route.
+  rpc CloneRoute(CloneRouteRequest) returns (CloneRouteResponse);
+}
+
+// The request of `CreateRoute`.
+message CreateRouteRequest {
+  acme.common.v1.RequestContext context = 1;
+  Route route = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateRoute`.
+message CreateRouteResponse {
+  Route route = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetRoute`.
+message GetRouteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRoute`.
+message GetRouteResponse {
+  Route route = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateRoute`.
+message UpdateRouteRequest {
+  acme.common.v1.RequestContext context = 1;
+  Route route = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateRoute`.
+message UpdateRouteResponse {
+  Route route = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteRoute`.
+message DeleteRouteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string route_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteRoute`.
+message DeleteRouteResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListRoutes`.
+message ListRoutesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RouteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRoutesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRoutes`.
+message ListRoutesResponse {
+  repeated Route routes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetRoutes`.
+message BatchGetRoutesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string route_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetRoutes`.
+message BatchGetRoutesResponse {
+  repeated Route routes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchRoutes`.
+message SearchRoutesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RouteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchRoutesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchRoutes`.
+message SearchRoutesResponse {
+  repeated Route routes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchRoutes`.
+message WatchRoutesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RouteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchRoutesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchRoutes`.
+message WatchRoutesResponse {
+  Route route = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateRoutes`.
+message BatchCreateRoutesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateRoutesRequest.StreamHeader header = 2;
+    Route record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateRoutes`.
+message BatchCreateRoutesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string route_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateRoutesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneRoute`.
+message CloneRouteRequest {
+  acme.common.v1.RequestContext context = 1;
+  Route route = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneRoute`.
+message CloneRouteResponse {
+  Route route = 1;
+  acme.common.v1.OperationResult result = 2;
+}

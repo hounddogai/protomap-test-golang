@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payroll.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/payroll/v1/payroll.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payroll.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payroll/v1;payrollv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayRunQueryServiceProto";
+option java_package = "com.acme.payroll.v1";
+
+// Answers read-only questions about pay runs, for screens and reports.
+service PayRunQueryService {
+  // Returns a pay run.
+  rpc LookupPayRun(LookupPayRunRequest) returns (LookupPayRunResponse);
+
+  // Lists pay runs a page at a time.
+  rpc BrowsePayRuns(BrowsePayRunsRequest) returns (BrowsePayRunsResponse);
+
+  // Lists pay runs a page at a time.
+  rpc FindPayRuns(FindPayRunsRequest) returns (FindPayRunsResponse);
+
+  // Returns several pay runs at once.
+  rpc ResolvePayRuns(ResolvePayRunsRequest) returns (ResolvePayRunsResponse);
+
+  // Streams every matching pay run.
+  rpc ExportPayRuns(ExportPayRunsRequest) returns (stream ExportPayRunsResponse);
+
+  // Summarizes a pay run.
+  rpc SummarizePayRuns(SummarizePayRunsRequest) returns (SummarizePayRunsResponse);
+
+  // Lists pay runs a page at a time.
+  rpc SuggestPayRuns(SuggestPayRunsRequest) returns (SuggestPayRunsResponse);
+
+  // Returns a pay run.
+  rpc PeekPayRun(PeekPayRunRequest) returns (PeekPayRunResponse);
+}
+
+// The request of `LookupPayRun`.
+message LookupPayRunRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPayRun`.
+message LookupPayRunResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePayRuns`.
+message BrowsePayRunsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayRunStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePayRunsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePayRuns`.
+message BrowsePayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindPayRuns`.
+message FindPayRunsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayRunStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindPayRunsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindPayRuns`.
+message FindPayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolvePayRuns`.
+message ResolvePayRunsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string pay_run_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolvePayRuns`.
+message ResolvePayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportPayRuns`.
+message ExportPayRunsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayRunStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportPayRunsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportPayRuns`.
+message ExportPayRunsResponse {
+  PayRun pay_run = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizePayRuns`.
+message SummarizePayRunsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  SummarizePayRunsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizePayRuns`.
+message SummarizePayRunsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestPayRuns`.
+message SuggestPayRunsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayRunStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestPayRunsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestPayRuns`.
+message SuggestPayRunsResponse {
+  repeated PayRun pay_runs = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekPayRun`.
+message PeekPayRunRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekPayRun`.
+message PeekPayRunResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}

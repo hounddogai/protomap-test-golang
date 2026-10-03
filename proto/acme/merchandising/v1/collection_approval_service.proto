@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CollectionApprovalServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Routes collections through approval, with escalation and delegation.
+service CollectionApprovalService {
+  // Submits a collection.
+  rpc SubmitCollection(SubmitCollectionRequest) returns (SubmitCollectionResponse);
+
+  // Approves a collection.
+  rpc ApproveCollection(ApproveCollectionRequest) returns (ApproveCollectionResponse);
+
+  // Rejects a collection.
+  rpc RejectCollection(RejectCollectionRequest) returns (RejectCollectionResponse);
+
+  // Escalates a collection.
+  rpc EscalateCollection(EscalateCollectionRequest) returns (EscalateCollectionResponse);
+
+  // Lists collections a page at a time.
+  rpc ListPendingCollections(ListPendingCollectionsRequest) returns (ListPendingCollectionsResponse);
+
+  // Delegates a collection.
+  rpc DelegateCollectionApproval(DelegateCollectionApprovalRequest) returns (DelegateCollectionApprovalResponse);
+
+  // Recalls a collection.
+  rpc RecallCollection(RecallCollectionRequest) returns (RecallCollectionResponse);
+
+  // Returns a collection.
+  rpc GetCollectionApprovalStatus(GetCollectionApprovalStatusRequest) returns (GetCollectionApprovalStatusResponse);
+
+  // Comments a collection.
+  rpc CommentCollectionApproval(CommentCollectionApprovalRequest) returns (CommentCollectionApprovalResponse);
+}
+
+// The request of `SubmitCollection`.
+message SubmitCollectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  SubmitCollectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCollection`.
+message SubmitCollectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  SubmitCollectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCollection`.
+message ApproveCollectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  ApproveCollectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCollection`.
+message ApproveCollectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  ApproveCollectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCollection`.
+message RejectCollectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  RejectCollectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCollection`.
+message RejectCollectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  RejectCollectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCollection`.
+message EscalateCollectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  EscalateCollectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCollection`.
+message EscalateCollectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  EscalateCollectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCollections`.
+message ListPendingCollectionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCollectionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCollections`.
+message ListPendingCollectionsResponse {
+  repeated Collection collections = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCollectionApproval`.
+message DelegateCollectionApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  DelegateCollectionApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCollectionApproval`.
+message DelegateCollectionApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  DelegateCollectionApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallCollection`.
+message RecallCollectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  RecallCollectionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallCollection`.
+message RecallCollectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  RecallCollectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCollectionApprovalStatus`.
+message GetCollectionApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCollectionApprovalStatus`.
+message GetCollectionApprovalStatusResponse {
+  Collection collection = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCollectionApproval`.
+message CommentCollectionApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_id = 2;
+  Collection collection = 3;
+  CommentCollectionApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCollectionApproval`.
+message CommentCollectionApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Collection collection = 1;
+  CommentCollectionApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

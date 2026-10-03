@@ -1,0 +1,168 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.benefits.v1;
+
+import "acme/benefits/v1/benefits.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Benefits.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/benefits/v1;benefitsv1";
+option java_multiple_files = true;
+option java_outer_classname = "BenefitPlanServiceProto";
+option java_package = "com.acme.benefits.v1";
+
+// Manages benefit plans: creates, reads, changes, and lists them.
+service BenefitPlanService {
+  // Creates a benefit plan.
+  rpc CreateBenefitPlan(CreateBenefitPlanRequest) returns (CreateBenefitPlanResponse);
+
+  // Returns a benefit plan.
+  rpc GetBenefitPlan(GetBenefitPlanRequest) returns (GetBenefitPlanResponse);
+
+  // Returns several benefit plans at once.
+  rpc BatchGetBenefitPlans(BatchGetBenefitPlansRequest) returns (BatchGetBenefitPlansResponse);
+
+  // Lists benefit plans a page at a time.
+  rpc SearchBenefitPlans(SearchBenefitPlansRequest) returns (SearchBenefitPlansResponse);
+
+  // Streams the changes of benefit plans as they happen.
+  rpc WatchBenefitPlans(WatchBenefitPlansRequest) returns (stream WatchBenefitPlansResponse);
+
+  // Takes a stream of benefit plans and answers once at the end.
+  rpc BatchCreateBenefitPlans(stream BatchCreateBenefitPlansRequest) returns (BatchCreateBenefitPlansResponse);
+}
+
+// The request of `CreateBenefitPlan`.
+message CreateBenefitPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  BenefitPlan benefit_plan = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateBenefitPlan`.
+message CreateBenefitPlanResponse {
+  BenefitPlan benefit_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetBenefitPlan`.
+message GetBenefitPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string benefit_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBenefitPlan`.
+message GetBenefitPlanResponse {
+  BenefitPlan benefit_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BatchGetBenefitPlans`.
+message BatchGetBenefitPlansRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string benefit_plan_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetBenefitPlans`.
+message BatchGetBenefitPlansResponse {
+  repeated BenefitPlan benefit_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchBenefitPlans`.
+message SearchBenefitPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BenefitPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchBenefitPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchBenefitPlans`.
+message SearchBenefitPlansResponse {
+  repeated BenefitPlan benefit_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchBenefitPlans`.
+message WatchBenefitPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BenefitPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchBenefitPlansRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchBenefitPlans`.
+message WatchBenefitPlansResponse {
+  BenefitPlan benefit_plan = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateBenefitPlans`.
+message BatchCreateBenefitPlansRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateBenefitPlansRequest.StreamHeader header = 2;
+    BenefitPlan record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateBenefitPlans`.
+message BatchCreateBenefitPlansResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string benefit_plan_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateBenefitPlansResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

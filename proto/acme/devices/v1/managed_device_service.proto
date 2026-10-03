@@ -1,0 +1,135 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.devices.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/devices/v1/devices.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Devices.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/devices/v1;devicesv1";
+option java_multiple_files = true;
+option java_outer_classname = "ManagedDeviceServiceProto";
+option java_package = "com.acme.devices.v1";
+
+// Manages managed devices: creates, reads, changes, and lists them.
+service ManagedDeviceService {
+  // Creates a managed device.
+  rpc CreateManagedDevice(CreateManagedDeviceRequest) returns (CreateManagedDeviceResponse);
+
+  // Returns a managed device.
+  rpc GetManagedDevice(GetManagedDeviceRequest) returns (GetManagedDeviceResponse);
+
+  // Changes a managed device.
+  rpc UpdateManagedDevice(UpdateManagedDeviceRequest) returns (UpdateManagedDeviceResponse);
+
+  // Deletes a managed device.
+  rpc DeleteManagedDevice(DeleteManagedDeviceRequest) returns (DeleteManagedDeviceResponse);
+
+  // Lists managed devices a page at a time.
+  rpc ListManagedDevices(ListManagedDevicesRequest) returns (ListManagedDevicesResponse);
+
+  // Returns several managed devices at once.
+  rpc BatchGetManagedDevices(BatchGetManagedDevicesRequest) returns (BatchGetManagedDevicesResponse);
+}
+
+// The request of `CreateManagedDevice`.
+message CreateManagedDeviceRequest {
+  acme.common.v1.RequestContext context = 1;
+  ManagedDevice managed_device = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateManagedDevice`.
+message CreateManagedDeviceResponse {
+  ManagedDevice managed_device = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetManagedDevice`.
+message GetManagedDeviceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string managed_device_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetManagedDevice`.
+message GetManagedDeviceResponse {
+  ManagedDevice managed_device = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateManagedDevice`.
+message UpdateManagedDeviceRequest {
+  acme.common.v1.RequestContext context = 1;
+  ManagedDevice managed_device = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateManagedDevice`.
+message UpdateManagedDeviceResponse {
+  ManagedDevice managed_device = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteManagedDevice`.
+message DeleteManagedDeviceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string managed_device_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteManagedDevice`.
+message DeleteManagedDeviceResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListManagedDevices`.
+message ListManagedDevicesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManagedDeviceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListManagedDevicesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListManagedDevices`.
+message ListManagedDevicesResponse {
+  repeated ManagedDevice managed_devices = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetManagedDevices`.
+message BatchGetManagedDevicesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string managed_device_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetManagedDevices`.
+message BatchGetManagedDevicesResponse {
+  repeated ManagedDevice managed_devices = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

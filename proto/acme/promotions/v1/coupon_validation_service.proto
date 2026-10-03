@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CouponValidationServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Checks coupons against the rules before anything acts on them.
+service CouponValidationService {
+  // Validates a coupon.
+  rpc ValidateCoupon(ValidateCouponRequest) returns (ValidateCouponResponse);
+
+  // Previews a coupon.
+  rpc PreviewCoupon(PreviewCouponRequest) returns (PreviewCouponResponse);
+
+  // Checks a coupon.
+  rpc CheckCouponEligibility(CheckCouponEligibilityRequest) returns (CheckCouponEligibilityResponse);
+
+  // Normalizes a coupon.
+  rpc NormalizeCoupon(NormalizeCouponRequest) returns (NormalizeCouponResponse);
+
+  // Explains a coupon.
+  rpc ExplainCouponDecision(ExplainCouponDecisionRequest) returns (ExplainCouponDecisionResponse);
+
+  // Scores a coupon.
+  rpc ScoreCoupon(ScoreCouponRequest) returns (ScoreCouponResponse);
+
+  // Lints a coupon.
+  rpc LintCoupons(LintCouponsRequest) returns (LintCouponsResponse);
+
+  // Returns a coupon.
+  rpc GetCouponRules(GetCouponRulesRequest) returns (GetCouponRulesResponse);
+}
+
+// The request of `ValidateCoupon`.
+message ValidateCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  ValidateCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateCoupon`.
+message ValidateCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  ValidateCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewCoupon`.
+message PreviewCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  PreviewCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewCoupon`.
+message PreviewCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  PreviewCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckCouponEligibility`.
+message CheckCouponEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  CheckCouponEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckCouponEligibility`.
+message CheckCouponEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  CheckCouponEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeCoupon`.
+message NormalizeCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  NormalizeCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeCoupon`.
+message NormalizeCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  NormalizeCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCouponDecision`.
+message ExplainCouponDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  ExplainCouponDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCouponDecision`.
+message ExplainCouponDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  ExplainCouponDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreCoupon`.
+message ScoreCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  ScoreCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreCoupon`.
+message ScoreCouponResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreCouponResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  ScoreCouponResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintCoupons`.
+message LintCouponsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  LintCouponsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintCoupons`.
+message LintCouponsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  LintCouponsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCouponRules`.
+message GetCouponRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCouponRules`.
+message GetCouponRulesResponse {
+  Coupon coupon = 1;
+  acme.common.v1.OperationResult result = 2;
+}

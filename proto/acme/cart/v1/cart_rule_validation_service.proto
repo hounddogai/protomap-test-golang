@@ -1,0 +1,288 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "CartRuleValidationServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Checks cart rules against the rules before anything acts on them.
+service CartRuleValidationService {
+  // Validates a cart rule.
+  rpc ValidateCartRule(ValidateCartRuleRequest) returns (ValidateCartRuleResponse);
+
+  // Previews a cart rule.
+  rpc PreviewCartRule(PreviewCartRuleRequest) returns (PreviewCartRuleResponse);
+
+  // Checks a cart rule.
+  rpc CheckCartRuleEligibility(CheckCartRuleEligibilityRequest) returns (CheckCartRuleEligibilityResponse);
+
+  // Normalizes a cart rule.
+  rpc NormalizeCartRule(NormalizeCartRuleRequest) returns (NormalizeCartRuleResponse);
+
+  // Explains a cart rule.
+  rpc ExplainCartRuleDecision(ExplainCartRuleDecisionRequest) returns (ExplainCartRuleDecisionResponse);
+
+  // Scores a cart rule.
+  rpc ScoreCartRule(ScoreCartRuleRequest) returns (ScoreCartRuleResponse);
+
+  // Lints a cart rule.
+  rpc LintCartRules(LintCartRulesRequest) returns (LintCartRulesResponse);
+}
+
+// The request of `ValidateCartRule`.
+message ValidateCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  ValidateCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateCartRule`.
+message ValidateCartRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  ValidateCartRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewCartRule`.
+message PreviewCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  PreviewCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewCartRule`.
+message PreviewCartRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  PreviewCartRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckCartRuleEligibility`.
+message CheckCartRuleEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  CheckCartRuleEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckCartRuleEligibility`.
+message CheckCartRuleEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  CheckCartRuleEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeCartRule`.
+message NormalizeCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  NormalizeCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeCartRule`.
+message NormalizeCartRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  NormalizeCartRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCartRuleDecision`.
+message ExplainCartRuleDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  ExplainCartRuleDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCartRuleDecision`.
+message ExplainCartRuleDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  ExplainCartRuleDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreCartRule`.
+message ScoreCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  ScoreCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreCartRule`.
+message ScoreCartRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreCartRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CartRule cart_rule = 1;
+  ScoreCartRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintCartRules`.
+message LintCartRulesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  LintCartRulesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintCartRules`.
+message LintCartRulesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  LintCartRulesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

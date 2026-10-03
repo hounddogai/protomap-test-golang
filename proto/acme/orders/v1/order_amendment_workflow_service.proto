@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderAmendmentWorkflowServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Runs the long-lived workflow that takes an order amendment from start to finish.
+service OrderAmendmentWorkflowService {
+  // Starts an order amendment.
+  rpc StartOrderAmendmentWorkflow(StartOrderAmendmentWorkflowRequest) returns (StartOrderAmendmentWorkflowResponse);
+
+  // Advances an order amendment.
+  rpc AdvanceOrderAmendmentWorkflow(AdvanceOrderAmendmentWorkflowRequest) returns (AdvanceOrderAmendmentWorkflowResponse);
+
+  // Cancels an order amendment.
+  rpc CancelOrderAmendmentWorkflow(CancelOrderAmendmentWorkflowRequest) returns (CancelOrderAmendmentWorkflowResponse);
+
+  // Pauses an order amendment.
+  rpc PauseOrderAmendmentWorkflow(PauseOrderAmendmentWorkflowRequest) returns (PauseOrderAmendmentWorkflowResponse);
+
+  // Resumes an order amendment.
+  rpc ResumeOrderAmendmentWorkflow(ResumeOrderAmendmentWorkflowRequest) returns (ResumeOrderAmendmentWorkflowResponse);
+
+  // Returns an order amendment.
+  rpc InspectOrderAmendmentWorkflow(InspectOrderAmendmentWorkflowRequest) returns (InspectOrderAmendmentWorkflowResponse);
+
+  // Lists order amendments a page at a time.
+  rpc ListOrderAmendmentWorkflows(ListOrderAmendmentWorkflowsRequest) returns (ListOrderAmendmentWorkflowsResponse);
+
+  // Signals an order amendment.
+  rpc SignalOrderAmendmentWorkflow(SignalOrderAmendmentWorkflowRequest) returns (SignalOrderAmendmentWorkflowResponse);
+}
+
+// The request of `StartOrderAmendmentWorkflow`.
+message StartOrderAmendmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  StartOrderAmendmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartOrderAmendmentWorkflow`.
+message StartOrderAmendmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  StartOrderAmendmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceOrderAmendmentWorkflow`.
+message AdvanceOrderAmendmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  AdvanceOrderAmendmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceOrderAmendmentWorkflow`.
+message AdvanceOrderAmendmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  AdvanceOrderAmendmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelOrderAmendmentWorkflow`.
+message CancelOrderAmendmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  CancelOrderAmendmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelOrderAmendmentWorkflow`.
+message CancelOrderAmendmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  CancelOrderAmendmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseOrderAmendmentWorkflow`.
+message PauseOrderAmendmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  PauseOrderAmendmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseOrderAmendmentWorkflow`.
+message PauseOrderAmendmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  PauseOrderAmendmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeOrderAmendmentWorkflow`.
+message ResumeOrderAmendmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  ResumeOrderAmendmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeOrderAmendmentWorkflow`.
+message ResumeOrderAmendmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  ResumeOrderAmendmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectOrderAmendmentWorkflow`.
+message InspectOrderAmendmentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectOrderAmendmentWorkflow`.
+message InspectOrderAmendmentWorkflowResponse {
+  OrderAmendment order_amendment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListOrderAmendmentWorkflows`.
+message ListOrderAmendmentWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderAmendmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListOrderAmendmentWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListOrderAmendmentWorkflows`.
+message ListOrderAmendmentWorkflowsResponse {
+  repeated OrderAmendment order_amendments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalOrderAmendmentWorkflow`.
+message SignalOrderAmendmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  SignalOrderAmendmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalOrderAmendmentWorkflow`.
+message SignalOrderAmendmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  SignalOrderAmendmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

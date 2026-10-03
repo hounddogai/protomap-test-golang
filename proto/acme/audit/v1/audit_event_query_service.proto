@@ -1,0 +1,167 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.audit.v1;
+
+import "acme/audit/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Audit.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/audit/v1;auditv1";
+option java_multiple_files = true;
+option java_outer_classname = "AuditEventQueryServiceProto";
+option java_package = "com.acme.audit.v1";
+
+// Answers read-only questions about audit events, for screens and reports.
+service AuditEventQueryService {
+  // Returns an audit event.
+  rpc LookupAuditEvent(LookupAuditEventRequest) returns (LookupAuditEventResponse);
+
+  // Lists audit events a page at a time.
+  rpc BrowseAuditEvents(BrowseAuditEventsRequest) returns (BrowseAuditEventsResponse);
+
+  // Lists audit events a page at a time.
+  rpc FindAuditEvents(FindAuditEventsRequest) returns (FindAuditEventsResponse);
+
+  // Counts audit events by status.
+  rpc CountAuditEvents(CountAuditEventsRequest) returns (CountAuditEventsResponse);
+
+  // Returns several audit events at once.
+  rpc ResolveAuditEvents(ResolveAuditEventsRequest) returns (ResolveAuditEventsResponse);
+
+  // Lists audit events a page at a time.
+  rpc SuggestAuditEvents(SuggestAuditEventsRequest) returns (SuggestAuditEventsResponse);
+}
+
+// The request of `LookupAuditEvent`.
+message LookupAuditEventRequest {
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupAuditEvent`.
+message LookupAuditEventResponse {
+  AuditEvent audit_event = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseAuditEvents`.
+message BrowseAuditEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AuditEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseAuditEventsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseAuditEvents`.
+message BrowseAuditEventsResponse {
+  repeated AuditEvent audit_events = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindAuditEvents`.
+message FindAuditEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AuditEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindAuditEventsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindAuditEvents`.
+message FindAuditEventsResponse {
+  repeated AuditEvent audit_events = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountAuditEvents`.
+message CountAuditEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AuditEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountAuditEventsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountAuditEvents`.
+message CountAuditEventsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveAuditEvents`.
+message ResolveAuditEventsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string audit_event_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveAuditEvents`.
+message ResolveAuditEventsResponse {
+  repeated AuditEvent audit_events = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuggestAuditEvents`.
+message SuggestAuditEventsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AuditEventStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestAuditEventsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestAuditEvents`.
+message SuggestAuditEventsResponse {
+  repeated AuditEvent audit_events = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

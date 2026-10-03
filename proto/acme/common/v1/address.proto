@@ -1,0 +1,28 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.common.v1;
+
+option csharp_namespace = "Acme.Common.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/common/v1;commonv1";
+option java_multiple_files = true;
+option java_outer_classname = "AddressProto";
+option java_package = "com.acme.common.v1";
+
+// A postal address.
+message PostalAddress {
+  string recipient = 1;
+  repeated string lines = 2;
+  string locality = 3;
+  string region = 4;
+  string postal_code = 5;
+  string country_code = 6;
+}
+
+// A point on the globe.
+message GeoPoint {
+  double latitude = 1;
+  double longitude = 2;
+}

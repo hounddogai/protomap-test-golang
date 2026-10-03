@@ -1,0 +1,180 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/giftcards/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftcardsProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Where a gift card is in its lifecycle.
+enum GiftCardStatus {
+  GIFT_CARD_STATUS_UNSPECIFIED = 0;
+  GIFT_CARD_STATUS_PENDING = 1;
+  GIFT_CARD_STATUS_OPEN = 2;
+  GIFT_CARD_STATUS_FROZEN = 3;
+  GIFT_CARD_STATUS_CLOSED = 4;
+}
+
+// Where a gift card batch is in its lifecycle.
+enum GiftCardBatchStatus {
+  GIFT_CARD_BATCH_STATUS_UNSPECIFIED = 0;
+  GIFT_CARD_BATCH_STATUS_DRAFT = 1;
+  GIFT_CARD_BATCH_STATUS_ISSUED = 2;
+  GIFT_CARD_BATCH_STATUS_APPROVED = 3;
+  GIFT_CARD_BATCH_STATUS_PAID = 4;
+  GIFT_CARD_BATCH_STATUS_VOID = 5;
+}
+
+// Where a gift card transaction is in its lifecycle.
+enum GiftCardTransactionStatus {
+  GIFT_CARD_TRANSACTION_STATUS_UNSPECIFIED = 0;
+  GIFT_CARD_TRANSACTION_STATUS_RECEIVED = 1;
+  GIFT_CARD_TRANSACTION_STATUS_PROCESSED = 2;
+  GIFT_CARD_TRANSACTION_STATUS_DISCARDED = 3;
+}
+
+// The limit of a gift card.
+message GiftCardLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a gift card.
+message GiftCardCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a gift card.
+message GiftCardBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A gift card of the giftcards domain.
+message GiftCard {
+  string gift_card_id = 1;
+  GiftCardTransactionRef holder = 2;
+  GiftCardStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated GiftCardLimit limits = 7;
+  oneof funding {
+    GiftCardCardFunding card = 8;
+    GiftCardBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The line of a gift card batch.
+message GiftCardBatchLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  GiftCardBatchLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a gift card batch line.
+message GiftCardBatchLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a gift card batch.
+message GiftCardBatchCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a gift card batch.
+message GiftCardBatchBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a gift card batch.
+message GiftCardBatchAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A gift card batch of the giftcards domain.
+message GiftCardBatch {
+  string gift_card_batch_id = 1;
+  string number = 2;
+  GiftCardBatchStatus status = 3;
+  GiftCardRef counterparty = 4;
+  repeated GiftCardBatchLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    GiftCardBatchCardSettlement card = 8;
+    GiftCardBatchBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated GiftCardBatchAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a gift card transaction.
+message GiftCardTransactionMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A gift card transaction of the giftcards domain.
+message GiftCardTransaction {
+  string gift_card_transaction_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  GiftCardBatchRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated GiftCardTransactionMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

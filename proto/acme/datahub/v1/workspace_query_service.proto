@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.datahub.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/datahub/v1/datahub.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Datahub.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/datahub/v1;datahubv1";
+option java_multiple_files = true;
+option java_outer_classname = "WorkspaceQueryServiceProto";
+option java_package = "com.acme.datahub.v1";
+
+// Answers read-only questions about workspaces, for screens and reports.
+service WorkspaceQueryService {
+  // Returns a workspace.
+  rpc LookupWorkspace(LookupWorkspaceRequest) returns (LookupWorkspaceResponse);
+
+  // Lists workspaces a page at a time.
+  rpc BrowseWorkspaces(BrowseWorkspacesRequest) returns (BrowseWorkspacesResponse);
+
+  // Lists workspaces a page at a time.
+  rpc FindWorkspaces(FindWorkspacesRequest) returns (FindWorkspacesResponse);
+
+  // Counts workspaces by status.
+  rpc CountWorkspaces(CountWorkspacesRequest) returns (CountWorkspacesResponse);
+
+  // Returns several workspaces at once.
+  rpc ResolveWorkspaces(ResolveWorkspacesRequest) returns (ResolveWorkspacesResponse);
+
+  // Streams every matching workspace.
+  rpc ExportWorkspaces(ExportWorkspacesRequest) returns (stream ExportWorkspacesResponse);
+
+  // Summarizes a workspace.
+  rpc SummarizeWorkspaces(SummarizeWorkspacesRequest) returns (SummarizeWorkspacesResponse);
+
+  // Lists workspaces a page at a time.
+  rpc SuggestWorkspaces(SuggestWorkspacesRequest) returns (SuggestWorkspacesResponse);
+
+  // Returns a workspace.
+  rpc PeekWorkspace(PeekWorkspaceRequest) returns (PeekWorkspaceResponse);
+}
+
+// The request of `LookupWorkspace`.
+message LookupWorkspaceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string workspace_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupWorkspace`.
+message LookupWorkspaceResponse {
+  Workspace workspace = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseWorkspaces`.
+message BrowseWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseWorkspacesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseWorkspaces`.
+message BrowseWorkspacesResponse {
+  repeated Workspace workspaces = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindWorkspaces`.
+message FindWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindWorkspacesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindWorkspaces`.
+message FindWorkspacesResponse {
+  repeated Workspace workspaces = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountWorkspaces`.
+message CountWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountWorkspacesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountWorkspaces`.
+message CountWorkspacesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveWorkspaces`.
+message ResolveWorkspacesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string workspace_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveWorkspaces`.
+message ResolveWorkspacesResponse {
+  repeated Workspace workspaces = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportWorkspaces`.
+message ExportWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportWorkspacesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportWorkspaces`.
+message ExportWorkspacesResponse {
+  Workspace workspace = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeWorkspaces`.
+message SummarizeWorkspacesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string workspace_id = 2;
+  SummarizeWorkspacesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeWorkspaces`.
+message SummarizeWorkspacesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestWorkspaces`.
+message SuggestWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestWorkspacesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestWorkspaces`.
+message SuggestWorkspacesResponse {
+  repeated Workspace workspaces = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekWorkspace`.
+message PeekWorkspaceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string workspace_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekWorkspace`.
+message PeekWorkspaceResponse {
+  Workspace workspace = 1;
+  acme.common.v1.OperationResult result = 2;
+}

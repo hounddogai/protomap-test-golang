@@ -1,0 +1,213 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.media.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/media/v1/media.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Media.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/media/v1;mediav1";
+option java_multiple_files = true;
+option java_outer_classname = "MediaAssetServiceProto";
+option java_package = "com.acme.media.v1";
+
+// Manages media assets: creates, reads, changes, and lists them.
+service MediaAssetService {
+  // Creates a media asset.
+  rpc CreateMediaAsset(CreateMediaAssetRequest) returns (CreateMediaAssetResponse);
+
+  // Returns a media asset.
+  rpc GetMediaAsset(GetMediaAssetRequest) returns (GetMediaAssetResponse);
+
+  // Changes a media asset.
+  rpc UpdateMediaAsset(UpdateMediaAssetRequest) returns (UpdateMediaAssetResponse);
+
+  // Lists media assets a page at a time.
+  rpc ListMediaAssets(ListMediaAssetsRequest) returns (ListMediaAssetsResponse);
+
+  // Returns several media assets at once.
+  rpc BatchGetMediaAssets(BatchGetMediaAssetsRequest) returns (BatchGetMediaAssetsResponse);
+
+  // Lists media assets a page at a time.
+  rpc SearchMediaAssets(SearchMediaAssetsRequest) returns (SearchMediaAssetsResponse);
+
+  // Streams the changes of media assets as they happen.
+  rpc WatchMediaAssets(WatchMediaAssetsRequest) returns (stream WatchMediaAssetsResponse);
+
+  // Takes a stream of media assets and answers once at the end.
+  rpc BatchCreateMediaAssets(stream BatchCreateMediaAssetsRequest) returns (BatchCreateMediaAssetsResponse);
+}
+
+// The request of `CreateMediaAsset`.
+message CreateMediaAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  MediaAsset media_asset = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateMediaAsset`.
+message CreateMediaAssetResponse {
+  MediaAsset media_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetMediaAsset`.
+message GetMediaAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMediaAsset`.
+message GetMediaAssetResponse {
+  MediaAsset media_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateMediaAsset`.
+message UpdateMediaAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  MediaAsset media_asset = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateMediaAsset`.
+message UpdateMediaAssetResponse {
+  MediaAsset media_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListMediaAssets`.
+message ListMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMediaAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMediaAssets`.
+message ListMediaAssetsResponse {
+  repeated MediaAsset media_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetMediaAssets`.
+message BatchGetMediaAssetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string media_asset_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetMediaAssets`.
+message BatchGetMediaAssetsResponse {
+  repeated MediaAsset media_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchMediaAssets`.
+message SearchMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchMediaAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchMediaAssets`.
+message SearchMediaAssetsResponse {
+  repeated MediaAsset media_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchMediaAssets`.
+message WatchMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchMediaAssetsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchMediaAssets`.
+message WatchMediaAssetsResponse {
+  MediaAsset media_asset = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateMediaAssets`.
+message BatchCreateMediaAssetsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateMediaAssetsRequest.StreamHeader header = 2;
+    MediaAsset record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateMediaAssets`.
+message BatchCreateMediaAssetsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string media_asset_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateMediaAssetsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

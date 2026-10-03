@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.experiments.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Experiments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/experiments/v1;experimentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.experiments.v1";
+
+// A reference to an experiment of the experiments domain.
+message ExperimentRef {
+  string experiment_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a variant of the experiments domain.
+message VariantRef {
+  string variant_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to an exposure of the experiments domain.
+message ExposureRef {
+  string exposure_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}

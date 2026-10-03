@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.featureflags.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/featureflags/v1/featureflags.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Featureflags.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/featureflags/v1;featureflagsv1";
+option java_multiple_files = true;
+option java_outer_classname = "FeatureFlagValidationServiceProto";
+option java_package = "com.acme.featureflags.v1";
+
+// Checks feature flags against the rules before anything acts on them.
+service FeatureFlagValidationService {
+  // Validates a feature flag.
+  rpc ValidateFeatureFlag(ValidateFeatureFlagRequest) returns (ValidateFeatureFlagResponse);
+
+  // Previews a feature flag.
+  rpc PreviewFeatureFlag(PreviewFeatureFlagRequest) returns (PreviewFeatureFlagResponse);
+
+  // Checks a feature flag.
+  rpc CheckFeatureFlagEligibility(CheckFeatureFlagEligibilityRequest) returns (CheckFeatureFlagEligibilityResponse);
+
+  // Normalizes a feature flag.
+  rpc NormalizeFeatureFlag(NormalizeFeatureFlagRequest) returns (NormalizeFeatureFlagResponse);
+
+  // Explains a feature flag.
+  rpc ExplainFeatureFlagDecision(ExplainFeatureFlagDecisionRequest) returns (ExplainFeatureFlagDecisionResponse);
+
+  // Scores a feature flag.
+  rpc ScoreFeatureFlag(ScoreFeatureFlagRequest) returns (ScoreFeatureFlagResponse);
+
+  // Lints a feature flag.
+  rpc LintFeatureFlags(LintFeatureFlagsRequest) returns (LintFeatureFlagsResponse);
+
+  // Returns a feature flag.
+  rpc GetFeatureFlagRules(GetFeatureFlagRulesRequest) returns (GetFeatureFlagRulesResponse);
+}
+
+// The request of `ValidateFeatureFlag`.
+message ValidateFeatureFlagRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  ValidateFeatureFlagRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateFeatureFlag`.
+message ValidateFeatureFlagResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FeatureFlag feature_flag = 1;
+  ValidateFeatureFlagResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewFeatureFlag`.
+message PreviewFeatureFlagRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  PreviewFeatureFlagRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewFeatureFlag`.
+message PreviewFeatureFlagResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FeatureFlag feature_flag = 1;
+  PreviewFeatureFlagResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckFeatureFlagEligibility`.
+message CheckFeatureFlagEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  CheckFeatureFlagEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckFeatureFlagEligibility`.
+message CheckFeatureFlagEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FeatureFlag feature_flag = 1;
+  CheckFeatureFlagEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeFeatureFlag`.
+message NormalizeFeatureFlagRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  NormalizeFeatureFlagRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeFeatureFlag`.
+message NormalizeFeatureFlagResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FeatureFlag feature_flag = 1;
+  NormalizeFeatureFlagResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainFeatureFlagDecision`.
+message ExplainFeatureFlagDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  ExplainFeatureFlagDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainFeatureFlagDecision`.
+message ExplainFeatureFlagDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FeatureFlag feature_flag = 1;
+  ExplainFeatureFlagDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreFeatureFlag`.
+message ScoreFeatureFlagRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  ScoreFeatureFlagRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreFeatureFlag`.
+message ScoreFeatureFlagResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreFeatureFlagResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FeatureFlag feature_flag = 1;
+  ScoreFeatureFlagResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintFeatureFlags`.
+message LintFeatureFlagsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  FeatureFlag feature_flag = 3;
+  LintFeatureFlagsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintFeatureFlags`.
+message LintFeatureFlagsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FeatureFlag feature_flag = 1;
+  LintFeatureFlagsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFeatureFlagRules`.
+message GetFeatureFlagRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFeatureFlagRules`.
+message GetFeatureFlagRulesResponse {
+  FeatureFlag feature_flag = 1;
+  acme.common.v1.OperationResult result = 2;
+}

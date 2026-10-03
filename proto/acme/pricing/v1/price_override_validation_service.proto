@@ -1,0 +1,223 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceOverrideValidationServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Checks price overrides against the rules before anything acts on them.
+service PriceOverrideValidationService {
+  // Validates a price override.
+  rpc ValidatePriceOverride(ValidatePriceOverrideRequest) returns (ValidatePriceOverrideResponse);
+
+  // Previews a price override.
+  rpc PreviewPriceOverride(PreviewPriceOverrideRequest) returns (PreviewPriceOverrideResponse);
+
+  // Normalizes a price override.
+  rpc NormalizePriceOverride(NormalizePriceOverrideRequest) returns (NormalizePriceOverrideResponse);
+
+  // Explains a price override.
+  rpc ExplainPriceOverrideDecision(ExplainPriceOverrideDecisionRequest) returns (ExplainPriceOverrideDecisionResponse);
+
+  // Lints a price override.
+  rpc LintPriceOverrides(LintPriceOverridesRequest) returns (LintPriceOverridesResponse);
+
+  // Returns a price override.
+  rpc GetPriceOverrideRules(GetPriceOverrideRulesRequest) returns (GetPriceOverrideRulesResponse);
+}
+
+// The request of `ValidatePriceOverride`.
+message ValidatePriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  ValidatePriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePriceOverride`.
+message ValidatePriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  ValidatePriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPriceOverride`.
+message PreviewPriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  PreviewPriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPriceOverride`.
+message PreviewPriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  PreviewPriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePriceOverride`.
+message NormalizePriceOverrideRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  NormalizePriceOverrideRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePriceOverride`.
+message NormalizePriceOverrideResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  NormalizePriceOverrideResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPriceOverrideDecision`.
+message ExplainPriceOverrideDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  ExplainPriceOverrideDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPriceOverrideDecision`.
+message ExplainPriceOverrideDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  ExplainPriceOverrideDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPriceOverrides`.
+message LintPriceOverridesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  PriceOverride price_override = 3;
+  LintPriceOverridesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPriceOverrides`.
+message LintPriceOverridesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceOverride price_override = 1;
+  LintPriceOverridesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPriceOverrideRules`.
+message GetPriceOverrideRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_override_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPriceOverrideRules`.
+message GetPriceOverrideRulesResponse {
+  PriceOverride price_override = 1;
+  acme.common.v1.OperationResult result = 2;
+}

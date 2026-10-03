@@ -1,0 +1,246 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerScorecardSyncServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Keeps seller scorecards in step with the systems of record in other regions.
+service SellerScorecardSyncService {
+  // Syncs a seller scorecard.
+  rpc SyncSellerScorecards(SyncSellerScorecardsRequest) returns (SyncSellerScorecardsResponse);
+
+  // Pushs a seller scorecard.
+  rpc PushSellerScorecard(PushSellerScorecardRequest) returns (PushSellerScorecardResponse);
+
+  // Reconciles a seller scorecard.
+  rpc ReconcileSellerScorecards(ReconcileSellerScorecardsRequest) returns (ReconcileSellerScorecardsResponse);
+
+  // Exchanges changes of seller scorecards with a peer.
+  rpc StreamSellerScorecardChanges(stream StreamSellerScorecardChangesRequest) returns (stream StreamSellerScorecardChangesResponse);
+
+  // Resolves a seller scorecard.
+  rpc ResolveSellerScorecardConflict(ResolveSellerScorecardConflictRequest) returns (ResolveSellerScorecardConflictResponse);
+
+  // Returns a seller scorecard.
+  rpc GetSellerScorecardSyncState(GetSellerScorecardSyncStateRequest) returns (GetSellerScorecardSyncStateResponse);
+
+  // Lists seller scorecards a page at a time.
+  rpc ListSellerScorecardConflicts(ListSellerScorecardConflictsRequest) returns (ListSellerScorecardConflictsResponse);
+}
+
+// The request of `SyncSellerScorecards`.
+message SyncSellerScorecardsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  SyncSellerScorecardsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncSellerScorecards`.
+message SyncSellerScorecardsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  SyncSellerScorecardsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushSellerScorecard`.
+message PushSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  PushSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushSellerScorecard`.
+message PushSellerScorecardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  PushSellerScorecardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileSellerScorecards`.
+message ReconcileSellerScorecardsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  ReconcileSellerScorecardsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileSellerScorecards`.
+message ReconcileSellerScorecardsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  ReconcileSellerScorecardsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamSellerScorecardChanges`.
+message StreamSellerScorecardChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    SellerScorecard change = 2;
+    StreamSellerScorecardChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamSellerScorecardChanges`.
+message StreamSellerScorecardChangesResponse {
+  SellerScorecard seller_scorecard = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveSellerScorecardConflict`.
+message ResolveSellerScorecardConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  ResolveSellerScorecardConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveSellerScorecardConflict`.
+message ResolveSellerScorecardConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  ResolveSellerScorecardConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerScorecardSyncState`.
+message GetSellerScorecardSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerScorecardSyncState`.
+message GetSellerScorecardSyncStateResponse {
+  SellerScorecard seller_scorecard = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSellerScorecardConflicts`.
+message ListSellerScorecardConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerScorecardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSellerScorecardConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSellerScorecardConflicts`.
+message ListSellerScorecardConflictsResponse {
+  repeated SellerScorecard seller_scorecards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

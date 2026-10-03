@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RedemptionCalculationServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Computes the figures of a redemption, such as totals, taxes, and estimates.
+service RedemptionCalculationService {
+  // Calculates a redemption.
+  rpc CalculateRedemption(CalculateRedemptionRequest) returns (CalculateRedemptionResponse);
+
+  // Estimates a redemption.
+  rpc EstimateRedemption(EstimateRedemptionRequest) returns (EstimateRedemptionResponse);
+
+  // Quotes a redemption.
+  rpc QuoteRedemption(QuoteRedemptionRequest) returns (QuoteRedemptionResponse);
+
+  // Compares a redemption.
+  rpc CompareRedemptionOptions(CompareRedemptionOptionsRequest) returns (CompareRedemptionOptionsResponse);
+
+  // Recalculates a redemption.
+  rpc RecalculateRedemptions(RecalculateRedemptionsRequest) returns (RecalculateRedemptionsResponse);
+
+  // Simulates a redemption.
+  rpc SimulateRedemption(SimulateRedemptionRequest) returns (SimulateRedemptionResponse);
+
+  // Explains a redemption.
+  rpc ExplainRedemptionCalculation(ExplainRedemptionCalculationRequest) returns (ExplainRedemptionCalculationResponse);
+
+  // Returns a redemption.
+  rpc GetRedemptionRates(GetRedemptionRatesRequest) returns (GetRedemptionRatesResponse);
+}
+
+// The request of `CalculateRedemption`.
+message CalculateRedemptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  CalculateRedemptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRedemption`.
+message CalculateRedemptionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRedemptionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Redemption redemption = 1;
+  CalculateRedemptionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRedemption`.
+message EstimateRedemptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  EstimateRedemptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRedemption`.
+message EstimateRedemptionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRedemptionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Redemption redemption = 1;
+  EstimateRedemptionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRedemption`.
+message QuoteRedemptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  QuoteRedemptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRedemption`.
+message QuoteRedemptionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRedemptionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Redemption redemption = 1;
+  QuoteRedemptionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRedemptionOptions`.
+message CompareRedemptionOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  CompareRedemptionOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRedemptionOptions`.
+message CompareRedemptionOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRedemptionOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Redemption redemption = 1;
+  CompareRedemptionOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRedemptions`.
+message RecalculateRedemptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  RecalculateRedemptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRedemptions`.
+message RecalculateRedemptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRedemptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Redemption redemption = 1;
+  RecalculateRedemptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRedemption`.
+message SimulateRedemptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  SimulateRedemptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRedemption`.
+message SimulateRedemptionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRedemptionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Redemption redemption = 1;
+  SimulateRedemptionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRedemptionCalculation`.
+message ExplainRedemptionCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  Redemption redemption = 3;
+  ExplainRedemptionCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRedemptionCalculation`.
+message ExplainRedemptionCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Redemption redemption = 1;
+  ExplainRedemptionCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRedemptionRates`.
+message GetRedemptionRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string redemption_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRedemptionRates`.
+message GetRedemptionRatesResponse {
+  Redemption redemption = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "PointsLedgerCalculationServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Computes the figures of a points ledger, such as totals, taxes, and estimates.
+service PointsLedgerCalculationService {
+  // Calculates a points ledger.
+  rpc CalculatePointsLedger(CalculatePointsLedgerRequest) returns (CalculatePointsLedgerResponse);
+
+  // Estimates a points ledger.
+  rpc EstimatePointsLedger(EstimatePointsLedgerRequest) returns (EstimatePointsLedgerResponse);
+
+  // Quotes a points ledger.
+  rpc QuotePointsLedger(QuotePointsLedgerRequest) returns (QuotePointsLedgerResponse);
+
+  // Compares a points ledger.
+  rpc ComparePointsLedgerOptions(ComparePointsLedgerOptionsRequest) returns (ComparePointsLedgerOptionsResponse);
+
+  // Recalculates a points ledger.
+  rpc RecalculatePointsLedgers(RecalculatePointsLedgersRequest) returns (RecalculatePointsLedgersResponse);
+
+  // Simulates a points ledger.
+  rpc SimulatePointsLedger(SimulatePointsLedgerRequest) returns (SimulatePointsLedgerResponse);
+
+  // Explains a points ledger.
+  rpc ExplainPointsLedgerCalculation(ExplainPointsLedgerCalculationRequest) returns (ExplainPointsLedgerCalculationResponse);
+
+  // Returns a points ledger.
+  rpc GetPointsLedgerRates(GetPointsLedgerRatesRequest) returns (GetPointsLedgerRatesResponse);
+}
+
+// The request of `CalculatePointsLedger`.
+message CalculatePointsLedgerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  CalculatePointsLedgerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculatePointsLedger`.
+message CalculatePointsLedgerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculatePointsLedgerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PointsLedger points_ledger = 1;
+  CalculatePointsLedgerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimatePointsLedger`.
+message EstimatePointsLedgerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  EstimatePointsLedgerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimatePointsLedger`.
+message EstimatePointsLedgerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimatePointsLedgerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PointsLedger points_ledger = 1;
+  EstimatePointsLedgerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuotePointsLedger`.
+message QuotePointsLedgerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  QuotePointsLedgerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuotePointsLedger`.
+message QuotePointsLedgerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuotePointsLedgerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PointsLedger points_ledger = 1;
+  QuotePointsLedgerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ComparePointsLedgerOptions`.
+message ComparePointsLedgerOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  ComparePointsLedgerOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ComparePointsLedgerOptions`.
+message ComparePointsLedgerOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ComparePointsLedgerOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PointsLedger points_ledger = 1;
+  ComparePointsLedgerOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculatePointsLedgers`.
+message RecalculatePointsLedgersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  RecalculatePointsLedgersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculatePointsLedgers`.
+message RecalculatePointsLedgersResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculatePointsLedgersResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PointsLedger points_ledger = 1;
+  RecalculatePointsLedgersResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulatePointsLedger`.
+message SimulatePointsLedgerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  SimulatePointsLedgerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulatePointsLedger`.
+message SimulatePointsLedgerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulatePointsLedgerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PointsLedger points_ledger = 1;
+  SimulatePointsLedgerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPointsLedgerCalculation`.
+message ExplainPointsLedgerCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  PointsLedger points_ledger = 3;
+  ExplainPointsLedgerCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPointsLedgerCalculation`.
+message ExplainPointsLedgerCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PointsLedger points_ledger = 1;
+  ExplainPointsLedgerCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPointsLedgerRates`.
+message GetPointsLedgerRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string points_ledger_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPointsLedgerRates`.
+message GetPointsLedgerRatesResponse {
+  PointsLedger points_ledger = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,198 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.checkout.v1;
+
+import "acme/checkout/v1/checkout.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Checkout.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/checkout/v1;checkoutv1";
+option java_multiple_files = true;
+option java_outer_classname = "CheckoutSessionQueryServiceProto";
+option java_package = "com.acme.checkout.v1";
+
+// Answers read-only questions about checkout sessions, for screens and reports.
+service CheckoutSessionQueryService {
+  // Returns a checkout session.
+  rpc LookupCheckoutSession(LookupCheckoutSessionRequest) returns (LookupCheckoutSessionResponse);
+
+  // Lists checkout sessions a page at a time.
+  rpc BrowseCheckoutSessions(BrowseCheckoutSessionsRequest) returns (BrowseCheckoutSessionsResponse);
+
+  // Lists checkout sessions a page at a time.
+  rpc FindCheckoutSessions(FindCheckoutSessionsRequest) returns (FindCheckoutSessionsResponse);
+
+  // Counts checkout sessions by status.
+  rpc CountCheckoutSessions(CountCheckoutSessionsRequest) returns (CountCheckoutSessionsResponse);
+
+  // Returns several checkout sessions at once.
+  rpc ResolveCheckoutSessions(ResolveCheckoutSessionsRequest) returns (ResolveCheckoutSessionsResponse);
+
+  // Summarizes a checkout session.
+  rpc SummarizeCheckoutSessions(SummarizeCheckoutSessionsRequest) returns (SummarizeCheckoutSessionsResponse);
+
+  // Lists checkout sessions a page at a time.
+  rpc SuggestCheckoutSessions(SuggestCheckoutSessionsRequest) returns (SuggestCheckoutSessionsResponse);
+}
+
+// The request of `LookupCheckoutSession`.
+message LookupCheckoutSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string checkout_session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCheckoutSession`.
+message LookupCheckoutSessionResponse {
+  CheckoutSession checkout_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCheckoutSessions`.
+message BrowseCheckoutSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CheckoutSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCheckoutSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCheckoutSessions`.
+message BrowseCheckoutSessionsResponse {
+  repeated CheckoutSession checkout_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCheckoutSessions`.
+message FindCheckoutSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CheckoutSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCheckoutSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCheckoutSessions`.
+message FindCheckoutSessionsResponse {
+  repeated CheckoutSession checkout_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCheckoutSessions`.
+message CountCheckoutSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CheckoutSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCheckoutSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCheckoutSessions`.
+message CountCheckoutSessionsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCheckoutSessions`.
+message ResolveCheckoutSessionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string checkout_session_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCheckoutSessions`.
+message ResolveCheckoutSessionsResponse {
+  repeated CheckoutSession checkout_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeCheckoutSessions`.
+message SummarizeCheckoutSessionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string checkout_session_id = 2;
+  SummarizeCheckoutSessionsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCheckoutSessions`.
+message SummarizeCheckoutSessionsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCheckoutSessions`.
+message SuggestCheckoutSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CheckoutSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCheckoutSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCheckoutSessions`.
+message SuggestCheckoutSessionsResponse {
+  repeated CheckoutSession checkout_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

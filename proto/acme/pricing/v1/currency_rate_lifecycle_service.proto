@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CurrencyRateLifecycleServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Moves a currency rate between the states of its lifecycle.
+service CurrencyRateLifecycleService {
+  // Activates a currency rate.
+  rpc ActivateCurrencyRate(ActivateCurrencyRateRequest) returns (ActivateCurrencyRateResponse);
+
+  // Suspends a currency rate.
+  rpc SuspendCurrencyRate(SuspendCurrencyRateRequest) returns (SuspendCurrencyRateResponse);
+
+  // Reinstates a currency rate.
+  rpc ReinstateCurrencyRate(ReinstateCurrencyRateRequest) returns (ReinstateCurrencyRateResponse);
+
+  // Terminates a currency rate.
+  rpc TerminateCurrencyRate(TerminateCurrencyRateRequest) returns (TerminateCurrencyRateResponse);
+
+  // Renews a currency rate.
+  rpc RenewCurrencyRate(RenewCurrencyRateRequest) returns (RenewCurrencyRateResponse);
+
+  // Expires a currency rate.
+  rpc ExpireCurrencyRate(ExpireCurrencyRateRequest) returns (ExpireCurrencyRateResponse);
+
+  // Returns a currency rate.
+  rpc GetCurrencyRateLifecycle(GetCurrencyRateLifecycleRequest) returns (GetCurrencyRateLifecycleResponse);
+
+  // Schedules a currency rate.
+  rpc ScheduleCurrencyRateExpiry(ScheduleCurrencyRateExpiryRequest) returns (ScheduleCurrencyRateExpiryResponse);
+}
+
+// The request of `ActivateCurrencyRate`.
+message ActivateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  ActivateCurrencyRateRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateCurrencyRate`.
+message ActivateCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  ActivateCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendCurrencyRate`.
+message SuspendCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  SuspendCurrencyRateRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendCurrencyRate`.
+message SuspendCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  SuspendCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateCurrencyRate`.
+message ReinstateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  ReinstateCurrencyRateRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateCurrencyRate`.
+message ReinstateCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  ReinstateCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateCurrencyRate`.
+message TerminateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  TerminateCurrencyRateRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateCurrencyRate`.
+message TerminateCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  TerminateCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewCurrencyRate`.
+message RenewCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  RenewCurrencyRateRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewCurrencyRate`.
+message RenewCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  RenewCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireCurrencyRate`.
+message ExpireCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  ExpireCurrencyRateRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireCurrencyRate`.
+message ExpireCurrencyRateResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  ExpireCurrencyRateResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCurrencyRateLifecycle`.
+message GetCurrencyRateLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCurrencyRateLifecycle`.
+message GetCurrencyRateLifecycleResponse {
+  CurrencyRate currency_rate = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleCurrencyRateExpiry`.
+message ScheduleCurrencyRateExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  ScheduleCurrencyRateExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleCurrencyRateExpiry`.
+message ScheduleCurrencyRateExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  ScheduleCurrencyRateExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

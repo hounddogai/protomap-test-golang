@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.messaging.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/messaging/v1/messaging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Messaging.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/messaging/v1;messagingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConversationCalculationServiceProto";
+option java_package = "com.acme.messaging.v1";
+
+// Computes the figures of a conversation, such as totals, taxes, and estimates.
+service ConversationCalculationService {
+  // Calculates a conversation.
+  rpc CalculateConversation(CalculateConversationRequest) returns (CalculateConversationResponse);
+
+  // Estimates a conversation.
+  rpc EstimateConversation(EstimateConversationRequest) returns (EstimateConversationResponse);
+
+  // Quotes a conversation.
+  rpc QuoteConversation(QuoteConversationRequest) returns (QuoteConversationResponse);
+
+  // Compares a conversation.
+  rpc CompareConversationOptions(CompareConversationOptionsRequest) returns (CompareConversationOptionsResponse);
+
+  // Recalculates a conversation.
+  rpc RecalculateConversations(RecalculateConversationsRequest) returns (RecalculateConversationsResponse);
+
+  // Simulates a conversation.
+  rpc SimulateConversation(SimulateConversationRequest) returns (SimulateConversationResponse);
+
+  // Explains a conversation.
+  rpc ExplainConversationCalculation(ExplainConversationCalculationRequest) returns (ExplainConversationCalculationResponse);
+
+  // Returns a conversation.
+  rpc GetConversationRates(GetConversationRatesRequest) returns (GetConversationRatesResponse);
+}
+
+// The request of `CalculateConversation`.
+message CalculateConversationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  CalculateConversationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateConversation`.
+message CalculateConversationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateConversationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Conversation conversation = 1;
+  CalculateConversationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateConversation`.
+message EstimateConversationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  EstimateConversationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateConversation`.
+message EstimateConversationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateConversationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Conversation conversation = 1;
+  EstimateConversationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteConversation`.
+message QuoteConversationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  QuoteConversationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteConversation`.
+message QuoteConversationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteConversationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Conversation conversation = 1;
+  QuoteConversationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareConversationOptions`.
+message CompareConversationOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  CompareConversationOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareConversationOptions`.
+message CompareConversationOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareConversationOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Conversation conversation = 1;
+  CompareConversationOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateConversations`.
+message RecalculateConversationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  RecalculateConversationsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateConversations`.
+message RecalculateConversationsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateConversationsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Conversation conversation = 1;
+  RecalculateConversationsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateConversation`.
+message SimulateConversationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  SimulateConversationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateConversation`.
+message SimulateConversationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateConversationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Conversation conversation = 1;
+  SimulateConversationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainConversationCalculation`.
+message ExplainConversationCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  Conversation conversation = 3;
+  ExplainConversationCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainConversationCalculation`.
+message ExplainConversationCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Conversation conversation = 1;
+  ExplainConversationCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetConversationRates`.
+message GetConversationRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConversationRates`.
+message GetConversationRatesResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}

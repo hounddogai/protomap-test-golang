@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fleet.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fleet/v1/fleet.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fleet.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fleet/v1;fleetv1";
+option java_multiple_files = true;
+option java_outer_classname = "VehicleServiceProto";
+option java_package = "com.acme.fleet.v1";
+
+// Manages vehicles: creates, reads, changes, and lists them.
+service VehicleService {
+  // Creates a vehicle.
+  rpc CreateVehicle(CreateVehicleRequest) returns (CreateVehicleResponse);
+
+  // Returns a vehicle.
+  rpc GetVehicle(GetVehicleRequest) returns (GetVehicleResponse);
+
+  // Deletes a vehicle.
+  rpc DeleteVehicle(DeleteVehicleRequest) returns (DeleteVehicleResponse);
+
+  // Lists vehicles a page at a time.
+  rpc ListVehicles(ListVehiclesRequest) returns (ListVehiclesResponse);
+
+  // Returns several vehicles at once.
+  rpc BatchGetVehicles(BatchGetVehiclesRequest) returns (BatchGetVehiclesResponse);
+
+  // Lists vehicles a page at a time.
+  rpc SearchVehicles(SearchVehiclesRequest) returns (SearchVehiclesResponse);
+
+  // Streams the changes of vehicles as they happen.
+  rpc WatchVehicles(WatchVehiclesRequest) returns (stream WatchVehiclesResponse);
+
+  // Takes a stream of vehicles and answers once at the end.
+  rpc BatchCreateVehicles(stream BatchCreateVehiclesRequest) returns (BatchCreateVehiclesResponse);
+
+  // Creates a vehicle.
+  rpc CloneVehicle(CloneVehicleRequest) returns (CloneVehicleResponse);
+}
+
+// The request of `CreateVehicle`.
+message CreateVehicleRequest {
+  acme.common.v1.RequestContext context = 1;
+  Vehicle vehicle = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateVehicle`.
+message CreateVehicleResponse {
+  Vehicle vehicle = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetVehicle`.
+message GetVehicleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string vehicle_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVehicle`.
+message GetVehicleResponse {
+  Vehicle vehicle = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteVehicle`.
+message DeleteVehicleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string vehicle_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteVehicle`.
+message DeleteVehicleResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListVehicles`.
+message ListVehiclesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VehicleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListVehiclesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListVehicles`.
+message ListVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetVehicles`.
+message BatchGetVehiclesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string vehicle_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetVehicles`.
+message BatchGetVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchVehicles`.
+message SearchVehiclesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VehicleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchVehiclesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchVehicles`.
+message SearchVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchVehicles`.
+message WatchVehiclesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VehicleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchVehiclesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchVehicles`.
+message WatchVehiclesResponse {
+  Vehicle vehicle = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateVehicles`.
+message BatchCreateVehiclesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateVehiclesRequest.StreamHeader header = 2;
+    Vehicle record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateVehicles`.
+message BatchCreateVehiclesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string vehicle_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateVehiclesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneVehicle`.
+message CloneVehicleRequest {
+  acme.common.v1.RequestContext context = 1;
+  Vehicle vehicle = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneVehicle`.
+message CloneVehicleResponse {
+  Vehicle vehicle = 1;
+  acme.common.v1.OperationResult result = 2;
+}

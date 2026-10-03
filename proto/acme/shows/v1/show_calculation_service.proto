@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shows.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shows/v1/shows.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shows.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shows/v1;showsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShowCalculationServiceProto";
+option java_package = "com.acme.shows.v1";
+
+// Computes the figures of a show, such as totals, taxes, and estimates.
+service ShowCalculationService {
+  // Calculates a show.
+  rpc CalculateShow(CalculateShowRequest) returns (CalculateShowResponse);
+
+  // Estimates a show.
+  rpc EstimateShow(EstimateShowRequest) returns (EstimateShowResponse);
+
+  // Quotes a show.
+  rpc QuoteShow(QuoteShowRequest) returns (QuoteShowResponse);
+
+  // Compares a show.
+  rpc CompareShowOptions(CompareShowOptionsRequest) returns (CompareShowOptionsResponse);
+
+  // Recalculates a show.
+  rpc RecalculateShows(RecalculateShowsRequest) returns (RecalculateShowsResponse);
+
+  // Simulates a show.
+  rpc SimulateShow(SimulateShowRequest) returns (SimulateShowResponse);
+
+  // Explains a show.
+  rpc ExplainShowCalculation(ExplainShowCalculationRequest) returns (ExplainShowCalculationResponse);
+
+  // Returns a show.
+  rpc GetShowRates(GetShowRatesRequest) returns (GetShowRatesResponse);
+}
+
+// The request of `CalculateShow`.
+message CalculateShowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  CalculateShowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateShow`.
+message CalculateShowResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateShowResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Show show = 1;
+  CalculateShowResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateShow`.
+message EstimateShowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  EstimateShowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateShow`.
+message EstimateShowResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateShowResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Show show = 1;
+  EstimateShowResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteShow`.
+message QuoteShowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  QuoteShowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteShow`.
+message QuoteShowResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteShowResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Show show = 1;
+  QuoteShowResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareShowOptions`.
+message CompareShowOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  CompareShowOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareShowOptions`.
+message CompareShowOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareShowOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Show show = 1;
+  CompareShowOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateShows`.
+message RecalculateShowsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  RecalculateShowsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateShows`.
+message RecalculateShowsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateShowsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Show show = 1;
+  RecalculateShowsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateShow`.
+message SimulateShowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  SimulateShowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateShow`.
+message SimulateShowResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateShowResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Show show = 1;
+  SimulateShowResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainShowCalculation`.
+message ExplainShowCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  Show show = 3;
+  ExplainShowCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainShowCalculation`.
+message ExplainShowCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Show show = 1;
+  ExplainShowCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetShowRates`.
+message GetShowRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetShowRates`.
+message GetShowRatesResponse {
+  Show show = 1;
+  acme.common.v1.OperationResult result = 2;
+}

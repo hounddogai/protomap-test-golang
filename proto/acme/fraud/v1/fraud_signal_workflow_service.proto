@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudSignalWorkflowServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Runs the long-lived workflow that takes a fraud signal from start to finish.
+service FraudSignalWorkflowService {
+  // Starts a fraud signal.
+  rpc StartFraudSignalWorkflow(StartFraudSignalWorkflowRequest) returns (StartFraudSignalWorkflowResponse);
+
+  // Advances a fraud signal.
+  rpc AdvanceFraudSignalWorkflow(AdvanceFraudSignalWorkflowRequest) returns (AdvanceFraudSignalWorkflowResponse);
+
+  // Cancels a fraud signal.
+  rpc CancelFraudSignalWorkflow(CancelFraudSignalWorkflowRequest) returns (CancelFraudSignalWorkflowResponse);
+
+  // Pauses a fraud signal.
+  rpc PauseFraudSignalWorkflow(PauseFraudSignalWorkflowRequest) returns (PauseFraudSignalWorkflowResponse);
+
+  // Resumes a fraud signal.
+  rpc ResumeFraudSignalWorkflow(ResumeFraudSignalWorkflowRequest) returns (ResumeFraudSignalWorkflowResponse);
+
+  // Returns a fraud signal.
+  rpc InspectFraudSignalWorkflow(InspectFraudSignalWorkflowRequest) returns (InspectFraudSignalWorkflowResponse);
+
+  // Lists fraud signals a page at a time.
+  rpc ListFraudSignalWorkflows(ListFraudSignalWorkflowsRequest) returns (ListFraudSignalWorkflowsResponse);
+
+  // Signals a fraud signal.
+  rpc SignalFraudSignalWorkflow(SignalFraudSignalWorkflowRequest) returns (SignalFraudSignalWorkflowResponse);
+}
+
+// The request of `StartFraudSignalWorkflow`.
+message StartFraudSignalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  StartFraudSignalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartFraudSignalWorkflow`.
+message StartFraudSignalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  StartFraudSignalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceFraudSignalWorkflow`.
+message AdvanceFraudSignalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  AdvanceFraudSignalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceFraudSignalWorkflow`.
+message AdvanceFraudSignalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  AdvanceFraudSignalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelFraudSignalWorkflow`.
+message CancelFraudSignalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  CancelFraudSignalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelFraudSignalWorkflow`.
+message CancelFraudSignalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  CancelFraudSignalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseFraudSignalWorkflow`.
+message PauseFraudSignalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  PauseFraudSignalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseFraudSignalWorkflow`.
+message PauseFraudSignalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  PauseFraudSignalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeFraudSignalWorkflow`.
+message ResumeFraudSignalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  ResumeFraudSignalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeFraudSignalWorkflow`.
+message ResumeFraudSignalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  ResumeFraudSignalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectFraudSignalWorkflow`.
+message InspectFraudSignalWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectFraudSignalWorkflow`.
+message InspectFraudSignalWorkflowResponse {
+  FraudSignal fraud_signal = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListFraudSignalWorkflows`.
+message ListFraudSignalWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudSignalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFraudSignalWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFraudSignalWorkflows`.
+message ListFraudSignalWorkflowsResponse {
+  repeated FraudSignal fraud_signals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalFraudSignalWorkflow`.
+message SignalFraudSignalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  SignalFraudSignalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalFraudSignalWorkflow`.
+message SignalFraudSignalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  SignalFraudSignalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

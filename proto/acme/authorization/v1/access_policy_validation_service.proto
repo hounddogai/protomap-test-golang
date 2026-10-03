@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.authorization.v1;
+
+import "acme/authorization/v1/authorization.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Authorization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/authorization/v1;authorizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "AccessPolicyValidationServiceProto";
+option java_package = "com.acme.authorization.v1";
+
+// Checks access policies against the rules before anything acts on them.
+service AccessPolicyValidationService {
+  // Validates an access policy.
+  rpc ValidateAccessPolicy(ValidateAccessPolicyRequest) returns (ValidateAccessPolicyResponse);
+
+  // Previews an access policy.
+  rpc PreviewAccessPolicy(PreviewAccessPolicyRequest) returns (PreviewAccessPolicyResponse);
+
+  // Checks an access policy.
+  rpc CheckAccessPolicyEligibility(CheckAccessPolicyEligibilityRequest) returns (CheckAccessPolicyEligibilityResponse);
+
+  // Normalizes an access policy.
+  rpc NormalizeAccessPolicy(NormalizeAccessPolicyRequest) returns (NormalizeAccessPolicyResponse);
+
+  // Explains an access policy.
+  rpc ExplainAccessPolicyDecision(ExplainAccessPolicyDecisionRequest) returns (ExplainAccessPolicyDecisionResponse);
+
+  // Scores an access policy.
+  rpc ScoreAccessPolicy(ScoreAccessPolicyRequest) returns (ScoreAccessPolicyResponse);
+
+  // Lints an access policy.
+  rpc LintAccessPolicies(LintAccessPoliciesRequest) returns (LintAccessPoliciesResponse);
+
+  // Returns an access policy.
+  rpc GetAccessPolicyRules(GetAccessPolicyRulesRequest) returns (GetAccessPolicyRulesResponse);
+}
+
+// The request of `ValidateAccessPolicy`.
+message ValidateAccessPolicyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  ValidateAccessPolicyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateAccessPolicy`.
+message ValidateAccessPolicyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AccessPolicy access_policy = 1;
+  ValidateAccessPolicyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewAccessPolicy`.
+message PreviewAccessPolicyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  PreviewAccessPolicyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewAccessPolicy`.
+message PreviewAccessPolicyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AccessPolicy access_policy = 1;
+  PreviewAccessPolicyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckAccessPolicyEligibility`.
+message CheckAccessPolicyEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  CheckAccessPolicyEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckAccessPolicyEligibility`.
+message CheckAccessPolicyEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AccessPolicy access_policy = 1;
+  CheckAccessPolicyEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeAccessPolicy`.
+message NormalizeAccessPolicyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  NormalizeAccessPolicyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeAccessPolicy`.
+message NormalizeAccessPolicyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AccessPolicy access_policy = 1;
+  NormalizeAccessPolicyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainAccessPolicyDecision`.
+message ExplainAccessPolicyDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  ExplainAccessPolicyDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainAccessPolicyDecision`.
+message ExplainAccessPolicyDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AccessPolicy access_policy = 1;
+  ExplainAccessPolicyDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreAccessPolicy`.
+message ScoreAccessPolicyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  ScoreAccessPolicyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreAccessPolicy`.
+message ScoreAccessPolicyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreAccessPolicyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  AccessPolicy access_policy = 1;
+  ScoreAccessPolicyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintAccessPolicies`.
+message LintAccessPoliciesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  AccessPolicy access_policy = 3;
+  LintAccessPoliciesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintAccessPolicies`.
+message LintAccessPoliciesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AccessPolicy access_policy = 1;
+  LintAccessPoliciesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAccessPolicyRules`.
+message GetAccessPolicyRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAccessPolicyRules`.
+message GetAccessPolicyRulesResponse {
+  AccessPolicy access_policy = 1;
+  acme.common.v1.OperationResult result = 2;
+}

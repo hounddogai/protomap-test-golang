@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "WarehouseWorkflowServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Runs the long-lived workflow that takes a warehouse from start to finish.
+service WarehouseWorkflowService {
+  // Starts a warehouse.
+  rpc StartWarehouseWorkflow(StartWarehouseWorkflowRequest) returns (StartWarehouseWorkflowResponse);
+
+  // Advances a warehouse.
+  rpc AdvanceWarehouseWorkflow(AdvanceWarehouseWorkflowRequest) returns (AdvanceWarehouseWorkflowResponse);
+
+  // Cancels a warehouse.
+  rpc CancelWarehouseWorkflow(CancelWarehouseWorkflowRequest) returns (CancelWarehouseWorkflowResponse);
+
+  // Retrys a warehouse.
+  rpc RetryWarehouseWorkflow(RetryWarehouseWorkflowRequest) returns (RetryWarehouseWorkflowResponse);
+
+  // Resumes a warehouse.
+  rpc ResumeWarehouseWorkflow(ResumeWarehouseWorkflowRequest) returns (ResumeWarehouseWorkflowResponse);
+
+  // Returns a warehouse.
+  rpc InspectWarehouseWorkflow(InspectWarehouseWorkflowRequest) returns (InspectWarehouseWorkflowResponse);
+
+  // Lists warehouses a page at a time.
+  rpc ListWarehouseWorkflows(ListWarehouseWorkflowsRequest) returns (ListWarehouseWorkflowsResponse);
+
+  // Signals a warehouse.
+  rpc SignalWarehouseWorkflow(SignalWarehouseWorkflowRequest) returns (SignalWarehouseWorkflowResponse);
+}
+
+// The request of `StartWarehouseWorkflow`.
+message StartWarehouseWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  Warehouse warehouse = 3;
+  StartWarehouseWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartWarehouseWorkflow`.
+message StartWarehouseWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Warehouse warehouse = 1;
+  StartWarehouseWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceWarehouseWorkflow`.
+message AdvanceWarehouseWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  Warehouse warehouse = 3;
+  AdvanceWarehouseWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceWarehouseWorkflow`.
+message AdvanceWarehouseWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Warehouse warehouse = 1;
+  AdvanceWarehouseWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelWarehouseWorkflow`.
+message CancelWarehouseWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  Warehouse warehouse = 3;
+  CancelWarehouseWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelWarehouseWorkflow`.
+message CancelWarehouseWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Warehouse warehouse = 1;
+  CancelWarehouseWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryWarehouseWorkflow`.
+message RetryWarehouseWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  Warehouse warehouse = 3;
+  RetryWarehouseWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryWarehouseWorkflow`.
+message RetryWarehouseWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Warehouse warehouse = 1;
+  RetryWarehouseWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeWarehouseWorkflow`.
+message ResumeWarehouseWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  Warehouse warehouse = 3;
+  ResumeWarehouseWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeWarehouseWorkflow`.
+message ResumeWarehouseWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Warehouse warehouse = 1;
+  ResumeWarehouseWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectWarehouseWorkflow`.
+message InspectWarehouseWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectWarehouseWorkflow`.
+message InspectWarehouseWorkflowResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListWarehouseWorkflows`.
+message ListWarehouseWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListWarehouseWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListWarehouseWorkflows`.
+message ListWarehouseWorkflowsResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalWarehouseWorkflow`.
+message SignalWarehouseWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  Warehouse warehouse = 3;
+  SignalWarehouseWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalWarehouseWorkflow`.
+message SignalWarehouseWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Warehouse warehouse = 1;
+  SignalWarehouseWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

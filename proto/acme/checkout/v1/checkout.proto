@@ -1,0 +1,236 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.checkout.v1;
+
+import "acme/checkout/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Checkout.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/checkout/v1;checkoutv1";
+option java_multiple_files = true;
+option java_outer_classname = "CheckoutProto";
+option java_package = "com.acme.checkout.v1";
+
+// Where a checkout session is in its lifecycle.
+enum CheckoutSessionStatus {
+  CHECKOUT_SESSION_STATUS_UNSPECIFIED = 0;
+  CHECKOUT_SESSION_STATUS_DRAFT = 1;
+  CHECKOUT_SESSION_STATUS_ISSUED = 2;
+  CHECKOUT_SESSION_STATUS_APPROVED = 3;
+  CHECKOUT_SESSION_STATUS_PAID = 4;
+  CHECKOUT_SESSION_STATUS_VOID = 5;
+}
+
+// Where a shipping quote is in its lifecycle.
+enum ShippingQuoteStatus {
+  SHIPPING_QUOTE_STATUS_UNSPECIFIED = 0;
+  SHIPPING_QUOTE_STATUS_DRAFT = 1;
+  SHIPPING_QUOTE_STATUS_ISSUED = 2;
+  SHIPPING_QUOTE_STATUS_APPROVED = 3;
+  SHIPPING_QUOTE_STATUS_PAID = 4;
+  SHIPPING_QUOTE_STATUS_VOID = 5;
+}
+
+// Where a payment intent is in its lifecycle.
+enum PaymentIntentStatus {
+  PAYMENT_INTENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_INTENT_STATUS_NEW = 1;
+  PAYMENT_INTENT_STATUS_OPEN = 2;
+  PAYMENT_INTENT_STATUS_WAITING = 3;
+  PAYMENT_INTENT_STATUS_RESOLVED = 4;
+  PAYMENT_INTENT_STATUS_CLOSED = 5;
+}
+
+// The line of a checkout session.
+message CheckoutSessionLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  CheckoutSessionLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a checkout session line.
+message CheckoutSessionLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a checkout session.
+message CheckoutSessionCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a checkout session.
+message CheckoutSessionBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a checkout session.
+message CheckoutSessionAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A checkout session of the checkout domain.
+message CheckoutSession {
+  string checkout_session_id = 1;
+  string number = 2;
+  CheckoutSessionStatus status = 3;
+  ShippingQuoteRef counterparty = 4;
+  repeated CheckoutSessionLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    CheckoutSessionCardSettlement card = 8;
+    CheckoutSessionBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated CheckoutSessionAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a shipping quote.
+message ShippingQuoteLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ShippingQuoteLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a shipping quote line.
+message ShippingQuoteLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a shipping quote.
+message ShippingQuoteCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a shipping quote.
+message ShippingQuoteBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a shipping quote.
+message ShippingQuoteAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A shipping quote of the checkout domain.
+message ShippingQuote {
+  string shipping_quote_id = 1;
+  string number = 2;
+  ShippingQuoteStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated ShippingQuoteLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ShippingQuoteCardSettlement card = 8;
+    ShippingQuoteBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ShippingQuoteAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a payment intent.
+message PaymentIntentComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a payment intent.
+message PaymentIntentSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a payment intent.
+message PaymentIntentChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a payment intent.
+message PaymentIntentStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A payment intent of the checkout domain.
+message PaymentIntent {
+  string payment_intent_id = 1;
+  string subject = 2;
+  PaymentIntentStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated PaymentIntentComment comments = 7;
+  PaymentIntentSla sla = 8;
+  oneof origin {
+    CheckoutSessionRef customer = 9;
+    string external_reference = 10;
+    PaymentIntentChannelOrigin channel = 11;
+  }
+  repeated PaymentIntentStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

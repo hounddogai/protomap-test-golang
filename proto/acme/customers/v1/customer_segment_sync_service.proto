@@ -1,0 +1,284 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerSegmentSyncServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Keeps customer segments in step with the systems of record in other regions.
+service CustomerSegmentSyncService {
+  // Syncs a customer segment.
+  rpc SyncCustomerSegments(SyncCustomerSegmentsRequest) returns (SyncCustomerSegmentsResponse);
+
+  // Pushs a customer segment.
+  rpc PushCustomerSegment(PushCustomerSegmentRequest) returns (PushCustomerSegmentResponse);
+
+  // Pulls a customer segment.
+  rpc PullCustomerSegments(PullCustomerSegmentsRequest) returns (PullCustomerSegmentsResponse);
+
+  // Reconciles a customer segment.
+  rpc ReconcileCustomerSegments(ReconcileCustomerSegmentsRequest) returns (ReconcileCustomerSegmentsResponse);
+
+  // Exchanges changes of customer segments with a peer.
+  rpc StreamCustomerSegmentChanges(stream StreamCustomerSegmentChangesRequest) returns (stream StreamCustomerSegmentChangesResponse);
+
+  // Resolves a customer segment.
+  rpc ResolveCustomerSegmentConflict(ResolveCustomerSegmentConflictRequest) returns (ResolveCustomerSegmentConflictResponse);
+
+  // Returns a customer segment.
+  rpc GetCustomerSegmentSyncState(GetCustomerSegmentSyncStateRequest) returns (GetCustomerSegmentSyncStateResponse);
+
+  // Lists customer segments a page at a time.
+  rpc ListCustomerSegmentConflicts(ListCustomerSegmentConflictsRequest) returns (ListCustomerSegmentConflictsResponse);
+}
+
+// The request of `SyncCustomerSegments`.
+message SyncCustomerSegmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  SyncCustomerSegmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncCustomerSegments`.
+message SyncCustomerSegmentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  SyncCustomerSegmentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushCustomerSegment`.
+message PushCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  PushCustomerSegmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushCustomerSegment`.
+message PushCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  PushCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullCustomerSegments`.
+message PullCustomerSegmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  PullCustomerSegmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullCustomerSegments`.
+message PullCustomerSegmentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  PullCustomerSegmentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileCustomerSegments`.
+message ReconcileCustomerSegmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  ReconcileCustomerSegmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileCustomerSegments`.
+message ReconcileCustomerSegmentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ReconcileCustomerSegmentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamCustomerSegmentChanges`.
+message StreamCustomerSegmentChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    CustomerSegment change = 2;
+    StreamCustomerSegmentChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamCustomerSegmentChanges`.
+message StreamCustomerSegmentChangesResponse {
+  CustomerSegment customer_segment = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveCustomerSegmentConflict`.
+message ResolveCustomerSegmentConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  ResolveCustomerSegmentConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveCustomerSegmentConflict`.
+message ResolveCustomerSegmentConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ResolveCustomerSegmentConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCustomerSegmentSyncState`.
+message GetCustomerSegmentSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomerSegmentSyncState`.
+message GetCustomerSegmentSyncStateResponse {
+  CustomerSegment customer_segment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListCustomerSegmentConflicts`.
+message ListCustomerSegmentConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerSegmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCustomerSegmentConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCustomerSegmentConflicts`.
+message ListCustomerSegmentConflictsResponse {
+  repeated CustomerSegment customer_segments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

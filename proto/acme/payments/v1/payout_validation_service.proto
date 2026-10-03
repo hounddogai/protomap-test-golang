@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayoutValidationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Checks payouts against the rules before anything acts on them.
+service PayoutValidationService {
+  // Validates a payout.
+  rpc ValidatePayout(ValidatePayoutRequest) returns (ValidatePayoutResponse);
+
+  // Previews a payout.
+  rpc PreviewPayout(PreviewPayoutRequest) returns (PreviewPayoutResponse);
+
+  // Checks a payout.
+  rpc CheckPayoutEligibility(CheckPayoutEligibilityRequest) returns (CheckPayoutEligibilityResponse);
+
+  // Normalizes a payout.
+  rpc NormalizePayout(NormalizePayoutRequest) returns (NormalizePayoutResponse);
+
+  // Scores a payout.
+  rpc ScorePayout(ScorePayoutRequest) returns (ScorePayoutResponse);
+
+  // Lints a payout.
+  rpc LintPayouts(LintPayoutsRequest) returns (LintPayoutsResponse);
+
+  // Returns a payout.
+  rpc GetPayoutRules(GetPayoutRulesRequest) returns (GetPayoutRulesResponse);
+}
+
+// The request of `ValidatePayout`.
+message ValidatePayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  ValidatePayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePayout`.
+message ValidatePayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  ValidatePayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPayout`.
+message PreviewPayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  PreviewPayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPayout`.
+message PreviewPayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  PreviewPayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPayoutEligibility`.
+message CheckPayoutEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  CheckPayoutEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPayoutEligibility`.
+message CheckPayoutEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  CheckPayoutEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePayout`.
+message NormalizePayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  NormalizePayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePayout`.
+message NormalizePayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  NormalizePayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePayout`.
+message ScorePayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  ScorePayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePayout`.
+message ScorePayoutResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePayoutResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payout payout = 1;
+  ScorePayoutResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPayouts`.
+message LintPayoutsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  LintPayoutsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPayouts`.
+message LintPayoutsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  LintPayoutsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPayoutRules`.
+message GetPayoutRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPayoutRules`.
+message GetPayoutRulesResponse {
+  Payout payout = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentWorkflowServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Runs the long-lived workflow that takes a payment from start to finish.
+service PaymentWorkflowService {
+  // Starts a payment.
+  rpc StartPaymentWorkflow(StartPaymentWorkflowRequest) returns (StartPaymentWorkflowResponse);
+
+  // Advances a payment.
+  rpc AdvancePaymentWorkflow(AdvancePaymentWorkflowRequest) returns (AdvancePaymentWorkflowResponse);
+
+  // Cancels a payment.
+  rpc CancelPaymentWorkflow(CancelPaymentWorkflowRequest) returns (CancelPaymentWorkflowResponse);
+
+  // Retrys a payment.
+  rpc RetryPaymentWorkflow(RetryPaymentWorkflowRequest) returns (RetryPaymentWorkflowResponse);
+
+  // Pauses a payment.
+  rpc PausePaymentWorkflow(PausePaymentWorkflowRequest) returns (PausePaymentWorkflowResponse);
+
+  // Resumes a payment.
+  rpc ResumePaymentWorkflow(ResumePaymentWorkflowRequest) returns (ResumePaymentWorkflowResponse);
+
+  // Returns a payment.
+  rpc InspectPaymentWorkflow(InspectPaymentWorkflowRequest) returns (InspectPaymentWorkflowResponse);
+
+  // Lists payments a page at a time.
+  rpc ListPaymentWorkflows(ListPaymentWorkflowsRequest) returns (ListPaymentWorkflowsResponse);
+
+  // Signals a payment.
+  rpc SignalPaymentWorkflow(SignalPaymentWorkflowRequest) returns (SignalPaymentWorkflowResponse);
+}
+
+// The request of `StartPaymentWorkflow`.
+message StartPaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  StartPaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPaymentWorkflow`.
+message StartPaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  StartPaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePaymentWorkflow`.
+message AdvancePaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  AdvancePaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePaymentWorkflow`.
+message AdvancePaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  AdvancePaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPaymentWorkflow`.
+message CancelPaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  CancelPaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPaymentWorkflow`.
+message CancelPaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  CancelPaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPaymentWorkflow`.
+message RetryPaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  RetryPaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPaymentWorkflow`.
+message RetryPaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  RetryPaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePaymentWorkflow`.
+message PausePaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  PausePaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePaymentWorkflow`.
+message PausePaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  PausePaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePaymentWorkflow`.
+message ResumePaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  ResumePaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePaymentWorkflow`.
+message ResumePaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  ResumePaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPaymentWorkflow`.
+message InspectPaymentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPaymentWorkflow`.
+message InspectPaymentWorkflowResponse {
+  Payment payment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPaymentWorkflows`.
+message ListPaymentWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPaymentWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPaymentWorkflows`.
+message ListPaymentWorkflowsResponse {
+  repeated Payment payments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPaymentWorkflow`.
+message SignalPaymentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  SignalPaymentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPaymentWorkflow`.
+message SignalPaymentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  SignalPaymentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

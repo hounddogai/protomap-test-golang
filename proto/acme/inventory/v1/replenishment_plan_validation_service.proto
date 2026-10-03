@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReplenishmentPlanValidationServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Checks replenishment plans against the rules before anything acts on them.
+service ReplenishmentPlanValidationService {
+  // Validates a replenishment plan.
+  rpc ValidateReplenishmentPlan(ValidateReplenishmentPlanRequest) returns (ValidateReplenishmentPlanResponse);
+
+  // Previews a replenishment plan.
+  rpc PreviewReplenishmentPlan(PreviewReplenishmentPlanRequest) returns (PreviewReplenishmentPlanResponse);
+
+  // Checks a replenishment plan.
+  rpc CheckReplenishmentPlanEligibility(CheckReplenishmentPlanEligibilityRequest) returns (CheckReplenishmentPlanEligibilityResponse);
+
+  // Normalizes a replenishment plan.
+  rpc NormalizeReplenishmentPlan(NormalizeReplenishmentPlanRequest) returns (NormalizeReplenishmentPlanResponse);
+
+  // Explains a replenishment plan.
+  rpc ExplainReplenishmentPlanDecision(ExplainReplenishmentPlanDecisionRequest) returns (ExplainReplenishmentPlanDecisionResponse);
+
+  // Scores a replenishment plan.
+  rpc ScoreReplenishmentPlan(ScoreReplenishmentPlanRequest) returns (ScoreReplenishmentPlanResponse);
+
+  // Lints a replenishment plan.
+  rpc LintReplenishmentPlans(LintReplenishmentPlansRequest) returns (LintReplenishmentPlansResponse);
+
+  // Returns a replenishment plan.
+  rpc GetReplenishmentPlanRules(GetReplenishmentPlanRulesRequest) returns (GetReplenishmentPlanRulesResponse);
+}
+
+// The request of `ValidateReplenishmentPlan`.
+message ValidateReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  ValidateReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateReplenishmentPlan`.
+message ValidateReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  ValidateReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewReplenishmentPlan`.
+message PreviewReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  PreviewReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewReplenishmentPlan`.
+message PreviewReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  PreviewReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckReplenishmentPlanEligibility`.
+message CheckReplenishmentPlanEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  CheckReplenishmentPlanEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckReplenishmentPlanEligibility`.
+message CheckReplenishmentPlanEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  CheckReplenishmentPlanEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeReplenishmentPlan`.
+message NormalizeReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  NormalizeReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeReplenishmentPlan`.
+message NormalizeReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  NormalizeReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReplenishmentPlanDecision`.
+message ExplainReplenishmentPlanDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  ExplainReplenishmentPlanDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReplenishmentPlanDecision`.
+message ExplainReplenishmentPlanDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  ExplainReplenishmentPlanDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreReplenishmentPlan`.
+message ScoreReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  ScoreReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreReplenishmentPlan`.
+message ScoreReplenishmentPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreReplenishmentPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  ScoreReplenishmentPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintReplenishmentPlans`.
+message LintReplenishmentPlansRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  LintReplenishmentPlansRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintReplenishmentPlans`.
+message LintReplenishmentPlansResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  LintReplenishmentPlansResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReplenishmentPlanRules`.
+message GetReplenishmentPlanRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReplenishmentPlanRules`.
+message GetReplenishmentPlanRulesResponse {
+  ReplenishmentPlan replenishment_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "RewardLifecycleServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Moves a reward between the states of its lifecycle.
+service RewardLifecycleService {
+  // Activates a reward.
+  rpc ActivateReward(ActivateRewardRequest) returns (ActivateRewardResponse);
+
+  // Suspends a reward.
+  rpc SuspendReward(SuspendRewardRequest) returns (SuspendRewardResponse);
+
+  // Reinstates a reward.
+  rpc ReinstateReward(ReinstateRewardRequest) returns (ReinstateRewardResponse);
+
+  // Terminates a reward.
+  rpc TerminateReward(TerminateRewardRequest) returns (TerminateRewardResponse);
+
+  // Renews a reward.
+  rpc RenewReward(RenewRewardRequest) returns (RenewRewardResponse);
+
+  // Expires a reward.
+  rpc ExpireReward(ExpireRewardRequest) returns (ExpireRewardResponse);
+
+  // Returns a reward.
+  rpc GetRewardLifecycle(GetRewardLifecycleRequest) returns (GetRewardLifecycleResponse);
+
+  // Schedules a reward.
+  rpc ScheduleRewardExpiry(ScheduleRewardExpiryRequest) returns (ScheduleRewardExpiryResponse);
+}
+
+// The request of `ActivateReward`.
+message ActivateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  ActivateRewardRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateReward`.
+message ActivateRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  ActivateRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendReward`.
+message SuspendRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  SuspendRewardRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendReward`.
+message SuspendRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  SuspendRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateReward`.
+message ReinstateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  ReinstateRewardRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateReward`.
+message ReinstateRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  ReinstateRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateReward`.
+message TerminateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  TerminateRewardRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateReward`.
+message TerminateRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  TerminateRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewReward`.
+message RenewRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  RenewRewardRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewReward`.
+message RenewRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  RenewRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireReward`.
+message ExpireRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  ExpireRewardRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireReward`.
+message ExpireRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  ExpireRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRewardLifecycle`.
+message GetRewardLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRewardLifecycle`.
+message GetRewardLifecycleResponse {
+  Reward reward = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleRewardExpiry`.
+message ScheduleRewardExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  ScheduleRewardExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleRewardExpiry`.
+message ScheduleRewardExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  ScheduleRewardExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

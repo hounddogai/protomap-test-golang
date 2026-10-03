@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.workplaces.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/workplaces/v1/workplaces.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Workplaces.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/workplaces/v1;workplacesv1";
+option java_multiple_files = true;
+option java_outer_classname = "BuildingQueryServiceProto";
+option java_package = "com.acme.workplaces.v1";
+
+// Answers read-only questions about buildings, for screens and reports.
+service BuildingQueryService {
+  // Returns a building.
+  rpc LookupBuilding(LookupBuildingRequest) returns (LookupBuildingResponse);
+
+  // Lists buildings a page at a time.
+  rpc BrowseBuildings(BrowseBuildingsRequest) returns (BrowseBuildingsResponse);
+
+  // Lists buildings a page at a time.
+  rpc FindBuildings(FindBuildingsRequest) returns (FindBuildingsResponse);
+
+  // Counts buildings by status.
+  rpc CountBuildings(CountBuildingsRequest) returns (CountBuildingsResponse);
+
+  // Returns several buildings at once.
+  rpc ResolveBuildings(ResolveBuildingsRequest) returns (ResolveBuildingsResponse);
+
+  // Streams every matching building.
+  rpc ExportBuildings(ExportBuildingsRequest) returns (stream ExportBuildingsResponse);
+
+  // Summarizes a building.
+  rpc SummarizeBuildings(SummarizeBuildingsRequest) returns (SummarizeBuildingsResponse);
+
+  // Lists buildings a page at a time.
+  rpc SuggestBuildings(SuggestBuildingsRequest) returns (SuggestBuildingsResponse);
+
+  // Returns a building.
+  rpc PeekBuilding(PeekBuildingRequest) returns (PeekBuildingResponse);
+}
+
+// The request of `LookupBuilding`.
+message LookupBuildingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupBuilding`.
+message LookupBuildingResponse {
+  Building building = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseBuildings`.
+message BrowseBuildingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BuildingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseBuildingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseBuildings`.
+message BrowseBuildingsResponse {
+  repeated Building buildings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindBuildings`.
+message FindBuildingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BuildingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindBuildingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindBuildings`.
+message FindBuildingsResponse {
+  repeated Building buildings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountBuildings`.
+message CountBuildingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BuildingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountBuildingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountBuildings`.
+message CountBuildingsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveBuildings`.
+message ResolveBuildingsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string building_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveBuildings`.
+message ResolveBuildingsResponse {
+  repeated Building buildings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportBuildings`.
+message ExportBuildingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BuildingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportBuildingsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportBuildings`.
+message ExportBuildingsResponse {
+  Building building = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeBuildings`.
+message SummarizeBuildingsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  SummarizeBuildingsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeBuildings`.
+message SummarizeBuildingsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestBuildings`.
+message SuggestBuildingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BuildingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestBuildingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestBuildings`.
+message SuggestBuildingsResponse {
+  repeated Building buildings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekBuilding`.
+message PeekBuildingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekBuilding`.
+message PeekBuildingResponse {
+  Building building = 1;
+  acme.common.v1.OperationResult result = 2;
+}

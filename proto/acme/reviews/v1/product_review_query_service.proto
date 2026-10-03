@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductReviewQueryServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Answers read-only questions about product reviews, for screens and reports.
+service ProductReviewQueryService {
+  // Returns a product review.
+  rpc LookupProductReview(LookupProductReviewRequest) returns (LookupProductReviewResponse);
+
+  // Lists product reviews a page at a time.
+  rpc BrowseProductReviews(BrowseProductReviewsRequest) returns (BrowseProductReviewsResponse);
+
+  // Counts product reviews by status.
+  rpc CountProductReviews(CountProductReviewsRequest) returns (CountProductReviewsResponse);
+
+  // Returns several product reviews at once.
+  rpc ResolveProductReviews(ResolveProductReviewsRequest) returns (ResolveProductReviewsResponse);
+
+  // Streams every matching product review.
+  rpc ExportProductReviews(ExportProductReviewsRequest) returns (stream ExportProductReviewsResponse);
+
+  // Summarizes a product review.
+  rpc SummarizeProductReviews(SummarizeProductReviewsRequest) returns (SummarizeProductReviewsResponse);
+
+  // Lists product reviews a page at a time.
+  rpc SuggestProductReviews(SuggestProductReviewsRequest) returns (SuggestProductReviewsResponse);
+
+  // Returns a product review.
+  rpc PeekProductReview(PeekProductReviewRequest) returns (PeekProductReviewResponse);
+}
+
+// The request of `LookupProductReview`.
+message LookupProductReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupProductReview`.
+message LookupProductReviewResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseProductReviews`.
+message BrowseProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseProductReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseProductReviews`.
+message BrowseProductReviewsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountProductReviews`.
+message CountProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountProductReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountProductReviews`.
+message CountProductReviewsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveProductReviews`.
+message ResolveProductReviewsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string product_review_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveProductReviews`.
+message ResolveProductReviewsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportProductReviews`.
+message ExportProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportProductReviewsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportProductReviews`.
+message ExportProductReviewsResponse {
+  ProductReview product_review = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeProductReviews`.
+message SummarizeProductReviewsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  SummarizeProductReviewsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeProductReviews`.
+message SummarizeProductReviewsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestProductReviews`.
+message SuggestProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestProductReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestProductReviews`.
+message SuggestProductReviewsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekProductReview`.
+message PeekProductReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekProductReview`.
+message PeekProductReviewResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerValidationServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Checks sellers against the rules before anything acts on them.
+service SellerValidationService {
+  // Validates a seller.
+  rpc ValidateSeller(ValidateSellerRequest) returns (ValidateSellerResponse);
+
+  // Previews a seller.
+  rpc PreviewSeller(PreviewSellerRequest) returns (PreviewSellerResponse);
+
+  // Checks a seller.
+  rpc CheckSellerEligibility(CheckSellerEligibilityRequest) returns (CheckSellerEligibilityResponse);
+
+  // Normalizes a seller.
+  rpc NormalizeSeller(NormalizeSellerRequest) returns (NormalizeSellerResponse);
+
+  // Explains a seller.
+  rpc ExplainSellerDecision(ExplainSellerDecisionRequest) returns (ExplainSellerDecisionResponse);
+
+  // Scores a seller.
+  rpc ScoreSeller(ScoreSellerRequest) returns (ScoreSellerResponse);
+
+  // Lints a seller.
+  rpc LintSellers(LintSellersRequest) returns (LintSellersResponse);
+
+  // Returns a seller.
+  rpc GetSellerRules(GetSellerRulesRequest) returns (GetSellerRulesResponse);
+}
+
+// The request of `ValidateSeller`.
+message ValidateSellerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  ValidateSellerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateSeller`.
+message ValidateSellerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Seller seller = 1;
+  ValidateSellerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewSeller`.
+message PreviewSellerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  PreviewSellerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewSeller`.
+message PreviewSellerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Seller seller = 1;
+  PreviewSellerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckSellerEligibility`.
+message CheckSellerEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  CheckSellerEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckSellerEligibility`.
+message CheckSellerEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Seller seller = 1;
+  CheckSellerEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeSeller`.
+message NormalizeSellerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  NormalizeSellerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeSeller`.
+message NormalizeSellerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Seller seller = 1;
+  NormalizeSellerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSellerDecision`.
+message ExplainSellerDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  ExplainSellerDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSellerDecision`.
+message ExplainSellerDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Seller seller = 1;
+  ExplainSellerDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreSeller`.
+message ScoreSellerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  ScoreSellerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreSeller`.
+message ScoreSellerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreSellerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Seller seller = 1;
+  ScoreSellerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintSellers`.
+message LintSellersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  Seller seller = 3;
+  LintSellersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintSellers`.
+message LintSellersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Seller seller = 1;
+  LintSellersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerRules`.
+message GetSellerRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerRules`.
+message GetSellerRulesResponse {
+  Seller seller = 1;
+  acme.common.v1.OperationResult result = 2;
+}

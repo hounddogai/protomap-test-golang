@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "UserQueryServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Answers read-only questions about users, for screens and reports.
+service UserQueryService {
+  // Returns a user.
+  rpc LookupUser(LookupUserRequest) returns (LookupUserResponse);
+
+  // Lists users a page at a time.
+  rpc BrowseUsers(BrowseUsersRequest) returns (BrowseUsersResponse);
+
+  // Lists users a page at a time.
+  rpc FindUsers(FindUsersRequest) returns (FindUsersResponse);
+
+  // Counts users by status.
+  rpc CountUsers(CountUsersRequest) returns (CountUsersResponse);
+
+  // Returns several users at once.
+  rpc ResolveUsers(ResolveUsersRequest) returns (ResolveUsersResponse);
+
+  // Streams every matching user.
+  rpc ExportUsers(ExportUsersRequest) returns (stream ExportUsersResponse);
+
+  // Lists users a page at a time.
+  rpc SuggestUsers(SuggestUsersRequest) returns (SuggestUsersResponse);
+
+  // Returns a user.
+  rpc PeekUser(PeekUserRequest) returns (PeekUserResponse);
+}
+
+// The request of `LookupUser`.
+message LookupUserRequest {
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupUser`.
+message LookupUserResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseUsers`.
+message BrowseUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseUsersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseUsers`.
+message BrowseUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindUsers`.
+message FindUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindUsersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindUsers`.
+message FindUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountUsers`.
+message CountUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountUsersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountUsers`.
+message CountUsersResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveUsers`.
+message ResolveUsersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string user_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveUsers`.
+message ResolveUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportUsers`.
+message ExportUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportUsersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportUsers`.
+message ExportUsersResponse {
+  User user = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestUsers`.
+message SuggestUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestUsersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestUsers`.
+message SuggestUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekUser`.
+message PeekUserRequest {
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekUser`.
+message PeekUserResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}

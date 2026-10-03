@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fanportal.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fanportal/v1/fanportal.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fanportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fanportal/v1;fanportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "FanSessionServiceProto";
+option java_package = "com.acme.fanportal.v1";
+
+// Manages fan sessions: creates, reads, changes, and lists them.
+service FanSessionService {
+  // Creates a fan session.
+  rpc CreateFanSession(CreateFanSessionRequest) returns (CreateFanSessionResponse);
+
+  // Returns a fan session.
+  rpc GetFanSession(GetFanSessionRequest) returns (GetFanSessionResponse);
+
+  // Changes a fan session.
+  rpc UpdateFanSession(UpdateFanSessionRequest) returns (UpdateFanSessionResponse);
+
+  // Deletes a fan session.
+  rpc DeleteFanSession(DeleteFanSessionRequest) returns (DeleteFanSessionResponse);
+
+  // Lists fan sessions a page at a time.
+  rpc ListFanSessions(ListFanSessionsRequest) returns (ListFanSessionsResponse);
+
+  // Lists fan sessions a page at a time.
+  rpc SearchFanSessions(SearchFanSessionsRequest) returns (SearchFanSessionsResponse);
+
+  // Streams the changes of fan sessions as they happen.
+  rpc WatchFanSessions(WatchFanSessionsRequest) returns (stream WatchFanSessionsResponse);
+
+  // Takes a stream of fan sessions and answers once at the end.
+  rpc BatchCreateFanSessions(stream BatchCreateFanSessionsRequest) returns (BatchCreateFanSessionsResponse);
+}
+
+// The request of `CreateFanSession`.
+message CreateFanSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  FanSession fan_session = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateFanSession`.
+message CreateFanSessionResponse {
+  FanSession fan_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetFanSession`.
+message GetFanSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fan_session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFanSession`.
+message GetFanSessionResponse {
+  FanSession fan_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateFanSession`.
+message UpdateFanSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  FanSession fan_session = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateFanSession`.
+message UpdateFanSessionResponse {
+  FanSession fan_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteFanSession`.
+message DeleteFanSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fan_session_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteFanSession`.
+message DeleteFanSessionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListFanSessions`.
+message ListFanSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FanSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFanSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFanSessions`.
+message ListFanSessionsResponse {
+  repeated FanSession fan_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchFanSessions`.
+message SearchFanSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FanSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchFanSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchFanSessions`.
+message SearchFanSessionsResponse {
+  repeated FanSession fan_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchFanSessions`.
+message WatchFanSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FanSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchFanSessionsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchFanSessions`.
+message WatchFanSessionsResponse {
+  FanSession fan_session = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateFanSessions`.
+message BatchCreateFanSessionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateFanSessionsRequest.StreamHeader header = 2;
+    FanSession record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateFanSessions`.
+message BatchCreateFanSessionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string fan_session_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateFanSessionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

@@ -1,0 +1,158 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerWebhookQueryServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Answers read-only questions about partner webhooks, for screens and reports.
+service PartnerWebhookQueryService {
+  // Returns a partner webhook.
+  rpc LookupPartnerWebhook(LookupPartnerWebhookRequest) returns (LookupPartnerWebhookResponse);
+
+  // Lists partner webhooks a page at a time.
+  rpc BrowsePartnerWebhooks(BrowsePartnerWebhooksRequest) returns (BrowsePartnerWebhooksResponse);
+
+  // Returns several partner webhooks at once.
+  rpc ResolvePartnerWebhooks(ResolvePartnerWebhooksRequest) returns (ResolvePartnerWebhooksResponse);
+
+  // Streams every matching partner webhook.
+  rpc ExportPartnerWebhooks(ExportPartnerWebhooksRequest) returns (stream ExportPartnerWebhooksResponse);
+
+  // Lists partner webhooks a page at a time.
+  rpc SuggestPartnerWebhooks(SuggestPartnerWebhooksRequest) returns (SuggestPartnerWebhooksResponse);
+
+  // Returns a partner webhook.
+  rpc PeekPartnerWebhook(PeekPartnerWebhookRequest) returns (PeekPartnerWebhookResponse);
+}
+
+// The request of `LookupPartnerWebhook`.
+message LookupPartnerWebhookRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPartnerWebhook`.
+message LookupPartnerWebhookResponse {
+  PartnerWebhook partner_webhook = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePartnerWebhooks`.
+message BrowsePartnerWebhooksRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerWebhookStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePartnerWebhooksRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePartnerWebhooks`.
+message BrowsePartnerWebhooksResponse {
+  repeated PartnerWebhook partner_webhooks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolvePartnerWebhooks`.
+message ResolvePartnerWebhooksRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string partner_webhook_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolvePartnerWebhooks`.
+message ResolvePartnerWebhooksResponse {
+  repeated PartnerWebhook partner_webhooks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportPartnerWebhooks`.
+message ExportPartnerWebhooksRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerWebhookStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportPartnerWebhooksRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportPartnerWebhooks`.
+message ExportPartnerWebhooksResponse {
+  PartnerWebhook partner_webhook = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestPartnerWebhooks`.
+message SuggestPartnerWebhooksRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerWebhookStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestPartnerWebhooksRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestPartnerWebhooks`.
+message SuggestPartnerWebhooksResponse {
+  repeated PartnerWebhook partner_webhooks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekPartnerWebhook`.
+message PeekPartnerWebhookRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekPartnerWebhook`.
+message PeekPartnerWebhookResponse {
+  PartnerWebhook partner_webhook = 1;
+  acme.common.v1.OperationResult result = 2;
+}

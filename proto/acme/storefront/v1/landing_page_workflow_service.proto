@@ -1,0 +1,317 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "LandingPageWorkflowServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Runs the long-lived workflow that takes a landing page from start to finish.
+service LandingPageWorkflowService {
+  // Starts a landing page.
+  rpc StartLandingPageWorkflow(StartLandingPageWorkflowRequest) returns (StartLandingPageWorkflowResponse);
+
+  // Advances a landing page.
+  rpc AdvanceLandingPageWorkflow(AdvanceLandingPageWorkflowRequest) returns (AdvanceLandingPageWorkflowResponse);
+
+  // Cancels a landing page.
+  rpc CancelLandingPageWorkflow(CancelLandingPageWorkflowRequest) returns (CancelLandingPageWorkflowResponse);
+
+  // Retrys a landing page.
+  rpc RetryLandingPageWorkflow(RetryLandingPageWorkflowRequest) returns (RetryLandingPageWorkflowResponse);
+
+  // Pauses a landing page.
+  rpc PauseLandingPageWorkflow(PauseLandingPageWorkflowRequest) returns (PauseLandingPageWorkflowResponse);
+
+  // Resumes a landing page.
+  rpc ResumeLandingPageWorkflow(ResumeLandingPageWorkflowRequest) returns (ResumeLandingPageWorkflowResponse);
+
+  // Lists landing pages a page at a time.
+  rpc ListLandingPageWorkflows(ListLandingPageWorkflowsRequest) returns (ListLandingPageWorkflowsResponse);
+
+  // Signals a landing page.
+  rpc SignalLandingPageWorkflow(SignalLandingPageWorkflowRequest) returns (SignalLandingPageWorkflowResponse);
+}
+
+// The request of `StartLandingPageWorkflow`.
+message StartLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  StartLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartLandingPageWorkflow`.
+message StartLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  StartLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceLandingPageWorkflow`.
+message AdvanceLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  AdvanceLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceLandingPageWorkflow`.
+message AdvanceLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  AdvanceLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelLandingPageWorkflow`.
+message CancelLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  CancelLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelLandingPageWorkflow`.
+message CancelLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  CancelLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryLandingPageWorkflow`.
+message RetryLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  RetryLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryLandingPageWorkflow`.
+message RetryLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  RetryLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseLandingPageWorkflow`.
+message PauseLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  PauseLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseLandingPageWorkflow`.
+message PauseLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  PauseLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeLandingPageWorkflow`.
+message ResumeLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  ResumeLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeLandingPageWorkflow`.
+message ResumeLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  ResumeLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListLandingPageWorkflows`.
+message ListLandingPageWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LandingPageStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListLandingPageWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListLandingPageWorkflows`.
+message ListLandingPageWorkflowsResponse {
+  repeated LandingPage landing_pages = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalLandingPageWorkflow`.
+message SignalLandingPageWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  LandingPage landing_page = 3;
+  SignalLandingPageWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalLandingPageWorkflow`.
+message SignalLandingPageWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  SignalLandingPageWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

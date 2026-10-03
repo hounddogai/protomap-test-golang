@@ -1,0 +1,166 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.campaigns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Campaigns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/campaigns/v1;campaignsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CampaignsProto";
+option java_package = "com.acme.campaigns.v1";
+
+// Where a marketing campaign is in its lifecycle.
+enum MarketingCampaignStatus {
+  MARKETING_CAMPAIGN_STATUS_UNSPECIFIED = 0;
+  MARKETING_CAMPAIGN_STATUS_TENTATIVE = 1;
+  MARKETING_CAMPAIGN_STATUS_CONFIRMED = 2;
+  MARKETING_CAMPAIGN_STATUS_CANCELLED = 3;
+  MARKETING_CAMPAIGN_STATUS_COMPLETED = 4;
+}
+
+// Where a campaign asset is in its lifecycle.
+enum CampaignAssetStatus {
+  CAMPAIGN_ASSET_STATUS_UNSPECIFIED = 0;
+  CAMPAIGN_ASSET_STATUS_PLANNED = 1;
+  CAMPAIGN_ASSET_STATUS_AVAILABLE = 2;
+  CAMPAIGN_ASSET_STATUS_RESERVED = 3;
+  CAMPAIGN_ASSET_STATUS_RETIRED = 4;
+}
+
+// Where a campaign budget is in its lifecycle.
+enum CampaignBudgetStatus {
+  CAMPAIGN_BUDGET_STATUS_UNSPECIFIED = 0;
+  CAMPAIGN_BUDGET_STATUS_PENDING = 1;
+  CAMPAIGN_BUDGET_STATUS_OPEN = 2;
+  CAMPAIGN_BUDGET_STATUS_FROZEN = 3;
+  CAMPAIGN_BUDGET_STATUS_CLOSED = 4;
+}
+
+// The participant of a marketing campaign.
+message MarketingCampaignParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a marketing campaign.
+message MarketingCampaignDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a marketing campaign.
+message MarketingCampaignWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A marketing campaign of the campaigns domain.
+message MarketingCampaign {
+  string marketing_campaign_id = 1;
+  string title = 2;
+  MarketingCampaignStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated MarketingCampaignParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    MarketingCampaignDailyRule daily = 7;
+    MarketingCampaignWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The dimensions of a campaign asset.
+message CampaignAssetDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a campaign asset.
+message CampaignAssetComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A campaign asset of the campaigns domain.
+message CampaignAsset {
+  string campaign_asset_id = 1;
+  string code = 2;
+  string name = 3;
+  CampaignAssetStatus status = 4;
+  repeated string category_path = 5;
+  CampaignAssetDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, CampaignAssetComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The limit of a campaign budget.
+message CampaignBudgetLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a campaign budget.
+message CampaignBudgetCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a campaign budget.
+message CampaignBudgetBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A campaign budget of the campaigns domain.
+message CampaignBudget {
+  string campaign_budget_id = 1;
+  acme.customers.v1.CustomerRef holder = 2;
+  CampaignBudgetStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated CampaignBudgetLimit limits = 7;
+  oneof funding {
+    CampaignBudgetCardFunding card = 8;
+    CampaignBudgetBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}

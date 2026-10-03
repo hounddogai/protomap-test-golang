@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telematics.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/telematics/v1/telematics.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telematics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telematics/v1;telematicsv1";
+option java_multiple_files = true;
+option java_outer_classname = "TelemetryReadingQueryServiceProto";
+option java_package = "com.acme.telematics.v1";
+
+// Answers read-only questions about telemetry readings, for screens and reports.
+service TelemetryReadingQueryService {
+  // Returns a telemetry reading.
+  rpc LookupTelemetryReading(LookupTelemetryReadingRequest) returns (LookupTelemetryReadingResponse);
+
+  // Lists telemetry readings a page at a time.
+  rpc BrowseTelemetryReadings(BrowseTelemetryReadingsRequest) returns (BrowseTelemetryReadingsResponse);
+
+  // Lists telemetry readings a page at a time.
+  rpc FindTelemetryReadings(FindTelemetryReadingsRequest) returns (FindTelemetryReadingsResponse);
+
+  // Counts telemetry readings by status.
+  rpc CountTelemetryReadings(CountTelemetryReadingsRequest) returns (CountTelemetryReadingsResponse);
+
+  // Returns several telemetry readings at once.
+  rpc ResolveTelemetryReadings(ResolveTelemetryReadingsRequest) returns (ResolveTelemetryReadingsResponse);
+
+  // Streams every matching telemetry reading.
+  rpc ExportTelemetryReadings(ExportTelemetryReadingsRequest) returns (stream ExportTelemetryReadingsResponse);
+
+  // Summarizes a telemetry reading.
+  rpc SummarizeTelemetryReadings(SummarizeTelemetryReadingsRequest) returns (SummarizeTelemetryReadingsResponse);
+
+  // Lists telemetry readings a page at a time.
+  rpc SuggestTelemetryReadings(SuggestTelemetryReadingsRequest) returns (SuggestTelemetryReadingsResponse);
+
+  // Returns a telemetry reading.
+  rpc PeekTelemetryReading(PeekTelemetryReadingRequest) returns (PeekTelemetryReadingResponse);
+}
+
+// The request of `LookupTelemetryReading`.
+message LookupTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string telemetry_reading_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupTelemetryReading`.
+message LookupTelemetryReadingResponse {
+  TelemetryReading telemetry_reading = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseTelemetryReadings`.
+message BrowseTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseTelemetryReadingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseTelemetryReadings`.
+message BrowseTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindTelemetryReadings`.
+message FindTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindTelemetryReadingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindTelemetryReadings`.
+message FindTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountTelemetryReadings`.
+message CountTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountTelemetryReadingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountTelemetryReadings`.
+message CountTelemetryReadingsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveTelemetryReadings`.
+message ResolveTelemetryReadingsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string telemetry_reading_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveTelemetryReadings`.
+message ResolveTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportTelemetryReadings`.
+message ExportTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportTelemetryReadingsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportTelemetryReadings`.
+message ExportTelemetryReadingsResponse {
+  TelemetryReading telemetry_reading = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeTelemetryReadings`.
+message SummarizeTelemetryReadingsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string telemetry_reading_id = 2;
+  SummarizeTelemetryReadingsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeTelemetryReadings`.
+message SummarizeTelemetryReadingsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestTelemetryReadings`.
+message SuggestTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestTelemetryReadingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestTelemetryReadings`.
+message SuggestTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekTelemetryReading`.
+message PeekTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string telemetry_reading_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekTelemetryReading`.
+message PeekTelemetryReadingResponse {
+  TelemetryReading telemetry_reading = 1;
+  acme.common.v1.OperationResult result = 2;
+}

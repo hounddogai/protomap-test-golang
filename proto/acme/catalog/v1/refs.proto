@@ -1,0 +1,47 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.catalog.v1";
+
+// A reference to a product of the catalog domain.
+message ProductRef {
+  string product_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a category of the catalog domain.
+message CategoryRef {
+  string category_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a product variant of the catalog domain.
+message ProductVariantRef {
+  string product_variant_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a brand of the catalog domain.
+message BrandRef {
+  string brand_id = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+// A reference to an attribute of the catalog domain.
+message AttributeRef {
+  string attribute_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

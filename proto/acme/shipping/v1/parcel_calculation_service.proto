@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ParcelCalculationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Computes the figures of a parcel, such as totals, taxes, and estimates.
+service ParcelCalculationService {
+  // Calculates a parcel.
+  rpc CalculateParcel(CalculateParcelRequest) returns (CalculateParcelResponse);
+
+  // Estimates a parcel.
+  rpc EstimateParcel(EstimateParcelRequest) returns (EstimateParcelResponse);
+
+  // Quotes a parcel.
+  rpc QuoteParcel(QuoteParcelRequest) returns (QuoteParcelResponse);
+
+  // Compares a parcel.
+  rpc CompareParcelOptions(CompareParcelOptionsRequest) returns (CompareParcelOptionsResponse);
+
+  // Recalculates a parcel.
+  rpc RecalculateParcels(RecalculateParcelsRequest) returns (RecalculateParcelsResponse);
+
+  // Simulates a parcel.
+  rpc SimulateParcel(SimulateParcelRequest) returns (SimulateParcelResponse);
+
+  // Explains a parcel.
+  rpc ExplainParcelCalculation(ExplainParcelCalculationRequest) returns (ExplainParcelCalculationResponse);
+
+  // Returns a parcel.
+  rpc GetParcelRates(GetParcelRatesRequest) returns (GetParcelRatesResponse);
+}
+
+// The request of `CalculateParcel`.
+message CalculateParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  CalculateParcelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateParcel`.
+message CalculateParcelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateParcelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Parcel parcel = 1;
+  CalculateParcelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateParcel`.
+message EstimateParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  EstimateParcelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateParcel`.
+message EstimateParcelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateParcelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Parcel parcel = 1;
+  EstimateParcelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteParcel`.
+message QuoteParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  QuoteParcelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteParcel`.
+message QuoteParcelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteParcelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Parcel parcel = 1;
+  QuoteParcelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareParcelOptions`.
+message CompareParcelOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  CompareParcelOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareParcelOptions`.
+message CompareParcelOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareParcelOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Parcel parcel = 1;
+  CompareParcelOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateParcels`.
+message RecalculateParcelsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  RecalculateParcelsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateParcels`.
+message RecalculateParcelsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateParcelsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Parcel parcel = 1;
+  RecalculateParcelsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateParcel`.
+message SimulateParcelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  SimulateParcelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateParcel`.
+message SimulateParcelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateParcelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Parcel parcel = 1;
+  SimulateParcelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainParcelCalculation`.
+message ExplainParcelCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  ExplainParcelCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainParcelCalculation`.
+message ExplainParcelCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  ExplainParcelCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetParcelRates`.
+message GetParcelRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetParcelRates`.
+message GetParcelRatesResponse {
+  Parcel parcel = 1;
+  acme.common.v1.OperationResult result = 2;
+}

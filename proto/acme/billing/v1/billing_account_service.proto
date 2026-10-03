@@ -1,0 +1,171 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.billing.v1;
+
+import "acme/billing/v1/billing.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Billing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/billing/v1;billingv1";
+option java_multiple_files = true;
+option java_outer_classname = "BillingAccountServiceProto";
+option java_package = "com.acme.billing.v1";
+
+// Manages billing accounts: creates, reads, changes, and lists them.
+service BillingAccountService {
+  // Creates a billing account.
+  rpc CreateBillingAccount(CreateBillingAccountRequest) returns (CreateBillingAccountResponse);
+
+  // Returns a billing account.
+  rpc GetBillingAccount(GetBillingAccountRequest) returns (GetBillingAccountResponse);
+
+  // Changes a billing account.
+  rpc UpdateBillingAccount(UpdateBillingAccountRequest) returns (UpdateBillingAccountResponse);
+
+  // Lists billing accounts a page at a time.
+  rpc ListBillingAccounts(ListBillingAccountsRequest) returns (ListBillingAccountsResponse);
+
+  // Returns several billing accounts at once.
+  rpc BatchGetBillingAccounts(BatchGetBillingAccountsRequest) returns (BatchGetBillingAccountsResponse);
+
+  // Takes a stream of billing accounts and answers once at the end.
+  rpc BatchCreateBillingAccounts(stream BatchCreateBillingAccountsRequest) returns (BatchCreateBillingAccountsResponse);
+
+  // Creates a billing account.
+  rpc CloneBillingAccount(CloneBillingAccountRequest) returns (CloneBillingAccountResponse);
+}
+
+// The request of `CreateBillingAccount`.
+message CreateBillingAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  BillingAccount billing_account = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateBillingAccount`.
+message CreateBillingAccountResponse {
+  BillingAccount billing_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetBillingAccount`.
+message GetBillingAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  string billing_account_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBillingAccount`.
+message GetBillingAccountResponse {
+  BillingAccount billing_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateBillingAccount`.
+message UpdateBillingAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  BillingAccount billing_account = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateBillingAccount`.
+message UpdateBillingAccountResponse {
+  BillingAccount billing_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListBillingAccounts`.
+message ListBillingAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BillingAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListBillingAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListBillingAccounts`.
+message ListBillingAccountsResponse {
+  repeated BillingAccount billing_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetBillingAccounts`.
+message BatchGetBillingAccountsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string billing_account_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetBillingAccounts`.
+message BatchGetBillingAccountsResponse {
+  repeated BillingAccount billing_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateBillingAccounts`.
+message BatchCreateBillingAccountsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateBillingAccountsRequest.StreamHeader header = 2;
+    BillingAccount record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateBillingAccounts`.
+message BatchCreateBillingAccountsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string billing_account_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateBillingAccountsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneBillingAccount`.
+message CloneBillingAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  BillingAccount billing_account = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneBillingAccount`.
+message CloneBillingAccountResponse {
+  BillingAccount billing_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}

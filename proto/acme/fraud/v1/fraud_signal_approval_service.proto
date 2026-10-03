@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudSignalApprovalServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Routes fraud signals through approval, with escalation and delegation.
+service FraudSignalApprovalService {
+  // Submits a fraud signal.
+  rpc SubmitFraudSignal(SubmitFraudSignalRequest) returns (SubmitFraudSignalResponse);
+
+  // Approves a fraud signal.
+  rpc ApproveFraudSignal(ApproveFraudSignalRequest) returns (ApproveFraudSignalResponse);
+
+  // Rejects a fraud signal.
+  rpc RejectFraudSignal(RejectFraudSignalRequest) returns (RejectFraudSignalResponse);
+
+  // Escalates a fraud signal.
+  rpc EscalateFraudSignal(EscalateFraudSignalRequest) returns (EscalateFraudSignalResponse);
+
+  // Lists fraud signals a page at a time.
+  rpc ListPendingFraudSignals(ListPendingFraudSignalsRequest) returns (ListPendingFraudSignalsResponse);
+
+  // Recalls a fraud signal.
+  rpc RecallFraudSignal(RecallFraudSignalRequest) returns (RecallFraudSignalResponse);
+
+  // Returns a fraud signal.
+  rpc GetFraudSignalApprovalStatus(GetFraudSignalApprovalStatusRequest) returns (GetFraudSignalApprovalStatusResponse);
+
+  // Comments a fraud signal.
+  rpc CommentFraudSignalApproval(CommentFraudSignalApprovalRequest) returns (CommentFraudSignalApprovalResponse);
+}
+
+// The request of `SubmitFraudSignal`.
+message SubmitFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  SubmitFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitFraudSignal`.
+message SubmitFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  SubmitFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveFraudSignal`.
+message ApproveFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  ApproveFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveFraudSignal`.
+message ApproveFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  ApproveFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectFraudSignal`.
+message RejectFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  RejectFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectFraudSignal`.
+message RejectFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  RejectFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateFraudSignal`.
+message EscalateFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  EscalateFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateFraudSignal`.
+message EscalateFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  EscalateFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingFraudSignals`.
+message ListPendingFraudSignalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudSignalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingFraudSignalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingFraudSignals`.
+message ListPendingFraudSignalsResponse {
+  repeated FraudSignal fraud_signals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallFraudSignal`.
+message RecallFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  RecallFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallFraudSignal`.
+message RecallFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  RecallFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFraudSignalApprovalStatus`.
+message GetFraudSignalApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFraudSignalApprovalStatus`.
+message GetFraudSignalApprovalStatusResponse {
+  FraudSignal fraud_signal = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentFraudSignalApproval`.
+message CommentFraudSignalApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  CommentFraudSignalApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentFraudSignalApproval`.
+message CommentFraudSignalApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  CommentFraudSignalApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

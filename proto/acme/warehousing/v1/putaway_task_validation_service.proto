@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PutawayTaskValidationServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Checks putaway tasks against the rules before anything acts on them.
+service PutawayTaskValidationService {
+  // Validates a putaway task.
+  rpc ValidatePutawayTask(ValidatePutawayTaskRequest) returns (ValidatePutawayTaskResponse);
+
+  // Previews a putaway task.
+  rpc PreviewPutawayTask(PreviewPutawayTaskRequest) returns (PreviewPutawayTaskResponse);
+
+  // Checks a putaway task.
+  rpc CheckPutawayTaskEligibility(CheckPutawayTaskEligibilityRequest) returns (CheckPutawayTaskEligibilityResponse);
+
+  // Normalizes a putaway task.
+  rpc NormalizePutawayTask(NormalizePutawayTaskRequest) returns (NormalizePutawayTaskResponse);
+
+  // Explains a putaway task.
+  rpc ExplainPutawayTaskDecision(ExplainPutawayTaskDecisionRequest) returns (ExplainPutawayTaskDecisionResponse);
+
+  // Scores a putaway task.
+  rpc ScorePutawayTask(ScorePutawayTaskRequest) returns (ScorePutawayTaskResponse);
+
+  // Returns a putaway task.
+  rpc GetPutawayTaskRules(GetPutawayTaskRulesRequest) returns (GetPutawayTaskRulesResponse);
+}
+
+// The request of `ValidatePutawayTask`.
+message ValidatePutawayTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  PutawayTask putaway_task = 3;
+  ValidatePutawayTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePutawayTask`.
+message ValidatePutawayTaskResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PutawayTask putaway_task = 1;
+  ValidatePutawayTaskResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPutawayTask`.
+message PreviewPutawayTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  PutawayTask putaway_task = 3;
+  PreviewPutawayTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPutawayTask`.
+message PreviewPutawayTaskResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PutawayTask putaway_task = 1;
+  PreviewPutawayTaskResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPutawayTaskEligibility`.
+message CheckPutawayTaskEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  PutawayTask putaway_task = 3;
+  CheckPutawayTaskEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPutawayTaskEligibility`.
+message CheckPutawayTaskEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PutawayTask putaway_task = 1;
+  CheckPutawayTaskEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePutawayTask`.
+message NormalizePutawayTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  PutawayTask putaway_task = 3;
+  NormalizePutawayTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePutawayTask`.
+message NormalizePutawayTaskResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PutawayTask putaway_task = 1;
+  NormalizePutawayTaskResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPutawayTaskDecision`.
+message ExplainPutawayTaskDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  PutawayTask putaway_task = 3;
+  ExplainPutawayTaskDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPutawayTaskDecision`.
+message ExplainPutawayTaskDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PutawayTask putaway_task = 1;
+  ExplainPutawayTaskDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePutawayTask`.
+message ScorePutawayTaskRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  PutawayTask putaway_task = 3;
+  ScorePutawayTaskRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePutawayTask`.
+message ScorePutawayTaskResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePutawayTaskResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PutawayTask putaway_task = 1;
+  ScorePutawayTaskResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPutawayTaskRules`.
+message GetPutawayTaskRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string putaway_task_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPutawayTaskRules`.
+message GetPutawayTaskRulesResponse {
+  PutawayTask putaway_task = 1;
+  acme.common.v1.OperationResult result = 2;
+}

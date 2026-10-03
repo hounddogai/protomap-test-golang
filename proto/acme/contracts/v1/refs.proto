@@ -1,0 +1,42 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.contracts.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Contracts.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/contracts/v1;contractsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.contracts.v1";
+
+// A reference to a contract of the contracts domain.
+message ContractRef {
+  string contract_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a contract clause of the contracts domain.
+message ContractClauseRef {
+  string contract_clause_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a renewal of the contracts domain.
+message RenewalRef {
+  string renewal_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to an obligation of the contracts domain.
+message ObligationRef {
+  string obligation_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

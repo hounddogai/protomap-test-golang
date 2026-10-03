@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.edgegateway.v1;
+
+option csharp_namespace = "Acme.Edgegateway.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/edgegateway/v1;edgegatewayv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.edgegateway.v1";
+
+// A reference to a route binding of the edgegateway domain.
+message RouteBindingRef {
+  string route_binding_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to an api key of the edgegateway domain.
+message ApiKeyRef {
+  string api_key_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a gateway policy of the edgegateway domain.
+message GatewayPolicyRef {
+  string gateway_policy_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

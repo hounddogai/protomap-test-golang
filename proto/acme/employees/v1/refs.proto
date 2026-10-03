@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.employees.v1;
+
+option csharp_namespace = "Acme.Employees.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/employees/v1;employeesv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.employees.v1";
+
+// A reference to an employee of the employees domain.
+message EmployeeRef {
+  string employee_id = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+// A reference to an org unit of the employees domain.
+message OrgUnitRef {
+  string org_unit_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a position of the employees domain.
+message PositionRef {
+  string position_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to an employment contract of the employees domain.
+message EmploymentContractRef {
+  string employment_contract_id = 1;
+  string display_name = 2;
+  string number = 3;
+}

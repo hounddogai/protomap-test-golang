@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "BackorderApprovalServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Routes backorders through approval, with escalation and delegation.
+service BackorderApprovalService {
+  // Submits a backorder.
+  rpc SubmitBackorder(SubmitBackorderRequest) returns (SubmitBackorderResponse);
+
+  // Approves a backorder.
+  rpc ApproveBackorder(ApproveBackorderRequest) returns (ApproveBackorderResponse);
+
+  // Rejects a backorder.
+  rpc RejectBackorder(RejectBackorderRequest) returns (RejectBackorderResponse);
+
+  // Escalates a backorder.
+  rpc EscalateBackorder(EscalateBackorderRequest) returns (EscalateBackorderResponse);
+
+  // Lists backorders a page at a time.
+  rpc ListPendingBackorders(ListPendingBackordersRequest) returns (ListPendingBackordersResponse);
+
+  // Delegates a backorder.
+  rpc DelegateBackorderApproval(DelegateBackorderApprovalRequest) returns (DelegateBackorderApprovalResponse);
+
+  // Returns a backorder.
+  rpc GetBackorderApprovalStatus(GetBackorderApprovalStatusRequest) returns (GetBackorderApprovalStatusResponse);
+
+  // Comments a backorder.
+  rpc CommentBackorderApproval(CommentBackorderApprovalRequest) returns (CommentBackorderApprovalResponse);
+}
+
+// The request of `SubmitBackorder`.
+message SubmitBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  SubmitBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitBackorder`.
+message SubmitBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  SubmitBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveBackorder`.
+message ApproveBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ApproveBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveBackorder`.
+message ApproveBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ApproveBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectBackorder`.
+message RejectBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  RejectBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectBackorder`.
+message RejectBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  RejectBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateBackorder`.
+message EscalateBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  EscalateBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateBackorder`.
+message EscalateBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  EscalateBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingBackorders`.
+message ListPendingBackordersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BackorderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingBackordersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingBackorders`.
+message ListPendingBackordersResponse {
+  repeated Backorder backorders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateBackorderApproval`.
+message DelegateBackorderApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  DelegateBackorderApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateBackorderApproval`.
+message DelegateBackorderApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  DelegateBackorderApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBackorderApprovalStatus`.
+message GetBackorderApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBackorderApprovalStatus`.
+message GetBackorderApprovalStatusResponse {
+  Backorder backorder = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentBackorderApproval`.
+message CommentBackorderApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  CommentBackorderApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentBackorderApproval`.
+message CommentBackorderApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  CommentBackorderApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

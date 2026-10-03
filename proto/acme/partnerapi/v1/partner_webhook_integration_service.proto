@@ -1,0 +1,234 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerWebhookIntegrationServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Connects external systems that send partner webhook events.
+service PartnerWebhookIntegrationService {
+  // Connects a partner webhook.
+  rpc ConnectPartnerWebhookSource(ConnectPartnerWebhookSourceRequest) returns (ConnectPartnerWebhookSourceResponse);
+
+  // Disconnects a partner webhook.
+  rpc DisconnectPartnerWebhookSource(DisconnectPartnerWebhookSourceRequest) returns (DisconnectPartnerWebhookSourceResponse);
+
+  // Takes a stream of partner webhooks and answers once at the end.
+  rpc IngestPartnerWebhookEvents(stream IngestPartnerWebhookEventsRequest) returns (IngestPartnerWebhookEventsResponse);
+
+  // Replays a partner webhook.
+  rpc ReplayPartnerWebhookEvents(ReplayPartnerWebhookEventsRequest) returns (ReplayPartnerWebhookEventsResponse);
+
+  // Exchanges changes of partner webhooks with a peer.
+  rpc RelayPartnerWebhookMessages(stream RelayPartnerWebhookMessagesRequest) returns (stream RelayPartnerWebhookMessagesResponse);
+
+  // Tests a partner webhook.
+  rpc TestPartnerWebhookConnection(TestPartnerWebhookConnectionRequest) returns (TestPartnerWebhookConnectionResponse);
+}
+
+// The request of `ConnectPartnerWebhookSource`.
+message ConnectPartnerWebhookSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  ConnectPartnerWebhookSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ConnectPartnerWebhookSource`.
+message ConnectPartnerWebhookSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  ConnectPartnerWebhookSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DisconnectPartnerWebhookSource`.
+message DisconnectPartnerWebhookSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  DisconnectPartnerWebhookSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `DisconnectPartnerWebhookSource`.
+message DisconnectPartnerWebhookSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  DisconnectPartnerWebhookSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `IngestPartnerWebhookEvents`.
+message IngestPartnerWebhookEventsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    IngestPartnerWebhookEventsRequest.StreamHeader header = 2;
+    PartnerWebhook record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `IngestPartnerWebhookEvents`.
+message IngestPartnerWebhookEventsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string partner_webhook_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated IngestPartnerWebhookEventsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ReplayPartnerWebhookEvents`.
+message ReplayPartnerWebhookEventsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  ReplayPartnerWebhookEventsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReplayPartnerWebhookEvents`.
+message ReplayPartnerWebhookEventsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  ReplayPartnerWebhookEventsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RelayPartnerWebhookMessages`.
+message RelayPartnerWebhookMessagesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    PartnerWebhook change = 2;
+    RelayPartnerWebhookMessagesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `RelayPartnerWebhookMessages`.
+message RelayPartnerWebhookMessagesResponse {
+  PartnerWebhook partner_webhook = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `TestPartnerWebhookConnection`.
+message TestPartnerWebhookConnectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  TestPartnerWebhookConnectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TestPartnerWebhookConnection`.
+message TestPartnerWebhookConnectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  TestPartnerWebhookConnectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

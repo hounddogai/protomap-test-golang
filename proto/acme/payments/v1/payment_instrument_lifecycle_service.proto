@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentInstrumentLifecycleServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Moves a payment instrument between the states of its lifecycle.
+service PaymentInstrumentLifecycleService {
+  // Activates a payment instrument.
+  rpc ActivatePaymentInstrument(ActivatePaymentInstrumentRequest) returns (ActivatePaymentInstrumentResponse);
+
+  // Suspends a payment instrument.
+  rpc SuspendPaymentInstrument(SuspendPaymentInstrumentRequest) returns (SuspendPaymentInstrumentResponse);
+
+  // Reinstates a payment instrument.
+  rpc ReinstatePaymentInstrument(ReinstatePaymentInstrumentRequest) returns (ReinstatePaymentInstrumentResponse);
+
+  // Terminates a payment instrument.
+  rpc TerminatePaymentInstrument(TerminatePaymentInstrumentRequest) returns (TerminatePaymentInstrumentResponse);
+
+  // Renews a payment instrument.
+  rpc RenewPaymentInstrument(RenewPaymentInstrumentRequest) returns (RenewPaymentInstrumentResponse);
+
+  // Expires a payment instrument.
+  rpc ExpirePaymentInstrument(ExpirePaymentInstrumentRequest) returns (ExpirePaymentInstrumentResponse);
+
+  // Returns a payment instrument.
+  rpc GetPaymentInstrumentLifecycle(GetPaymentInstrumentLifecycleRequest) returns (GetPaymentInstrumentLifecycleResponse);
+
+  // Schedules a payment instrument.
+  rpc SchedulePaymentInstrumentExpiry(SchedulePaymentInstrumentExpiryRequest) returns (SchedulePaymentInstrumentExpiryResponse);
+}
+
+// The request of `ActivatePaymentInstrument`.
+message ActivatePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  ActivatePaymentInstrumentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivatePaymentInstrument`.
+message ActivatePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ActivatePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendPaymentInstrument`.
+message SuspendPaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  SuspendPaymentInstrumentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendPaymentInstrument`.
+message SuspendPaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  SuspendPaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstatePaymentInstrument`.
+message ReinstatePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  ReinstatePaymentInstrumentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstatePaymentInstrument`.
+message ReinstatePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ReinstatePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminatePaymentInstrument`.
+message TerminatePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  TerminatePaymentInstrumentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminatePaymentInstrument`.
+message TerminatePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  TerminatePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewPaymentInstrument`.
+message RenewPaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  RenewPaymentInstrumentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewPaymentInstrument`.
+message RenewPaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  RenewPaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpirePaymentInstrument`.
+message ExpirePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  ExpirePaymentInstrumentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpirePaymentInstrument`.
+message ExpirePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ExpirePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPaymentInstrumentLifecycle`.
+message GetPaymentInstrumentLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPaymentInstrumentLifecycle`.
+message GetPaymentInstrumentLifecycleResponse {
+  PaymentInstrument payment_instrument = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SchedulePaymentInstrumentExpiry`.
+message SchedulePaymentInstrumentExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  SchedulePaymentInstrumentExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SchedulePaymentInstrumentExpiry`.
+message SchedulePaymentInstrumentExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  SchedulePaymentInstrumentExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

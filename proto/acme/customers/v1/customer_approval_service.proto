@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerApprovalServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Routes customers through approval, with escalation and delegation.
+service CustomerApprovalService {
+  // Submits a customer.
+  rpc SubmitCustomer(SubmitCustomerRequest) returns (SubmitCustomerResponse);
+
+  // Approves a customer.
+  rpc ApproveCustomer(ApproveCustomerRequest) returns (ApproveCustomerResponse);
+
+  // Rejects a customer.
+  rpc RejectCustomer(RejectCustomerRequest) returns (RejectCustomerResponse);
+
+  // Escalates a customer.
+  rpc EscalateCustomer(EscalateCustomerRequest) returns (EscalateCustomerResponse);
+
+  // Lists customers a page at a time.
+  rpc ListPendingCustomers(ListPendingCustomersRequest) returns (ListPendingCustomersResponse);
+
+  // Delegates a customer.
+  rpc DelegateCustomerApproval(DelegateCustomerApprovalRequest) returns (DelegateCustomerApprovalResponse);
+
+  // Recalls a customer.
+  rpc RecallCustomer(RecallCustomerRequest) returns (RecallCustomerResponse);
+
+  // Returns a customer.
+  rpc GetCustomerApprovalStatus(GetCustomerApprovalStatusRequest) returns (GetCustomerApprovalStatusResponse);
+
+  // Comments a customer.
+  rpc CommentCustomerApproval(CommentCustomerApprovalRequest) returns (CommentCustomerApprovalResponse);
+}
+
+// The request of `SubmitCustomer`.
+message SubmitCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  SubmitCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCustomer`.
+message SubmitCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  SubmitCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCustomer`.
+message ApproveCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  ApproveCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCustomer`.
+message ApproveCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  ApproveCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCustomer`.
+message RejectCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  RejectCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCustomer`.
+message RejectCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  RejectCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCustomer`.
+message EscalateCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  EscalateCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCustomer`.
+message EscalateCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  EscalateCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCustomers`.
+message ListPendingCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCustomers`.
+message ListPendingCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCustomerApproval`.
+message DelegateCustomerApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  DelegateCustomerApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCustomerApproval`.
+message DelegateCustomerApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  DelegateCustomerApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallCustomer`.
+message RecallCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  RecallCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallCustomer`.
+message RecallCustomerResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  RecallCustomerResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCustomerApprovalStatus`.
+message GetCustomerApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomerApprovalStatus`.
+message GetCustomerApprovalStatusResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCustomerApproval`.
+message CommentCustomerApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  CommentCustomerApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCustomerApproval`.
+message CommentCustomerApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  CommentCustomerApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

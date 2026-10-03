@@ -1,0 +1,47 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.identity.v1";
+
+// A reference to a user of the identity domain.
+message UserRef {
+  string user_id = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+// A reference to a session of the identity domain.
+message SessionRef {
+  string session_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to an api credential of the identity domain.
+message ApiCredentialRef {
+  string api_credential_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a role of the identity domain.
+message RoleRef {
+  string role_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a tenant of the identity domain.
+message TenantRef {
+  string tenant_id = 1;
+  string display_name = 2;
+  string path = 3;
+}

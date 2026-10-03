@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudRuleCalculationServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Computes the figures of a fraud rule, such as totals, taxes, and estimates.
+service FraudRuleCalculationService {
+  // Calculates a fraud rule.
+  rpc CalculateFraudRule(CalculateFraudRuleRequest) returns (CalculateFraudRuleResponse);
+
+  // Estimates a fraud rule.
+  rpc EstimateFraudRule(EstimateFraudRuleRequest) returns (EstimateFraudRuleResponse);
+
+  // Quotes a fraud rule.
+  rpc QuoteFraudRule(QuoteFraudRuleRequest) returns (QuoteFraudRuleResponse);
+
+  // Compares a fraud rule.
+  rpc CompareFraudRuleOptions(CompareFraudRuleOptionsRequest) returns (CompareFraudRuleOptionsResponse);
+
+  // Recalculates a fraud rule.
+  rpc RecalculateFraudRules(RecalculateFraudRulesRequest) returns (RecalculateFraudRulesResponse);
+
+  // Simulates a fraud rule.
+  rpc SimulateFraudRule(SimulateFraudRuleRequest) returns (SimulateFraudRuleResponse);
+
+  // Explains a fraud rule.
+  rpc ExplainFraudRuleCalculation(ExplainFraudRuleCalculationRequest) returns (ExplainFraudRuleCalculationResponse);
+
+  // Returns a fraud rule.
+  rpc GetFraudRuleRates(GetFraudRuleRatesRequest) returns (GetFraudRuleRatesResponse);
+}
+
+// The request of `CalculateFraudRule`.
+message CalculateFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  CalculateFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateFraudRule`.
+message CalculateFraudRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateFraudRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudRule fraud_rule = 1;
+  CalculateFraudRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateFraudRule`.
+message EstimateFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  EstimateFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateFraudRule`.
+message EstimateFraudRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateFraudRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudRule fraud_rule = 1;
+  EstimateFraudRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteFraudRule`.
+message QuoteFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  QuoteFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteFraudRule`.
+message QuoteFraudRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteFraudRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudRule fraud_rule = 1;
+  QuoteFraudRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareFraudRuleOptions`.
+message CompareFraudRuleOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  CompareFraudRuleOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareFraudRuleOptions`.
+message CompareFraudRuleOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareFraudRuleOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudRule fraud_rule = 1;
+  CompareFraudRuleOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateFraudRules`.
+message RecalculateFraudRulesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  RecalculateFraudRulesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateFraudRules`.
+message RecalculateFraudRulesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateFraudRulesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudRule fraud_rule = 1;
+  RecalculateFraudRulesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateFraudRule`.
+message SimulateFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  SimulateFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateFraudRule`.
+message SimulateFraudRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateFraudRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudRule fraud_rule = 1;
+  SimulateFraudRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainFraudRuleCalculation`.
+message ExplainFraudRuleCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  ExplainFraudRuleCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainFraudRuleCalculation`.
+message ExplainFraudRuleCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  ExplainFraudRuleCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFraudRuleRates`.
+message GetFraudRuleRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFraudRuleRates`.
+message GetFraudRuleRatesResponse {
+  FraudRule fraud_rule = 1;
+  acme.common.v1.OperationResult result = 2;
+}

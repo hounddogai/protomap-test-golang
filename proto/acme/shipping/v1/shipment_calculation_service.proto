@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShipmentCalculationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Computes the figures of a shipment, such as totals, taxes, and estimates.
+service ShipmentCalculationService {
+  // Calculates a shipment.
+  rpc CalculateShipment(CalculateShipmentRequest) returns (CalculateShipmentResponse);
+
+  // Estimates a shipment.
+  rpc EstimateShipment(EstimateShipmentRequest) returns (EstimateShipmentResponse);
+
+  // Quotes a shipment.
+  rpc QuoteShipment(QuoteShipmentRequest) returns (QuoteShipmentResponse);
+
+  // Compares a shipment.
+  rpc CompareShipmentOptions(CompareShipmentOptionsRequest) returns (CompareShipmentOptionsResponse);
+
+  // Recalculates a shipment.
+  rpc RecalculateShipments(RecalculateShipmentsRequest) returns (RecalculateShipmentsResponse);
+
+  // Simulates a shipment.
+  rpc SimulateShipment(SimulateShipmentRequest) returns (SimulateShipmentResponse);
+
+  // Explains a shipment.
+  rpc ExplainShipmentCalculation(ExplainShipmentCalculationRequest) returns (ExplainShipmentCalculationResponse);
+
+  // Returns a shipment.
+  rpc GetShipmentRates(GetShipmentRatesRequest) returns (GetShipmentRatesResponse);
+}
+
+// The request of `CalculateShipment`.
+message CalculateShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  CalculateShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateShipment`.
+message CalculateShipmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateShipmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  CalculateShipmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateShipment`.
+message EstimateShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  EstimateShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateShipment`.
+message EstimateShipmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateShipmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  EstimateShipmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteShipment`.
+message QuoteShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  QuoteShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteShipment`.
+message QuoteShipmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteShipmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  QuoteShipmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareShipmentOptions`.
+message CompareShipmentOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  CompareShipmentOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareShipmentOptions`.
+message CompareShipmentOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareShipmentOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  CompareShipmentOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateShipments`.
+message RecalculateShipmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  RecalculateShipmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateShipments`.
+message RecalculateShipmentsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateShipmentsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  RecalculateShipmentsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateShipment`.
+message SimulateShipmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  SimulateShipmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateShipment`.
+message SimulateShipmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateShipmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Shipment shipment = 1;
+  SimulateShipmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainShipmentCalculation`.
+message ExplainShipmentCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  Shipment shipment = 3;
+  ExplainShipmentCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainShipmentCalculation`.
+message ExplainShipmentCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Shipment shipment = 1;
+  ExplainShipmentCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetShipmentRates`.
+message GetShipmentRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetShipmentRates`.
+message GetShipmentRatesResponse {
+  Shipment shipment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

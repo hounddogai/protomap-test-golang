@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnLabelApprovalServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Routes return labels through approval, with escalation and delegation.
+service ReturnLabelApprovalService {
+  // Submits a return label.
+  rpc SubmitReturnLabel(SubmitReturnLabelRequest) returns (SubmitReturnLabelResponse);
+
+  // Approves a return label.
+  rpc ApproveReturnLabel(ApproveReturnLabelRequest) returns (ApproveReturnLabelResponse);
+
+  // Rejects a return label.
+  rpc RejectReturnLabel(RejectReturnLabelRequest) returns (RejectReturnLabelResponse);
+
+  // Escalates a return label.
+  rpc EscalateReturnLabel(EscalateReturnLabelRequest) returns (EscalateReturnLabelResponse);
+
+  // Lists return labels a page at a time.
+  rpc ListPendingReturnLabels(ListPendingReturnLabelsRequest) returns (ListPendingReturnLabelsResponse);
+
+  // Delegates a return label.
+  rpc DelegateReturnLabelApproval(DelegateReturnLabelApprovalRequest) returns (DelegateReturnLabelApprovalResponse);
+
+  // Recalls a return label.
+  rpc RecallReturnLabel(RecallReturnLabelRequest) returns (RecallReturnLabelResponse);
+
+  // Returns a return label.
+  rpc GetReturnLabelApprovalStatus(GetReturnLabelApprovalStatusRequest) returns (GetReturnLabelApprovalStatusResponse);
+
+  // Comments a return label.
+  rpc CommentReturnLabelApproval(CommentReturnLabelApprovalRequest) returns (CommentReturnLabelApprovalResponse);
+}
+
+// The request of `SubmitReturnLabel`.
+message SubmitReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  SubmitReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitReturnLabel`.
+message SubmitReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  SubmitReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveReturnLabel`.
+message ApproveReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  ApproveReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveReturnLabel`.
+message ApproveReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  ApproveReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectReturnLabel`.
+message RejectReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  RejectReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectReturnLabel`.
+message RejectReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  RejectReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateReturnLabel`.
+message EscalateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  EscalateReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateReturnLabel`.
+message EscalateReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  EscalateReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingReturnLabels`.
+message ListPendingReturnLabelsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnLabelStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingReturnLabelsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingReturnLabels`.
+message ListPendingReturnLabelsResponse {
+  repeated ReturnLabel return_labels = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateReturnLabelApproval`.
+message DelegateReturnLabelApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  DelegateReturnLabelApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateReturnLabelApproval`.
+message DelegateReturnLabelApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  DelegateReturnLabelApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallReturnLabel`.
+message RecallReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  RecallReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallReturnLabel`.
+message RecallReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  RecallReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnLabelApprovalStatus`.
+message GetReturnLabelApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnLabelApprovalStatus`.
+message GetReturnLabelApprovalStatusResponse {
+  ReturnLabel return_label = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentReturnLabelApproval`.
+message CommentReturnLabelApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  CommentReturnLabelApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentReturnLabelApproval`.
+message CommentReturnLabelApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  CommentReturnLabelApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

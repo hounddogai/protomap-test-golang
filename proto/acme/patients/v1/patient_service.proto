@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Manages patients: creates, reads, changes, and lists them.
+service PatientService {
+  // Creates a patient.
+  rpc CreatePatient(CreatePatientRequest) returns (CreatePatientResponse);
+
+  // Returns a patient.
+  rpc GetPatient(GetPatientRequest) returns (GetPatientResponse);
+
+  // Changes a patient.
+  rpc UpdatePatient(UpdatePatientRequest) returns (UpdatePatientResponse);
+
+  // Deletes a patient.
+  rpc DeletePatient(DeletePatientRequest) returns (DeletePatientResponse);
+
+  // Lists patients a page at a time.
+  rpc ListPatients(ListPatientsRequest) returns (ListPatientsResponse);
+
+  // Returns several patients at once.
+  rpc BatchGetPatients(BatchGetPatientsRequest) returns (BatchGetPatientsResponse);
+
+  // Lists patients a page at a time.
+  rpc SearchPatients(SearchPatientsRequest) returns (SearchPatientsResponse);
+
+  // Takes a stream of patients and answers once at the end.
+  rpc BatchCreatePatients(stream BatchCreatePatientsRequest) returns (BatchCreatePatientsResponse);
+
+  // Creates a patient.
+  rpc ClonePatient(ClonePatientRequest) returns (ClonePatientResponse);
+}
+
+// The request of `CreatePatient`.
+message CreatePatientRequest {
+  acme.common.v1.RequestContext context = 1;
+  Patient patient = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePatient`.
+message CreatePatientResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPatient`.
+message GetPatientRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatient`.
+message GetPatientResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePatient`.
+message UpdatePatientRequest {
+  acme.common.v1.RequestContext context = 1;
+  Patient patient = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePatient`.
+message UpdatePatientResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePatient`.
+message DeletePatientRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePatient`.
+message DeletePatientResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPatients`.
+message ListPatientsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPatientsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPatients`.
+message ListPatientsResponse {
+  repeated Patient patients = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPatients`.
+message BatchGetPatientsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string patient_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPatients`.
+message BatchGetPatientsResponse {
+  repeated Patient patients = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPatients`.
+message SearchPatientsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPatientsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPatients`.
+message SearchPatientsResponse {
+  repeated Patient patients = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreatePatients`.
+message BatchCreatePatientsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePatientsRequest.StreamHeader header = 2;
+    Patient record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePatients`.
+message BatchCreatePatientsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string patient_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePatientsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePatient`.
+message ClonePatientRequest {
+  acme.common.v1.RequestContext context = 1;
+  Patient patient = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePatient`.
+message ClonePatientResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}

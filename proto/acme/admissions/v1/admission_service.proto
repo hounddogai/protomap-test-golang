@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.admissions.v1;
+
+import "acme/admissions/v1/admissions.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Admissions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/admissions/v1;admissionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AdmissionServiceProto";
+option java_package = "com.acme.admissions.v1";
+
+// Manages admissions: creates, reads, changes, and lists them.
+service AdmissionService {
+  // Creates an admission.
+  rpc CreateAdmission(CreateAdmissionRequest) returns (CreateAdmissionResponse);
+
+  // Returns an admission.
+  rpc GetAdmission(GetAdmissionRequest) returns (GetAdmissionResponse);
+
+  // Deletes an admission.
+  rpc DeleteAdmission(DeleteAdmissionRequest) returns (DeleteAdmissionResponse);
+
+  // Lists admissions a page at a time.
+  rpc ListAdmissions(ListAdmissionsRequest) returns (ListAdmissionsResponse);
+
+  // Returns several admissions at once.
+  rpc BatchGetAdmissions(BatchGetAdmissionsRequest) returns (BatchGetAdmissionsResponse);
+
+  // Lists admissions a page at a time.
+  rpc SearchAdmissions(SearchAdmissionsRequest) returns (SearchAdmissionsResponse);
+
+  // Streams the changes of admissions as they happen.
+  rpc WatchAdmissions(WatchAdmissionsRequest) returns (stream WatchAdmissionsResponse);
+
+  // Takes a stream of admissions and answers once at the end.
+  rpc BatchCreateAdmissions(stream BatchCreateAdmissionsRequest) returns (BatchCreateAdmissionsResponse);
+
+  // Creates an admission.
+  rpc CloneAdmission(CloneAdmissionRequest) returns (CloneAdmissionResponse);
+}
+
+// The request of `CreateAdmission`.
+message CreateAdmissionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Admission admission = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateAdmission`.
+message CreateAdmissionResponse {
+  Admission admission = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetAdmission`.
+message GetAdmissionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAdmission`.
+message GetAdmissionResponse {
+  Admission admission = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteAdmission`.
+message DeleteAdmissionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string admission_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteAdmission`.
+message DeleteAdmissionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListAdmissions`.
+message ListAdmissionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AdmissionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAdmissionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAdmissions`.
+message ListAdmissionsResponse {
+  repeated Admission admissions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetAdmissions`.
+message BatchGetAdmissionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string admission_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetAdmissions`.
+message BatchGetAdmissionsResponse {
+  repeated Admission admissions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchAdmissions`.
+message SearchAdmissionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AdmissionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchAdmissionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchAdmissions`.
+message SearchAdmissionsResponse {
+  repeated Admission admissions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchAdmissions`.
+message WatchAdmissionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AdmissionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchAdmissionsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchAdmissions`.
+message WatchAdmissionsResponse {
+  Admission admission = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateAdmissions`.
+message BatchCreateAdmissionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateAdmissionsRequest.StreamHeader header = 2;
+    Admission record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateAdmissions`.
+message BatchCreateAdmissionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string admission_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateAdmissionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneAdmission`.
+message CloneAdmissionRequest {
+  acme.common.v1.RequestContext context = 1;
+  Admission admission = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneAdmission`.
+message CloneAdmissionResponse {
+  Admission admission = 1;
+  acme.common.v1.OperationResult result = 2;
+}

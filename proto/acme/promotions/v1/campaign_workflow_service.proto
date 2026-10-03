@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CampaignWorkflowServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Runs the long-lived workflow that takes a campaign from start to finish.
+service CampaignWorkflowService {
+  // Starts a campaign.
+  rpc StartCampaignWorkflow(StartCampaignWorkflowRequest) returns (StartCampaignWorkflowResponse);
+
+  // Advances a campaign.
+  rpc AdvanceCampaignWorkflow(AdvanceCampaignWorkflowRequest) returns (AdvanceCampaignWorkflowResponse);
+
+  // Cancels a campaign.
+  rpc CancelCampaignWorkflow(CancelCampaignWorkflowRequest) returns (CancelCampaignWorkflowResponse);
+
+  // Retrys a campaign.
+  rpc RetryCampaignWorkflow(RetryCampaignWorkflowRequest) returns (RetryCampaignWorkflowResponse);
+
+  // Pauses a campaign.
+  rpc PauseCampaignWorkflow(PauseCampaignWorkflowRequest) returns (PauseCampaignWorkflowResponse);
+
+  // Resumes a campaign.
+  rpc ResumeCampaignWorkflow(ResumeCampaignWorkflowRequest) returns (ResumeCampaignWorkflowResponse);
+
+  // Returns a campaign.
+  rpc InspectCampaignWorkflow(InspectCampaignWorkflowRequest) returns (InspectCampaignWorkflowResponse);
+
+  // Lists campaigns a page at a time.
+  rpc ListCampaignWorkflows(ListCampaignWorkflowsRequest) returns (ListCampaignWorkflowsResponse);
+
+  // Signals a campaign.
+  rpc SignalCampaignWorkflow(SignalCampaignWorkflowRequest) returns (SignalCampaignWorkflowResponse);
+}
+
+// The request of `StartCampaignWorkflow`.
+message StartCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  StartCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCampaignWorkflow`.
+message StartCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  StartCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCampaignWorkflow`.
+message AdvanceCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  AdvanceCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCampaignWorkflow`.
+message AdvanceCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  AdvanceCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCampaignWorkflow`.
+message CancelCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  CancelCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCampaignWorkflow`.
+message CancelCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  CancelCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryCampaignWorkflow`.
+message RetryCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  RetryCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryCampaignWorkflow`.
+message RetryCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  RetryCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCampaignWorkflow`.
+message PauseCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  PauseCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCampaignWorkflow`.
+message PauseCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  PauseCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeCampaignWorkflow`.
+message ResumeCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  ResumeCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeCampaignWorkflow`.
+message ResumeCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  ResumeCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectCampaignWorkflow`.
+message InspectCampaignWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectCampaignWorkflow`.
+message InspectCampaignWorkflowResponse {
+  Campaign campaign = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListCampaignWorkflows`.
+message ListCampaignWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CampaignStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCampaignWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCampaignWorkflows`.
+message ListCampaignWorkflowsResponse {
+  repeated Campaign campaigns = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCampaignWorkflow`.
+message SignalCampaignWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  SignalCampaignWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCampaignWorkflow`.
+message SignalCampaignWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  SignalCampaignWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

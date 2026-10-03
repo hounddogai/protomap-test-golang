@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductReviewWorkflowServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Runs the long-lived workflow that takes a product review from start to finish.
+service ProductReviewWorkflowService {
+  // Starts a product review.
+  rpc StartProductReviewWorkflow(StartProductReviewWorkflowRequest) returns (StartProductReviewWorkflowResponse);
+
+  // Advances a product review.
+  rpc AdvanceProductReviewWorkflow(AdvanceProductReviewWorkflowRequest) returns (AdvanceProductReviewWorkflowResponse);
+
+  // Cancels a product review.
+  rpc CancelProductReviewWorkflow(CancelProductReviewWorkflowRequest) returns (CancelProductReviewWorkflowResponse);
+
+  // Retrys a product review.
+  rpc RetryProductReviewWorkflow(RetryProductReviewWorkflowRequest) returns (RetryProductReviewWorkflowResponse);
+
+  // Pauses a product review.
+  rpc PauseProductReviewWorkflow(PauseProductReviewWorkflowRequest) returns (PauseProductReviewWorkflowResponse);
+
+  // Resumes a product review.
+  rpc ResumeProductReviewWorkflow(ResumeProductReviewWorkflowRequest) returns (ResumeProductReviewWorkflowResponse);
+
+  // Returns a product review.
+  rpc InspectProductReviewWorkflow(InspectProductReviewWorkflowRequest) returns (InspectProductReviewWorkflowResponse);
+
+  // Lists product reviews a page at a time.
+  rpc ListProductReviewWorkflows(ListProductReviewWorkflowsRequest) returns (ListProductReviewWorkflowsResponse);
+
+  // Signals a product review.
+  rpc SignalProductReviewWorkflow(SignalProductReviewWorkflowRequest) returns (SignalProductReviewWorkflowResponse);
+}
+
+// The request of `StartProductReviewWorkflow`.
+message StartProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  StartProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartProductReviewWorkflow`.
+message StartProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  StartProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceProductReviewWorkflow`.
+message AdvanceProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  AdvanceProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceProductReviewWorkflow`.
+message AdvanceProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  AdvanceProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelProductReviewWorkflow`.
+message CancelProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  CancelProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelProductReviewWorkflow`.
+message CancelProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  CancelProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryProductReviewWorkflow`.
+message RetryProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  RetryProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryProductReviewWorkflow`.
+message RetryProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  RetryProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseProductReviewWorkflow`.
+message PauseProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  PauseProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseProductReviewWorkflow`.
+message PauseProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  PauseProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeProductReviewWorkflow`.
+message ResumeProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  ResumeProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeProductReviewWorkflow`.
+message ResumeProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  ResumeProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectProductReviewWorkflow`.
+message InspectProductReviewWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectProductReviewWorkflow`.
+message InspectProductReviewWorkflowResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListProductReviewWorkflows`.
+message ListProductReviewWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListProductReviewWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListProductReviewWorkflows`.
+message ListProductReviewWorkflowsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalProductReviewWorkflow`.
+message SignalProductReviewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  ProductReview product_review = 3;
+  SignalProductReviewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalProductReviewWorkflow`.
+message SignalProductReviewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductReview product_review = 1;
+  SignalProductReviewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

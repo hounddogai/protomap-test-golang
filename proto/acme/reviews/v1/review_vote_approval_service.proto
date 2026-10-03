@@ -1,0 +1,304 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewVoteApprovalServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Routes review votes through approval, with escalation and delegation.
+service ReviewVoteApprovalService {
+  // Submits a review vote.
+  rpc SubmitReviewVote(SubmitReviewVoteRequest) returns (SubmitReviewVoteResponse);
+
+  // Approves a review vote.
+  rpc ApproveReviewVote(ApproveReviewVoteRequest) returns (ApproveReviewVoteResponse);
+
+  // Rejects a review vote.
+  rpc RejectReviewVote(RejectReviewVoteRequest) returns (RejectReviewVoteResponse);
+
+  // Escalates a review vote.
+  rpc EscalateReviewVote(EscalateReviewVoteRequest) returns (EscalateReviewVoteResponse);
+
+  // Delegates a review vote.
+  rpc DelegateReviewVoteApproval(DelegateReviewVoteApprovalRequest) returns (DelegateReviewVoteApprovalResponse);
+
+  // Recalls a review vote.
+  rpc RecallReviewVote(RecallReviewVoteRequest) returns (RecallReviewVoteResponse);
+
+  // Returns a review vote.
+  rpc GetReviewVoteApprovalStatus(GetReviewVoteApprovalStatusRequest) returns (GetReviewVoteApprovalStatusResponse);
+
+  // Comments a review vote.
+  rpc CommentReviewVoteApproval(CommentReviewVoteApprovalRequest) returns (CommentReviewVoteApprovalResponse);
+}
+
+// The request of `SubmitReviewVote`.
+message SubmitReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  SubmitReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitReviewVote`.
+message SubmitReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  SubmitReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveReviewVote`.
+message ApproveReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  ApproveReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveReviewVote`.
+message ApproveReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  ApproveReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectReviewVote`.
+message RejectReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  RejectReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectReviewVote`.
+message RejectReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  RejectReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateReviewVote`.
+message EscalateReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  EscalateReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateReviewVote`.
+message EscalateReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  EscalateReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateReviewVoteApproval`.
+message DelegateReviewVoteApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  DelegateReviewVoteApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateReviewVoteApproval`.
+message DelegateReviewVoteApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  DelegateReviewVoteApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallReviewVote`.
+message RecallReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  RecallReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallReviewVote`.
+message RecallReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  RecallReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReviewVoteApprovalStatus`.
+message GetReviewVoteApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReviewVoteApprovalStatus`.
+message GetReviewVoteApprovalStatusResponse {
+  ReviewVote review_vote = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentReviewVoteApproval`.
+message CommentReviewVoteApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  CommentReviewVoteApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentReviewVoteApproval`.
+message CommentReviewVoteApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  CommentReviewVoteApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

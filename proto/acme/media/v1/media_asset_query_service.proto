@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.media.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/media/v1/media.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Media.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/media/v1;mediav1";
+option java_multiple_files = true;
+option java_outer_classname = "MediaAssetQueryServiceProto";
+option java_package = "com.acme.media.v1";
+
+// Answers read-only questions about media assets, for screens and reports.
+service MediaAssetQueryService {
+  // Returns a media asset.
+  rpc LookupMediaAsset(LookupMediaAssetRequest) returns (LookupMediaAssetResponse);
+
+  // Lists media assets a page at a time.
+  rpc BrowseMediaAssets(BrowseMediaAssetsRequest) returns (BrowseMediaAssetsResponse);
+
+  // Lists media assets a page at a time.
+  rpc FindMediaAssets(FindMediaAssetsRequest) returns (FindMediaAssetsResponse);
+
+  // Counts media assets by status.
+  rpc CountMediaAssets(CountMediaAssetsRequest) returns (CountMediaAssetsResponse);
+
+  // Returns several media assets at once.
+  rpc ResolveMediaAssets(ResolveMediaAssetsRequest) returns (ResolveMediaAssetsResponse);
+
+  // Streams every matching media asset.
+  rpc ExportMediaAssets(ExportMediaAssetsRequest) returns (stream ExportMediaAssetsResponse);
+
+  // Summarizes a media asset.
+  rpc SummarizeMediaAssets(SummarizeMediaAssetsRequest) returns (SummarizeMediaAssetsResponse);
+
+  // Returns a media asset.
+  rpc PeekMediaAsset(PeekMediaAssetRequest) returns (PeekMediaAssetResponse);
+}
+
+// The request of `LookupMediaAsset`.
+message LookupMediaAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupMediaAsset`.
+message LookupMediaAssetResponse {
+  MediaAsset media_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseMediaAssets`.
+message BrowseMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseMediaAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseMediaAssets`.
+message BrowseMediaAssetsResponse {
+  repeated MediaAsset media_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindMediaAssets`.
+message FindMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindMediaAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindMediaAssets`.
+message FindMediaAssetsResponse {
+  repeated MediaAsset media_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountMediaAssets`.
+message CountMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountMediaAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountMediaAssets`.
+message CountMediaAssetsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveMediaAssets`.
+message ResolveMediaAssetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string media_asset_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveMediaAssets`.
+message ResolveMediaAssetsResponse {
+  repeated MediaAsset media_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportMediaAssets`.
+message ExportMediaAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MediaAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportMediaAssetsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportMediaAssets`.
+message ExportMediaAssetsResponse {
+  MediaAsset media_asset = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeMediaAssets`.
+message SummarizeMediaAssetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  SummarizeMediaAssetsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeMediaAssets`.
+message SummarizeMediaAssetsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `PeekMediaAsset`.
+message PeekMediaAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string media_asset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekMediaAsset`.
+message PeekMediaAssetResponse {
+  MediaAsset media_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}

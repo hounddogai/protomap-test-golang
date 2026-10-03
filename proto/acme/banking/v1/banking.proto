@@ -1,0 +1,273 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.banking.v1;
+
+import "acme/banking/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Banking.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/banking/v1;bankingv1";
+option java_multiple_files = true;
+option java_outer_classname = "BankingProto";
+option java_package = "com.acme.banking.v1";
+
+// Where a bank account is in its lifecycle.
+enum BankAccountStatus {
+  BANK_ACCOUNT_STATUS_UNSPECIFIED = 0;
+  BANK_ACCOUNT_STATUS_PENDING = 1;
+  BANK_ACCOUNT_STATUS_OPEN = 2;
+  BANK_ACCOUNT_STATUS_FROZEN = 3;
+  BANK_ACCOUNT_STATUS_CLOSED = 4;
+}
+
+// Where a statement is in its lifecycle.
+enum StatementStatus {
+  STATEMENT_STATUS_UNSPECIFIED = 0;
+  STATEMENT_STATUS_DRAFT = 1;
+  STATEMENT_STATUS_ISSUED = 2;
+  STATEMENT_STATUS_APPROVED = 3;
+  STATEMENT_STATUS_PAID = 4;
+  STATEMENT_STATUS_VOID = 5;
+}
+
+// Where a standing order is in its lifecycle.
+enum StandingOrderStatus {
+  STANDING_ORDER_STATUS_UNSPECIFIED = 0;
+  STANDING_ORDER_STATUS_TENTATIVE = 1;
+  STANDING_ORDER_STATUS_CONFIRMED = 2;
+  STANDING_ORDER_STATUS_CANCELLED = 3;
+  STANDING_ORDER_STATUS_COMPLETED = 4;
+}
+
+// Where a mandate is in its lifecycle.
+enum MandateStatus {
+  MANDATE_STATUS_UNSPECIFIED = 0;
+  MANDATE_STATUS_DRAFT = 1;
+  MANDATE_STATUS_ISSUED = 2;
+  MANDATE_STATUS_APPROVED = 3;
+  MANDATE_STATUS_PAID = 4;
+  MANDATE_STATUS_VOID = 5;
+}
+
+// The limit of a bank account.
+message BankAccountLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a bank account.
+message BankAccountCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a bank account.
+message BankAccountBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A bank account of the banking domain.
+message BankAccount {
+  string bank_account_id = 1;
+  acme.customers.v1.CustomerRef holder = 2;
+  BankAccountStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated BankAccountLimit limits = 7;
+  oneof funding {
+    BankAccountCardFunding card = 8;
+    BankAccountBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The line of a statement.
+message StatementLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  StatementLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a statement line.
+message StatementLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a statement.
+message StatementCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a statement.
+message StatementBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a statement.
+message StatementAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A statement of the banking domain.
+message Statement {
+  string statement_id = 1;
+  string number = 2;
+  StatementStatus status = 3;
+  StandingOrderRef counterparty = 4;
+  repeated StatementLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    StatementCardSettlement card = 8;
+    StatementBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated StatementAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The participant of a standing order.
+message StandingOrderParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a standing order.
+message StandingOrderDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a standing order.
+message StandingOrderWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A standing order of the banking domain.
+message StandingOrder {
+  string standing_order_id = 1;
+  string title = 2;
+  StandingOrderStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated StandingOrderParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    StandingOrderDailyRule daily = 7;
+    StandingOrderWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a mandate.
+message MandateLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  MandateLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a mandate line.
+message MandateLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a mandate.
+message MandateCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a mandate.
+message MandateBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a mandate.
+message MandateAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A mandate of the banking domain.
+message Mandate {
+  string mandate_id = 1;
+  string number = 2;
+  MandateStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated MandateLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    MandateCardSettlement card = 8;
+    MandateBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated MandateAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerSegmentLifecycleServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Moves a customer segment between the states of its lifecycle.
+service CustomerSegmentLifecycleService {
+  // Activates a customer segment.
+  rpc ActivateCustomerSegment(ActivateCustomerSegmentRequest) returns (ActivateCustomerSegmentResponse);
+
+  // Suspends a customer segment.
+  rpc SuspendCustomerSegment(SuspendCustomerSegmentRequest) returns (SuspendCustomerSegmentResponse);
+
+  // Reinstates a customer segment.
+  rpc ReinstateCustomerSegment(ReinstateCustomerSegmentRequest) returns (ReinstateCustomerSegmentResponse);
+
+  // Terminates a customer segment.
+  rpc TerminateCustomerSegment(TerminateCustomerSegmentRequest) returns (TerminateCustomerSegmentResponse);
+
+  // Renews a customer segment.
+  rpc RenewCustomerSegment(RenewCustomerSegmentRequest) returns (RenewCustomerSegmentResponse);
+
+  // Expires a customer segment.
+  rpc ExpireCustomerSegment(ExpireCustomerSegmentRequest) returns (ExpireCustomerSegmentResponse);
+
+  // Returns a customer segment.
+  rpc GetCustomerSegmentLifecycle(GetCustomerSegmentLifecycleRequest) returns (GetCustomerSegmentLifecycleResponse);
+
+  // Schedules a customer segment.
+  rpc ScheduleCustomerSegmentExpiry(ScheduleCustomerSegmentExpiryRequest) returns (ScheduleCustomerSegmentExpiryResponse);
+}
+
+// The request of `ActivateCustomerSegment`.
+message ActivateCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  ActivateCustomerSegmentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateCustomerSegment`.
+message ActivateCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ActivateCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendCustomerSegment`.
+message SuspendCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  SuspendCustomerSegmentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendCustomerSegment`.
+message SuspendCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  SuspendCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateCustomerSegment`.
+message ReinstateCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  ReinstateCustomerSegmentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateCustomerSegment`.
+message ReinstateCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ReinstateCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateCustomerSegment`.
+message TerminateCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  TerminateCustomerSegmentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateCustomerSegment`.
+message TerminateCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  TerminateCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewCustomerSegment`.
+message RenewCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  RenewCustomerSegmentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewCustomerSegment`.
+message RenewCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  RenewCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireCustomerSegment`.
+message ExpireCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  ExpireCustomerSegmentRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireCustomerSegment`.
+message ExpireCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ExpireCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCustomerSegmentLifecycle`.
+message GetCustomerSegmentLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomerSegmentLifecycle`.
+message GetCustomerSegmentLifecycleResponse {
+  CustomerSegment customer_segment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleCustomerSegmentExpiry`.
+message ScheduleCustomerSegmentExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  ScheduleCustomerSegmentExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleCustomerSegmentExpiry`.
+message ScheduleCustomerSegmentExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ScheduleCustomerSegmentExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

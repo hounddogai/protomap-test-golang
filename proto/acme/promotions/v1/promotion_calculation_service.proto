@@ -1,0 +1,253 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PromotionCalculationServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Computes the figures of a promotion, such as totals, taxes, and estimates.
+service PromotionCalculationService {
+  // Calculates a promotion.
+  rpc CalculatePromotion(CalculatePromotionRequest) returns (CalculatePromotionResponse);
+
+  // Estimates a promotion.
+  rpc EstimatePromotion(EstimatePromotionRequest) returns (EstimatePromotionResponse);
+
+  // Quotes a promotion.
+  rpc QuotePromotion(QuotePromotionRequest) returns (QuotePromotionResponse);
+
+  // Recalculates a promotion.
+  rpc RecalculatePromotions(RecalculatePromotionsRequest) returns (RecalculatePromotionsResponse);
+
+  // Simulates a promotion.
+  rpc SimulatePromotion(SimulatePromotionRequest) returns (SimulatePromotionResponse);
+
+  // Returns a promotion.
+  rpc GetPromotionRates(GetPromotionRatesRequest) returns (GetPromotionRatesResponse);
+}
+
+// The request of `CalculatePromotion`.
+message CalculatePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  CalculatePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculatePromotion`.
+message CalculatePromotionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculatePromotionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Promotion promotion = 1;
+  CalculatePromotionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimatePromotion`.
+message EstimatePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  EstimatePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimatePromotion`.
+message EstimatePromotionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimatePromotionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Promotion promotion = 1;
+  EstimatePromotionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuotePromotion`.
+message QuotePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  QuotePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuotePromotion`.
+message QuotePromotionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuotePromotionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Promotion promotion = 1;
+  QuotePromotionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculatePromotions`.
+message RecalculatePromotionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  RecalculatePromotionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculatePromotions`.
+message RecalculatePromotionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculatePromotionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Promotion promotion = 1;
+  RecalculatePromotionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulatePromotion`.
+message SimulatePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  SimulatePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulatePromotion`.
+message SimulatePromotionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulatePromotionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Promotion promotion = 1;
+  SimulatePromotionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPromotionRates`.
+message GetPromotionRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPromotionRates`.
+message GetPromotionRatesResponse {
+  Promotion promotion = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.community.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/community/v1/community.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Community.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/community/v1;communityv1";
+option java_multiple_files = true;
+option java_outer_classname = "ForumServiceProto";
+option java_package = "com.acme.community.v1";
+
+// Manages forums: creates, reads, changes, and lists them.
+service ForumService {
+  // Creates a forum.
+  rpc CreateForum(CreateForumRequest) returns (CreateForumResponse);
+
+  // Returns a forum.
+  rpc GetForum(GetForumRequest) returns (GetForumResponse);
+
+  // Changes a forum.
+  rpc UpdateForum(UpdateForumRequest) returns (UpdateForumResponse);
+
+  // Deletes a forum.
+  rpc DeleteForum(DeleteForumRequest) returns (DeleteForumResponse);
+
+  // Lists forums a page at a time.
+  rpc ListForums(ListForumsRequest) returns (ListForumsResponse);
+
+  // Lists forums a page at a time.
+  rpc SearchForums(SearchForumsRequest) returns (SearchForumsResponse);
+
+  // Streams the changes of forums as they happen.
+  rpc WatchForums(WatchForumsRequest) returns (stream WatchForumsResponse);
+
+  // Takes a stream of forums and answers once at the end.
+  rpc BatchCreateForums(stream BatchCreateForumsRequest) returns (BatchCreateForumsResponse);
+
+  // Creates a forum.
+  rpc CloneForum(CloneForumRequest) returns (CloneForumResponse);
+}
+
+// The request of `CreateForum`.
+message CreateForumRequest {
+  acme.common.v1.RequestContext context = 1;
+  Forum forum = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateForum`.
+message CreateForumResponse {
+  Forum forum = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetForum`.
+message GetForumRequest {
+  acme.common.v1.RequestContext context = 1;
+  string forum_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetForum`.
+message GetForumResponse {
+  Forum forum = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateForum`.
+message UpdateForumRequest {
+  acme.common.v1.RequestContext context = 1;
+  Forum forum = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateForum`.
+message UpdateForumResponse {
+  Forum forum = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteForum`.
+message DeleteForumRequest {
+  acme.common.v1.RequestContext context = 1;
+  string forum_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteForum`.
+message DeleteForumResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListForums`.
+message ListForumsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ForumStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListForumsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListForums`.
+message ListForumsResponse {
+  repeated Forum forums = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchForums`.
+message SearchForumsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ForumStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchForumsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchForums`.
+message SearchForumsResponse {
+  repeated Forum forums = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchForums`.
+message WatchForumsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ForumStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchForumsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchForums`.
+message WatchForumsResponse {
+  Forum forum = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateForums`.
+message BatchCreateForumsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateForumsRequest.StreamHeader header = 2;
+    Forum record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateForums`.
+message BatchCreateForumsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string forum_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateForumsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneForum`.
+message CloneForumRequest {
+  acme.common.v1.RequestContext context = 1;
+  Forum forum = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneForum`.
+message CloneForumResponse {
+  Forum forum = 1;
+  acme.common.v1.OperationResult result = 2;
+}

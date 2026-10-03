@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.licensing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/licensing/v1/licensing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Licensing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/licensing/v1;licensingv1";
+option java_multiple_files = true;
+option java_outer_classname = "SoftwareLicenseCalculationServiceProto";
+option java_package = "com.acme.licensing.v1";
+
+// Computes the figures of a software license, such as totals, taxes, and estimates.
+service SoftwareLicenseCalculationService {
+  // Calculates a software license.
+  rpc CalculateSoftwareLicense(CalculateSoftwareLicenseRequest) returns (CalculateSoftwareLicenseResponse);
+
+  // Estimates a software license.
+  rpc EstimateSoftwareLicense(EstimateSoftwareLicenseRequest) returns (EstimateSoftwareLicenseResponse);
+
+  // Quotes a software license.
+  rpc QuoteSoftwareLicense(QuoteSoftwareLicenseRequest) returns (QuoteSoftwareLicenseResponse);
+
+  // Compares a software license.
+  rpc CompareSoftwareLicenseOptions(CompareSoftwareLicenseOptionsRequest) returns (CompareSoftwareLicenseOptionsResponse);
+
+  // Recalculates a software license.
+  rpc RecalculateSoftwareLicenses(RecalculateSoftwareLicensesRequest) returns (RecalculateSoftwareLicensesResponse);
+
+  // Simulates a software license.
+  rpc SimulateSoftwareLicense(SimulateSoftwareLicenseRequest) returns (SimulateSoftwareLicenseResponse);
+
+  // Explains a software license.
+  rpc ExplainSoftwareLicenseCalculation(ExplainSoftwareLicenseCalculationRequest) returns (ExplainSoftwareLicenseCalculationResponse);
+
+  // Returns a software license.
+  rpc GetSoftwareLicenseRates(GetSoftwareLicenseRatesRequest) returns (GetSoftwareLicenseRatesResponse);
+}
+
+// The request of `CalculateSoftwareLicense`.
+message CalculateSoftwareLicenseRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  CalculateSoftwareLicenseRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateSoftwareLicense`.
+message CalculateSoftwareLicenseResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateSoftwareLicenseResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SoftwareLicense software_license = 1;
+  CalculateSoftwareLicenseResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateSoftwareLicense`.
+message EstimateSoftwareLicenseRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  EstimateSoftwareLicenseRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateSoftwareLicense`.
+message EstimateSoftwareLicenseResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateSoftwareLicenseResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SoftwareLicense software_license = 1;
+  EstimateSoftwareLicenseResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteSoftwareLicense`.
+message QuoteSoftwareLicenseRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  QuoteSoftwareLicenseRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteSoftwareLicense`.
+message QuoteSoftwareLicenseResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteSoftwareLicenseResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SoftwareLicense software_license = 1;
+  QuoteSoftwareLicenseResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareSoftwareLicenseOptions`.
+message CompareSoftwareLicenseOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  CompareSoftwareLicenseOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSoftwareLicenseOptions`.
+message CompareSoftwareLicenseOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareSoftwareLicenseOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SoftwareLicense software_license = 1;
+  CompareSoftwareLicenseOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateSoftwareLicenses`.
+message RecalculateSoftwareLicensesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  RecalculateSoftwareLicensesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateSoftwareLicenses`.
+message RecalculateSoftwareLicensesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateSoftwareLicensesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SoftwareLicense software_license = 1;
+  RecalculateSoftwareLicensesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateSoftwareLicense`.
+message SimulateSoftwareLicenseRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  SimulateSoftwareLicenseRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateSoftwareLicense`.
+message SimulateSoftwareLicenseResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateSoftwareLicenseResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SoftwareLicense software_license = 1;
+  SimulateSoftwareLicenseResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSoftwareLicenseCalculation`.
+message ExplainSoftwareLicenseCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  SoftwareLicense software_license = 3;
+  ExplainSoftwareLicenseCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSoftwareLicenseCalculation`.
+message ExplainSoftwareLicenseCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SoftwareLicense software_license = 1;
+  ExplainSoftwareLicenseCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSoftwareLicenseRates`.
+message GetSoftwareLicenseRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSoftwareLicenseRates`.
+message GetSoftwareLicenseRatesResponse {
+  SoftwareLicense software_license = 1;
+  acme.common.v1.OperationResult result = 2;
+}

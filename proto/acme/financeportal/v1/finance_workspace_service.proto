@@ -1,0 +1,203 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.financeportal.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/financeportal/v1/financeportal.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Financeportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/financeportal/v1;financeportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "FinanceWorkspaceServiceProto";
+option java_package = "com.acme.financeportal.v1";
+
+// Manages finance workspaces: creates, reads, changes, and lists them.
+service FinanceWorkspaceService {
+  // Creates a finance workspace.
+  rpc CreateFinanceWorkspace(CreateFinanceWorkspaceRequest) returns (CreateFinanceWorkspaceResponse);
+
+  // Returns a finance workspace.
+  rpc GetFinanceWorkspace(GetFinanceWorkspaceRequest) returns (GetFinanceWorkspaceResponse);
+
+  // Deletes a finance workspace.
+  rpc DeleteFinanceWorkspace(DeleteFinanceWorkspaceRequest) returns (DeleteFinanceWorkspaceResponse);
+
+  // Returns several finance workspaces at once.
+  rpc BatchGetFinanceWorkspaces(BatchGetFinanceWorkspacesRequest) returns (BatchGetFinanceWorkspacesResponse);
+
+  // Lists finance workspaces a page at a time.
+  rpc SearchFinanceWorkspaces(SearchFinanceWorkspacesRequest) returns (SearchFinanceWorkspacesResponse);
+
+  // Streams the changes of finance workspaces as they happen.
+  rpc WatchFinanceWorkspaces(WatchFinanceWorkspacesRequest) returns (stream WatchFinanceWorkspacesResponse);
+
+  // Takes a stream of finance workspaces and answers once at the end.
+  rpc BatchCreateFinanceWorkspaces(stream BatchCreateFinanceWorkspacesRequest) returns (BatchCreateFinanceWorkspacesResponse);
+
+  // Creates a finance workspace.
+  rpc CloneFinanceWorkspace(CloneFinanceWorkspaceRequest) returns (CloneFinanceWorkspaceResponse);
+}
+
+// The request of `CreateFinanceWorkspace`.
+message CreateFinanceWorkspaceRequest {
+  acme.common.v1.RequestContext context = 1;
+  FinanceWorkspace finance_workspace = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateFinanceWorkspace`.
+message CreateFinanceWorkspaceResponse {
+  FinanceWorkspace finance_workspace = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetFinanceWorkspace`.
+message GetFinanceWorkspaceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string finance_workspace_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFinanceWorkspace`.
+message GetFinanceWorkspaceResponse {
+  FinanceWorkspace finance_workspace = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteFinanceWorkspace`.
+message DeleteFinanceWorkspaceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string finance_workspace_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteFinanceWorkspace`.
+message DeleteFinanceWorkspaceResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetFinanceWorkspaces`.
+message BatchGetFinanceWorkspacesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string finance_workspace_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetFinanceWorkspaces`.
+message BatchGetFinanceWorkspacesResponse {
+  repeated FinanceWorkspace finance_workspaces = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchFinanceWorkspaces`.
+message SearchFinanceWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FinanceWorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchFinanceWorkspacesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchFinanceWorkspaces`.
+message SearchFinanceWorkspacesResponse {
+  repeated FinanceWorkspace finance_workspaces = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchFinanceWorkspaces`.
+message WatchFinanceWorkspacesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FinanceWorkspaceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchFinanceWorkspacesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchFinanceWorkspaces`.
+message WatchFinanceWorkspacesResponse {
+  FinanceWorkspace finance_workspace = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateFinanceWorkspaces`.
+message BatchCreateFinanceWorkspacesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateFinanceWorkspacesRequest.StreamHeader header = 2;
+    FinanceWorkspace record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateFinanceWorkspaces`.
+message BatchCreateFinanceWorkspacesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string finance_workspace_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateFinanceWorkspacesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneFinanceWorkspace`.
+message CloneFinanceWorkspaceRequest {
+  acme.common.v1.RequestContext context = 1;
+  FinanceWorkspace finance_workspace = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneFinanceWorkspace`.
+message CloneFinanceWorkspaceResponse {
+  FinanceWorkspace finance_workspace = 1;
+  acme.common.v1.OperationResult result = 2;
+}

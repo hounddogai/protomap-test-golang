@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "SavedListWorkflowServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Runs the long-lived workflow that takes a saved list from start to finish.
+service SavedListWorkflowService {
+  // Starts a saved list.
+  rpc StartSavedListWorkflow(StartSavedListWorkflowRequest) returns (StartSavedListWorkflowResponse);
+
+  // Advances a saved list.
+  rpc AdvanceSavedListWorkflow(AdvanceSavedListWorkflowRequest) returns (AdvanceSavedListWorkflowResponse);
+
+  // Cancels a saved list.
+  rpc CancelSavedListWorkflow(CancelSavedListWorkflowRequest) returns (CancelSavedListWorkflowResponse);
+
+  // Retrys a saved list.
+  rpc RetrySavedListWorkflow(RetrySavedListWorkflowRequest) returns (RetrySavedListWorkflowResponse);
+
+  // Pauses a saved list.
+  rpc PauseSavedListWorkflow(PauseSavedListWorkflowRequest) returns (PauseSavedListWorkflowResponse);
+
+  // Resumes a saved list.
+  rpc ResumeSavedListWorkflow(ResumeSavedListWorkflowRequest) returns (ResumeSavedListWorkflowResponse);
+
+  // Returns a saved list.
+  rpc InspectSavedListWorkflow(InspectSavedListWorkflowRequest) returns (InspectSavedListWorkflowResponse);
+
+  // Lists saved lists a page at a time.
+  rpc ListSavedListWorkflows(ListSavedListWorkflowsRequest) returns (ListSavedListWorkflowsResponse);
+
+  // Signals a saved list.
+  rpc SignalSavedListWorkflow(SignalSavedListWorkflowRequest) returns (SignalSavedListWorkflowResponse);
+}
+
+// The request of `StartSavedListWorkflow`.
+message StartSavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  StartSavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartSavedListWorkflow`.
+message StartSavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  StartSavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceSavedListWorkflow`.
+message AdvanceSavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  AdvanceSavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceSavedListWorkflow`.
+message AdvanceSavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  AdvanceSavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelSavedListWorkflow`.
+message CancelSavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  CancelSavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelSavedListWorkflow`.
+message CancelSavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  CancelSavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetrySavedListWorkflow`.
+message RetrySavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  RetrySavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetrySavedListWorkflow`.
+message RetrySavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  RetrySavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseSavedListWorkflow`.
+message PauseSavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  PauseSavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseSavedListWorkflow`.
+message PauseSavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  PauseSavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeSavedListWorkflow`.
+message ResumeSavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  ResumeSavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeSavedListWorkflow`.
+message ResumeSavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  ResumeSavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSavedListWorkflow`.
+message InspectSavedListWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSavedListWorkflow`.
+message InspectSavedListWorkflowResponse {
+  SavedList saved_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSavedListWorkflows`.
+message ListSavedListWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SavedListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSavedListWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSavedListWorkflows`.
+message ListSavedListWorkflowsResponse {
+  repeated SavedList saved_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalSavedListWorkflow`.
+message SignalSavedListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string saved_list_id = 2;
+  SavedList saved_list = 3;
+  SignalSavedListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalSavedListWorkflow`.
+message SignalSavedListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SavedList saved_list = 1;
+  SignalSavedListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

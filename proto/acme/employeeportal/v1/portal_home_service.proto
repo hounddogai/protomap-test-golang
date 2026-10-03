@@ -1,0 +1,212 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.employeeportal.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/employeeportal/v1/employeeportal.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Employeeportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/employeeportal/v1;employeeportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "PortalHomeServiceProto";
+option java_package = "com.acme.employeeportal.v1";
+
+// Manages portal homes: creates, reads, changes, and lists them.
+service PortalHomeService {
+  // Creates a portal home.
+  rpc CreatePortalHome(CreatePortalHomeRequest) returns (CreatePortalHomeResponse);
+
+  // Returns a portal home.
+  rpc GetPortalHome(GetPortalHomeRequest) returns (GetPortalHomeResponse);
+
+  // Changes a portal home.
+  rpc UpdatePortalHome(UpdatePortalHomeRequest) returns (UpdatePortalHomeResponse);
+
+  // Deletes a portal home.
+  rpc DeletePortalHome(DeletePortalHomeRequest) returns (DeletePortalHomeResponse);
+
+  // Lists portal homes a page at a time.
+  rpc ListPortalHomes(ListPortalHomesRequest) returns (ListPortalHomesResponse);
+
+  // Returns several portal homes at once.
+  rpc BatchGetPortalHomes(BatchGetPortalHomesRequest) returns (BatchGetPortalHomesResponse);
+
+  // Lists portal homes a page at a time.
+  rpc SearchPortalHomes(SearchPortalHomesRequest) returns (SearchPortalHomesResponse);
+
+  // Streams the changes of portal homes as they happen.
+  rpc WatchPortalHomes(WatchPortalHomesRequest) returns (stream WatchPortalHomesResponse);
+
+  // Creates a portal home.
+  rpc ClonePortalHome(ClonePortalHomeRequest) returns (ClonePortalHomeResponse);
+}
+
+// The request of `CreatePortalHome`.
+message CreatePortalHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  PortalHome portal_home = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePortalHome`.
+message CreatePortalHomeResponse {
+  PortalHome portal_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPortalHome`.
+message GetPortalHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  string portal_home_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPortalHome`.
+message GetPortalHomeResponse {
+  PortalHome portal_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePortalHome`.
+message UpdatePortalHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  PortalHome portal_home = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePortalHome`.
+message UpdatePortalHomeResponse {
+  PortalHome portal_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePortalHome`.
+message DeletePortalHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  string portal_home_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePortalHome`.
+message DeletePortalHomeResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPortalHomes`.
+message ListPortalHomesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PortalHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPortalHomesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPortalHomes`.
+message ListPortalHomesResponse {
+  repeated PortalHome portal_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPortalHomes`.
+message BatchGetPortalHomesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string portal_home_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPortalHomes`.
+message BatchGetPortalHomesResponse {
+  repeated PortalHome portal_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPortalHomes`.
+message SearchPortalHomesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PortalHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPortalHomesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPortalHomes`.
+message SearchPortalHomesResponse {
+  repeated PortalHome portal_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPortalHomes`.
+message WatchPortalHomesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PortalHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPortalHomesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPortalHomes`.
+message WatchPortalHomesResponse {
+  PortalHome portal_home = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ClonePortalHome`.
+message ClonePortalHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  PortalHome portal_home = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePortalHome`.
+message ClonePortalHomeResponse {
+  PortalHome portal_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.anomalies.v1;
+
+import "acme/anomalies/v1/anomalies.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Anomalies.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/anomalies/v1;anomaliesv1";
+option java_multiple_files = true;
+option java_outer_classname = "AnomalyQueryServiceProto";
+option java_package = "com.acme.anomalies.v1";
+
+// Answers read-only questions about anomalies, for screens and reports.
+service AnomalyQueryService {
+  // Returns an anomaly.
+  rpc LookupAnomaly(LookupAnomalyRequest) returns (LookupAnomalyResponse);
+
+  // Lists anomalies a page at a time.
+  rpc BrowseAnomalies(BrowseAnomaliesRequest) returns (BrowseAnomaliesResponse);
+
+  // Lists anomalies a page at a time.
+  rpc FindAnomalies(FindAnomaliesRequest) returns (FindAnomaliesResponse);
+
+  // Counts anomalies by status.
+  rpc CountAnomalies(CountAnomaliesRequest) returns (CountAnomaliesResponse);
+
+  // Returns several anomalies at once.
+  rpc ResolveAnomalies(ResolveAnomaliesRequest) returns (ResolveAnomaliesResponse);
+
+  // Streams every matching anomaly.
+  rpc ExportAnomalies(ExportAnomaliesRequest) returns (stream ExportAnomaliesResponse);
+
+  // Summarizes an anomaly.
+  rpc SummarizeAnomalies(SummarizeAnomaliesRequest) returns (SummarizeAnomaliesResponse);
+
+  // Returns an anomaly.
+  rpc PeekAnomaly(PeekAnomalyRequest) returns (PeekAnomalyResponse);
+}
+
+// The request of `LookupAnomaly`.
+message LookupAnomalyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string anomaly_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupAnomaly`.
+message LookupAnomalyResponse {
+  Anomaly anomaly = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseAnomalies`.
+message BrowseAnomaliesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnomalyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseAnomaliesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseAnomalies`.
+message BrowseAnomaliesResponse {
+  repeated Anomaly anomalies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindAnomalies`.
+message FindAnomaliesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnomalyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindAnomaliesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindAnomalies`.
+message FindAnomaliesResponse {
+  repeated Anomaly anomalies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountAnomalies`.
+message CountAnomaliesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnomalyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountAnomaliesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountAnomalies`.
+message CountAnomaliesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveAnomalies`.
+message ResolveAnomaliesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string anomaly_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveAnomalies`.
+message ResolveAnomaliesResponse {
+  repeated Anomaly anomalies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportAnomalies`.
+message ExportAnomaliesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AnomalyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportAnomaliesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportAnomalies`.
+message ExportAnomaliesResponse {
+  Anomaly anomaly = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeAnomalies`.
+message SummarizeAnomaliesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string anomaly_id = 2;
+  SummarizeAnomaliesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeAnomalies`.
+message SummarizeAnomaliesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `PeekAnomaly`.
+message PeekAnomalyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string anomaly_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekAnomaly`.
+message PeekAnomalyResponse {
+  Anomaly anomaly = 1;
+  acme.common.v1.OperationResult result = 2;
+}

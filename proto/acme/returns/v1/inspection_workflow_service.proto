@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "InspectionWorkflowServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Runs the long-lived workflow that takes an inspection from start to finish.
+service InspectionWorkflowService {
+  // Starts an inspection.
+  rpc StartInspectionWorkflow(StartInspectionWorkflowRequest) returns (StartInspectionWorkflowResponse);
+
+  // Advances an inspection.
+  rpc AdvanceInspectionWorkflow(AdvanceInspectionWorkflowRequest) returns (AdvanceInspectionWorkflowResponse);
+
+  // Cancels an inspection.
+  rpc CancelInspectionWorkflow(CancelInspectionWorkflowRequest) returns (CancelInspectionWorkflowResponse);
+
+  // Retrys an inspection.
+  rpc RetryInspectionWorkflow(RetryInspectionWorkflowRequest) returns (RetryInspectionWorkflowResponse);
+
+  // Pauses an inspection.
+  rpc PauseInspectionWorkflow(PauseInspectionWorkflowRequest) returns (PauseInspectionWorkflowResponse);
+
+  // Resumes an inspection.
+  rpc ResumeInspectionWorkflow(ResumeInspectionWorkflowRequest) returns (ResumeInspectionWorkflowResponse);
+
+  // Returns an inspection.
+  rpc InspectInspectionWorkflow(InspectInspectionWorkflowRequest) returns (InspectInspectionWorkflowResponse);
+
+  // Lists inspections a page at a time.
+  rpc ListInspectionWorkflows(ListInspectionWorkflowsRequest) returns (ListInspectionWorkflowsResponse);
+
+  // Signals an inspection.
+  rpc SignalInspectionWorkflow(SignalInspectionWorkflowRequest) returns (SignalInspectionWorkflowResponse);
+}
+
+// The request of `StartInspectionWorkflow`.
+message StartInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  StartInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartInspectionWorkflow`.
+message StartInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  StartInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceInspectionWorkflow`.
+message AdvanceInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  AdvanceInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceInspectionWorkflow`.
+message AdvanceInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  AdvanceInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelInspectionWorkflow`.
+message CancelInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  CancelInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelInspectionWorkflow`.
+message CancelInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  CancelInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryInspectionWorkflow`.
+message RetryInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  RetryInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryInspectionWorkflow`.
+message RetryInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  RetryInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseInspectionWorkflow`.
+message PauseInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  PauseInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseInspectionWorkflow`.
+message PauseInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  PauseInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeInspectionWorkflow`.
+message ResumeInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  ResumeInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeInspectionWorkflow`.
+message ResumeInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  ResumeInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectInspectionWorkflow`.
+message InspectInspectionWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectInspectionWorkflow`.
+message InspectInspectionWorkflowResponse {
+  Inspection inspection = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListInspectionWorkflows`.
+message ListInspectionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated InspectionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListInspectionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListInspectionWorkflows`.
+message ListInspectionWorkflowsResponse {
+  repeated Inspection inspections = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalInspectionWorkflow`.
+message SignalInspectionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string inspection_id = 2;
+  Inspection inspection = 3;
+  SignalInspectionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalInspectionWorkflow`.
+message SignalInspectionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Inspection inspection = 1;
+  SignalInspectionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

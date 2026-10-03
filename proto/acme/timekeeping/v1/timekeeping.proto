@@ -1,0 +1,185 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.timekeeping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/employees/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/timekeeping/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Timekeeping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/timekeeping/v1;timekeepingv1";
+option java_multiple_files = true;
+option java_outer_classname = "TimekeepingProto";
+option java_package = "com.acme.timekeeping.v1";
+
+// Where a timesheet is in its lifecycle.
+enum TimesheetStatus {
+  TIMESHEET_STATUS_UNSPECIFIED = 0;
+  TIMESHEET_STATUS_DRAFT = 1;
+  TIMESHEET_STATUS_ISSUED = 2;
+  TIMESHEET_STATUS_APPROVED = 3;
+  TIMESHEET_STATUS_PAID = 4;
+  TIMESHEET_STATUS_VOID = 5;
+}
+
+// Where a clock event is in its lifecycle.
+enum ClockEventStatus {
+  CLOCK_EVENT_STATUS_UNSPECIFIED = 0;
+  CLOCK_EVENT_STATUS_RECEIVED = 1;
+  CLOCK_EVENT_STATUS_PROCESSED = 2;
+  CLOCK_EVENT_STATUS_DISCARDED = 3;
+}
+
+// Where an overtime is in its lifecycle.
+enum OvertimeStatus {
+  OVERTIME_STATUS_UNSPECIFIED = 0;
+  OVERTIME_STATUS_DRAFT = 1;
+  OVERTIME_STATUS_ENABLED = 2;
+  OVERTIME_STATUS_DISABLED = 3;
+  OVERTIME_STATUS_RETIRED = 4;
+}
+
+// The line of a timesheet.
+message TimesheetLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  TimesheetLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a timesheet line.
+message TimesheetLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a timesheet.
+message TimesheetCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a timesheet.
+message TimesheetBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a timesheet.
+message TimesheetAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A timesheet of the timekeeping domain.
+message Timesheet {
+  string timesheet_id = 1;
+  string number = 2;
+  TimesheetStatus status = 3;
+  acme.employees.v1.EmployeeRef counterparty = 4;
+  repeated TimesheetLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    TimesheetCardSettlement card = 8;
+    TimesheetBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated TimesheetAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a clock event.
+message ClockEventMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A clock event of the timekeeping domain.
+message ClockEvent {
+  string clock_event_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  TimesheetRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ClockEventMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The condition of an overtime.
+message OvertimeCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of an overtime.
+message OvertimeDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of an overtime.
+message OvertimeRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of an overtime.
+message OvertimeBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// An overtime of the timekeeping domain.
+message Overtime {
+  string overtime_id = 1;
+  string name = 2;
+  string description = 3;
+  OvertimeStatus status = 4;
+  int32 priority = 5;
+  repeated OvertimeCondition conditions = 6;
+  oneof action {
+    OvertimeDiscountAction discount = 7;
+    OvertimeRouteAction route = 8;
+    OvertimeBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

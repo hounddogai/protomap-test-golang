@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.keymanagement.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/keymanagement/v1/keymanagement.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Keymanagement.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/keymanagement/v1;keymanagementv1";
+option java_multiple_files = true;
+option java_outer_classname = "CryptoKeyServiceProto";
+option java_package = "com.acme.keymanagement.v1";
+
+// Manages crypto keys: creates, reads, changes, and lists them.
+service CryptoKeyService {
+  // Creates a crypto key.
+  rpc CreateCryptoKey(CreateCryptoKeyRequest) returns (CreateCryptoKeyResponse);
+
+  // Returns a crypto key.
+  rpc GetCryptoKey(GetCryptoKeyRequest) returns (GetCryptoKeyResponse);
+
+  // Changes a crypto key.
+  rpc UpdateCryptoKey(UpdateCryptoKeyRequest) returns (UpdateCryptoKeyResponse);
+
+  // Deletes a crypto key.
+  rpc DeleteCryptoKey(DeleteCryptoKeyRequest) returns (DeleteCryptoKeyResponse);
+
+  // Lists crypto keys a page at a time.
+  rpc ListCryptoKeys(ListCryptoKeysRequest) returns (ListCryptoKeysResponse);
+
+  // Returns several crypto keys at once.
+  rpc BatchGetCryptoKeys(BatchGetCryptoKeysRequest) returns (BatchGetCryptoKeysResponse);
+
+  // Lists crypto keys a page at a time.
+  rpc SearchCryptoKeys(SearchCryptoKeysRequest) returns (SearchCryptoKeysResponse);
+
+  // Streams the changes of crypto keys as they happen.
+  rpc WatchCryptoKeys(WatchCryptoKeysRequest) returns (stream WatchCryptoKeysResponse);
+
+  // Takes a stream of crypto keys and answers once at the end.
+  rpc BatchCreateCryptoKeys(stream BatchCreateCryptoKeysRequest) returns (BatchCreateCryptoKeysResponse);
+
+  // Creates a crypto key.
+  rpc CloneCryptoKey(CloneCryptoKeyRequest) returns (CloneCryptoKeyResponse);
+}
+
+// The request of `CreateCryptoKey`.
+message CreateCryptoKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  CryptoKey crypto_key = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateCryptoKey`.
+message CreateCryptoKeyResponse {
+  CryptoKey crypto_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetCryptoKey`.
+message GetCryptoKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string crypto_key_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCryptoKey`.
+message GetCryptoKeyResponse {
+  CryptoKey crypto_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateCryptoKey`.
+message UpdateCryptoKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  CryptoKey crypto_key = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateCryptoKey`.
+message UpdateCryptoKeyResponse {
+  CryptoKey crypto_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteCryptoKey`.
+message DeleteCryptoKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string crypto_key_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteCryptoKey`.
+message DeleteCryptoKeyResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListCryptoKeys`.
+message ListCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCryptoKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCryptoKeys`.
+message ListCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetCryptoKeys`.
+message BatchGetCryptoKeysRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string crypto_key_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetCryptoKeys`.
+message BatchGetCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchCryptoKeys`.
+message SearchCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchCryptoKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchCryptoKeys`.
+message SearchCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchCryptoKeys`.
+message WatchCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchCryptoKeysRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchCryptoKeys`.
+message WatchCryptoKeysResponse {
+  CryptoKey crypto_key = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateCryptoKeys`.
+message BatchCreateCryptoKeysRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateCryptoKeysRequest.StreamHeader header = 2;
+    CryptoKey record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateCryptoKeys`.
+message BatchCreateCryptoKeysResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string crypto_key_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateCryptoKeysResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneCryptoKey`.
+message CloneCryptoKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  CryptoKey crypto_key = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneCryptoKey`.
+message CloneCryptoKeyResponse {
+  CryptoKey crypto_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}

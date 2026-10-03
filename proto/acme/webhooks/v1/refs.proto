@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.webhooks.v1;
+
+option csharp_namespace = "Acme.Webhooks.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/webhooks/v1;webhooksv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.webhooks.v1";
+
+// A reference to a webhook endpoint of the webhooks domain.
+message WebhookEndpointRef {
+  string webhook_endpoint_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a webhook delivery of the webhooks domain.
+message WebhookDeliveryRef {
+  string webhook_delivery_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a webhook secret of the webhooks domain.
+message WebhookSecretRef {
+  string webhook_secret_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}

@@ -1,0 +1,229 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RenewalScheduleWorkflowServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Runs the long-lived workflow that takes a renewal schedule from start to finish.
+service RenewalScheduleWorkflowService {
+  // Starts a renewal schedule.
+  rpc StartRenewalScheduleWorkflow(StartRenewalScheduleWorkflowRequest) returns (StartRenewalScheduleWorkflowResponse);
+
+  // Advances a renewal schedule.
+  rpc AdvanceRenewalScheduleWorkflow(AdvanceRenewalScheduleWorkflowRequest) returns (AdvanceRenewalScheduleWorkflowResponse);
+
+  // Retrys a renewal schedule.
+  rpc RetryRenewalScheduleWorkflow(RetryRenewalScheduleWorkflowRequest) returns (RetryRenewalScheduleWorkflowResponse);
+
+  // Pauses a renewal schedule.
+  rpc PauseRenewalScheduleWorkflow(PauseRenewalScheduleWorkflowRequest) returns (PauseRenewalScheduleWorkflowResponse);
+
+  // Returns a renewal schedule.
+  rpc InspectRenewalScheduleWorkflow(InspectRenewalScheduleWorkflowRequest) returns (InspectRenewalScheduleWorkflowResponse);
+
+  // Signals a renewal schedule.
+  rpc SignalRenewalScheduleWorkflow(SignalRenewalScheduleWorkflowRequest) returns (SignalRenewalScheduleWorkflowResponse);
+}
+
+// The request of `StartRenewalScheduleWorkflow`.
+message StartRenewalScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  StartRenewalScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartRenewalScheduleWorkflow`.
+message StartRenewalScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  StartRenewalScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceRenewalScheduleWorkflow`.
+message AdvanceRenewalScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  AdvanceRenewalScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceRenewalScheduleWorkflow`.
+message AdvanceRenewalScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  AdvanceRenewalScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryRenewalScheduleWorkflow`.
+message RetryRenewalScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  RetryRenewalScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryRenewalScheduleWorkflow`.
+message RetryRenewalScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  RetryRenewalScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseRenewalScheduleWorkflow`.
+message PauseRenewalScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  PauseRenewalScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseRenewalScheduleWorkflow`.
+message PauseRenewalScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  PauseRenewalScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectRenewalScheduleWorkflow`.
+message InspectRenewalScheduleWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectRenewalScheduleWorkflow`.
+message InspectRenewalScheduleWorkflowResponse {
+  RenewalSchedule renewal_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SignalRenewalScheduleWorkflow`.
+message SignalRenewalScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  SignalRenewalScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalRenewalScheduleWorkflow`.
+message SignalRenewalScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  SignalRenewalScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

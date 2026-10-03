@@ -1,0 +1,170 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fulfillment.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fulfillment/v1/fulfillment.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fulfillment.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fulfillment/v1;fulfillmentv1";
+option java_multiple_files = true;
+option java_outer_classname = "PackingSlipQueryServiceProto";
+option java_package = "com.acme.fulfillment.v1";
+
+// Answers read-only questions about packing slips, for screens and reports.
+service PackingSlipQueryService {
+  // Returns a packing slip.
+  rpc LookupPackingSlip(LookupPackingSlipRequest) returns (LookupPackingSlipResponse);
+
+  // Lists packing slips a page at a time.
+  rpc BrowsePackingSlips(BrowsePackingSlipsRequest) returns (BrowsePackingSlipsResponse);
+
+  // Lists packing slips a page at a time.
+  rpc FindPackingSlips(FindPackingSlipsRequest) returns (FindPackingSlipsResponse);
+
+  // Counts packing slips by status.
+  rpc CountPackingSlips(CountPackingSlipsRequest) returns (CountPackingSlipsResponse);
+
+  // Returns several packing slips at once.
+  rpc ResolvePackingSlips(ResolvePackingSlipsRequest) returns (ResolvePackingSlipsResponse);
+
+  // Summarizes a packing slip.
+  rpc SummarizePackingSlips(SummarizePackingSlipsRequest) returns (SummarizePackingSlipsResponse);
+}
+
+// The request of `LookupPackingSlip`.
+message LookupPackingSlipRequest {
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPackingSlip`.
+message LookupPackingSlipResponse {
+  PackingSlip packing_slip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePackingSlips`.
+message BrowsePackingSlipsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PackingSlipStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePackingSlipsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePackingSlips`.
+message BrowsePackingSlipsResponse {
+  repeated PackingSlip packing_slips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindPackingSlips`.
+message FindPackingSlipsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PackingSlipStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindPackingSlipsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindPackingSlips`.
+message FindPackingSlipsResponse {
+  repeated PackingSlip packing_slips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountPackingSlips`.
+message CountPackingSlipsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PackingSlipStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountPackingSlipsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountPackingSlips`.
+message CountPackingSlipsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolvePackingSlips`.
+message ResolvePackingSlipsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string packing_slip_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolvePackingSlips`.
+message ResolvePackingSlipsResponse {
+  repeated PackingSlip packing_slips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizePackingSlips`.
+message SummarizePackingSlipsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  SummarizePackingSlipsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizePackingSlips`.
+message SummarizePackingSlipsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}

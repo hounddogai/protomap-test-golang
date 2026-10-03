@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderValidationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Checks orders against the rules before anything acts on them.
+service OrderValidationService {
+  // Validates an order.
+  rpc ValidateOrder(ValidateOrderRequest) returns (ValidateOrderResponse);
+
+  // Previews an order.
+  rpc PreviewOrder(PreviewOrderRequest) returns (PreviewOrderResponse);
+
+  // Checks an order.
+  rpc CheckOrderEligibility(CheckOrderEligibilityRequest) returns (CheckOrderEligibilityResponse);
+
+  // Normalizes an order.
+  rpc NormalizeOrder(NormalizeOrderRequest) returns (NormalizeOrderResponse);
+
+  // Explains an order.
+  rpc ExplainOrderDecision(ExplainOrderDecisionRequest) returns (ExplainOrderDecisionResponse);
+
+  // Scores an order.
+  rpc ScoreOrder(ScoreOrderRequest) returns (ScoreOrderResponse);
+
+  // Lints an order.
+  rpc LintOrders(LintOrdersRequest) returns (LintOrdersResponse);
+
+  // Returns an order.
+  rpc GetOrderRules(GetOrderRulesRequest) returns (GetOrderRulesResponse);
+}
+
+// The request of `ValidateOrder`.
+message ValidateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  ValidateOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateOrder`.
+message ValidateOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  ValidateOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewOrder`.
+message PreviewOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  PreviewOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewOrder`.
+message PreviewOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  PreviewOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckOrderEligibility`.
+message CheckOrderEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  CheckOrderEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckOrderEligibility`.
+message CheckOrderEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  CheckOrderEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeOrder`.
+message NormalizeOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  NormalizeOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeOrder`.
+message NormalizeOrderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  NormalizeOrderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainOrderDecision`.
+message ExplainOrderDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  ExplainOrderDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainOrderDecision`.
+message ExplainOrderDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  ExplainOrderDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreOrder`.
+message ScoreOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  ScoreOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreOrder`.
+message ScoreOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Order order = 1;
+  ScoreOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintOrders`.
+message LintOrdersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  LintOrdersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintOrders`.
+message LintOrdersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  LintOrdersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderRules`.
+message GetOrderRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderRules`.
+message GetOrderRulesResponse {
+  Order order = 1;
+  acme.common.v1.OperationResult result = 2;
+}

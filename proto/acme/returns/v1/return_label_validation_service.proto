@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnLabelValidationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Checks return labels against the rules before anything acts on them.
+service ReturnLabelValidationService {
+  // Validates a return label.
+  rpc ValidateReturnLabel(ValidateReturnLabelRequest) returns (ValidateReturnLabelResponse);
+
+  // Previews a return label.
+  rpc PreviewReturnLabel(PreviewReturnLabelRequest) returns (PreviewReturnLabelResponse);
+
+  // Normalizes a return label.
+  rpc NormalizeReturnLabel(NormalizeReturnLabelRequest) returns (NormalizeReturnLabelResponse);
+
+  // Explains a return label.
+  rpc ExplainReturnLabelDecision(ExplainReturnLabelDecisionRequest) returns (ExplainReturnLabelDecisionResponse);
+
+  // Scores a return label.
+  rpc ScoreReturnLabel(ScoreReturnLabelRequest) returns (ScoreReturnLabelResponse);
+
+  // Lints a return label.
+  rpc LintReturnLabels(LintReturnLabelsRequest) returns (LintReturnLabelsResponse);
+
+  // Returns a return label.
+  rpc GetReturnLabelRules(GetReturnLabelRulesRequest) returns (GetReturnLabelRulesResponse);
+}
+
+// The request of `ValidateReturnLabel`.
+message ValidateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  ValidateReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateReturnLabel`.
+message ValidateReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  ValidateReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewReturnLabel`.
+message PreviewReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  PreviewReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewReturnLabel`.
+message PreviewReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  PreviewReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeReturnLabel`.
+message NormalizeReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  NormalizeReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeReturnLabel`.
+message NormalizeReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  NormalizeReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReturnLabelDecision`.
+message ExplainReturnLabelDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  ExplainReturnLabelDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReturnLabelDecision`.
+message ExplainReturnLabelDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  ExplainReturnLabelDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreReturnLabel`.
+message ScoreReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  ScoreReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreReturnLabel`.
+message ScoreReturnLabelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreReturnLabelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  ScoreReturnLabelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintReturnLabels`.
+message LintReturnLabelsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  LintReturnLabelsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintReturnLabels`.
+message LintReturnLabelsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  LintReturnLabelsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnLabelRules`.
+message GetReturnLabelRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnLabelRules`.
+message GetReturnLabelRulesResponse {
+  ReturnLabel return_label = 1;
+  acme.common.v1.OperationResult result = 2;
+}

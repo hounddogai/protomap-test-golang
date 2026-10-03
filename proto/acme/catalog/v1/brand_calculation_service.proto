@@ -1,0 +1,249 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "BrandCalculationServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Computes the figures of a brand, such as totals, taxes, and estimates.
+service BrandCalculationService {
+  // Calculates a brand.
+  rpc CalculateBrand(CalculateBrandRequest) returns (CalculateBrandResponse);
+
+  // Estimates a brand.
+  rpc EstimateBrand(EstimateBrandRequest) returns (EstimateBrandResponse);
+
+  // Compares a brand.
+  rpc CompareBrandOptions(CompareBrandOptionsRequest) returns (CompareBrandOptionsResponse);
+
+  // Recalculates a brand.
+  rpc RecalculateBrands(RecalculateBrandsRequest) returns (RecalculateBrandsResponse);
+
+  // Explains a brand.
+  rpc ExplainBrandCalculation(ExplainBrandCalculationRequest) returns (ExplainBrandCalculationResponse);
+
+  // Returns a brand.
+  rpc GetBrandRates(GetBrandRatesRequest) returns (GetBrandRatesResponse);
+}
+
+// The request of `CalculateBrand`.
+message CalculateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  CalculateBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateBrand`.
+message CalculateBrandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateBrandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Brand brand = 1;
+  CalculateBrandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateBrand`.
+message EstimateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  EstimateBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateBrand`.
+message EstimateBrandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateBrandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Brand brand = 1;
+  EstimateBrandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareBrandOptions`.
+message CompareBrandOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  CompareBrandOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareBrandOptions`.
+message CompareBrandOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareBrandOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Brand brand = 1;
+  CompareBrandOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateBrands`.
+message RecalculateBrandsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  RecalculateBrandsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateBrands`.
+message RecalculateBrandsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateBrandsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Brand brand = 1;
+  RecalculateBrandsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainBrandCalculation`.
+message ExplainBrandCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  ExplainBrandCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainBrandCalculation`.
+message ExplainBrandCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ExplainBrandCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBrandRates`.
+message GetBrandRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBrandRates`.
+message GetBrandRatesResponse {
+  Brand brand = 1;
+  acme.common.v1.OperationResult result = 2;
+}

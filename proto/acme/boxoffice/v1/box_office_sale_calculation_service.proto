@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.boxoffice.v1;
+
+import "acme/boxoffice/v1/boxoffice.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Boxoffice.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/boxoffice/v1;boxofficev1";
+option java_multiple_files = true;
+option java_outer_classname = "BoxOfficeSaleCalculationServiceProto";
+option java_package = "com.acme.boxoffice.v1";
+
+// Computes the figures of a box office sale, such as totals, taxes, and estimates.
+service BoxOfficeSaleCalculationService {
+  // Calculates a box office sale.
+  rpc CalculateBoxOfficeSale(CalculateBoxOfficeSaleRequest) returns (CalculateBoxOfficeSaleResponse);
+
+  // Estimates a box office sale.
+  rpc EstimateBoxOfficeSale(EstimateBoxOfficeSaleRequest) returns (EstimateBoxOfficeSaleResponse);
+
+  // Quotes a box office sale.
+  rpc QuoteBoxOfficeSale(QuoteBoxOfficeSaleRequest) returns (QuoteBoxOfficeSaleResponse);
+
+  // Compares a box office sale.
+  rpc CompareBoxOfficeSaleOptions(CompareBoxOfficeSaleOptionsRequest) returns (CompareBoxOfficeSaleOptionsResponse);
+
+  // Recalculates a box office sale.
+  rpc RecalculateBoxOfficeSales(RecalculateBoxOfficeSalesRequest) returns (RecalculateBoxOfficeSalesResponse);
+
+  // Explains a box office sale.
+  rpc ExplainBoxOfficeSaleCalculation(ExplainBoxOfficeSaleCalculationRequest) returns (ExplainBoxOfficeSaleCalculationResponse);
+
+  // Returns a box office sale.
+  rpc GetBoxOfficeSaleRates(GetBoxOfficeSaleRatesRequest) returns (GetBoxOfficeSaleRatesResponse);
+}
+
+// The request of `CalculateBoxOfficeSale`.
+message CalculateBoxOfficeSaleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  BoxOfficeSale box_office_sale = 3;
+  CalculateBoxOfficeSaleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateBoxOfficeSale`.
+message CalculateBoxOfficeSaleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateBoxOfficeSaleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  BoxOfficeSale box_office_sale = 1;
+  CalculateBoxOfficeSaleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateBoxOfficeSale`.
+message EstimateBoxOfficeSaleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  BoxOfficeSale box_office_sale = 3;
+  EstimateBoxOfficeSaleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateBoxOfficeSale`.
+message EstimateBoxOfficeSaleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateBoxOfficeSaleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  BoxOfficeSale box_office_sale = 1;
+  EstimateBoxOfficeSaleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteBoxOfficeSale`.
+message QuoteBoxOfficeSaleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  BoxOfficeSale box_office_sale = 3;
+  QuoteBoxOfficeSaleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteBoxOfficeSale`.
+message QuoteBoxOfficeSaleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteBoxOfficeSaleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  BoxOfficeSale box_office_sale = 1;
+  QuoteBoxOfficeSaleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareBoxOfficeSaleOptions`.
+message CompareBoxOfficeSaleOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  BoxOfficeSale box_office_sale = 3;
+  CompareBoxOfficeSaleOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareBoxOfficeSaleOptions`.
+message CompareBoxOfficeSaleOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareBoxOfficeSaleOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  BoxOfficeSale box_office_sale = 1;
+  CompareBoxOfficeSaleOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateBoxOfficeSales`.
+message RecalculateBoxOfficeSalesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  BoxOfficeSale box_office_sale = 3;
+  RecalculateBoxOfficeSalesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateBoxOfficeSales`.
+message RecalculateBoxOfficeSalesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateBoxOfficeSalesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  BoxOfficeSale box_office_sale = 1;
+  RecalculateBoxOfficeSalesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainBoxOfficeSaleCalculation`.
+message ExplainBoxOfficeSaleCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  BoxOfficeSale box_office_sale = 3;
+  ExplainBoxOfficeSaleCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainBoxOfficeSaleCalculation`.
+message ExplainBoxOfficeSaleCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  BoxOfficeSale box_office_sale = 1;
+  ExplainBoxOfficeSaleCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBoxOfficeSaleRates`.
+message GetBoxOfficeSaleRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string box_office_sale_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBoxOfficeSaleRates`.
+message GetBoxOfficeSaleRatesResponse {
+  BoxOfficeSale box_office_sale = 1;
+  acme.common.v1.OperationResult result = 2;
+}

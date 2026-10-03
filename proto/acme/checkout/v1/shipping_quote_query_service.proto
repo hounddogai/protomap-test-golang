@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.checkout.v1;
+
+import "acme/checkout/v1/checkout.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Checkout.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/checkout/v1;checkoutv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShippingQuoteQueryServiceProto";
+option java_package = "com.acme.checkout.v1";
+
+// Answers read-only questions about shipping quotes, for screens and reports.
+service ShippingQuoteQueryService {
+  // Returns a shipping quote.
+  rpc LookupShippingQuote(LookupShippingQuoteRequest) returns (LookupShippingQuoteResponse);
+
+  // Lists shipping quotes a page at a time.
+  rpc BrowseShippingQuotes(BrowseShippingQuotesRequest) returns (BrowseShippingQuotesResponse);
+
+  // Lists shipping quotes a page at a time.
+  rpc FindShippingQuotes(FindShippingQuotesRequest) returns (FindShippingQuotesResponse);
+
+  // Returns several shipping quotes at once.
+  rpc ResolveShippingQuotes(ResolveShippingQuotesRequest) returns (ResolveShippingQuotesResponse);
+
+  // Streams every matching shipping quote.
+  rpc ExportShippingQuotes(ExportShippingQuotesRequest) returns (stream ExportShippingQuotesResponse);
+
+  // Summarizes a shipping quote.
+  rpc SummarizeShippingQuotes(SummarizeShippingQuotesRequest) returns (SummarizeShippingQuotesResponse);
+
+  // Lists shipping quotes a page at a time.
+  rpc SuggestShippingQuotes(SuggestShippingQuotesRequest) returns (SuggestShippingQuotesResponse);
+
+  // Returns a shipping quote.
+  rpc PeekShippingQuote(PeekShippingQuoteRequest) returns (PeekShippingQuoteResponse);
+}
+
+// The request of `LookupShippingQuote`.
+message LookupShippingQuoteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupShippingQuote`.
+message LookupShippingQuoteResponse {
+  ShippingQuote shipping_quote = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseShippingQuotes`.
+message BrowseShippingQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShippingQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseShippingQuotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseShippingQuotes`.
+message BrowseShippingQuotesResponse {
+  repeated ShippingQuote shipping_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindShippingQuotes`.
+message FindShippingQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShippingQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindShippingQuotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindShippingQuotes`.
+message FindShippingQuotesResponse {
+  repeated ShippingQuote shipping_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveShippingQuotes`.
+message ResolveShippingQuotesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string shipping_quote_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveShippingQuotes`.
+message ResolveShippingQuotesResponse {
+  repeated ShippingQuote shipping_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportShippingQuotes`.
+message ExportShippingQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShippingQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportShippingQuotesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportShippingQuotes`.
+message ExportShippingQuotesResponse {
+  ShippingQuote shipping_quote = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeShippingQuotes`.
+message SummarizeShippingQuotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  SummarizeShippingQuotesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeShippingQuotes`.
+message SummarizeShippingQuotesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestShippingQuotes`.
+message SuggestShippingQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShippingQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestShippingQuotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestShippingQuotes`.
+message SuggestShippingQuotesResponse {
+  repeated ShippingQuote shipping_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekShippingQuote`.
+message PeekShippingQuoteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekShippingQuote`.
+message PeekShippingQuoteResponse {
+  ShippingQuote shipping_quote = 1;
+  acme.common.v1.OperationResult result = 2;
+}

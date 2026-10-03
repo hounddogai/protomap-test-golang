@@ -1,0 +1,221 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.employeeportal.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/employeeportal/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Employeeportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/employeeportal/v1;employeeportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "EmployeeportalProto";
+option java_package = "com.acme.employeeportal.v1";
+
+// Where a portal home is in its lifecycle.
+enum PortalHomeStatus {
+  PORTAL_HOME_STATUS_UNSPECIFIED = 0;
+  PORTAL_HOME_STATUS_NEW = 1;
+  PORTAL_HOME_STATUS_OPEN = 2;
+  PORTAL_HOME_STATUS_WAITING = 3;
+  PORTAL_HOME_STATUS_RESOLVED = 4;
+  PORTAL_HOME_STATUS_CLOSED = 5;
+}
+
+// Where a self service request is in its lifecycle.
+enum SelfServiceRequestStatus {
+  SELF_SERVICE_REQUEST_STATUS_UNSPECIFIED = 0;
+  SELF_SERVICE_REQUEST_STATUS_NEW = 1;
+  SELF_SERVICE_REQUEST_STATUS_OPEN = 2;
+  SELF_SERVICE_REQUEST_STATUS_WAITING = 3;
+  SELF_SERVICE_REQUEST_STATUS_RESOLVED = 4;
+  SELF_SERVICE_REQUEST_STATUS_CLOSED = 5;
+}
+
+// Where an announcement is in its lifecycle.
+enum AnnouncementStatus {
+  ANNOUNCEMENT_STATUS_UNSPECIFIED = 0;
+  ANNOUNCEMENT_STATUS_DRAFT = 1;
+  ANNOUNCEMENT_STATUS_ISSUED = 2;
+  ANNOUNCEMENT_STATUS_APPROVED = 3;
+  ANNOUNCEMENT_STATUS_PAID = 4;
+  ANNOUNCEMENT_STATUS_VOID = 5;
+}
+
+// The comment of a portal home.
+message PortalHomeComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a portal home.
+message PortalHomeSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a portal home.
+message PortalHomeChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a portal home.
+message PortalHomeStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A portal home of the employeeportal domain.
+message PortalHome {
+  string portal_home_id = 1;
+  string subject = 2;
+  PortalHomeStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated PortalHomeComment comments = 7;
+  PortalHomeSla sla = 8;
+  oneof origin {
+    AnnouncementRef customer = 9;
+    string external_reference = 10;
+    PortalHomeChannelOrigin channel = 11;
+  }
+  repeated PortalHomeStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a self service request.
+message SelfServiceRequestComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a self service request.
+message SelfServiceRequestSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a self service request.
+message SelfServiceRequestChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a self service request.
+message SelfServiceRequestStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A self service request of the employeeportal domain.
+message SelfServiceRequest {
+  string self_service_request_id = 1;
+  string subject = 2;
+  SelfServiceRequestStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated SelfServiceRequestComment comments = 7;
+  SelfServiceRequestSla sla = 8;
+  oneof origin {
+    PortalHomeRef customer = 9;
+    string external_reference = 10;
+    SelfServiceRequestChannelOrigin channel = 11;
+  }
+  repeated SelfServiceRequestStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of an announcement.
+message AnnouncementLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  AnnouncementLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an announcement line.
+message AnnouncementLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an announcement.
+message AnnouncementCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an announcement.
+message AnnouncementBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an announcement.
+message AnnouncementAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An announcement of the employeeportal domain.
+message Announcement {
+  string announcement_id = 1;
+  string number = 2;
+  AnnouncementStatus status = 3;
+  PortalHomeRef counterparty = 4;
+  repeated AnnouncementLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    AnnouncementCardSettlement card = 8;
+    AnnouncementBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated AnnouncementAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

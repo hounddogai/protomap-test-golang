@@ -1,0 +1,181 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/partnerapi/v1/refs.proto";
+import "acme/sellers/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerapiProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Where a partner integration is in its lifecycle.
+enum PartnerIntegrationStatus {
+  PARTNER_INTEGRATION_STATUS_UNSPECIFIED = 0;
+  PARTNER_INTEGRATION_STATUS_PENDING = 1;
+  PARTNER_INTEGRATION_STATUS_OPEN = 2;
+  PARTNER_INTEGRATION_STATUS_FROZEN = 3;
+  PARTNER_INTEGRATION_STATUS_CLOSED = 4;
+}
+
+// Where a partner order is in its lifecycle.
+enum PartnerOrderStatus {
+  PARTNER_ORDER_STATUS_UNSPECIFIED = 0;
+  PARTNER_ORDER_STATUS_DRAFT = 1;
+  PARTNER_ORDER_STATUS_ISSUED = 2;
+  PARTNER_ORDER_STATUS_APPROVED = 3;
+  PARTNER_ORDER_STATUS_PAID = 4;
+  PARTNER_ORDER_STATUS_VOID = 5;
+}
+
+// Where a partner webhook is in its lifecycle.
+enum PartnerWebhookStatus {
+  PARTNER_WEBHOOK_STATUS_UNSPECIFIED = 0;
+  PARTNER_WEBHOOK_STATUS_RECEIVED = 1;
+  PARTNER_WEBHOOK_STATUS_PROCESSED = 2;
+  PARTNER_WEBHOOK_STATUS_DISCARDED = 3;
+}
+
+// The limit of a partner integration.
+message PartnerIntegrationLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a partner integration.
+message PartnerIntegrationCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a partner integration.
+message PartnerIntegrationBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A partner integration of the partnerapi domain.
+message PartnerIntegration {
+  string partner_integration_id = 1;
+  PartnerWebhookRef holder = 2;
+  PartnerIntegrationStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated PartnerIntegrationLimit limits = 7;
+  oneof funding {
+    PartnerIntegrationCardFunding card = 8;
+    PartnerIntegrationBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The line of a partner order.
+message PartnerOrderLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PartnerOrderLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a partner order line.
+message PartnerOrderLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a partner order.
+message PartnerOrderCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a partner order.
+message PartnerOrderBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a partner order.
+message PartnerOrderAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A partner order of the partnerapi domain.
+message PartnerOrder {
+  string partner_order_id = 1;
+  string number = 2;
+  PartnerOrderStatus status = 3;
+  acme.sellers.v1.SellerRef counterparty = 4;
+  repeated PartnerOrderLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PartnerOrderCardSettlement card = 8;
+    PartnerOrderBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PartnerOrderAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a partner webhook.
+message PartnerWebhookMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A partner webhook of the partnerapi domain.
+message PartnerWebhook {
+  string partner_webhook_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  PartnerIntegrationRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated PartnerWebhookMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

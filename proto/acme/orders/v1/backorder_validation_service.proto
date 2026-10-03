@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "BackorderValidationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Checks backorders against the rules before anything acts on them.
+service BackorderValidationService {
+  // Validates a backorder.
+  rpc ValidateBackorder(ValidateBackorderRequest) returns (ValidateBackorderResponse);
+
+  // Previews a backorder.
+  rpc PreviewBackorder(PreviewBackorderRequest) returns (PreviewBackorderResponse);
+
+  // Checks a backorder.
+  rpc CheckBackorderEligibility(CheckBackorderEligibilityRequest) returns (CheckBackorderEligibilityResponse);
+
+  // Normalizes a backorder.
+  rpc NormalizeBackorder(NormalizeBackorderRequest) returns (NormalizeBackorderResponse);
+
+  // Explains a backorder.
+  rpc ExplainBackorderDecision(ExplainBackorderDecisionRequest) returns (ExplainBackorderDecisionResponse);
+
+  // Scores a backorder.
+  rpc ScoreBackorder(ScoreBackorderRequest) returns (ScoreBackorderResponse);
+
+  // Returns a backorder.
+  rpc GetBackorderRules(GetBackorderRulesRequest) returns (GetBackorderRulesResponse);
+}
+
+// The request of `ValidateBackorder`.
+message ValidateBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ValidateBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateBackorder`.
+message ValidateBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ValidateBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewBackorder`.
+message PreviewBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  PreviewBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewBackorder`.
+message PreviewBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  PreviewBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckBackorderEligibility`.
+message CheckBackorderEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  CheckBackorderEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckBackorderEligibility`.
+message CheckBackorderEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  CheckBackorderEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeBackorder`.
+message NormalizeBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  NormalizeBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeBackorder`.
+message NormalizeBackorderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  NormalizeBackorderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainBackorderDecision`.
+message ExplainBackorderDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ExplainBackorderDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainBackorderDecision`.
+message ExplainBackorderDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ExplainBackorderDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreBackorder`.
+message ScoreBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ScoreBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreBackorder`.
+message ScoreBackorderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreBackorderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  ScoreBackorderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBackorderRules`.
+message GetBackorderRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBackorderRules`.
+message GetBackorderRulesResponse {
+  Backorder backorder = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.datasets.v1;
+
+option csharp_namespace = "Acme.Datasets.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/datasets/v1;datasetsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.datasets.v1";
+
+// A reference to a dataset of the datasets domain.
+message DatasetRef {
+  string dataset_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a dataset version of the datasets domain.
+message DatasetVersionRef {
+  string dataset_version_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a data schema of the datasets domain.
+message DataSchemaRef {
+  string data_schema_id = 1;
+  string display_name = 2;
+  string path = 3;
+}

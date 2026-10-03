@@ -1,0 +1,212 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoyaltyMemberServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Manages loyalty members: creates, reads, changes, and lists them.
+service LoyaltyMemberService {
+  // Creates a loyalty member.
+  rpc CreateLoyaltyMember(CreateLoyaltyMemberRequest) returns (CreateLoyaltyMemberResponse);
+
+  // Returns a loyalty member.
+  rpc GetLoyaltyMember(GetLoyaltyMemberRequest) returns (GetLoyaltyMemberResponse);
+
+  // Changes a loyalty member.
+  rpc UpdateLoyaltyMember(UpdateLoyaltyMemberRequest) returns (UpdateLoyaltyMemberResponse);
+
+  // Deletes a loyalty member.
+  rpc DeleteLoyaltyMember(DeleteLoyaltyMemberRequest) returns (DeleteLoyaltyMemberResponse);
+
+  // Lists loyalty members a page at a time.
+  rpc ListLoyaltyMembers(ListLoyaltyMembersRequest) returns (ListLoyaltyMembersResponse);
+
+  // Returns several loyalty members at once.
+  rpc BatchGetLoyaltyMembers(BatchGetLoyaltyMembersRequest) returns (BatchGetLoyaltyMembersResponse);
+
+  // Lists loyalty members a page at a time.
+  rpc SearchLoyaltyMembers(SearchLoyaltyMembersRequest) returns (SearchLoyaltyMembersResponse);
+
+  // Streams the changes of loyalty members as they happen.
+  rpc WatchLoyaltyMembers(WatchLoyaltyMembersRequest) returns (stream WatchLoyaltyMembersResponse);
+
+  // Creates a loyalty member.
+  rpc CloneLoyaltyMember(CloneLoyaltyMemberRequest) returns (CloneLoyaltyMemberResponse);
+}
+
+// The request of `CreateLoyaltyMember`.
+message CreateLoyaltyMemberRequest {
+  acme.common.v1.RequestContext context = 1;
+  LoyaltyMember loyalty_member = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateLoyaltyMember`.
+message CreateLoyaltyMemberResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetLoyaltyMember`.
+message GetLoyaltyMemberRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLoyaltyMember`.
+message GetLoyaltyMemberResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateLoyaltyMember`.
+message UpdateLoyaltyMemberRequest {
+  acme.common.v1.RequestContext context = 1;
+  LoyaltyMember loyalty_member = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateLoyaltyMember`.
+message UpdateLoyaltyMemberResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteLoyaltyMember`.
+message DeleteLoyaltyMemberRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loyalty_member_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteLoyaltyMember`.
+message DeleteLoyaltyMemberResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListLoyaltyMembers`.
+message ListLoyaltyMembersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoyaltyMemberStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListLoyaltyMembersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListLoyaltyMembers`.
+message ListLoyaltyMembersResponse {
+  repeated LoyaltyMember loyalty_members = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetLoyaltyMembers`.
+message BatchGetLoyaltyMembersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string loyalty_member_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetLoyaltyMembers`.
+message BatchGetLoyaltyMembersResponse {
+  repeated LoyaltyMember loyalty_members = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchLoyaltyMembers`.
+message SearchLoyaltyMembersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoyaltyMemberStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchLoyaltyMembersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchLoyaltyMembers`.
+message SearchLoyaltyMembersResponse {
+  repeated LoyaltyMember loyalty_members = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchLoyaltyMembers`.
+message WatchLoyaltyMembersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoyaltyMemberStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchLoyaltyMembersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchLoyaltyMembers`.
+message WatchLoyaltyMembersResponse {
+  LoyaltyMember loyalty_member = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `CloneLoyaltyMember`.
+message CloneLoyaltyMemberRequest {
+  acme.common.v1.RequestContext context = 1;
+  LoyaltyMember loyalty_member = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneLoyaltyMember`.
+message CloneLoyaltyMemberResponse {
+  LoyaltyMember loyalty_member = 1;
+  acme.common.v1.OperationResult result = 2;
+}

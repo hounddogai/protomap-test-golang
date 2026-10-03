@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.maintenance.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/maintenance/v1/maintenance.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Maintenance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/maintenance/v1;maintenancev1";
+option java_multiple_files = true;
+option java_outer_classname = "WorkOrderCalculationServiceProto";
+option java_package = "com.acme.maintenance.v1";
+
+// Computes the figures of a work order, such as totals, taxes, and estimates.
+service WorkOrderCalculationService {
+  // Calculates a work order.
+  rpc CalculateWorkOrder(CalculateWorkOrderRequest) returns (CalculateWorkOrderResponse);
+
+  // Estimates a work order.
+  rpc EstimateWorkOrder(EstimateWorkOrderRequest) returns (EstimateWorkOrderResponse);
+
+  // Quotes a work order.
+  rpc QuoteWorkOrder(QuoteWorkOrderRequest) returns (QuoteWorkOrderResponse);
+
+  // Compares a work order.
+  rpc CompareWorkOrderOptions(CompareWorkOrderOptionsRequest) returns (CompareWorkOrderOptionsResponse);
+
+  // Recalculates a work order.
+  rpc RecalculateWorkOrders(RecalculateWorkOrdersRequest) returns (RecalculateWorkOrdersResponse);
+
+  // Simulates a work order.
+  rpc SimulateWorkOrder(SimulateWorkOrderRequest) returns (SimulateWorkOrderResponse);
+
+  // Explains a work order.
+  rpc ExplainWorkOrderCalculation(ExplainWorkOrderCalculationRequest) returns (ExplainWorkOrderCalculationResponse);
+
+  // Returns a work order.
+  rpc GetWorkOrderRates(GetWorkOrderRatesRequest) returns (GetWorkOrderRatesResponse);
+}
+
+// The request of `CalculateWorkOrder`.
+message CalculateWorkOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  CalculateWorkOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateWorkOrder`.
+message CalculateWorkOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateWorkOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  WorkOrder work_order = 1;
+  CalculateWorkOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateWorkOrder`.
+message EstimateWorkOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  EstimateWorkOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateWorkOrder`.
+message EstimateWorkOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateWorkOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  WorkOrder work_order = 1;
+  EstimateWorkOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteWorkOrder`.
+message QuoteWorkOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  QuoteWorkOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteWorkOrder`.
+message QuoteWorkOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteWorkOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  WorkOrder work_order = 1;
+  QuoteWorkOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareWorkOrderOptions`.
+message CompareWorkOrderOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  CompareWorkOrderOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareWorkOrderOptions`.
+message CompareWorkOrderOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareWorkOrderOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  WorkOrder work_order = 1;
+  CompareWorkOrderOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateWorkOrders`.
+message RecalculateWorkOrdersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  RecalculateWorkOrdersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateWorkOrders`.
+message RecalculateWorkOrdersResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateWorkOrdersResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  WorkOrder work_order = 1;
+  RecalculateWorkOrdersResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateWorkOrder`.
+message SimulateWorkOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  SimulateWorkOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateWorkOrder`.
+message SimulateWorkOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateWorkOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  WorkOrder work_order = 1;
+  SimulateWorkOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainWorkOrderCalculation`.
+message ExplainWorkOrderCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  WorkOrder work_order = 3;
+  ExplainWorkOrderCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainWorkOrderCalculation`.
+message ExplainWorkOrderCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  WorkOrder work_order = 1;
+  ExplainWorkOrderCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetWorkOrderRates`.
+message GetWorkOrderRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string work_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetWorkOrderRates`.
+message GetWorkOrderRatesResponse {
+  WorkOrder work_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}

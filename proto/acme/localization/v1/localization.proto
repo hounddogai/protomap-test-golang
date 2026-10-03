@@ -1,0 +1,185 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.localization.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Localization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/localization/v1;localizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "LocalizationProto";
+option java_package = "com.acme.localization.v1";
+
+// Where a translation key is in its lifecycle.
+enum TranslationKeyStatus {
+  TRANSLATION_KEY_STATUS_UNSPECIFIED = 0;
+  TRANSLATION_KEY_STATUS_PLANNED = 1;
+  TRANSLATION_KEY_STATUS_AVAILABLE = 2;
+  TRANSLATION_KEY_STATUS_RESERVED = 3;
+  TRANSLATION_KEY_STATUS_RETIRED = 4;
+}
+
+// Where a locale is in its lifecycle.
+enum LocaleStatus {
+  LOCALE_STATUS_UNSPECIFIED = 0;
+  LOCALE_STATUS_DRAFT = 1;
+  LOCALE_STATUS_ENABLED = 2;
+  LOCALE_STATUS_DISABLED = 3;
+  LOCALE_STATUS_RETIRED = 4;
+}
+
+// Where a translation job is in its lifecycle.
+enum TranslationJobStatus {
+  TRANSLATION_JOB_STATUS_UNSPECIFIED = 0;
+  TRANSLATION_JOB_STATUS_NEW = 1;
+  TRANSLATION_JOB_STATUS_OPEN = 2;
+  TRANSLATION_JOB_STATUS_WAITING = 3;
+  TRANSLATION_JOB_STATUS_RESOLVED = 4;
+  TRANSLATION_JOB_STATUS_CLOSED = 5;
+}
+
+// The dimensions of a translation key.
+message TranslationKeyDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a translation key.
+message TranslationKeyComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A translation key of the localization domain.
+message TranslationKey {
+  string translation_key_id = 1;
+  string code = 2;
+  string name = 3;
+  TranslationKeyStatus status = 4;
+  repeated string category_path = 5;
+  TranslationKeyDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, TranslationKeyComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a locale.
+message LocaleCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a locale.
+message LocaleDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a locale.
+message LocaleRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a locale.
+message LocaleBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A locale of the localization domain.
+message Locale {
+  string locale_id = 1;
+  string name = 2;
+  string description = 3;
+  LocaleStatus status = 4;
+  int32 priority = 5;
+  repeated LocaleCondition conditions = 6;
+  oneof action {
+    LocaleDiscountAction discount = 7;
+    LocaleRouteAction route = 8;
+    LocaleBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a translation job.
+message TranslationJobComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a translation job.
+message TranslationJobSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a translation job.
+message TranslationJobChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a translation job.
+message TranslationJobStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A translation job of the localization domain.
+message TranslationJob {
+  string translation_job_id = 1;
+  string subject = 2;
+  TranslationJobStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated TranslationJobComment comments = 7;
+  TranslationJobSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    TranslationJobChannelOrigin channel = 11;
+  }
+  repeated TranslationJobStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

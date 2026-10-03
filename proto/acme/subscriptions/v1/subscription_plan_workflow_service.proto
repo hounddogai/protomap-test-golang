@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "SubscriptionPlanWorkflowServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Runs the long-lived workflow that takes a subscription plan from start to finish.
+service SubscriptionPlanWorkflowService {
+  // Starts a subscription plan.
+  rpc StartSubscriptionPlanWorkflow(StartSubscriptionPlanWorkflowRequest) returns (StartSubscriptionPlanWorkflowResponse);
+
+  // Advances a subscription plan.
+  rpc AdvanceSubscriptionPlanWorkflow(AdvanceSubscriptionPlanWorkflowRequest) returns (AdvanceSubscriptionPlanWorkflowResponse);
+
+  // Cancels a subscription plan.
+  rpc CancelSubscriptionPlanWorkflow(CancelSubscriptionPlanWorkflowRequest) returns (CancelSubscriptionPlanWorkflowResponse);
+
+  // Retrys a subscription plan.
+  rpc RetrySubscriptionPlanWorkflow(RetrySubscriptionPlanWorkflowRequest) returns (RetrySubscriptionPlanWorkflowResponse);
+
+  // Pauses a subscription plan.
+  rpc PauseSubscriptionPlanWorkflow(PauseSubscriptionPlanWorkflowRequest) returns (PauseSubscriptionPlanWorkflowResponse);
+
+  // Resumes a subscription plan.
+  rpc ResumeSubscriptionPlanWorkflow(ResumeSubscriptionPlanWorkflowRequest) returns (ResumeSubscriptionPlanWorkflowResponse);
+
+  // Returns a subscription plan.
+  rpc InspectSubscriptionPlanWorkflow(InspectSubscriptionPlanWorkflowRequest) returns (InspectSubscriptionPlanWorkflowResponse);
+
+  // Lists subscription plans a page at a time.
+  rpc ListSubscriptionPlanWorkflows(ListSubscriptionPlanWorkflowsRequest) returns (ListSubscriptionPlanWorkflowsResponse);
+
+  // Signals a subscription plan.
+  rpc SignalSubscriptionPlanWorkflow(SignalSubscriptionPlanWorkflowRequest) returns (SignalSubscriptionPlanWorkflowResponse);
+}
+
+// The request of `StartSubscriptionPlanWorkflow`.
+message StartSubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  StartSubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartSubscriptionPlanWorkflow`.
+message StartSubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  StartSubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceSubscriptionPlanWorkflow`.
+message AdvanceSubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  AdvanceSubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceSubscriptionPlanWorkflow`.
+message AdvanceSubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  AdvanceSubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelSubscriptionPlanWorkflow`.
+message CancelSubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  CancelSubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelSubscriptionPlanWorkflow`.
+message CancelSubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  CancelSubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetrySubscriptionPlanWorkflow`.
+message RetrySubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  RetrySubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetrySubscriptionPlanWorkflow`.
+message RetrySubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  RetrySubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseSubscriptionPlanWorkflow`.
+message PauseSubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  PauseSubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseSubscriptionPlanWorkflow`.
+message PauseSubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  PauseSubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeSubscriptionPlanWorkflow`.
+message ResumeSubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  ResumeSubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeSubscriptionPlanWorkflow`.
+message ResumeSubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  ResumeSubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSubscriptionPlanWorkflow`.
+message InspectSubscriptionPlanWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSubscriptionPlanWorkflow`.
+message InspectSubscriptionPlanWorkflowResponse {
+  SubscriptionPlan subscription_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSubscriptionPlanWorkflows`.
+message ListSubscriptionPlanWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SubscriptionPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSubscriptionPlanWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSubscriptionPlanWorkflows`.
+message ListSubscriptionPlanWorkflowsResponse {
+  repeated SubscriptionPlan subscription_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalSubscriptionPlanWorkflow`.
+message SignalSubscriptionPlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  SignalSubscriptionPlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalSubscriptionPlanWorkflow`.
+message SignalSubscriptionPlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  SignalSubscriptionPlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

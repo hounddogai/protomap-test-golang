@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "SubscriptionPlanValidationServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Checks subscription plans against the rules before anything acts on them.
+service SubscriptionPlanValidationService {
+  // Validates a subscription plan.
+  rpc ValidateSubscriptionPlan(ValidateSubscriptionPlanRequest) returns (ValidateSubscriptionPlanResponse);
+
+  // Previews a subscription plan.
+  rpc PreviewSubscriptionPlan(PreviewSubscriptionPlanRequest) returns (PreviewSubscriptionPlanResponse);
+
+  // Checks a subscription plan.
+  rpc CheckSubscriptionPlanEligibility(CheckSubscriptionPlanEligibilityRequest) returns (CheckSubscriptionPlanEligibilityResponse);
+
+  // Normalizes a subscription plan.
+  rpc NormalizeSubscriptionPlan(NormalizeSubscriptionPlanRequest) returns (NormalizeSubscriptionPlanResponse);
+
+  // Scores a subscription plan.
+  rpc ScoreSubscriptionPlan(ScoreSubscriptionPlanRequest) returns (ScoreSubscriptionPlanResponse);
+
+  // Lints a subscription plan.
+  rpc LintSubscriptionPlans(LintSubscriptionPlansRequest) returns (LintSubscriptionPlansResponse);
+
+  // Returns a subscription plan.
+  rpc GetSubscriptionPlanRules(GetSubscriptionPlanRulesRequest) returns (GetSubscriptionPlanRulesResponse);
+}
+
+// The request of `ValidateSubscriptionPlan`.
+message ValidateSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  ValidateSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateSubscriptionPlan`.
+message ValidateSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  ValidateSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewSubscriptionPlan`.
+message PreviewSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  PreviewSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewSubscriptionPlan`.
+message PreviewSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  PreviewSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckSubscriptionPlanEligibility`.
+message CheckSubscriptionPlanEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  CheckSubscriptionPlanEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckSubscriptionPlanEligibility`.
+message CheckSubscriptionPlanEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  CheckSubscriptionPlanEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeSubscriptionPlan`.
+message NormalizeSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  NormalizeSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeSubscriptionPlan`.
+message NormalizeSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  NormalizeSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreSubscriptionPlan`.
+message ScoreSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  ScoreSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreSubscriptionPlan`.
+message ScoreSubscriptionPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreSubscriptionPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  ScoreSubscriptionPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintSubscriptionPlans`.
+message LintSubscriptionPlansRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  LintSubscriptionPlansRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintSubscriptionPlans`.
+message LintSubscriptionPlansResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  LintSubscriptionPlansResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSubscriptionPlanRules`.
+message GetSubscriptionPlanRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSubscriptionPlanRules`.
+message GetSubscriptionPlanRulesResponse {
+  SubscriptionPlan subscription_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

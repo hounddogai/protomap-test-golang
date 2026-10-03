@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderAmendmentCalculationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Computes the figures of an order amendment, such as totals, taxes, and estimates.
+service OrderAmendmentCalculationService {
+  // Calculates an order amendment.
+  rpc CalculateOrderAmendment(CalculateOrderAmendmentRequest) returns (CalculateOrderAmendmentResponse);
+
+  // Estimates an order amendment.
+  rpc EstimateOrderAmendment(EstimateOrderAmendmentRequest) returns (EstimateOrderAmendmentResponse);
+
+  // Quotes an order amendment.
+  rpc QuoteOrderAmendment(QuoteOrderAmendmentRequest) returns (QuoteOrderAmendmentResponse);
+
+  // Compares an order amendment.
+  rpc CompareOrderAmendmentOptions(CompareOrderAmendmentOptionsRequest) returns (CompareOrderAmendmentOptionsResponse);
+
+  // Recalculates an order amendment.
+  rpc RecalculateOrderAmendments(RecalculateOrderAmendmentsRequest) returns (RecalculateOrderAmendmentsResponse);
+
+  // Simulates an order amendment.
+  rpc SimulateOrderAmendment(SimulateOrderAmendmentRequest) returns (SimulateOrderAmendmentResponse);
+
+  // Explains an order amendment.
+  rpc ExplainOrderAmendmentCalculation(ExplainOrderAmendmentCalculationRequest) returns (ExplainOrderAmendmentCalculationResponse);
+
+  // Returns an order amendment.
+  rpc GetOrderAmendmentRates(GetOrderAmendmentRatesRequest) returns (GetOrderAmendmentRatesResponse);
+}
+
+// The request of `CalculateOrderAmendment`.
+message CalculateOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  CalculateOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateOrderAmendment`.
+message CalculateOrderAmendmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateOrderAmendmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderAmendment order_amendment = 1;
+  CalculateOrderAmendmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateOrderAmendment`.
+message EstimateOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  EstimateOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateOrderAmendment`.
+message EstimateOrderAmendmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateOrderAmendmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderAmendment order_amendment = 1;
+  EstimateOrderAmendmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteOrderAmendment`.
+message QuoteOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  QuoteOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteOrderAmendment`.
+message QuoteOrderAmendmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteOrderAmendmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderAmendment order_amendment = 1;
+  QuoteOrderAmendmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareOrderAmendmentOptions`.
+message CompareOrderAmendmentOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  CompareOrderAmendmentOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareOrderAmendmentOptions`.
+message CompareOrderAmendmentOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareOrderAmendmentOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderAmendment order_amendment = 1;
+  CompareOrderAmendmentOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateOrderAmendments`.
+message RecalculateOrderAmendmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  RecalculateOrderAmendmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateOrderAmendments`.
+message RecalculateOrderAmendmentsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateOrderAmendmentsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderAmendment order_amendment = 1;
+  RecalculateOrderAmendmentsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateOrderAmendment`.
+message SimulateOrderAmendmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  SimulateOrderAmendmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateOrderAmendment`.
+message SimulateOrderAmendmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateOrderAmendmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderAmendment order_amendment = 1;
+  SimulateOrderAmendmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainOrderAmendmentCalculation`.
+message ExplainOrderAmendmentCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  OrderAmendment order_amendment = 3;
+  ExplainOrderAmendmentCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainOrderAmendmentCalculation`.
+message ExplainOrderAmendmentCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderAmendment order_amendment = 1;
+  ExplainOrderAmendmentCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderAmendmentRates`.
+message GetOrderAmendmentRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_amendment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderAmendmentRates`.
+message GetOrderAmendmentRatesResponse {
+  OrderAmendment order_amendment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

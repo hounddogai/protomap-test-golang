@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.procurement.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/procurement/v1/procurement.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Procurement.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/procurement/v1;procurementv1";
+option java_multiple_files = true;
+option java_outer_classname = "PurchaseRequisitionServiceProto";
+option java_package = "com.acme.procurement.v1";
+
+// Manages purchase requisitions: creates, reads, changes, and lists them.
+service PurchaseRequisitionService {
+  // Creates a purchase requisition.
+  rpc CreatePurchaseRequisition(CreatePurchaseRequisitionRequest) returns (CreatePurchaseRequisitionResponse);
+
+  // Returns a purchase requisition.
+  rpc GetPurchaseRequisition(GetPurchaseRequisitionRequest) returns (GetPurchaseRequisitionResponse);
+
+  // Changes a purchase requisition.
+  rpc UpdatePurchaseRequisition(UpdatePurchaseRequisitionRequest) returns (UpdatePurchaseRequisitionResponse);
+
+  // Deletes a purchase requisition.
+  rpc DeletePurchaseRequisition(DeletePurchaseRequisitionRequest) returns (DeletePurchaseRequisitionResponse);
+
+  // Lists purchase requisitions a page at a time.
+  rpc ListPurchaseRequisitions(ListPurchaseRequisitionsRequest) returns (ListPurchaseRequisitionsResponse);
+
+  // Returns several purchase requisitions at once.
+  rpc BatchGetPurchaseRequisitions(BatchGetPurchaseRequisitionsRequest) returns (BatchGetPurchaseRequisitionsResponse);
+
+  // Lists purchase requisitions a page at a time.
+  rpc SearchPurchaseRequisitions(SearchPurchaseRequisitionsRequest) returns (SearchPurchaseRequisitionsResponse);
+
+  // Streams the changes of purchase requisitions as they happen.
+  rpc WatchPurchaseRequisitions(WatchPurchaseRequisitionsRequest) returns (stream WatchPurchaseRequisitionsResponse);
+
+  // Takes a stream of purchase requisitions and answers once at the end.
+  rpc BatchCreatePurchaseRequisitions(stream BatchCreatePurchaseRequisitionsRequest) returns (BatchCreatePurchaseRequisitionsResponse);
+
+  // Creates a purchase requisition.
+  rpc ClonePurchaseRequisition(ClonePurchaseRequisitionRequest) returns (ClonePurchaseRequisitionResponse);
+}
+
+// The request of `CreatePurchaseRequisition`.
+message CreatePurchaseRequisitionRequest {
+  acme.common.v1.RequestContext context = 1;
+  PurchaseRequisition purchase_requisition = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePurchaseRequisition`.
+message CreatePurchaseRequisitionResponse {
+  PurchaseRequisition purchase_requisition = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPurchaseRequisition`.
+message GetPurchaseRequisitionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string purchase_requisition_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPurchaseRequisition`.
+message GetPurchaseRequisitionResponse {
+  PurchaseRequisition purchase_requisition = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePurchaseRequisition`.
+message UpdatePurchaseRequisitionRequest {
+  acme.common.v1.RequestContext context = 1;
+  PurchaseRequisition purchase_requisition = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePurchaseRequisition`.
+message UpdatePurchaseRequisitionResponse {
+  PurchaseRequisition purchase_requisition = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePurchaseRequisition`.
+message DeletePurchaseRequisitionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string purchase_requisition_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePurchaseRequisition`.
+message DeletePurchaseRequisitionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPurchaseRequisitions`.
+message ListPurchaseRequisitionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PurchaseRequisitionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPurchaseRequisitionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPurchaseRequisitions`.
+message ListPurchaseRequisitionsResponse {
+  repeated PurchaseRequisition purchase_requisitions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPurchaseRequisitions`.
+message BatchGetPurchaseRequisitionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string purchase_requisition_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPurchaseRequisitions`.
+message BatchGetPurchaseRequisitionsResponse {
+  repeated PurchaseRequisition purchase_requisitions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPurchaseRequisitions`.
+message SearchPurchaseRequisitionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PurchaseRequisitionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPurchaseRequisitionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPurchaseRequisitions`.
+message SearchPurchaseRequisitionsResponse {
+  repeated PurchaseRequisition purchase_requisitions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPurchaseRequisitions`.
+message WatchPurchaseRequisitionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PurchaseRequisitionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPurchaseRequisitionsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPurchaseRequisitions`.
+message WatchPurchaseRequisitionsResponse {
+  PurchaseRequisition purchase_requisition = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreatePurchaseRequisitions`.
+message BatchCreatePurchaseRequisitionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePurchaseRequisitionsRequest.StreamHeader header = 2;
+    PurchaseRequisition record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePurchaseRequisitions`.
+message BatchCreatePurchaseRequisitionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string purchase_requisition_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePurchaseRequisitionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePurchaseRequisition`.
+message ClonePurchaseRequisitionRequest {
+  acme.common.v1.RequestContext context = 1;
+  PurchaseRequisition purchase_requisition = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePurchaseRequisition`.
+message ClonePurchaseRequisitionResponse {
+  PurchaseRequisition purchase_requisition = 1;
+  acme.common.v1.OperationResult result = 2;
+}

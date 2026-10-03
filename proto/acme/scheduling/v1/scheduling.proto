@@ -1,0 +1,255 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.scheduling.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/employees/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Scheduling.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/scheduling/v1;schedulingv1";
+option java_multiple_files = true;
+option java_outer_classname = "SchedulingProto";
+option java_package = "com.acme.scheduling.v1";
+
+// Where a shift is in its lifecycle.
+enum ShiftStatus {
+  SHIFT_STATUS_UNSPECIFIED = 0;
+  SHIFT_STATUS_TENTATIVE = 1;
+  SHIFT_STATUS_CONFIRMED = 2;
+  SHIFT_STATUS_CANCELLED = 3;
+  SHIFT_STATUS_COMPLETED = 4;
+}
+
+// Where a roster is in its lifecycle.
+enum RosterStatus {
+  ROSTER_STATUS_UNSPECIFIED = 0;
+  ROSTER_STATUS_DRAFT = 1;
+  ROSTER_STATUS_ISSUED = 2;
+  ROSTER_STATUS_APPROVED = 3;
+  ROSTER_STATUS_PAID = 4;
+  ROSTER_STATUS_VOID = 5;
+}
+
+// Where an availability window is in its lifecycle.
+enum AvailabilityWindowStatus {
+  AVAILABILITY_WINDOW_STATUS_UNSPECIFIED = 0;
+  AVAILABILITY_WINDOW_STATUS_TENTATIVE = 1;
+  AVAILABILITY_WINDOW_STATUS_CONFIRMED = 2;
+  AVAILABILITY_WINDOW_STATUS_CANCELLED = 3;
+  AVAILABILITY_WINDOW_STATUS_COMPLETED = 4;
+}
+
+// Where a swap request is in its lifecycle.
+enum SwapRequestStatus {
+  SWAP_REQUEST_STATUS_UNSPECIFIED = 0;
+  SWAP_REQUEST_STATUS_NEW = 1;
+  SWAP_REQUEST_STATUS_OPEN = 2;
+  SWAP_REQUEST_STATUS_WAITING = 3;
+  SWAP_REQUEST_STATUS_RESOLVED = 4;
+  SWAP_REQUEST_STATUS_CLOSED = 5;
+}
+
+// The participant of a shift.
+message ShiftParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a shift.
+message ShiftDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a shift.
+message ShiftWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A shift of the scheduling domain.
+message Shift {
+  string shift_id = 1;
+  string title = 2;
+  ShiftStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated ShiftParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    ShiftDailyRule daily = 7;
+    ShiftWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a roster.
+message RosterLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  RosterLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a roster line.
+message RosterLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a roster.
+message RosterCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a roster.
+message RosterBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a roster.
+message RosterAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A roster of the scheduling domain.
+message Roster {
+  string roster_id = 1;
+  string number = 2;
+  RosterStatus status = 3;
+  acme.employees.v1.EmployeeRef counterparty = 4;
+  repeated RosterLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    RosterCardSettlement card = 8;
+    RosterBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated RosterAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The participant of an availability window.
+message AvailabilityWindowParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of an availability window.
+message AvailabilityWindowDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of an availability window.
+message AvailabilityWindowWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// An availability window of the scheduling domain.
+message AvailabilityWindow {
+  string availability_window_id = 1;
+  string title = 2;
+  AvailabilityWindowStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated AvailabilityWindowParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    AvailabilityWindowDailyRule daily = 7;
+    AvailabilityWindowWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The comment of a swap request.
+message SwapRequestComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a swap request.
+message SwapRequestSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a swap request.
+message SwapRequestChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a swap request.
+message SwapRequestStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A swap request of the scheduling domain.
+message SwapRequest {
+  string swap_request_id = 1;
+  string subject = 2;
+  SwapRequestStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated SwapRequestComment comments = 7;
+  SwapRequestSla sla = 8;
+  oneof origin {
+    acme.employees.v1.EmployeeRef customer = 9;
+    string external_reference = 10;
+    SwapRequestChannelOrigin channel = 11;
+  }
+  repeated SwapRequestStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

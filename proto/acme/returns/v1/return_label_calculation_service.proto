@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnLabelCalculationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Computes the figures of a return label, such as totals, taxes, and estimates.
+service ReturnLabelCalculationService {
+  // Calculates a return label.
+  rpc CalculateReturnLabel(CalculateReturnLabelRequest) returns (CalculateReturnLabelResponse);
+
+  // Estimates a return label.
+  rpc EstimateReturnLabel(EstimateReturnLabelRequest) returns (EstimateReturnLabelResponse);
+
+  // Quotes a return label.
+  rpc QuoteReturnLabel(QuoteReturnLabelRequest) returns (QuoteReturnLabelResponse);
+
+  // Compares a return label.
+  rpc CompareReturnLabelOptions(CompareReturnLabelOptionsRequest) returns (CompareReturnLabelOptionsResponse);
+
+  // Recalculates a return label.
+  rpc RecalculateReturnLabels(RecalculateReturnLabelsRequest) returns (RecalculateReturnLabelsResponse);
+
+  // Simulates a return label.
+  rpc SimulateReturnLabel(SimulateReturnLabelRequest) returns (SimulateReturnLabelResponse);
+
+  // Explains a return label.
+  rpc ExplainReturnLabelCalculation(ExplainReturnLabelCalculationRequest) returns (ExplainReturnLabelCalculationResponse);
+
+  // Returns a return label.
+  rpc GetReturnLabelRates(GetReturnLabelRatesRequest) returns (GetReturnLabelRatesResponse);
+}
+
+// The request of `CalculateReturnLabel`.
+message CalculateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  CalculateReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateReturnLabel`.
+message CalculateReturnLabelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateReturnLabelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  CalculateReturnLabelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateReturnLabel`.
+message EstimateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  EstimateReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateReturnLabel`.
+message EstimateReturnLabelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateReturnLabelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  EstimateReturnLabelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteReturnLabel`.
+message QuoteReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  QuoteReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteReturnLabel`.
+message QuoteReturnLabelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteReturnLabelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  QuoteReturnLabelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareReturnLabelOptions`.
+message CompareReturnLabelOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  CompareReturnLabelOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareReturnLabelOptions`.
+message CompareReturnLabelOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareReturnLabelOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  CompareReturnLabelOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateReturnLabels`.
+message RecalculateReturnLabelsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  RecalculateReturnLabelsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateReturnLabels`.
+message RecalculateReturnLabelsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateReturnLabelsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  RecalculateReturnLabelsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateReturnLabel`.
+message SimulateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  SimulateReturnLabelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateReturnLabel`.
+message SimulateReturnLabelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateReturnLabelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnLabel return_label = 1;
+  SimulateReturnLabelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReturnLabelCalculation`.
+message ExplainReturnLabelCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ReturnLabel return_label = 3;
+  ExplainReturnLabelCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReturnLabelCalculation`.
+message ExplainReturnLabelCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  ExplainReturnLabelCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnLabelRates`.
+message GetReturnLabelRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnLabelRates`.
+message GetReturnLabelRatesResponse {
+  ReturnLabel return_label = 1;
+  acme.common.v1.OperationResult result = 2;
+}

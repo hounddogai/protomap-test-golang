@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerSegmentApprovalServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Routes customer segments through approval, with escalation and delegation.
+service CustomerSegmentApprovalService {
+  // Submits a customer segment.
+  rpc SubmitCustomerSegment(SubmitCustomerSegmentRequest) returns (SubmitCustomerSegmentResponse);
+
+  // Approves a customer segment.
+  rpc ApproveCustomerSegment(ApproveCustomerSegmentRequest) returns (ApproveCustomerSegmentResponse);
+
+  // Rejects a customer segment.
+  rpc RejectCustomerSegment(RejectCustomerSegmentRequest) returns (RejectCustomerSegmentResponse);
+
+  // Escalates a customer segment.
+  rpc EscalateCustomerSegment(EscalateCustomerSegmentRequest) returns (EscalateCustomerSegmentResponse);
+
+  // Lists customer segments a page at a time.
+  rpc ListPendingCustomerSegments(ListPendingCustomerSegmentsRequest) returns (ListPendingCustomerSegmentsResponse);
+
+  // Recalls a customer segment.
+  rpc RecallCustomerSegment(RecallCustomerSegmentRequest) returns (RecallCustomerSegmentResponse);
+
+  // Returns a customer segment.
+  rpc GetCustomerSegmentApprovalStatus(GetCustomerSegmentApprovalStatusRequest) returns (GetCustomerSegmentApprovalStatusResponse);
+
+  // Comments a customer segment.
+  rpc CommentCustomerSegmentApproval(CommentCustomerSegmentApprovalRequest) returns (CommentCustomerSegmentApprovalResponse);
+}
+
+// The request of `SubmitCustomerSegment`.
+message SubmitCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  SubmitCustomerSegmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCustomerSegment`.
+message SubmitCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  SubmitCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCustomerSegment`.
+message ApproveCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  ApproveCustomerSegmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCustomerSegment`.
+message ApproveCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  ApproveCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCustomerSegment`.
+message RejectCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  RejectCustomerSegmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCustomerSegment`.
+message RejectCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  RejectCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCustomerSegment`.
+message EscalateCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  EscalateCustomerSegmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCustomerSegment`.
+message EscalateCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  EscalateCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCustomerSegments`.
+message ListPendingCustomerSegmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerSegmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCustomerSegmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCustomerSegments`.
+message ListPendingCustomerSegmentsResponse {
+  repeated CustomerSegment customer_segments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallCustomerSegment`.
+message RecallCustomerSegmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  RecallCustomerSegmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallCustomerSegment`.
+message RecallCustomerSegmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  RecallCustomerSegmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCustomerSegmentApprovalStatus`.
+message GetCustomerSegmentApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomerSegmentApprovalStatus`.
+message GetCustomerSegmentApprovalStatusResponse {
+  CustomerSegment customer_segment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCustomerSegmentApproval`.
+message CommentCustomerSegmentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_segment_id = 2;
+  CustomerSegment customer_segment = 3;
+  CommentCustomerSegmentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCustomerSegmentApproval`.
+message CommentCustomerSegmentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CustomerSegment customer_segment = 1;
+  CommentCustomerSegmentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

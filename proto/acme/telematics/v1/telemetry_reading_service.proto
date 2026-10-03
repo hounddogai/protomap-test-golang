@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telematics.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/telematics/v1/telematics.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telematics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telematics/v1;telematicsv1";
+option java_multiple_files = true;
+option java_outer_classname = "TelemetryReadingServiceProto";
+option java_package = "com.acme.telematics.v1";
+
+// Manages telemetry readings: creates, reads, changes, and lists them.
+service TelemetryReadingService {
+  // Creates a telemetry reading.
+  rpc CreateTelemetryReading(CreateTelemetryReadingRequest) returns (CreateTelemetryReadingResponse);
+
+  // Returns a telemetry reading.
+  rpc GetTelemetryReading(GetTelemetryReadingRequest) returns (GetTelemetryReadingResponse);
+
+  // Changes a telemetry reading.
+  rpc UpdateTelemetryReading(UpdateTelemetryReadingRequest) returns (UpdateTelemetryReadingResponse);
+
+  // Deletes a telemetry reading.
+  rpc DeleteTelemetryReading(DeleteTelemetryReadingRequest) returns (DeleteTelemetryReadingResponse);
+
+  // Lists telemetry readings a page at a time.
+  rpc ListTelemetryReadings(ListTelemetryReadingsRequest) returns (ListTelemetryReadingsResponse);
+
+  // Returns several telemetry readings at once.
+  rpc BatchGetTelemetryReadings(BatchGetTelemetryReadingsRequest) returns (BatchGetTelemetryReadingsResponse);
+
+  // Lists telemetry readings a page at a time.
+  rpc SearchTelemetryReadings(SearchTelemetryReadingsRequest) returns (SearchTelemetryReadingsResponse);
+
+  // Streams the changes of telemetry readings as they happen.
+  rpc WatchTelemetryReadings(WatchTelemetryReadingsRequest) returns (stream WatchTelemetryReadingsResponse);
+
+  // Takes a stream of telemetry readings and answers once at the end.
+  rpc BatchCreateTelemetryReadings(stream BatchCreateTelemetryReadingsRequest) returns (BatchCreateTelemetryReadingsResponse);
+
+  // Creates a telemetry reading.
+  rpc CloneTelemetryReading(CloneTelemetryReadingRequest) returns (CloneTelemetryReadingResponse);
+}
+
+// The request of `CreateTelemetryReading`.
+message CreateTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  TelemetryReading telemetry_reading = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateTelemetryReading`.
+message CreateTelemetryReadingResponse {
+  TelemetryReading telemetry_reading = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetTelemetryReading`.
+message GetTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string telemetry_reading_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTelemetryReading`.
+message GetTelemetryReadingResponse {
+  TelemetryReading telemetry_reading = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateTelemetryReading`.
+message UpdateTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  TelemetryReading telemetry_reading = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateTelemetryReading`.
+message UpdateTelemetryReadingResponse {
+  TelemetryReading telemetry_reading = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteTelemetryReading`.
+message DeleteTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  string telemetry_reading_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteTelemetryReading`.
+message DeleteTelemetryReadingResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListTelemetryReadings`.
+message ListTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListTelemetryReadingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListTelemetryReadings`.
+message ListTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetTelemetryReadings`.
+message BatchGetTelemetryReadingsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string telemetry_reading_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetTelemetryReadings`.
+message BatchGetTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchTelemetryReadings`.
+message SearchTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchTelemetryReadingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchTelemetryReadings`.
+message SearchTelemetryReadingsResponse {
+  repeated TelemetryReading telemetry_readings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchTelemetryReadings`.
+message WatchTelemetryReadingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TelemetryReadingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchTelemetryReadingsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchTelemetryReadings`.
+message WatchTelemetryReadingsResponse {
+  TelemetryReading telemetry_reading = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateTelemetryReadings`.
+message BatchCreateTelemetryReadingsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateTelemetryReadingsRequest.StreamHeader header = 2;
+    TelemetryReading record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateTelemetryReadings`.
+message BatchCreateTelemetryReadingsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string telemetry_reading_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateTelemetryReadingsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneTelemetryReading`.
+message CloneTelemetryReadingRequest {
+  acme.common.v1.RequestContext context = 1;
+  TelemetryReading telemetry_reading = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneTelemetryReading`.
+message CloneTelemetryReadingResponse {
+  TelemetryReading telemetry_reading = 1;
+  acme.common.v1.OperationResult result = 2;
+}

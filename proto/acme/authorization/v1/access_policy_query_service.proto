@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.authorization.v1;
+
+import "acme/authorization/v1/authorization.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Authorization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/authorization/v1;authorizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "AccessPolicyQueryServiceProto";
+option java_package = "com.acme.authorization.v1";
+
+// Answers read-only questions about access policies, for screens and reports.
+service AccessPolicyQueryService {
+  // Returns an access policy.
+  rpc LookupAccessPolicy(LookupAccessPolicyRequest) returns (LookupAccessPolicyResponse);
+
+  // Lists access policies a page at a time.
+  rpc BrowseAccessPolicies(BrowseAccessPoliciesRequest) returns (BrowseAccessPoliciesResponse);
+
+  // Lists access policies a page at a time.
+  rpc FindAccessPolicies(FindAccessPoliciesRequest) returns (FindAccessPoliciesResponse);
+
+  // Counts access policies by status.
+  rpc CountAccessPolicies(CountAccessPoliciesRequest) returns (CountAccessPoliciesResponse);
+
+  // Returns several access policies at once.
+  rpc ResolveAccessPolicies(ResolveAccessPoliciesRequest) returns (ResolveAccessPoliciesResponse);
+
+  // Streams every matching access policy.
+  rpc ExportAccessPolicies(ExportAccessPoliciesRequest) returns (stream ExportAccessPoliciesResponse);
+
+  // Summarizes an access policy.
+  rpc SummarizeAccessPolicies(SummarizeAccessPoliciesRequest) returns (SummarizeAccessPoliciesResponse);
+
+  // Returns an access policy.
+  rpc PeekAccessPolicy(PeekAccessPolicyRequest) returns (PeekAccessPolicyResponse);
+}
+
+// The request of `LookupAccessPolicy`.
+message LookupAccessPolicyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupAccessPolicy`.
+message LookupAccessPolicyResponse {
+  AccessPolicy access_policy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseAccessPolicies`.
+message BrowseAccessPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AccessPolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseAccessPoliciesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseAccessPolicies`.
+message BrowseAccessPoliciesResponse {
+  repeated AccessPolicy access_policies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindAccessPolicies`.
+message FindAccessPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AccessPolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindAccessPoliciesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindAccessPolicies`.
+message FindAccessPoliciesResponse {
+  repeated AccessPolicy access_policies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountAccessPolicies`.
+message CountAccessPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AccessPolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountAccessPoliciesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountAccessPolicies`.
+message CountAccessPoliciesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveAccessPolicies`.
+message ResolveAccessPoliciesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string access_policy_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveAccessPolicies`.
+message ResolveAccessPoliciesResponse {
+  repeated AccessPolicy access_policies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportAccessPolicies`.
+message ExportAccessPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AccessPolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportAccessPoliciesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportAccessPolicies`.
+message ExportAccessPoliciesResponse {
+  AccessPolicy access_policy = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeAccessPolicies`.
+message SummarizeAccessPoliciesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  SummarizeAccessPoliciesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeAccessPolicies`.
+message SummarizeAccessPoliciesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `PeekAccessPolicy`.
+message PeekAccessPolicyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string access_policy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekAccessPolicy`.
+message PeekAccessPolicyResponse {
+  AccessPolicy access_policy = 1;
+  acme.common.v1.OperationResult result = 2;
+}

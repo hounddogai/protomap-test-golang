@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.forecasting.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/forecasting/v1/forecasting.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Forecasting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/forecasting/v1;forecastingv1";
+option java_multiple_files = true;
+option java_outer_classname = "DemandForecastQueryServiceProto";
+option java_package = "com.acme.forecasting.v1";
+
+// Answers read-only questions about demand forecasts, for screens and reports.
+service DemandForecastQueryService {
+  // Returns a demand forecast.
+  rpc LookupDemandForecast(LookupDemandForecastRequest) returns (LookupDemandForecastResponse);
+
+  // Lists demand forecasts a page at a time.
+  rpc BrowseDemandForecasts(BrowseDemandForecastsRequest) returns (BrowseDemandForecastsResponse);
+
+  // Lists demand forecasts a page at a time.
+  rpc FindDemandForecasts(FindDemandForecastsRequest) returns (FindDemandForecastsResponse);
+
+  // Counts demand forecasts by status.
+  rpc CountDemandForecasts(CountDemandForecastsRequest) returns (CountDemandForecastsResponse);
+
+  // Returns several demand forecasts at once.
+  rpc ResolveDemandForecasts(ResolveDemandForecastsRequest) returns (ResolveDemandForecastsResponse);
+
+  // Streams every matching demand forecast.
+  rpc ExportDemandForecasts(ExportDemandForecastsRequest) returns (stream ExportDemandForecastsResponse);
+
+  // Summarizes a demand forecast.
+  rpc SummarizeDemandForecasts(SummarizeDemandForecastsRequest) returns (SummarizeDemandForecastsResponse);
+
+  // Lists demand forecasts a page at a time.
+  rpc SuggestDemandForecasts(SuggestDemandForecastsRequest) returns (SuggestDemandForecastsResponse);
+
+  // Returns a demand forecast.
+  rpc PeekDemandForecast(PeekDemandForecastRequest) returns (PeekDemandForecastResponse);
+}
+
+// The request of `LookupDemandForecast`.
+message LookupDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  string demand_forecast_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupDemandForecast`.
+message LookupDemandForecastResponse {
+  DemandForecast demand_forecast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseDemandForecasts`.
+message BrowseDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseDemandForecastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseDemandForecasts`.
+message BrowseDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindDemandForecasts`.
+message FindDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindDemandForecastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindDemandForecasts`.
+message FindDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountDemandForecasts`.
+message CountDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountDemandForecastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountDemandForecasts`.
+message CountDemandForecastsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveDemandForecasts`.
+message ResolveDemandForecastsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string demand_forecast_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveDemandForecasts`.
+message ResolveDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportDemandForecasts`.
+message ExportDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportDemandForecastsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportDemandForecasts`.
+message ExportDemandForecastsResponse {
+  DemandForecast demand_forecast = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeDemandForecasts`.
+message SummarizeDemandForecastsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string demand_forecast_id = 2;
+  SummarizeDemandForecastsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeDemandForecasts`.
+message SummarizeDemandForecastsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestDemandForecasts`.
+message SuggestDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestDemandForecastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestDemandForecasts`.
+message SuggestDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekDemandForecast`.
+message PeekDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  string demand_forecast_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekDemandForecast`.
+message PeekDemandForecastResponse {
+  DemandForecast demand_forecast = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PromotionWorkflowServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Runs the long-lived workflow that takes a promotion from start to finish.
+service PromotionWorkflowService {
+  // Starts a promotion.
+  rpc StartPromotionWorkflow(StartPromotionWorkflowRequest) returns (StartPromotionWorkflowResponse);
+
+  // Advances a promotion.
+  rpc AdvancePromotionWorkflow(AdvancePromotionWorkflowRequest) returns (AdvancePromotionWorkflowResponse);
+
+  // Cancels a promotion.
+  rpc CancelPromotionWorkflow(CancelPromotionWorkflowRequest) returns (CancelPromotionWorkflowResponse);
+
+  // Retrys a promotion.
+  rpc RetryPromotionWorkflow(RetryPromotionWorkflowRequest) returns (RetryPromotionWorkflowResponse);
+
+  // Pauses a promotion.
+  rpc PausePromotionWorkflow(PausePromotionWorkflowRequest) returns (PausePromotionWorkflowResponse);
+
+  // Resumes a promotion.
+  rpc ResumePromotionWorkflow(ResumePromotionWorkflowRequest) returns (ResumePromotionWorkflowResponse);
+
+  // Returns a promotion.
+  rpc InspectPromotionWorkflow(InspectPromotionWorkflowRequest) returns (InspectPromotionWorkflowResponse);
+
+  // Lists promotions a page at a time.
+  rpc ListPromotionWorkflows(ListPromotionWorkflowsRequest) returns (ListPromotionWorkflowsResponse);
+
+  // Signals a promotion.
+  rpc SignalPromotionWorkflow(SignalPromotionWorkflowRequest) returns (SignalPromotionWorkflowResponse);
+}
+
+// The request of `StartPromotionWorkflow`.
+message StartPromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  StartPromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPromotionWorkflow`.
+message StartPromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  StartPromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePromotionWorkflow`.
+message AdvancePromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  AdvancePromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePromotionWorkflow`.
+message AdvancePromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  AdvancePromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPromotionWorkflow`.
+message CancelPromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  CancelPromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPromotionWorkflow`.
+message CancelPromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  CancelPromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPromotionWorkflow`.
+message RetryPromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  RetryPromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPromotionWorkflow`.
+message RetryPromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  RetryPromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePromotionWorkflow`.
+message PausePromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  PausePromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePromotionWorkflow`.
+message PausePromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  PausePromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePromotionWorkflow`.
+message ResumePromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  ResumePromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePromotionWorkflow`.
+message ResumePromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  ResumePromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPromotionWorkflow`.
+message InspectPromotionWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPromotionWorkflow`.
+message InspectPromotionWorkflowResponse {
+  Promotion promotion = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPromotionWorkflows`.
+message ListPromotionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PromotionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPromotionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPromotionWorkflows`.
+message ListPromotionWorkflowsResponse {
+  repeated Promotion promotions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPromotionWorkflow`.
+message SignalPromotionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  SignalPromotionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPromotionWorkflow`.
+message SignalPromotionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  SignalPromotionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.modelregistry.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/modelregistry/v1/modelregistry.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Modelregistry.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/modelregistry/v1;modelregistryv1";
+option java_multiple_files = true;
+option java_outer_classname = "RegisteredModelCalculationServiceProto";
+option java_package = "com.acme.modelregistry.v1";
+
+// Computes the figures of a registered model, such as totals, taxes, and estimates.
+service RegisteredModelCalculationService {
+  // Calculates a registered model.
+  rpc CalculateRegisteredModel(CalculateRegisteredModelRequest) returns (CalculateRegisteredModelResponse);
+
+  // Estimates a registered model.
+  rpc EstimateRegisteredModel(EstimateRegisteredModelRequest) returns (EstimateRegisteredModelResponse);
+
+  // Quotes a registered model.
+  rpc QuoteRegisteredModel(QuoteRegisteredModelRequest) returns (QuoteRegisteredModelResponse);
+
+  // Recalculates a registered model.
+  rpc RecalculateRegisteredModels(RecalculateRegisteredModelsRequest) returns (RecalculateRegisteredModelsResponse);
+
+  // Simulates a registered model.
+  rpc SimulateRegisteredModel(SimulateRegisteredModelRequest) returns (SimulateRegisteredModelResponse);
+
+  // Explains a registered model.
+  rpc ExplainRegisteredModelCalculation(ExplainRegisteredModelCalculationRequest) returns (ExplainRegisteredModelCalculationResponse);
+
+  // Returns a registered model.
+  rpc GetRegisteredModelRates(GetRegisteredModelRatesRequest) returns (GetRegisteredModelRatesResponse);
+}
+
+// The request of `CalculateRegisteredModel`.
+message CalculateRegisteredModelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  RegisteredModel registered_model = 3;
+  CalculateRegisteredModelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRegisteredModel`.
+message CalculateRegisteredModelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRegisteredModelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RegisteredModel registered_model = 1;
+  CalculateRegisteredModelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRegisteredModel`.
+message EstimateRegisteredModelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  RegisteredModel registered_model = 3;
+  EstimateRegisteredModelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRegisteredModel`.
+message EstimateRegisteredModelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRegisteredModelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RegisteredModel registered_model = 1;
+  EstimateRegisteredModelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRegisteredModel`.
+message QuoteRegisteredModelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  RegisteredModel registered_model = 3;
+  QuoteRegisteredModelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRegisteredModel`.
+message QuoteRegisteredModelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRegisteredModelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RegisteredModel registered_model = 1;
+  QuoteRegisteredModelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRegisteredModels`.
+message RecalculateRegisteredModelsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  RegisteredModel registered_model = 3;
+  RecalculateRegisteredModelsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRegisteredModels`.
+message RecalculateRegisteredModelsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRegisteredModelsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RegisteredModel registered_model = 1;
+  RecalculateRegisteredModelsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRegisteredModel`.
+message SimulateRegisteredModelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  RegisteredModel registered_model = 3;
+  SimulateRegisteredModelRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRegisteredModel`.
+message SimulateRegisteredModelResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRegisteredModelResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RegisteredModel registered_model = 1;
+  SimulateRegisteredModelResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRegisteredModelCalculation`.
+message ExplainRegisteredModelCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  RegisteredModel registered_model = 3;
+  ExplainRegisteredModelCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRegisteredModelCalculation`.
+message ExplainRegisteredModelCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RegisteredModel registered_model = 1;
+  ExplainRegisteredModelCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRegisteredModelRates`.
+message GetRegisteredModelRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string registered_model_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRegisteredModelRates`.
+message GetRegisteredModelRatesResponse {
+  RegisteredModel registered_model = 1;
+  acme.common.v1.OperationResult result = 2;
+}

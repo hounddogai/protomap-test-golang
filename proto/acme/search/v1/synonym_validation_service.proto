@@ -1,0 +1,288 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SynonymValidationServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Checks synonyms against the rules before anything acts on them.
+service SynonymValidationService {
+  // Validates a synonym.
+  rpc ValidateSynonym(ValidateSynonymRequest) returns (ValidateSynonymResponse);
+
+  // Previews a synonym.
+  rpc PreviewSynonym(PreviewSynonymRequest) returns (PreviewSynonymResponse);
+
+  // Checks a synonym.
+  rpc CheckSynonymEligibility(CheckSynonymEligibilityRequest) returns (CheckSynonymEligibilityResponse);
+
+  // Normalizes a synonym.
+  rpc NormalizeSynonym(NormalizeSynonymRequest) returns (NormalizeSynonymResponse);
+
+  // Explains a synonym.
+  rpc ExplainSynonymDecision(ExplainSynonymDecisionRequest) returns (ExplainSynonymDecisionResponse);
+
+  // Scores a synonym.
+  rpc ScoreSynonym(ScoreSynonymRequest) returns (ScoreSynonymResponse);
+
+  // Lints a synonym.
+  rpc LintSynonyms(LintSynonymsRequest) returns (LintSynonymsResponse);
+}
+
+// The request of `ValidateSynonym`.
+message ValidateSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  ValidateSynonymRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateSynonym`.
+message ValidateSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  ValidateSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewSynonym`.
+message PreviewSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  PreviewSynonymRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewSynonym`.
+message PreviewSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  PreviewSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckSynonymEligibility`.
+message CheckSynonymEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  CheckSynonymEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckSynonymEligibility`.
+message CheckSynonymEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  CheckSynonymEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeSynonym`.
+message NormalizeSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  NormalizeSynonymRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeSynonym`.
+message NormalizeSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  NormalizeSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSynonymDecision`.
+message ExplainSynonymDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  ExplainSynonymDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSynonymDecision`.
+message ExplainSynonymDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  ExplainSynonymDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreSynonym`.
+message ScoreSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  ScoreSynonymRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreSynonym`.
+message ScoreSynonymResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreSynonymResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Synonym synonym = 1;
+  ScoreSynonymResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintSynonyms`.
+message LintSynonymsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  LintSynonymsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintSynonyms`.
+message LintSynonymsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  LintSynonymsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

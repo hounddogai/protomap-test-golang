@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.labeling.v1;
+
+option csharp_namespace = "Acme.Labeling.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/labeling/v1;labelingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.labeling.v1";
+
+// A reference to a labeling task of the labeling domain.
+message LabelingTaskRef {
+  string labeling_task_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to an annotation of the labeling domain.
+message AnnotationRef {
+  string annotation_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a label set of the labeling domain.
+message LabelSetRef {
+  string label_set_id = 1;
+  string display_name = 2;
+  string path = 3;
+}

@@ -1,0 +1,186 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceQuoteQueryServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Answers read-only questions about price quotes, for screens and reports.
+service PriceQuoteQueryService {
+  // Returns a price quote.
+  rpc LookupPriceQuote(LookupPriceQuoteRequest) returns (LookupPriceQuoteResponse);
+
+  // Lists price quotes a page at a time.
+  rpc BrowsePriceQuotes(BrowsePriceQuotesRequest) returns (BrowsePriceQuotesResponse);
+
+  // Lists price quotes a page at a time.
+  rpc FindPriceQuotes(FindPriceQuotesRequest) returns (FindPriceQuotesResponse);
+
+  // Returns several price quotes at once.
+  rpc ResolvePriceQuotes(ResolvePriceQuotesRequest) returns (ResolvePriceQuotesResponse);
+
+  // Streams every matching price quote.
+  rpc ExportPriceQuotes(ExportPriceQuotesRequest) returns (stream ExportPriceQuotesResponse);
+
+  // Lists price quotes a page at a time.
+  rpc SuggestPriceQuotes(SuggestPriceQuotesRequest) returns (SuggestPriceQuotesResponse);
+
+  // Returns a price quote.
+  rpc PeekPriceQuote(PeekPriceQuoteRequest) returns (PeekPriceQuoteResponse);
+}
+
+// The request of `LookupPriceQuote`.
+message LookupPriceQuoteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPriceQuote`.
+message LookupPriceQuoteResponse {
+  PriceQuote price_quote = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePriceQuotes`.
+message BrowsePriceQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePriceQuotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePriceQuotes`.
+message BrowsePriceQuotesResponse {
+  repeated PriceQuote price_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindPriceQuotes`.
+message FindPriceQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindPriceQuotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindPriceQuotes`.
+message FindPriceQuotesResponse {
+  repeated PriceQuote price_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolvePriceQuotes`.
+message ResolvePriceQuotesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string price_quote_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolvePriceQuotes`.
+message ResolvePriceQuotesResponse {
+  repeated PriceQuote price_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportPriceQuotes`.
+message ExportPriceQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportPriceQuotesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportPriceQuotes`.
+message ExportPriceQuotesResponse {
+  PriceQuote price_quote = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestPriceQuotes`.
+message SuggestPriceQuotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestPriceQuotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestPriceQuotes`.
+message SuggestPriceQuotesResponse {
+  repeated PriceQuote price_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekPriceQuote`.
+message PeekPriceQuoteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekPriceQuote`.
+message PeekPriceQuoteResponse {
+  PriceQuote price_quote = 1;
+  acme.common.v1.OperationResult result = 2;
+}

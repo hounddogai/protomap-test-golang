@@ -1,0 +1,316 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReplenishmentPlanApprovalServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Routes replenishment plans through approval, with escalation and delegation.
+service ReplenishmentPlanApprovalService {
+  // Submits a replenishment plan.
+  rpc SubmitReplenishmentPlan(SubmitReplenishmentPlanRequest) returns (SubmitReplenishmentPlanResponse);
+
+  // Approves a replenishment plan.
+  rpc ApproveReplenishmentPlan(ApproveReplenishmentPlanRequest) returns (ApproveReplenishmentPlanResponse);
+
+  // Rejects a replenishment plan.
+  rpc RejectReplenishmentPlan(RejectReplenishmentPlanRequest) returns (RejectReplenishmentPlanResponse);
+
+  // Escalates a replenishment plan.
+  rpc EscalateReplenishmentPlan(EscalateReplenishmentPlanRequest) returns (EscalateReplenishmentPlanResponse);
+
+  // Lists replenishment plans a page at a time.
+  rpc ListPendingReplenishmentPlans(ListPendingReplenishmentPlansRequest) returns (ListPendingReplenishmentPlansResponse);
+
+  // Delegates a replenishment plan.
+  rpc DelegateReplenishmentPlanApproval(DelegateReplenishmentPlanApprovalRequest) returns (DelegateReplenishmentPlanApprovalResponse);
+
+  // Recalls a replenishment plan.
+  rpc RecallReplenishmentPlan(RecallReplenishmentPlanRequest) returns (RecallReplenishmentPlanResponse);
+
+  // Comments a replenishment plan.
+  rpc CommentReplenishmentPlanApproval(CommentReplenishmentPlanApprovalRequest) returns (CommentReplenishmentPlanApprovalResponse);
+}
+
+// The request of `SubmitReplenishmentPlan`.
+message SubmitReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  SubmitReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitReplenishmentPlan`.
+message SubmitReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  SubmitReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveReplenishmentPlan`.
+message ApproveReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  ApproveReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveReplenishmentPlan`.
+message ApproveReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  ApproveReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectReplenishmentPlan`.
+message RejectReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  RejectReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectReplenishmentPlan`.
+message RejectReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  RejectReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateReplenishmentPlan`.
+message EscalateReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  EscalateReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateReplenishmentPlan`.
+message EscalateReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  EscalateReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingReplenishmentPlans`.
+message ListPendingReplenishmentPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReplenishmentPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingReplenishmentPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingReplenishmentPlans`.
+message ListPendingReplenishmentPlansResponse {
+  repeated ReplenishmentPlan replenishment_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateReplenishmentPlanApproval`.
+message DelegateReplenishmentPlanApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  DelegateReplenishmentPlanApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateReplenishmentPlanApproval`.
+message DelegateReplenishmentPlanApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  DelegateReplenishmentPlanApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallReplenishmentPlan`.
+message RecallReplenishmentPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  RecallReplenishmentPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallReplenishmentPlan`.
+message RecallReplenishmentPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  RecallReplenishmentPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CommentReplenishmentPlanApproval`.
+message CommentReplenishmentPlanApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string replenishment_plan_id = 2;
+  ReplenishmentPlan replenishment_plan = 3;
+  CommentReplenishmentPlanApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentReplenishmentPlanApproval`.
+message CommentReplenishmentPlanApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReplenishmentPlan replenishment_plan = 1;
+  CommentReplenishmentPlanApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

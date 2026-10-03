@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.telehealth.v1";
+
+// A reference to a video visit of the telehealth domain.
+message VideoVisitRef {
+  string video_visit_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a visit note of the telehealth domain.
+message VisitNoteRef {
+  string visit_note_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a triage of the telehealth domain.
+message TriageRef {
+  string triage_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

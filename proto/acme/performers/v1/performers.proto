@@ -1,0 +1,201 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.performers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/venues/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Performers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/performers/v1;performersv1";
+option java_multiple_files = true;
+option java_outer_classname = "PerformersProto";
+option java_package = "com.acme.performers.v1";
+
+// Where a performer is in its lifecycle.
+enum PerformerStatus {
+  PERFORMER_STATUS_UNSPECIFIED = 0;
+  PERFORMER_STATUS_PROSPECT = 1;
+  PERFORMER_STATUS_ACTIVE = 2;
+  PERFORMER_STATUS_SUSPENDED = 3;
+  PERFORMER_STATUS_CLOSED = 4;
+}
+
+// Where a performer contract is in its lifecycle.
+enum PerformerContractStatus {
+  PERFORMER_CONTRACT_STATUS_UNSPECIFIED = 0;
+  PERFORMER_CONTRACT_STATUS_DRAFT = 1;
+  PERFORMER_CONTRACT_STATUS_ISSUED = 2;
+  PERFORMER_CONTRACT_STATUS_APPROVED = 3;
+  PERFORMER_CONTRACT_STATUS_PAID = 4;
+  PERFORMER_CONTRACT_STATUS_VOID = 5;
+}
+
+// Where a rider is in its lifecycle.
+enum RiderStatus {
+  RIDER_STATUS_UNSPECIFIED = 0;
+  RIDER_STATUS_DRAFT = 1;
+  RIDER_STATUS_ENABLED = 2;
+  RIDER_STATUS_DISABLED = 3;
+  RIDER_STATUS_RETIRED = 4;
+}
+
+// The preferences of a performer.
+message PerformerPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a performer.
+message PerformerPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a performer.
+message PerformerNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A performer of the performers domain.
+message Performer {
+  string performer_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  PerformerStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  PerformerPreferences preferences = 8;
+  oneof identity_document {
+    PerformerPassport passport = 9;
+    PerformerNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a performer contract.
+message PerformerContractLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PerformerContractLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a performer contract line.
+message PerformerContractLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a performer contract.
+message PerformerContractCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a performer contract.
+message PerformerContractBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a performer contract.
+message PerformerContractAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A performer contract of the performers domain.
+message PerformerContract {
+  string performer_contract_id = 1;
+  string number = 2;
+  PerformerContractStatus status = 3;
+  acme.venues.v1.VenueRef counterparty = 4;
+  repeated PerformerContractLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PerformerContractCardSettlement card = 8;
+    PerformerContractBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PerformerContractAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of a rider.
+message RiderCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a rider.
+message RiderDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a rider.
+message RiderRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a rider.
+message RiderBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A rider of the performers domain.
+message Rider {
+  string rider_id = 1;
+  string name = 2;
+  string description = 3;
+  RiderStatus status = 4;
+  int32 priority = 5;
+  repeated RiderCondition conditions = 6;
+  oneof action {
+    RiderDiscountAction discount = 7;
+    RiderRouteAction route = 8;
+    RiderBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

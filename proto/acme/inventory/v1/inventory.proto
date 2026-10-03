@@ -1,0 +1,225 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/inventory/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "InventoryProto";
+option java_package = "com.acme.inventory.v1";
+
+// Where a stock item is in its lifecycle.
+enum StockItemStatus {
+  STOCK_ITEM_STATUS_UNSPECIFIED = 0;
+  STOCK_ITEM_STATUS_PLANNED = 1;
+  STOCK_ITEM_STATUS_AVAILABLE = 2;
+  STOCK_ITEM_STATUS_RESERVED = 3;
+  STOCK_ITEM_STATUS_RETIRED = 4;
+}
+
+// Where a stock reservation is in its lifecycle.
+enum StockReservationStatus {
+  STOCK_RESERVATION_STATUS_UNSPECIFIED = 0;
+  STOCK_RESERVATION_STATUS_TENTATIVE = 1;
+  STOCK_RESERVATION_STATUS_CONFIRMED = 2;
+  STOCK_RESERVATION_STATUS_CANCELLED = 3;
+  STOCK_RESERVATION_STATUS_COMPLETED = 4;
+}
+
+// Where a stock movement is in its lifecycle.
+enum StockMovementStatus {
+  STOCK_MOVEMENT_STATUS_UNSPECIFIED = 0;
+  STOCK_MOVEMENT_STATUS_RECEIVED = 1;
+  STOCK_MOVEMENT_STATUS_PROCESSED = 2;
+  STOCK_MOVEMENT_STATUS_DISCARDED = 3;
+}
+
+// Where a replenishment plan is in its lifecycle.
+enum ReplenishmentPlanStatus {
+  REPLENISHMENT_PLAN_STATUS_UNSPECIFIED = 0;
+  REPLENISHMENT_PLAN_STATUS_DRAFT = 1;
+  REPLENISHMENT_PLAN_STATUS_ISSUED = 2;
+  REPLENISHMENT_PLAN_STATUS_APPROVED = 3;
+  REPLENISHMENT_PLAN_STATUS_PAID = 4;
+  REPLENISHMENT_PLAN_STATUS_VOID = 5;
+}
+
+// The dimensions of a stock item.
+message StockItemDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a stock item.
+message StockItemComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A stock item of the inventory domain.
+message StockItem {
+  string stock_item_id = 1;
+  string code = 2;
+  string name = 3;
+  StockItemStatus status = 4;
+  repeated string category_path = 5;
+  StockItemDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, StockItemComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a stock reservation.
+message StockReservationParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a stock reservation.
+message StockReservationDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a stock reservation.
+message StockReservationWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A stock reservation of the inventory domain.
+message StockReservation {
+  string stock_reservation_id = 1;
+  string title = 2;
+  StockReservationStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated StockReservationParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    StockReservationDailyRule daily = 7;
+    StockReservationWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The measurement of a stock movement.
+message StockMovementMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A stock movement of the inventory domain.
+message StockMovement {
+  string stock_movement_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated StockMovementMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The line of a replenishment plan.
+message ReplenishmentPlanLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ReplenishmentPlanLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a replenishment plan line.
+message ReplenishmentPlanLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a replenishment plan.
+message ReplenishmentPlanCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a replenishment plan.
+message ReplenishmentPlanBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a replenishment plan.
+message ReplenishmentPlanAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A replenishment plan of the inventory domain.
+message ReplenishmentPlan {
+  string replenishment_plan_id = 1;
+  string number = 2;
+  ReplenishmentPlanStatus status = 3;
+  StockReservationRef counterparty = 4;
+  repeated ReplenishmentPlanLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ReplenishmentPlanCardSettlement card = 8;
+    ReplenishmentPlanBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ReplenishmentPlanAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

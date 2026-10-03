@@ -1,0 +1,243 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewVoteValidationServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Checks review votes against the rules before anything acts on them.
+service ReviewVoteValidationService {
+  // Validates a review vote.
+  rpc ValidateReviewVote(ValidateReviewVoteRequest) returns (ValidateReviewVoteResponse);
+
+  // Previews a review vote.
+  rpc PreviewReviewVote(PreviewReviewVoteRequest) returns (PreviewReviewVoteResponse);
+
+  // Checks a review vote.
+  rpc CheckReviewVoteEligibility(CheckReviewVoteEligibilityRequest) returns (CheckReviewVoteEligibilityResponse);
+
+  // Normalizes a review vote.
+  rpc NormalizeReviewVote(NormalizeReviewVoteRequest) returns (NormalizeReviewVoteResponse);
+
+  // Explains a review vote.
+  rpc ExplainReviewVoteDecision(ExplainReviewVoteDecisionRequest) returns (ExplainReviewVoteDecisionResponse);
+
+  // Lints a review vote.
+  rpc LintReviewVotes(LintReviewVotesRequest) returns (LintReviewVotesResponse);
+}
+
+// The request of `ValidateReviewVote`.
+message ValidateReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  ValidateReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateReviewVote`.
+message ValidateReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  ValidateReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewReviewVote`.
+message PreviewReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  PreviewReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewReviewVote`.
+message PreviewReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  PreviewReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckReviewVoteEligibility`.
+message CheckReviewVoteEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  CheckReviewVoteEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckReviewVoteEligibility`.
+message CheckReviewVoteEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  CheckReviewVoteEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeReviewVote`.
+message NormalizeReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  NormalizeReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeReviewVote`.
+message NormalizeReviewVoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  NormalizeReviewVoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReviewVoteDecision`.
+message ExplainReviewVoteDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  ExplainReviewVoteDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReviewVoteDecision`.
+message ExplainReviewVoteDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  ExplainReviewVoteDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintReviewVotes`.
+message LintReviewVotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  LintReviewVotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintReviewVotes`.
+message LintReviewVotesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  LintReviewVotesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

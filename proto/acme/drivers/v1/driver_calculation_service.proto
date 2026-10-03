@@ -1,0 +1,249 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.drivers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/drivers/v1/drivers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Drivers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/drivers/v1;driversv1";
+option java_multiple_files = true;
+option java_outer_classname = "DriverCalculationServiceProto";
+option java_package = "com.acme.drivers.v1";
+
+// Computes the figures of a driver, such as totals, taxes, and estimates.
+service DriverCalculationService {
+  // Calculates a driver.
+  rpc CalculateDriver(CalculateDriverRequest) returns (CalculateDriverResponse);
+
+  // Estimates a driver.
+  rpc EstimateDriver(EstimateDriverRequest) returns (EstimateDriverResponse);
+
+  // Quotes a driver.
+  rpc QuoteDriver(QuoteDriverRequest) returns (QuoteDriverResponse);
+
+  // Simulates a driver.
+  rpc SimulateDriver(SimulateDriverRequest) returns (SimulateDriverResponse);
+
+  // Explains a driver.
+  rpc ExplainDriverCalculation(ExplainDriverCalculationRequest) returns (ExplainDriverCalculationResponse);
+
+  // Returns a driver.
+  rpc GetDriverRates(GetDriverRatesRequest) returns (GetDriverRatesResponse);
+}
+
+// The request of `CalculateDriver`.
+message CalculateDriverRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string driver_id = 2;
+  Driver driver = 3;
+  CalculateDriverRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateDriver`.
+message CalculateDriverResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateDriverResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Driver driver = 1;
+  CalculateDriverResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateDriver`.
+message EstimateDriverRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string driver_id = 2;
+  Driver driver = 3;
+  EstimateDriverRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateDriver`.
+message EstimateDriverResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateDriverResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Driver driver = 1;
+  EstimateDriverResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteDriver`.
+message QuoteDriverRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string driver_id = 2;
+  Driver driver = 3;
+  QuoteDriverRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteDriver`.
+message QuoteDriverResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteDriverResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Driver driver = 1;
+  QuoteDriverResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateDriver`.
+message SimulateDriverRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string driver_id = 2;
+  Driver driver = 3;
+  SimulateDriverRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateDriver`.
+message SimulateDriverResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateDriverResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Driver driver = 1;
+  SimulateDriverResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainDriverCalculation`.
+message ExplainDriverCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string driver_id = 2;
+  Driver driver = 3;
+  ExplainDriverCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainDriverCalculation`.
+message ExplainDriverCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Driver driver = 1;
+  ExplainDriverCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetDriverRates`.
+message GetDriverRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string driver_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDriverRates`.
+message GetDriverRatesResponse {
+  Driver driver = 1;
+  acme.common.v1.OperationResult result = 2;
+}

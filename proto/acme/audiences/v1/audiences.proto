@@ -1,0 +1,158 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.audiences.v1;
+
+import "acme/audiences/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Audiences.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/audiences/v1;audiencesv1";
+option java_multiple_files = true;
+option java_outer_classname = "AudiencesProto";
+option java_package = "com.acme.audiences.v1";
+
+// Where an audience is in its lifecycle.
+enum AudienceStatus {
+  AUDIENCE_STATUS_UNSPECIFIED = 0;
+  AUDIENCE_STATUS_DRAFT = 1;
+  AUDIENCE_STATUS_ENABLED = 2;
+  AUDIENCE_STATUS_DISABLED = 3;
+  AUDIENCE_STATUS_RETIRED = 4;
+}
+
+// Where an audience member is in its lifecycle.
+enum AudienceMemberStatus {
+  AUDIENCE_MEMBER_STATUS_UNSPECIFIED = 0;
+  AUDIENCE_MEMBER_STATUS_PROSPECT = 1;
+  AUDIENCE_MEMBER_STATUS_ACTIVE = 2;
+  AUDIENCE_MEMBER_STATUS_SUSPENDED = 3;
+  AUDIENCE_MEMBER_STATUS_CLOSED = 4;
+}
+
+// Where an audience sync is in its lifecycle.
+enum AudienceSyncStatus {
+  AUDIENCE_SYNC_STATUS_UNSPECIFIED = 0;
+  AUDIENCE_SYNC_STATUS_RECEIVED = 1;
+  AUDIENCE_SYNC_STATUS_PROCESSED = 2;
+  AUDIENCE_SYNC_STATUS_DISCARDED = 3;
+}
+
+// The condition of an audience.
+message AudienceCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of an audience.
+message AudienceDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of an audience.
+message AudienceRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of an audience.
+message AudienceBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// An audience of the audiences domain.
+message Audience {
+  string audience_id = 1;
+  string name = 2;
+  string description = 3;
+  AudienceStatus status = 4;
+  int32 priority = 5;
+  repeated AudienceCondition conditions = 6;
+  oneof action {
+    AudienceDiscountAction discount = 7;
+    AudienceRouteAction route = 8;
+    AudienceBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The preferences of an audience member.
+message AudienceMemberPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of an audience member.
+message AudienceMemberPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of an audience member.
+message AudienceMemberNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// An audience member of the audiences domain.
+message AudienceMember {
+  string audience_member_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  AudienceMemberStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  AudienceMemberPreferences preferences = 8;
+  oneof identity_document {
+    AudienceMemberPassport passport = 9;
+    AudienceMemberNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The measurement of an audience sync.
+message AudienceSyncMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// An audience sync of the audiences domain.
+message AudienceSync {
+  string audience_sync_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  AudienceMemberRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated AudienceSyncMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

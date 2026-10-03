@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.performance.v1;
+
+option csharp_namespace = "Acme.Performance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/performance/v1;performancev1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.performance.v1";
+
+// A reference to a review of the performance domain.
+message ReviewRef {
+  string review_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a goal of the performance domain.
+message GoalRef {
+  string goal_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a feedback of the performance domain.
+message FeedbackRef {
+  string feedback_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a calibration of the performance domain.
+message CalibrationRef {
+  string calibration_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

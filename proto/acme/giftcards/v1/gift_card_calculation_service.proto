@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/giftcards/v1/giftcards.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftCardCalculationServiceProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Computes the figures of a gift card, such as totals, taxes, and estimates.
+service GiftCardCalculationService {
+  // Calculates a gift card.
+  rpc CalculateGiftCard(CalculateGiftCardRequest) returns (CalculateGiftCardResponse);
+
+  // Estimates a gift card.
+  rpc EstimateGiftCard(EstimateGiftCardRequest) returns (EstimateGiftCardResponse);
+
+  // Compares a gift card.
+  rpc CompareGiftCardOptions(CompareGiftCardOptionsRequest) returns (CompareGiftCardOptionsResponse);
+
+  // Recalculates a gift card.
+  rpc RecalculateGiftCards(RecalculateGiftCardsRequest) returns (RecalculateGiftCardsResponse);
+
+  // Simulates a gift card.
+  rpc SimulateGiftCard(SimulateGiftCardRequest) returns (SimulateGiftCardResponse);
+
+  // Explains a gift card.
+  rpc ExplainGiftCardCalculation(ExplainGiftCardCalculationRequest) returns (ExplainGiftCardCalculationResponse);
+
+  // Returns a gift card.
+  rpc GetGiftCardRates(GetGiftCardRatesRequest) returns (GetGiftCardRatesResponse);
+}
+
+// The request of `CalculateGiftCard`.
+message CalculateGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  CalculateGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateGiftCard`.
+message CalculateGiftCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateGiftCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  GiftCard gift_card = 1;
+  CalculateGiftCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateGiftCard`.
+message EstimateGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  EstimateGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateGiftCard`.
+message EstimateGiftCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateGiftCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  GiftCard gift_card = 1;
+  EstimateGiftCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareGiftCardOptions`.
+message CompareGiftCardOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  CompareGiftCardOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareGiftCardOptions`.
+message CompareGiftCardOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareGiftCardOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  GiftCard gift_card = 1;
+  CompareGiftCardOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateGiftCards`.
+message RecalculateGiftCardsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  RecalculateGiftCardsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateGiftCards`.
+message RecalculateGiftCardsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateGiftCardsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  GiftCard gift_card = 1;
+  RecalculateGiftCardsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateGiftCard`.
+message SimulateGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  SimulateGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateGiftCard`.
+message SimulateGiftCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateGiftCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  GiftCard gift_card = 1;
+  SimulateGiftCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainGiftCardCalculation`.
+message ExplainGiftCardCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  ExplainGiftCardCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainGiftCardCalculation`.
+message ExplainGiftCardCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCard gift_card = 1;
+  ExplainGiftCardCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetGiftCardRates`.
+message GetGiftCardRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetGiftCardRates`.
+message GetGiftCardRatesResponse {
+  GiftCard gift_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}

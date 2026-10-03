@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "StorageBinApprovalServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Routes storage bins through approval, with escalation and delegation.
+service StorageBinApprovalService {
+  // Submits a storage bin.
+  rpc SubmitStorageBin(SubmitStorageBinRequest) returns (SubmitStorageBinResponse);
+
+  // Approves a storage bin.
+  rpc ApproveStorageBin(ApproveStorageBinRequest) returns (ApproveStorageBinResponse);
+
+  // Rejects a storage bin.
+  rpc RejectStorageBin(RejectStorageBinRequest) returns (RejectStorageBinResponse);
+
+  // Escalates a storage bin.
+  rpc EscalateStorageBin(EscalateStorageBinRequest) returns (EscalateStorageBinResponse);
+
+  // Lists storage bins a page at a time.
+  rpc ListPendingStorageBins(ListPendingStorageBinsRequest) returns (ListPendingStorageBinsResponse);
+
+  // Delegates a storage bin.
+  rpc DelegateStorageBinApproval(DelegateStorageBinApprovalRequest) returns (DelegateStorageBinApprovalResponse);
+
+  // Recalls a storage bin.
+  rpc RecallStorageBin(RecallStorageBinRequest) returns (RecallStorageBinResponse);
+
+  // Returns a storage bin.
+  rpc GetStorageBinApprovalStatus(GetStorageBinApprovalStatusRequest) returns (GetStorageBinApprovalStatusResponse);
+
+  // Comments a storage bin.
+  rpc CommentStorageBinApproval(CommentStorageBinApprovalRequest) returns (CommentStorageBinApprovalResponse);
+}
+
+// The request of `SubmitStorageBin`.
+message SubmitStorageBinRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  SubmitStorageBinRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitStorageBin`.
+message SubmitStorageBinResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  SubmitStorageBinResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveStorageBin`.
+message ApproveStorageBinRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  ApproveStorageBinRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveStorageBin`.
+message ApproveStorageBinResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  ApproveStorageBinResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectStorageBin`.
+message RejectStorageBinRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  RejectStorageBinRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectStorageBin`.
+message RejectStorageBinResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  RejectStorageBinResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateStorageBin`.
+message EscalateStorageBinRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  EscalateStorageBinRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateStorageBin`.
+message EscalateStorageBinResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  EscalateStorageBinResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingStorageBins`.
+message ListPendingStorageBinsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorageBinStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingStorageBinsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingStorageBins`.
+message ListPendingStorageBinsResponse {
+  repeated StorageBin storage_bins = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateStorageBinApproval`.
+message DelegateStorageBinApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  DelegateStorageBinApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateStorageBinApproval`.
+message DelegateStorageBinApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  DelegateStorageBinApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallStorageBin`.
+message RecallStorageBinRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  RecallStorageBinRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallStorageBin`.
+message RecallStorageBinResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  RecallStorageBinResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetStorageBinApprovalStatus`.
+message GetStorageBinApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetStorageBinApprovalStatus`.
+message GetStorageBinApprovalStatusResponse {
+  StorageBin storage_bin = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentStorageBinApproval`.
+message CommentStorageBinApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storage_bin_id = 2;
+  StorageBin storage_bin = 3;
+  CommentStorageBinApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentStorageBinApproval`.
+message CommentStorageBinApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorageBin storage_bin = 1;
+  CommentStorageBinApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

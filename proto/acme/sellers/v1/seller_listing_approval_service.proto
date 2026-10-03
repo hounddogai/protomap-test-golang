@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerListingApprovalServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Routes seller listings through approval, with escalation and delegation.
+service SellerListingApprovalService {
+  // Submits a seller listing.
+  rpc SubmitSellerListing(SubmitSellerListingRequest) returns (SubmitSellerListingResponse);
+
+  // Approves a seller listing.
+  rpc ApproveSellerListing(ApproveSellerListingRequest) returns (ApproveSellerListingResponse);
+
+  // Rejects a seller listing.
+  rpc RejectSellerListing(RejectSellerListingRequest) returns (RejectSellerListingResponse);
+
+  // Escalates a seller listing.
+  rpc EscalateSellerListing(EscalateSellerListingRequest) returns (EscalateSellerListingResponse);
+
+  // Lists seller listings a page at a time.
+  rpc ListPendingSellerListings(ListPendingSellerListingsRequest) returns (ListPendingSellerListingsResponse);
+
+  // Delegates a seller listing.
+  rpc DelegateSellerListingApproval(DelegateSellerListingApprovalRequest) returns (DelegateSellerListingApprovalResponse);
+
+  // Recalls a seller listing.
+  rpc RecallSellerListing(RecallSellerListingRequest) returns (RecallSellerListingResponse);
+
+  // Returns a seller listing.
+  rpc GetSellerListingApprovalStatus(GetSellerListingApprovalStatusRequest) returns (GetSellerListingApprovalStatusResponse);
+
+  // Comments a seller listing.
+  rpc CommentSellerListingApproval(CommentSellerListingApprovalRequest) returns (CommentSellerListingApprovalResponse);
+}
+
+// The request of `SubmitSellerListing`.
+message SubmitSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  SubmitSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitSellerListing`.
+message SubmitSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  SubmitSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveSellerListing`.
+message ApproveSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  ApproveSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveSellerListing`.
+message ApproveSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ApproveSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectSellerListing`.
+message RejectSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  RejectSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectSellerListing`.
+message RejectSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  RejectSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateSellerListing`.
+message EscalateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  EscalateSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateSellerListing`.
+message EscalateSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  EscalateSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingSellerListings`.
+message ListPendingSellerListingsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerListingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingSellerListingsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingSellerListings`.
+message ListPendingSellerListingsResponse {
+  repeated SellerListing seller_listings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateSellerListingApproval`.
+message DelegateSellerListingApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  DelegateSellerListingApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateSellerListingApproval`.
+message DelegateSellerListingApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  DelegateSellerListingApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallSellerListing`.
+message RecallSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  RecallSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallSellerListing`.
+message RecallSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  RecallSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerListingApprovalStatus`.
+message GetSellerListingApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerListingApprovalStatus`.
+message GetSellerListingApprovalStatusResponse {
+  SellerListing seller_listing = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentSellerListingApproval`.
+message CommentSellerListingApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  CommentSellerListingApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentSellerListingApproval`.
+message CommentSellerListingApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  CommentSellerListingApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

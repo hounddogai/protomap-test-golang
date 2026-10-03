@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.loyalty.v1";
+
+// A reference to a loyalty member of the loyalty domain.
+message LoyaltyMemberRef {
+  string loyalty_member_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a points ledger of the loyalty domain.
+message PointsLedgerRef {
+  string points_ledger_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a reward of the loyalty domain.
+message RewardRef {
+  string reward_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a tier of the loyalty domain.
+message TierRef {
+  string tier_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

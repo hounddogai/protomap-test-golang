@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerPayoutScheduleWorkflowServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Runs the long-lived workflow that takes a seller payout schedule from start to finish.
+service SellerPayoutScheduleWorkflowService {
+  // Starts a seller payout schedule.
+  rpc StartSellerPayoutScheduleWorkflow(StartSellerPayoutScheduleWorkflowRequest) returns (StartSellerPayoutScheduleWorkflowResponse);
+
+  // Advances a seller payout schedule.
+  rpc AdvanceSellerPayoutScheduleWorkflow(AdvanceSellerPayoutScheduleWorkflowRequest) returns (AdvanceSellerPayoutScheduleWorkflowResponse);
+
+  // Cancels a seller payout schedule.
+  rpc CancelSellerPayoutScheduleWorkflow(CancelSellerPayoutScheduleWorkflowRequest) returns (CancelSellerPayoutScheduleWorkflowResponse);
+
+  // Retrys a seller payout schedule.
+  rpc RetrySellerPayoutScheduleWorkflow(RetrySellerPayoutScheduleWorkflowRequest) returns (RetrySellerPayoutScheduleWorkflowResponse);
+
+  // Pauses a seller payout schedule.
+  rpc PauseSellerPayoutScheduleWorkflow(PauseSellerPayoutScheduleWorkflowRequest) returns (PauseSellerPayoutScheduleWorkflowResponse);
+
+  // Resumes a seller payout schedule.
+  rpc ResumeSellerPayoutScheduleWorkflow(ResumeSellerPayoutScheduleWorkflowRequest) returns (ResumeSellerPayoutScheduleWorkflowResponse);
+
+  // Returns a seller payout schedule.
+  rpc InspectSellerPayoutScheduleWorkflow(InspectSellerPayoutScheduleWorkflowRequest) returns (InspectSellerPayoutScheduleWorkflowResponse);
+
+  // Lists seller payout schedules a page at a time.
+  rpc ListSellerPayoutScheduleWorkflows(ListSellerPayoutScheduleWorkflowsRequest) returns (ListSellerPayoutScheduleWorkflowsResponse);
+
+  // Signals a seller payout schedule.
+  rpc SignalSellerPayoutScheduleWorkflow(SignalSellerPayoutScheduleWorkflowRequest) returns (SignalSellerPayoutScheduleWorkflowResponse);
+}
+
+// The request of `StartSellerPayoutScheduleWorkflow`.
+message StartSellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  StartSellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartSellerPayoutScheduleWorkflow`.
+message StartSellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  StartSellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceSellerPayoutScheduleWorkflow`.
+message AdvanceSellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  AdvanceSellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceSellerPayoutScheduleWorkflow`.
+message AdvanceSellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  AdvanceSellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelSellerPayoutScheduleWorkflow`.
+message CancelSellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  CancelSellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelSellerPayoutScheduleWorkflow`.
+message CancelSellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  CancelSellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetrySellerPayoutScheduleWorkflow`.
+message RetrySellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  RetrySellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetrySellerPayoutScheduleWorkflow`.
+message RetrySellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  RetrySellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseSellerPayoutScheduleWorkflow`.
+message PauseSellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  PauseSellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseSellerPayoutScheduleWorkflow`.
+message PauseSellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  PauseSellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeSellerPayoutScheduleWorkflow`.
+message ResumeSellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  ResumeSellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeSellerPayoutScheduleWorkflow`.
+message ResumeSellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ResumeSellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSellerPayoutScheduleWorkflow`.
+message InspectSellerPayoutScheduleWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSellerPayoutScheduleWorkflow`.
+message InspectSellerPayoutScheduleWorkflowResponse {
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSellerPayoutScheduleWorkflows`.
+message ListSellerPayoutScheduleWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerPayoutScheduleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSellerPayoutScheduleWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSellerPayoutScheduleWorkflows`.
+message ListSellerPayoutScheduleWorkflowsResponse {
+  repeated SellerPayoutSchedule seller_payout_schedules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalSellerPayoutScheduleWorkflow`.
+message SignalSellerPayoutScheduleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  SignalSellerPayoutScheduleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalSellerPayoutScheduleWorkflow`.
+message SignalSellerPayoutScheduleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  SignalSellerPayoutScheduleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

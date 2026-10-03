@@ -1,0 +1,182 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.dispatch.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/dispatch/v1/refs.proto";
+import "acme/drivers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Dispatch.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/dispatch/v1;dispatchv1";
+option java_multiple_files = true;
+option java_outer_classname = "DispatchProto";
+option java_package = "com.acme.dispatch.v1";
+
+// Where a dispatch order is in its lifecycle.
+enum DispatchOrderStatus {
+  DISPATCH_ORDER_STATUS_UNSPECIFIED = 0;
+  DISPATCH_ORDER_STATUS_DRAFT = 1;
+  DISPATCH_ORDER_STATUS_ISSUED = 2;
+  DISPATCH_ORDER_STATUS_APPROVED = 3;
+  DISPATCH_ORDER_STATUS_PAID = 4;
+  DISPATCH_ORDER_STATUS_VOID = 5;
+}
+
+// Where a dispatch assignment is in its lifecycle.
+enum DispatchAssignmentStatus {
+  DISPATCH_ASSIGNMENT_STATUS_UNSPECIFIED = 0;
+  DISPATCH_ASSIGNMENT_STATUS_NEW = 1;
+  DISPATCH_ASSIGNMENT_STATUS_OPEN = 2;
+  DISPATCH_ASSIGNMENT_STATUS_WAITING = 3;
+  DISPATCH_ASSIGNMENT_STATUS_RESOLVED = 4;
+  DISPATCH_ASSIGNMENT_STATUS_CLOSED = 5;
+}
+
+// Where a zone is in its lifecycle.
+enum ZoneStatus {
+  ZONE_STATUS_UNSPECIFIED = 0;
+  ZONE_STATUS_ACTIVE = 1;
+  ZONE_STATUS_INACTIVE = 2;
+}
+
+// The line of a dispatch order.
+message DispatchOrderLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  DispatchOrderLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a dispatch order line.
+message DispatchOrderLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a dispatch order.
+message DispatchOrderCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a dispatch order.
+message DispatchOrderBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a dispatch order.
+message DispatchOrderAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A dispatch order of the dispatch domain.
+message DispatchOrder {
+  string dispatch_order_id = 1;
+  string number = 2;
+  DispatchOrderStatus status = 3;
+  ZoneRef counterparty = 4;
+  repeated DispatchOrderLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    DispatchOrderCardSettlement card = 8;
+    DispatchOrderBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated DispatchOrderAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a dispatch assignment.
+message DispatchAssignmentComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a dispatch assignment.
+message DispatchAssignmentSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a dispatch assignment.
+message DispatchAssignmentChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a dispatch assignment.
+message DispatchAssignmentStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A dispatch assignment of the dispatch domain.
+message DispatchAssignment {
+  string dispatch_assignment_id = 1;
+  string subject = 2;
+  DispatchAssignmentStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated DispatchAssignmentComment comments = 7;
+  DispatchAssignmentSla sla = 8;
+  oneof origin {
+    acme.drivers.v1.DriverRef customer = 9;
+    string external_reference = 10;
+    DispatchAssignmentChannelOrigin channel = 11;
+  }
+  repeated DispatchAssignmentStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// A zone of the dispatch domain.
+message Zone {
+  string zone_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Zone children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  ZoneStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}

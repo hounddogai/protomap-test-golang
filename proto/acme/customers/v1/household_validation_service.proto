@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "HouseholdValidationServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Checks households against the rules before anything acts on them.
+service HouseholdValidationService {
+  // Validates a household.
+  rpc ValidateHousehold(ValidateHouseholdRequest) returns (ValidateHouseholdResponse);
+
+  // Previews a household.
+  rpc PreviewHousehold(PreviewHouseholdRequest) returns (PreviewHouseholdResponse);
+
+  // Checks a household.
+  rpc CheckHouseholdEligibility(CheckHouseholdEligibilityRequest) returns (CheckHouseholdEligibilityResponse);
+
+  // Normalizes a household.
+  rpc NormalizeHousehold(NormalizeHouseholdRequest) returns (NormalizeHouseholdResponse);
+
+  // Explains a household.
+  rpc ExplainHouseholdDecision(ExplainHouseholdDecisionRequest) returns (ExplainHouseholdDecisionResponse);
+
+  // Scores a household.
+  rpc ScoreHousehold(ScoreHouseholdRequest) returns (ScoreHouseholdResponse);
+
+  // Returns a household.
+  rpc GetHouseholdRules(GetHouseholdRulesRequest) returns (GetHouseholdRulesResponse);
+}
+
+// The request of `ValidateHousehold`.
+message ValidateHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  ValidateHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateHousehold`.
+message ValidateHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  ValidateHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewHousehold`.
+message PreviewHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  PreviewHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewHousehold`.
+message PreviewHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  PreviewHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckHouseholdEligibility`.
+message CheckHouseholdEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  CheckHouseholdEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckHouseholdEligibility`.
+message CheckHouseholdEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  CheckHouseholdEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeHousehold`.
+message NormalizeHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  NormalizeHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeHousehold`.
+message NormalizeHouseholdResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  NormalizeHouseholdResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainHouseholdDecision`.
+message ExplainHouseholdDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  ExplainHouseholdDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainHouseholdDecision`.
+message ExplainHouseholdDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  ExplainHouseholdDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreHousehold`.
+message ScoreHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  ScoreHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreHousehold`.
+message ScoreHouseholdResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreHouseholdResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  ScoreHouseholdResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetHouseholdRules`.
+message GetHouseholdRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetHouseholdRules`.
+message GetHouseholdRulesResponse {
+  Household household = 1;
+  acme.common.v1.OperationResult result = 2;
+}
