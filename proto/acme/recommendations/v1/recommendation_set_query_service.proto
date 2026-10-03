@@ -1,0 +1,200 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.recommendations.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/recommendations/v1/recommendations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Recommendations.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/recommendations/v1;recommendationsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RecommendationSetQueryServiceProto";
+option java_package = "com.acme.recommendations.v1";
+
+// Answers read-only questions about recommendation sets, for screens and reports.
+service RecommendationSetQueryService {
+  // Returns a recommendation set.
+  rpc LookupRecommendationSet(LookupRecommendationSetRequest) returns (LookupRecommendationSetResponse);
+
+  // Lists recommendation sets a page at a time.
+  rpc BrowseRecommendationSets(BrowseRecommendationSetsRequest) returns (BrowseRecommendationSetsResponse);
+
+  // Lists recommendation sets a page at a time.
+  rpc FindRecommendationSets(FindRecommendationSetsRequest) returns (FindRecommendationSetsResponse);
+
+  // Streams every matching recommendation set.
+  rpc ExportRecommendationSets(ExportRecommendationSetsRequest) returns (stream ExportRecommendationSetsResponse);
+
+  // Summarizes a recommendation set.
+  rpc SummarizeRecommendationSets(SummarizeRecommendationSetsRequest) returns (SummarizeRecommendationSetsResponse);
+
+  // Lists recommendation sets a page at a time.
+  rpc SuggestRecommendationSets(SuggestRecommendationSetsRequest) returns (SuggestRecommendationSetsResponse);
+
+  // Returns a recommendation set.
+  rpc PeekRecommendationSet(PeekRecommendationSetRequest) returns (PeekRecommendationSetResponse);
+}
+
+// The request of `LookupRecommendationSet`.
+message LookupRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string recommendation_set_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupRecommendationSet`.
+message LookupRecommendationSetResponse {
+  RecommendationSet recommendation_set = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseRecommendationSets`.
+message BrowseRecommendationSetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RecommendationSetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseRecommendationSetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseRecommendationSets`.
+message BrowseRecommendationSetsResponse {
+  repeated RecommendationSet recommendation_sets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindRecommendationSets`.
+message FindRecommendationSetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RecommendationSetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindRecommendationSetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindRecommendationSets`.
+message FindRecommendationSetsResponse {
+  repeated RecommendationSet recommendation_sets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportRecommendationSets`.
+message ExportRecommendationSetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RecommendationSetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportRecommendationSetsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportRecommendationSets`.
+message ExportRecommendationSetsResponse {
+  RecommendationSet recommendation_set = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeRecommendationSets`.
+message SummarizeRecommendationSetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string recommendation_set_id = 2;
+  SummarizeRecommendationSetsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeRecommendationSets`.
+message SummarizeRecommendationSetsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestRecommendationSets`.
+message SuggestRecommendationSetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RecommendationSetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestRecommendationSetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestRecommendationSets`.
+message SuggestRecommendationSetsResponse {
+  repeated RecommendationSet recommendation_sets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekRecommendationSet`.
+message PeekRecommendationSetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string recommendation_set_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekRecommendationSet`.
+message PeekRecommendationSetResponse {
+  RecommendationSet recommendation_set = 1;
+  acme.common.v1.OperationResult result = 2;
+}

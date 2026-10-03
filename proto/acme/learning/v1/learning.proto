@@ -1,0 +1,216 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.learning.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/recruiting/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Learning.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/learning/v1;learningv1";
+option java_multiple_files = true;
+option java_outer_classname = "LearningProto";
+option java_package = "com.acme.learning.v1";
+
+// Where a course is in its lifecycle.
+enum CourseStatus {
+  COURSE_STATUS_UNSPECIFIED = 0;
+  COURSE_STATUS_PLANNED = 1;
+  COURSE_STATUS_AVAILABLE = 2;
+  COURSE_STATUS_RESERVED = 3;
+  COURSE_STATUS_RETIRED = 4;
+}
+
+// Where a learning path is in its lifecycle.
+enum LearningPathStatus {
+  LEARNING_PATH_STATUS_UNSPECIFIED = 0;
+  LEARNING_PATH_STATUS_ACTIVE = 1;
+  LEARNING_PATH_STATUS_INACTIVE = 2;
+}
+
+// Where a certification is in its lifecycle.
+enum CertificationStatus {
+  CERTIFICATION_STATUS_UNSPECIFIED = 0;
+  CERTIFICATION_STATUS_DRAFT = 1;
+  CERTIFICATION_STATUS_ISSUED = 2;
+  CERTIFICATION_STATUS_APPROVED = 3;
+  CERTIFICATION_STATUS_PAID = 4;
+  CERTIFICATION_STATUS_VOID = 5;
+}
+
+// Where a course enrollment is in its lifecycle.
+enum CourseEnrollmentStatus {
+  COURSE_ENROLLMENT_STATUS_UNSPECIFIED = 0;
+  COURSE_ENROLLMENT_STATUS_PENDING = 1;
+  COURSE_ENROLLMENT_STATUS_OPEN = 2;
+  COURSE_ENROLLMENT_STATUS_FROZEN = 3;
+  COURSE_ENROLLMENT_STATUS_CLOSED = 4;
+}
+
+// The dimensions of a course.
+message CourseDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a course.
+message CourseComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A course of the learning domain.
+message Course {
+  string course_id = 1;
+  string code = 2;
+  string name = 3;
+  CourseStatus status = 4;
+  repeated string category_path = 5;
+  CourseDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, CourseComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// A learning path of the learning domain.
+message LearningPath {
+  string learning_path_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated LearningPath children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  LearningPathStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The line of a certification.
+message CertificationLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  CertificationLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a certification line.
+message CertificationLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a certification.
+message CertificationCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a certification.
+message CertificationBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a certification.
+message CertificationAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A certification of the learning domain.
+message Certification {
+  string certification_id = 1;
+  string number = 2;
+  CertificationStatus status = 3;
+  acme.recruiting.v1.CandidateRef counterparty = 4;
+  repeated CertificationLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    CertificationCardSettlement card = 8;
+    CertificationBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated CertificationAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The limit of a course enrollment.
+message CourseEnrollmentLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a course enrollment.
+message CourseEnrollmentCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a course enrollment.
+message CourseEnrollmentBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A course enrollment of the learning domain.
+message CourseEnrollment {
+  string course_enrollment_id = 1;
+  acme.recruiting.v1.CandidateRef holder = 2;
+  CourseEnrollmentStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated CourseEnrollmentLimit limits = 7;
+  oneof funding {
+    CourseEnrollmentCardFunding card = 8;
+    CourseEnrollmentBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}

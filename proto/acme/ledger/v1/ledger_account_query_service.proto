@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.ledger.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/ledger/v1/ledger.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Ledger.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/ledger/v1;ledgerv1";
+option java_multiple_files = true;
+option java_outer_classname = "LedgerAccountQueryServiceProto";
+option java_package = "com.acme.ledger.v1";
+
+// Answers read-only questions about ledger accounts, for screens and reports.
+service LedgerAccountQueryService {
+  // Returns a ledger account.
+  rpc LookupLedgerAccount(LookupLedgerAccountRequest) returns (LookupLedgerAccountResponse);
+
+  // Lists ledger accounts a page at a time.
+  rpc BrowseLedgerAccounts(BrowseLedgerAccountsRequest) returns (BrowseLedgerAccountsResponse);
+
+  // Lists ledger accounts a page at a time.
+  rpc FindLedgerAccounts(FindLedgerAccountsRequest) returns (FindLedgerAccountsResponse);
+
+  // Counts ledger accounts by status.
+  rpc CountLedgerAccounts(CountLedgerAccountsRequest) returns (CountLedgerAccountsResponse);
+
+  // Returns several ledger accounts at once.
+  rpc ResolveLedgerAccounts(ResolveLedgerAccountsRequest) returns (ResolveLedgerAccountsResponse);
+
+  // Streams every matching ledger account.
+  rpc ExportLedgerAccounts(ExportLedgerAccountsRequest) returns (stream ExportLedgerAccountsResponse);
+
+  // Summarizes a ledger account.
+  rpc SummarizeLedgerAccounts(SummarizeLedgerAccountsRequest) returns (SummarizeLedgerAccountsResponse);
+
+  // Lists ledger accounts a page at a time.
+  rpc SuggestLedgerAccounts(SuggestLedgerAccountsRequest) returns (SuggestLedgerAccountsResponse);
+
+  // Returns a ledger account.
+  rpc PeekLedgerAccount(PeekLedgerAccountRequest) returns (PeekLedgerAccountResponse);
+}
+
+// The request of `LookupLedgerAccount`.
+message LookupLedgerAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  string ledger_account_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupLedgerAccount`.
+message LookupLedgerAccountResponse {
+  LedgerAccount ledger_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseLedgerAccounts`.
+message BrowseLedgerAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LedgerAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseLedgerAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseLedgerAccounts`.
+message BrowseLedgerAccountsResponse {
+  repeated LedgerAccount ledger_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindLedgerAccounts`.
+message FindLedgerAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LedgerAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindLedgerAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindLedgerAccounts`.
+message FindLedgerAccountsResponse {
+  repeated LedgerAccount ledger_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountLedgerAccounts`.
+message CountLedgerAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LedgerAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountLedgerAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountLedgerAccounts`.
+message CountLedgerAccountsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveLedgerAccounts`.
+message ResolveLedgerAccountsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string ledger_account_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveLedgerAccounts`.
+message ResolveLedgerAccountsResponse {
+  repeated LedgerAccount ledger_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportLedgerAccounts`.
+message ExportLedgerAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LedgerAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportLedgerAccountsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportLedgerAccounts`.
+message ExportLedgerAccountsResponse {
+  LedgerAccount ledger_account = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeLedgerAccounts`.
+message SummarizeLedgerAccountsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string ledger_account_id = 2;
+  SummarizeLedgerAccountsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeLedgerAccounts`.
+message SummarizeLedgerAccountsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestLedgerAccounts`.
+message SuggestLedgerAccountsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LedgerAccountStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestLedgerAccountsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestLedgerAccounts`.
+message SuggestLedgerAccountsResponse {
+  repeated LedgerAccount ledger_accounts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekLedgerAccount`.
+message PeekLedgerAccountRequest {
+  acme.common.v1.RequestContext context = 1;
+  string ledger_account_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekLedgerAccount`.
+message PeekLedgerAccountResponse {
+  LedgerAccount ledger_account = 1;
+  acme.common.v1.OperationResult result = 2;
+}

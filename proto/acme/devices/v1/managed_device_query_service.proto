@@ -1,0 +1,197 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.devices.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/devices/v1/devices.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Devices.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/devices/v1;devicesv1";
+option java_multiple_files = true;
+option java_outer_classname = "ManagedDeviceQueryServiceProto";
+option java_package = "com.acme.devices.v1";
+
+// Answers read-only questions about managed devices, for screens and reports.
+service ManagedDeviceQueryService {
+  // Returns a managed device.
+  rpc LookupManagedDevice(LookupManagedDeviceRequest) returns (LookupManagedDeviceResponse);
+
+  // Lists managed devices a page at a time.
+  rpc BrowseManagedDevices(BrowseManagedDevicesRequest) returns (BrowseManagedDevicesResponse);
+
+  // Lists managed devices a page at a time.
+  rpc FindManagedDevices(FindManagedDevicesRequest) returns (FindManagedDevicesResponse);
+
+  // Counts managed devices by status.
+  rpc CountManagedDevices(CountManagedDevicesRequest) returns (CountManagedDevicesResponse);
+
+  // Streams every matching managed device.
+  rpc ExportManagedDevices(ExportManagedDevicesRequest) returns (stream ExportManagedDevicesResponse);
+
+  // Lists managed devices a page at a time.
+  rpc SuggestManagedDevices(SuggestManagedDevicesRequest) returns (SuggestManagedDevicesResponse);
+
+  // Returns a managed device.
+  rpc PeekManagedDevice(PeekManagedDeviceRequest) returns (PeekManagedDeviceResponse);
+}
+
+// The request of `LookupManagedDevice`.
+message LookupManagedDeviceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string managed_device_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupManagedDevice`.
+message LookupManagedDeviceResponse {
+  ManagedDevice managed_device = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseManagedDevices`.
+message BrowseManagedDevicesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManagedDeviceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseManagedDevicesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseManagedDevices`.
+message BrowseManagedDevicesResponse {
+  repeated ManagedDevice managed_devices = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindManagedDevices`.
+message FindManagedDevicesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManagedDeviceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindManagedDevicesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindManagedDevices`.
+message FindManagedDevicesResponse {
+  repeated ManagedDevice managed_devices = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountManagedDevices`.
+message CountManagedDevicesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManagedDeviceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountManagedDevicesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountManagedDevices`.
+message CountManagedDevicesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportManagedDevices`.
+message ExportManagedDevicesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManagedDeviceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportManagedDevicesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportManagedDevices`.
+message ExportManagedDevicesResponse {
+  ManagedDevice managed_device = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestManagedDevices`.
+message SuggestManagedDevicesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManagedDeviceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestManagedDevicesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestManagedDevices`.
+message SuggestManagedDevicesResponse {
+  repeated ManagedDevice managed_devices = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekManagedDevice`.
+message PeekManagedDeviceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string managed_device_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekManagedDevice`.
+message PeekManagedDeviceResponse {
+  ManagedDevice managed_device = 1;
+  acme.common.v1.OperationResult result = 2;
+}

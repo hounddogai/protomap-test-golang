@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewModerationQueryServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Answers read-only questions about review moderations, for screens and reports.
+service ReviewModerationQueryService {
+  // Returns a review moderation.
+  rpc LookupReviewModeration(LookupReviewModerationRequest) returns (LookupReviewModerationResponse);
+
+  // Lists review moderations a page at a time.
+  rpc BrowseReviewModerations(BrowseReviewModerationsRequest) returns (BrowseReviewModerationsResponse);
+
+  // Lists review moderations a page at a time.
+  rpc FindReviewModerations(FindReviewModerationsRequest) returns (FindReviewModerationsResponse);
+
+  // Returns several review moderations at once.
+  rpc ResolveReviewModerations(ResolveReviewModerationsRequest) returns (ResolveReviewModerationsResponse);
+
+  // Streams every matching review moderation.
+  rpc ExportReviewModerations(ExportReviewModerationsRequest) returns (stream ExportReviewModerationsResponse);
+
+  // Summarizes a review moderation.
+  rpc SummarizeReviewModerations(SummarizeReviewModerationsRequest) returns (SummarizeReviewModerationsResponse);
+
+  // Lists review moderations a page at a time.
+  rpc SuggestReviewModerations(SuggestReviewModerationsRequest) returns (SuggestReviewModerationsResponse);
+
+  // Returns a review moderation.
+  rpc PeekReviewModeration(PeekReviewModerationRequest) returns (PeekReviewModerationResponse);
+}
+
+// The request of `LookupReviewModeration`.
+message LookupReviewModerationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupReviewModeration`.
+message LookupReviewModerationResponse {
+  ReviewModeration review_moderation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseReviewModerations`.
+message BrowseReviewModerationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewModerationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseReviewModerationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseReviewModerations`.
+message BrowseReviewModerationsResponse {
+  repeated ReviewModeration review_moderations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindReviewModerations`.
+message FindReviewModerationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewModerationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindReviewModerationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindReviewModerations`.
+message FindReviewModerationsResponse {
+  repeated ReviewModeration review_moderations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveReviewModerations`.
+message ResolveReviewModerationsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string review_moderation_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveReviewModerations`.
+message ResolveReviewModerationsResponse {
+  repeated ReviewModeration review_moderations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportReviewModerations`.
+message ExportReviewModerationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewModerationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportReviewModerationsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportReviewModerations`.
+message ExportReviewModerationsResponse {
+  ReviewModeration review_moderation = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeReviewModerations`.
+message SummarizeReviewModerationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  SummarizeReviewModerationsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeReviewModerations`.
+message SummarizeReviewModerationsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestReviewModerations`.
+message SuggestReviewModerationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewModerationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestReviewModerationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestReviewModerations`.
+message SuggestReviewModerationsResponse {
+  repeated ReviewModeration review_moderations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekReviewModeration`.
+message PeekReviewModerationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekReviewModeration`.
+message PeekReviewModerationResponse {
+  ReviewModeration review_moderation = 1;
+  acme.common.v1.OperationResult result = 2;
+}

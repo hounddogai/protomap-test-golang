@@ -1,0 +1,181 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.certificates.v1;
+
+import "acme/certificates/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Certificates.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/certificates/v1;certificatesv1";
+option java_multiple_files = true;
+option java_outer_classname = "CertificatesProto";
+option java_package = "com.acme.certificates.v1";
+
+// Where a certificate is in its lifecycle.
+enum CertificateStatus {
+  CERTIFICATE_STATUS_UNSPECIFIED = 0;
+  CERTIFICATE_STATUS_DRAFT = 1;
+  CERTIFICATE_STATUS_ISSUED = 2;
+  CERTIFICATE_STATUS_APPROVED = 3;
+  CERTIFICATE_STATUS_PAID = 4;
+  CERTIFICATE_STATUS_VOID = 5;
+}
+
+// Where a certificate authority is in its lifecycle.
+enum CertificateAuthorityStatus {
+  CERTIFICATE_AUTHORITY_STATUS_UNSPECIFIED = 0;
+  CERTIFICATE_AUTHORITY_STATUS_ACTIVE = 1;
+  CERTIFICATE_AUTHORITY_STATUS_INACTIVE = 2;
+}
+
+// Where a csr is in its lifecycle.
+enum CsrStatus {
+  CSR_STATUS_UNSPECIFIED = 0;
+  CSR_STATUS_NEW = 1;
+  CSR_STATUS_OPEN = 2;
+  CSR_STATUS_WAITING = 3;
+  CSR_STATUS_RESOLVED = 4;
+  CSR_STATUS_CLOSED = 5;
+}
+
+// The line of a certificate.
+message CertificateLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  CertificateLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a certificate line.
+message CertificateLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a certificate.
+message CertificateCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a certificate.
+message CertificateBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a certificate.
+message CertificateAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A certificate of the certificates domain.
+message Certificate {
+  string certificate_id = 1;
+  string number = 2;
+  CertificateStatus status = 3;
+  CsrRef counterparty = 4;
+  repeated CertificateLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    CertificateCardSettlement card = 8;
+    CertificateBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated CertificateAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// A certificate authority of the certificates domain.
+message CertificateAuthority {
+  string certificate_authority_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated CertificateAuthority children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  CertificateAuthorityStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The comment of a csr.
+message CsrComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a csr.
+message CsrSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a csr.
+message CsrChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a csr.
+message CsrStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A csr of the certificates domain.
+message Csr {
+  string csr_id = 1;
+  string subject = 2;
+  CsrStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated CsrComment comments = 7;
+  CsrSla sla = 8;
+  oneof origin {
+    acme.identity.v1.UserRef customer = 9;
+    string external_reference = 10;
+    CsrChannelOrigin channel = 11;
+  }
+  repeated CsrStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

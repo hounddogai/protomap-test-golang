@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockItemServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Manages stock items: creates, reads, changes, and lists them.
+service StockItemService {
+  // Creates a stock item.
+  rpc CreateStockItem(CreateStockItemRequest) returns (CreateStockItemResponse);
+
+  // Returns a stock item.
+  rpc GetStockItem(GetStockItemRequest) returns (GetStockItemResponse);
+
+  // Changes a stock item.
+  rpc UpdateStockItem(UpdateStockItemRequest) returns (UpdateStockItemResponse);
+
+  // Deletes a stock item.
+  rpc DeleteStockItem(DeleteStockItemRequest) returns (DeleteStockItemResponse);
+
+  // Lists stock items a page at a time.
+  rpc ListStockItems(ListStockItemsRequest) returns (ListStockItemsResponse);
+
+  // Lists stock items a page at a time.
+  rpc SearchStockItems(SearchStockItemsRequest) returns (SearchStockItemsResponse);
+
+  // Streams the changes of stock items as they happen.
+  rpc WatchStockItems(WatchStockItemsRequest) returns (stream WatchStockItemsResponse);
+
+  // Takes a stream of stock items and answers once at the end.
+  rpc BatchCreateStockItems(stream BatchCreateStockItemsRequest) returns (BatchCreateStockItemsResponse);
+
+  // Creates a stock item.
+  rpc CloneStockItem(CloneStockItemRequest) returns (CloneStockItemResponse);
+}
+
+// The request of `CreateStockItem`.
+message CreateStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  StockItem stock_item = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateStockItem`.
+message CreateStockItemResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetStockItem`.
+message GetStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetStockItem`.
+message GetStockItemResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateStockItem`.
+message UpdateStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  StockItem stock_item = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateStockItem`.
+message UpdateStockItemResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteStockItem`.
+message DeleteStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteStockItem`.
+message DeleteStockItemResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListStockItems`.
+message ListStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListStockItemsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListStockItems`.
+message ListStockItemsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchStockItems`.
+message SearchStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchStockItemsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchStockItems`.
+message SearchStockItemsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchStockItems`.
+message WatchStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchStockItemsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchStockItems`.
+message WatchStockItemsResponse {
+  StockItem stock_item = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateStockItems`.
+message BatchCreateStockItemsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateStockItemsRequest.StreamHeader header = 2;
+    StockItem record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateStockItems`.
+message BatchCreateStockItemsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string stock_item_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateStockItemsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneStockItem`.
+message CloneStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  StockItem stock_item = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneStockItem`.
+message CloneStockItemResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerListingLifecycleServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Moves a seller listing between the states of its lifecycle.
+service SellerListingLifecycleService {
+  // Activates a seller listing.
+  rpc ActivateSellerListing(ActivateSellerListingRequest) returns (ActivateSellerListingResponse);
+
+  // Suspends a seller listing.
+  rpc SuspendSellerListing(SuspendSellerListingRequest) returns (SuspendSellerListingResponse);
+
+  // Reinstates a seller listing.
+  rpc ReinstateSellerListing(ReinstateSellerListingRequest) returns (ReinstateSellerListingResponse);
+
+  // Terminates a seller listing.
+  rpc TerminateSellerListing(TerminateSellerListingRequest) returns (TerminateSellerListingResponse);
+
+  // Renews a seller listing.
+  rpc RenewSellerListing(RenewSellerListingRequest) returns (RenewSellerListingResponse);
+
+  // Expires a seller listing.
+  rpc ExpireSellerListing(ExpireSellerListingRequest) returns (ExpireSellerListingResponse);
+
+  // Returns a seller listing.
+  rpc GetSellerListingLifecycle(GetSellerListingLifecycleRequest) returns (GetSellerListingLifecycleResponse);
+
+  // Schedules a seller listing.
+  rpc ScheduleSellerListingExpiry(ScheduleSellerListingExpiryRequest) returns (ScheduleSellerListingExpiryResponse);
+}
+
+// The request of `ActivateSellerListing`.
+message ActivateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  ActivateSellerListingRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateSellerListing`.
+message ActivateSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ActivateSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendSellerListing`.
+message SuspendSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SuspendSellerListingRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendSellerListing`.
+message SuspendSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  SuspendSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateSellerListing`.
+message ReinstateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  ReinstateSellerListingRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateSellerListing`.
+message ReinstateSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ReinstateSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateSellerListing`.
+message TerminateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  TerminateSellerListingRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateSellerListing`.
+message TerminateSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  TerminateSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewSellerListing`.
+message RenewSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  RenewSellerListingRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewSellerListing`.
+message RenewSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  RenewSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireSellerListing`.
+message ExpireSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  ExpireSellerListingRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireSellerListing`.
+message ExpireSellerListingResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ExpireSellerListingResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerListingLifecycle`.
+message GetSellerListingLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerListingLifecycle`.
+message GetSellerListingLifecycleResponse {
+  SellerListing seller_listing = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleSellerListingExpiry`.
+message ScheduleSellerListingExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  ScheduleSellerListingExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleSellerListingExpiry`.
+message ScheduleSellerListingExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ScheduleSellerListingExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

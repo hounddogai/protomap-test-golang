@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.metrics.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/metrics/v1/metrics.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Metrics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/metrics/v1;metricsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MetricSeriesServiceProto";
+option java_package = "com.acme.metrics.v1";
+
+// Manages metric serieses: creates, reads, changes, and lists them.
+service MetricSeriesService {
+  // Creates a metric series.
+  rpc CreateMetricSeries(CreateMetricSeriesRequest) returns (CreateMetricSeriesResponse);
+
+  // Returns a metric series.
+  rpc GetMetricSeries(GetMetricSeriesRequest) returns (GetMetricSeriesResponse);
+
+  // Changes a metric series.
+  rpc UpdateMetricSeries(UpdateMetricSeriesRequest) returns (UpdateMetricSeriesResponse);
+
+  // Deletes a metric series.
+  rpc DeleteMetricSeries(DeleteMetricSeriesRequest) returns (DeleteMetricSeriesResponse);
+
+  // Lists metric serieses a page at a time.
+  rpc ListMetricSerieses(ListMetricSeriesesRequest) returns (ListMetricSeriesesResponse);
+
+  // Lists metric serieses a page at a time.
+  rpc SearchMetricSerieses(SearchMetricSeriesesRequest) returns (SearchMetricSeriesesResponse);
+
+  // Streams the changes of metric serieses as they happen.
+  rpc WatchMetricSerieses(WatchMetricSeriesesRequest) returns (stream WatchMetricSeriesesResponse);
+
+  // Takes a stream of metric serieses and answers once at the end.
+  rpc BatchCreateMetricSerieses(stream BatchCreateMetricSeriesesRequest) returns (BatchCreateMetricSeriesesResponse);
+
+  // Creates a metric series.
+  rpc CloneMetricSeries(CloneMetricSeriesRequest) returns (CloneMetricSeriesResponse);
+}
+
+// The request of `CreateMetricSeries`.
+message CreateMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  MetricSeries metric_series = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateMetricSeries`.
+message CreateMetricSeriesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetMetricSeries`.
+message GetMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMetricSeries`.
+message GetMetricSeriesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateMetricSeries`.
+message UpdateMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  MetricSeries metric_series = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateMetricSeries`.
+message UpdateMetricSeriesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteMetricSeries`.
+message DeleteMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteMetricSeries`.
+message DeleteMetricSeriesResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListMetricSerieses`.
+message ListMetricSeriesesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MetricSeriesStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMetricSeriesesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMetricSerieses`.
+message ListMetricSeriesesResponse {
+  repeated MetricSeries metric_serieses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchMetricSerieses`.
+message SearchMetricSeriesesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MetricSeriesStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchMetricSeriesesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchMetricSerieses`.
+message SearchMetricSeriesesResponse {
+  repeated MetricSeries metric_serieses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchMetricSerieses`.
+message WatchMetricSeriesesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MetricSeriesStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchMetricSeriesesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchMetricSerieses`.
+message WatchMetricSeriesesResponse {
+  MetricSeries metric_series = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateMetricSerieses`.
+message BatchCreateMetricSeriesesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateMetricSeriesesRequest.StreamHeader header = 2;
+    MetricSeries record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateMetricSerieses`.
+message BatchCreateMetricSeriesesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string metric_series_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateMetricSeriesesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneMetricSeries`.
+message CloneMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  MetricSeries metric_series = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneMetricSeries`.
+message CloneMetricSeriesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.dispatch.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/dispatch/v1/dispatch.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Dispatch.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/dispatch/v1;dispatchv1";
+option java_multiple_files = true;
+option java_outer_classname = "DispatchOrderServiceProto";
+option java_package = "com.acme.dispatch.v1";
+
+// Manages dispatch orders: creates, reads, changes, and lists them.
+service DispatchOrderService {
+  // Creates a dispatch order.
+  rpc CreateDispatchOrder(CreateDispatchOrderRequest) returns (CreateDispatchOrderResponse);
+
+  // Returns a dispatch order.
+  rpc GetDispatchOrder(GetDispatchOrderRequest) returns (GetDispatchOrderResponse);
+
+  // Changes a dispatch order.
+  rpc UpdateDispatchOrder(UpdateDispatchOrderRequest) returns (UpdateDispatchOrderResponse);
+
+  // Deletes a dispatch order.
+  rpc DeleteDispatchOrder(DeleteDispatchOrderRequest) returns (DeleteDispatchOrderResponse);
+
+  // Returns several dispatch orders at once.
+  rpc BatchGetDispatchOrders(BatchGetDispatchOrdersRequest) returns (BatchGetDispatchOrdersResponse);
+
+  // Lists dispatch orders a page at a time.
+  rpc SearchDispatchOrders(SearchDispatchOrdersRequest) returns (SearchDispatchOrdersResponse);
+
+  // Streams the changes of dispatch orders as they happen.
+  rpc WatchDispatchOrders(WatchDispatchOrdersRequest) returns (stream WatchDispatchOrdersResponse);
+
+  // Takes a stream of dispatch orders and answers once at the end.
+  rpc BatchCreateDispatchOrders(stream BatchCreateDispatchOrdersRequest) returns (BatchCreateDispatchOrdersResponse);
+
+  // Creates a dispatch order.
+  rpc CloneDispatchOrder(CloneDispatchOrderRequest) returns (CloneDispatchOrderResponse);
+}
+
+// The request of `CreateDispatchOrder`.
+message CreateDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  DispatchOrder dispatch_order = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateDispatchOrder`.
+message CreateDispatchOrderResponse {
+  DispatchOrder dispatch_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetDispatchOrder`.
+message GetDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispatch_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDispatchOrder`.
+message GetDispatchOrderResponse {
+  DispatchOrder dispatch_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateDispatchOrder`.
+message UpdateDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  DispatchOrder dispatch_order = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateDispatchOrder`.
+message UpdateDispatchOrderResponse {
+  DispatchOrder dispatch_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteDispatchOrder`.
+message DeleteDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispatch_order_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteDispatchOrder`.
+message DeleteDispatchOrderResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetDispatchOrders`.
+message BatchGetDispatchOrdersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string dispatch_order_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetDispatchOrders`.
+message BatchGetDispatchOrdersResponse {
+  repeated DispatchOrder dispatch_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchDispatchOrders`.
+message SearchDispatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DispatchOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchDispatchOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchDispatchOrders`.
+message SearchDispatchOrdersResponse {
+  repeated DispatchOrder dispatch_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchDispatchOrders`.
+message WatchDispatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DispatchOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchDispatchOrdersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchDispatchOrders`.
+message WatchDispatchOrdersResponse {
+  DispatchOrder dispatch_order = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateDispatchOrders`.
+message BatchCreateDispatchOrdersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateDispatchOrdersRequest.StreamHeader header = 2;
+    DispatchOrder record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateDispatchOrders`.
+message BatchCreateDispatchOrdersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string dispatch_order_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateDispatchOrdersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneDispatchOrder`.
+message CloneDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  DispatchOrder dispatch_order = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneDispatchOrder`.
+message CloneDispatchOrderResponse {
+  DispatchOrder dispatch_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerScorecardApprovalServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Routes seller scorecards through approval, with escalation and delegation.
+service SellerScorecardApprovalService {
+  // Submits a seller scorecard.
+  rpc SubmitSellerScorecard(SubmitSellerScorecardRequest) returns (SubmitSellerScorecardResponse);
+
+  // Approves a seller scorecard.
+  rpc ApproveSellerScorecard(ApproveSellerScorecardRequest) returns (ApproveSellerScorecardResponse);
+
+  // Rejects a seller scorecard.
+  rpc RejectSellerScorecard(RejectSellerScorecardRequest) returns (RejectSellerScorecardResponse);
+
+  // Escalates a seller scorecard.
+  rpc EscalateSellerScorecard(EscalateSellerScorecardRequest) returns (EscalateSellerScorecardResponse);
+
+  // Lists seller scorecards a page at a time.
+  rpc ListPendingSellerScorecards(ListPendingSellerScorecardsRequest) returns (ListPendingSellerScorecardsResponse);
+
+  // Recalls a seller scorecard.
+  rpc RecallSellerScorecard(RecallSellerScorecardRequest) returns (RecallSellerScorecardResponse);
+
+  // Returns a seller scorecard.
+  rpc GetSellerScorecardApprovalStatus(GetSellerScorecardApprovalStatusRequest) returns (GetSellerScorecardApprovalStatusResponse);
+
+  // Comments a seller scorecard.
+  rpc CommentSellerScorecardApproval(CommentSellerScorecardApprovalRequest) returns (CommentSellerScorecardApprovalResponse);
+}
+
+// The request of `SubmitSellerScorecard`.
+message SubmitSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  SubmitSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitSellerScorecard`.
+message SubmitSellerScorecardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  SubmitSellerScorecardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveSellerScorecard`.
+message ApproveSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  ApproveSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveSellerScorecard`.
+message ApproveSellerScorecardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  ApproveSellerScorecardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectSellerScorecard`.
+message RejectSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  RejectSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectSellerScorecard`.
+message RejectSellerScorecardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  RejectSellerScorecardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateSellerScorecard`.
+message EscalateSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  EscalateSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateSellerScorecard`.
+message EscalateSellerScorecardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  EscalateSellerScorecardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingSellerScorecards`.
+message ListPendingSellerScorecardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerScorecardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingSellerScorecardsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingSellerScorecards`.
+message ListPendingSellerScorecardsResponse {
+  repeated SellerScorecard seller_scorecards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallSellerScorecard`.
+message RecallSellerScorecardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  RecallSellerScorecardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallSellerScorecard`.
+message RecallSellerScorecardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  RecallSellerScorecardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerScorecardApprovalStatus`.
+message GetSellerScorecardApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerScorecardApprovalStatus`.
+message GetSellerScorecardApprovalStatusResponse {
+  SellerScorecard seller_scorecard = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentSellerScorecardApproval`.
+message CommentSellerScorecardApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_scorecard_id = 2;
+  SellerScorecard seller_scorecard = 3;
+  CommentSellerScorecardApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentSellerScorecardApproval`.
+message CommentSellerScorecardApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerScorecard seller_scorecard = 1;
+  CommentSellerScorecardApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

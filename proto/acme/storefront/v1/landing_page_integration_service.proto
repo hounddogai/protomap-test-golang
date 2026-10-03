@@ -1,0 +1,263 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "LandingPageIntegrationServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Connects external systems that send landing page events.
+service LandingPageIntegrationService {
+  // Connects a landing page.
+  rpc ConnectLandingPageSource(ConnectLandingPageSourceRequest) returns (ConnectLandingPageSourceResponse);
+
+  // Disconnects a landing page.
+  rpc DisconnectLandingPageSource(DisconnectLandingPageSourceRequest) returns (DisconnectLandingPageSourceResponse);
+
+  // Replays a landing page.
+  rpc ReplayLandingPageEvents(ReplayLandingPageEventsRequest) returns (ReplayLandingPageEventsResponse);
+
+  // Acknowledges a landing page.
+  rpc AcknowledgeLandingPageEvent(AcknowledgeLandingPageEventRequest) returns (AcknowledgeLandingPageEventResponse);
+
+  // Exchanges changes of landing pages with a peer.
+  rpc RelayLandingPageMessages(stream RelayLandingPageMessagesRequest) returns (stream RelayLandingPageMessagesResponse);
+
+  // Lists landing pages a page at a time.
+  rpc ListLandingPageSources(ListLandingPageSourcesRequest) returns (ListLandingPageSourcesResponse);
+
+  // Tests a landing page.
+  rpc TestLandingPageConnection(TestLandingPageConnectionRequest) returns (TestLandingPageConnectionResponse);
+}
+
+// The request of `ConnectLandingPageSource`.
+message ConnectLandingPageSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  ConnectLandingPageSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ConnectLandingPageSource`.
+message ConnectLandingPageSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  ConnectLandingPageSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DisconnectLandingPageSource`.
+message DisconnectLandingPageSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  DisconnectLandingPageSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `DisconnectLandingPageSource`.
+message DisconnectLandingPageSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  DisconnectLandingPageSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReplayLandingPageEvents`.
+message ReplayLandingPageEventsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  ReplayLandingPageEventsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReplayLandingPageEvents`.
+message ReplayLandingPageEventsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  ReplayLandingPageEventsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AcknowledgeLandingPageEvent`.
+message AcknowledgeLandingPageEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  AcknowledgeLandingPageEventRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `AcknowledgeLandingPageEvent`.
+message AcknowledgeLandingPageEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  AcknowledgeLandingPageEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RelayLandingPageMessages`.
+message RelayLandingPageMessagesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    LandingPage change = 2;
+    RelayLandingPageMessagesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `RelayLandingPageMessages`.
+message RelayLandingPageMessagesResponse {
+  LandingPage landing_page = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListLandingPageSources`.
+message ListLandingPageSourcesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LandingPageStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListLandingPageSourcesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListLandingPageSources`.
+message ListLandingPageSourcesResponse {
+  repeated LandingPage landing_pages = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TestLandingPageConnection`.
+message TestLandingPageConnectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  TestLandingPageConnectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TestLandingPageConnection`.
+message TestLandingPageConnectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  TestLandingPageConnectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

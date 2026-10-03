@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductReviewServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Manages product reviews: creates, reads, changes, and lists them.
+service ProductReviewService {
+  // Creates a product review.
+  rpc CreateProductReview(CreateProductReviewRequest) returns (CreateProductReviewResponse);
+
+  // Returns a product review.
+  rpc GetProductReview(GetProductReviewRequest) returns (GetProductReviewResponse);
+
+  // Deletes a product review.
+  rpc DeleteProductReview(DeleteProductReviewRequest) returns (DeleteProductReviewResponse);
+
+  // Lists product reviews a page at a time.
+  rpc ListProductReviews(ListProductReviewsRequest) returns (ListProductReviewsResponse);
+
+  // Returns several product reviews at once.
+  rpc BatchGetProductReviews(BatchGetProductReviewsRequest) returns (BatchGetProductReviewsResponse);
+
+  // Lists product reviews a page at a time.
+  rpc SearchProductReviews(SearchProductReviewsRequest) returns (SearchProductReviewsResponse);
+
+  // Streams the changes of product reviews as they happen.
+  rpc WatchProductReviews(WatchProductReviewsRequest) returns (stream WatchProductReviewsResponse);
+
+  // Takes a stream of product reviews and answers once at the end.
+  rpc BatchCreateProductReviews(stream BatchCreateProductReviewsRequest) returns (BatchCreateProductReviewsResponse);
+
+  // Creates a product review.
+  rpc CloneProductReview(CloneProductReviewRequest) returns (CloneProductReviewResponse);
+}
+
+// The request of `CreateProductReview`.
+message CreateProductReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  ProductReview product_review = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateProductReview`.
+message CreateProductReviewResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetProductReview`.
+message GetProductReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProductReview`.
+message GetProductReviewResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteProductReview`.
+message DeleteProductReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_review_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteProductReview`.
+message DeleteProductReviewResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListProductReviews`.
+message ListProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListProductReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListProductReviews`.
+message ListProductReviewsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetProductReviews`.
+message BatchGetProductReviewsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string product_review_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetProductReviews`.
+message BatchGetProductReviewsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchProductReviews`.
+message SearchProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchProductReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchProductReviews`.
+message SearchProductReviewsResponse {
+  repeated ProductReview product_reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchProductReviews`.
+message WatchProductReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchProductReviewsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchProductReviews`.
+message WatchProductReviewsResponse {
+  ProductReview product_review = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateProductReviews`.
+message BatchCreateProductReviewsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateProductReviewsRequest.StreamHeader header = 2;
+    ProductReview record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateProductReviews`.
+message BatchCreateProductReviewsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string product_review_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateProductReviewsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneProductReview`.
+message CloneProductReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  ProductReview product_review = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneProductReview`.
+message CloneProductReviewResponse {
+  ProductReview product_review = 1;
+  acme.common.v1.OperationResult result = 2;
+}

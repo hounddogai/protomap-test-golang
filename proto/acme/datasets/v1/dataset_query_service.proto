@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.datasets.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/datasets/v1/datasets.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Datasets.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/datasets/v1;datasetsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DatasetQueryServiceProto";
+option java_package = "com.acme.datasets.v1";
+
+// Answers read-only questions about datasets, for screens and reports.
+service DatasetQueryService {
+  // Returns a dataset.
+  rpc LookupDataset(LookupDatasetRequest) returns (LookupDatasetResponse);
+
+  // Lists datasets a page at a time.
+  rpc BrowseDatasets(BrowseDatasetsRequest) returns (BrowseDatasetsResponse);
+
+  // Lists datasets a page at a time.
+  rpc FindDatasets(FindDatasetsRequest) returns (FindDatasetsResponse);
+
+  // Counts datasets by status.
+  rpc CountDatasets(CountDatasetsRequest) returns (CountDatasetsResponse);
+
+  // Returns several datasets at once.
+  rpc ResolveDatasets(ResolveDatasetsRequest) returns (ResolveDatasetsResponse);
+
+  // Streams every matching dataset.
+  rpc ExportDatasets(ExportDatasetsRequest) returns (stream ExportDatasetsResponse);
+
+  // Summarizes a dataset.
+  rpc SummarizeDatasets(SummarizeDatasetsRequest) returns (SummarizeDatasetsResponse);
+
+  // Lists datasets a page at a time.
+  rpc SuggestDatasets(SuggestDatasetsRequest) returns (SuggestDatasetsResponse);
+
+  // Returns a dataset.
+  rpc PeekDataset(PeekDatasetRequest) returns (PeekDatasetResponse);
+}
+
+// The request of `LookupDataset`.
+message LookupDatasetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dataset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupDataset`.
+message LookupDatasetResponse {
+  Dataset dataset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseDatasets`.
+message BrowseDatasetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DatasetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseDatasetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseDatasets`.
+message BrowseDatasetsResponse {
+  repeated Dataset datasets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindDatasets`.
+message FindDatasetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DatasetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindDatasetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindDatasets`.
+message FindDatasetsResponse {
+  repeated Dataset datasets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountDatasets`.
+message CountDatasetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DatasetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountDatasetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountDatasets`.
+message CountDatasetsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveDatasets`.
+message ResolveDatasetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string dataset_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveDatasets`.
+message ResolveDatasetsResponse {
+  repeated Dataset datasets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportDatasets`.
+message ExportDatasetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DatasetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportDatasetsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportDatasets`.
+message ExportDatasetsResponse {
+  Dataset dataset = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeDatasets`.
+message SummarizeDatasetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dataset_id = 2;
+  SummarizeDatasetsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeDatasets`.
+message SummarizeDatasetsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestDatasets`.
+message SuggestDatasetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DatasetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestDatasetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestDatasets`.
+message SuggestDatasetsResponse {
+  repeated Dataset datasets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekDataset`.
+message PeekDatasetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dataset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekDataset`.
+message PeekDatasetResponse {
+  Dataset dataset = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.audit.v1;
+
+import "acme/audit/v1/audit.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Audit.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/audit/v1;auditv1";
+option java_multiple_files = true;
+option java_outer_classname = "AuditEventValidationServiceProto";
+option java_package = "com.acme.audit.v1";
+
+// Checks audit events against the rules before anything acts on them.
+service AuditEventValidationService {
+  // Validates an audit event.
+  rpc ValidateAuditEvent(ValidateAuditEventRequest) returns (ValidateAuditEventResponse);
+
+  // Previews an audit event.
+  rpc PreviewAuditEvent(PreviewAuditEventRequest) returns (PreviewAuditEventResponse);
+
+  // Checks an audit event.
+  rpc CheckAuditEventEligibility(CheckAuditEventEligibilityRequest) returns (CheckAuditEventEligibilityResponse);
+
+  // Normalizes an audit event.
+  rpc NormalizeAuditEvent(NormalizeAuditEventRequest) returns (NormalizeAuditEventResponse);
+
+  // Explains an audit event.
+  rpc ExplainAuditEventDecision(ExplainAuditEventDecisionRequest) returns (ExplainAuditEventDecisionResponse);
+
+  // Scores an audit event.
+  rpc ScoreAuditEvent(ScoreAuditEventRequest) returns (ScoreAuditEventResponse);
+
+  // Lints an audit event.
+  rpc LintAuditEvents(LintAuditEventsRequest) returns (LintAuditEventsResponse);
+
+  // Returns an audit event.
+  rpc GetAuditEventRules(GetAuditEventRulesRequest) returns (GetAuditEventRulesResponse);
+}
+
+// The request of `ValidateAuditEvent`.
+message ValidateAuditEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  ValidateAuditEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateAuditEvent`.
+message ValidateAuditEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AuditEvent audit_event = 1;
+  ValidateAuditEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewAuditEvent`.
+message PreviewAuditEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  PreviewAuditEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewAuditEvent`.
+message PreviewAuditEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AuditEvent audit_event = 1;
+  PreviewAuditEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckAuditEventEligibility`.
+message CheckAuditEventEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  CheckAuditEventEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckAuditEventEligibility`.
+message CheckAuditEventEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AuditEvent audit_event = 1;
+  CheckAuditEventEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeAuditEvent`.
+message NormalizeAuditEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  NormalizeAuditEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeAuditEvent`.
+message NormalizeAuditEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AuditEvent audit_event = 1;
+  NormalizeAuditEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainAuditEventDecision`.
+message ExplainAuditEventDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  ExplainAuditEventDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainAuditEventDecision`.
+message ExplainAuditEventDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AuditEvent audit_event = 1;
+  ExplainAuditEventDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreAuditEvent`.
+message ScoreAuditEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  ScoreAuditEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreAuditEvent`.
+message ScoreAuditEventResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreAuditEventResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  AuditEvent audit_event = 1;
+  ScoreAuditEventResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintAuditEvents`.
+message LintAuditEventsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  AuditEvent audit_event = 3;
+  LintAuditEventsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintAuditEvents`.
+message LintAuditEventsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  AuditEvent audit_event = 1;
+  LintAuditEventsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAuditEventRules`.
+message GetAuditEventRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string audit_event_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAuditEventRules`.
+message GetAuditEventRulesResponse {
+  AuditEvent audit_event = 1;
+  acme.common.v1.OperationResult result = 2;
+}

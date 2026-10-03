@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchIndexValidationServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Checks search indexes against the rules before anything acts on them.
+service SearchIndexValidationService {
+  // Validates a search index.
+  rpc ValidateSearchIndex(ValidateSearchIndexRequest) returns (ValidateSearchIndexResponse);
+
+  // Previews a search index.
+  rpc PreviewSearchIndex(PreviewSearchIndexRequest) returns (PreviewSearchIndexResponse);
+
+  // Checks a search index.
+  rpc CheckSearchIndexEligibility(CheckSearchIndexEligibilityRequest) returns (CheckSearchIndexEligibilityResponse);
+
+  // Normalizes a search index.
+  rpc NormalizeSearchIndex(NormalizeSearchIndexRequest) returns (NormalizeSearchIndexResponse);
+
+  // Explains a search index.
+  rpc ExplainSearchIndexDecision(ExplainSearchIndexDecisionRequest) returns (ExplainSearchIndexDecisionResponse);
+
+  // Scores a search index.
+  rpc ScoreSearchIndex(ScoreSearchIndexRequest) returns (ScoreSearchIndexResponse);
+
+  // Lints a search index.
+  rpc LintSearchIndexes(LintSearchIndexesRequest) returns (LintSearchIndexesResponse);
+
+  // Returns a search index.
+  rpc GetSearchIndexRules(GetSearchIndexRulesRequest) returns (GetSearchIndexRulesResponse);
+}
+
+// The request of `ValidateSearchIndex`.
+message ValidateSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  ValidateSearchIndexRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateSearchIndex`.
+message ValidateSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  ValidateSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewSearchIndex`.
+message PreviewSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  PreviewSearchIndexRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewSearchIndex`.
+message PreviewSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  PreviewSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckSearchIndexEligibility`.
+message CheckSearchIndexEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  CheckSearchIndexEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckSearchIndexEligibility`.
+message CheckSearchIndexEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  CheckSearchIndexEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeSearchIndex`.
+message NormalizeSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  NormalizeSearchIndexRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeSearchIndex`.
+message NormalizeSearchIndexResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  NormalizeSearchIndexResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSearchIndexDecision`.
+message ExplainSearchIndexDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  ExplainSearchIndexDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSearchIndexDecision`.
+message ExplainSearchIndexDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  ExplainSearchIndexDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreSearchIndex`.
+message ScoreSearchIndexRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  ScoreSearchIndexRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreSearchIndex`.
+message ScoreSearchIndexResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreSearchIndexResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SearchIndex search_index = 1;
+  ScoreSearchIndexResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintSearchIndexes`.
+message LintSearchIndexesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  LintSearchIndexesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintSearchIndexes`.
+message LintSearchIndexesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  LintSearchIndexesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSearchIndexRules`.
+message GetSearchIndexRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchIndexRules`.
+message GetSearchIndexRulesResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}

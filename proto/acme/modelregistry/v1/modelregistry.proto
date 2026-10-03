@@ -1,0 +1,147 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.modelregistry.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Modelregistry.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/modelregistry/v1;modelregistryv1";
+option java_multiple_files = true;
+option java_outer_classname = "ModelregistryProto";
+option java_package = "com.acme.modelregistry.v1";
+
+// Where a registered model is in its lifecycle.
+enum RegisteredModelStatus {
+  REGISTERED_MODEL_STATUS_UNSPECIFIED = 0;
+  REGISTERED_MODEL_STATUS_PLANNED = 1;
+  REGISTERED_MODEL_STATUS_AVAILABLE = 2;
+  REGISTERED_MODEL_STATUS_RESERVED = 3;
+  REGISTERED_MODEL_STATUS_RETIRED = 4;
+}
+
+// Where a model version is in its lifecycle.
+enum ModelVersionStatus {
+  MODEL_VERSION_STATUS_UNSPECIFIED = 0;
+  MODEL_VERSION_STATUS_RECEIVED = 1;
+  MODEL_VERSION_STATUS_PROCESSED = 2;
+  MODEL_VERSION_STATUS_DISCARDED = 3;
+}
+
+// Where a deployment is in its lifecycle.
+enum DeploymentStatus {
+  DEPLOYMENT_STATUS_UNSPECIFIED = 0;
+  DEPLOYMENT_STATUS_TENTATIVE = 1;
+  DEPLOYMENT_STATUS_CONFIRMED = 2;
+  DEPLOYMENT_STATUS_CANCELLED = 3;
+  DEPLOYMENT_STATUS_COMPLETED = 4;
+}
+
+// The dimensions of a registered model.
+message RegisteredModelDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a registered model.
+message RegisteredModelComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A registered model of the modelregistry domain.
+message RegisteredModel {
+  string registered_model_id = 1;
+  string code = 2;
+  string name = 3;
+  RegisteredModelStatus status = 4;
+  repeated string category_path = 5;
+  RegisteredModelDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, RegisteredModelComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a model version.
+message ModelVersionMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A model version of the modelregistry domain.
+message ModelVersion {
+  string model_version_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ModelVersionMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The participant of a deployment.
+message DeploymentParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a deployment.
+message DeploymentDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a deployment.
+message DeploymentWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A deployment of the modelregistry domain.
+message Deployment {
+  string deployment_id = 1;
+  string title = 2;
+  DeploymentStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated DeploymentParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    DeploymentDailyRule daily = 7;
+    DeploymentWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}

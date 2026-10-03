@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductVariantValidationServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Checks product variants against the rules before anything acts on them.
+service ProductVariantValidationService {
+  // Validates a product variant.
+  rpc ValidateProductVariant(ValidateProductVariantRequest) returns (ValidateProductVariantResponse);
+
+  // Previews a product variant.
+  rpc PreviewProductVariant(PreviewProductVariantRequest) returns (PreviewProductVariantResponse);
+
+  // Explains a product variant.
+  rpc ExplainProductVariantDecision(ExplainProductVariantDecisionRequest) returns (ExplainProductVariantDecisionResponse);
+
+  // Scores a product variant.
+  rpc ScoreProductVariant(ScoreProductVariantRequest) returns (ScoreProductVariantResponse);
+
+  // Lints a product variant.
+  rpc LintProductVariants(LintProductVariantsRequest) returns (LintProductVariantsResponse);
+
+  // Returns a product variant.
+  rpc GetProductVariantRules(GetProductVariantRulesRequest) returns (GetProductVariantRulesResponse);
+}
+
+// The request of `ValidateProductVariant`.
+message ValidateProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  ValidateProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateProductVariant`.
+message ValidateProductVariantResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  ValidateProductVariantResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewProductVariant`.
+message PreviewProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  PreviewProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewProductVariant`.
+message PreviewProductVariantResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  PreviewProductVariantResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainProductVariantDecision`.
+message ExplainProductVariantDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  ExplainProductVariantDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainProductVariantDecision`.
+message ExplainProductVariantDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  ExplainProductVariantDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreProductVariant`.
+message ScoreProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  ScoreProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreProductVariant`.
+message ScoreProductVariantResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreProductVariantResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ProductVariant product_variant = 1;
+  ScoreProductVariantResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintProductVariants`.
+message LintProductVariantsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  LintProductVariantsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintProductVariants`.
+message LintProductVariantsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  LintProductVariantsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetProductVariantRules`.
+message GetProductVariantRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProductVariantRules`.
+message GetProductVariantRulesResponse {
+  ProductVariant product_variant = 1;
+  acme.common.v1.OperationResult result = 2;
+}

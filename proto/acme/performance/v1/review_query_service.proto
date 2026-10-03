@@ -1,0 +1,186 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.performance.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/performance/v1/performance.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Performance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/performance/v1;performancev1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewQueryServiceProto";
+option java_package = "com.acme.performance.v1";
+
+// Answers read-only questions about reviews, for screens and reports.
+service ReviewQueryService {
+  // Returns a review.
+  rpc LookupReview(LookupReviewRequest) returns (LookupReviewResponse);
+
+  // Lists reviews a page at a time.
+  rpc BrowseReviews(BrowseReviewsRequest) returns (BrowseReviewsResponse);
+
+  // Lists reviews a page at a time.
+  rpc FindReviews(FindReviewsRequest) returns (FindReviewsResponse);
+
+  // Counts reviews by status.
+  rpc CountReviews(CountReviewsRequest) returns (CountReviewsResponse);
+
+  // Returns several reviews at once.
+  rpc ResolveReviews(ResolveReviewsRequest) returns (ResolveReviewsResponse);
+
+  // Summarizes a review.
+  rpc SummarizeReviews(SummarizeReviewsRequest) returns (SummarizeReviewsResponse);
+
+  // Returns a review.
+  rpc PeekReview(PeekReviewRequest) returns (PeekReviewResponse);
+}
+
+// The request of `LookupReview`.
+message LookupReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupReview`.
+message LookupReviewResponse {
+  Review review = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseReviews`.
+message BrowseReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseReviews`.
+message BrowseReviewsResponse {
+  repeated Review reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindReviews`.
+message FindReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindReviews`.
+message FindReviewsResponse {
+  repeated Review reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountReviews`.
+message CountReviewsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountReviewsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountReviews`.
+message CountReviewsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveReviews`.
+message ResolveReviewsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string review_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveReviews`.
+message ResolveReviewsResponse {
+  repeated Review reviews = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeReviews`.
+message SummarizeReviewsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_id = 2;
+  SummarizeReviewsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeReviews`.
+message SummarizeReviewsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `PeekReview`.
+message PeekReviewRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekReview`.
+message PeekReviewResponse {
+  Review review = 1;
+  acme.common.v1.OperationResult result = 2;
+}

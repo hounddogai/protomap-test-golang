@@ -1,0 +1,312 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.procurement.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/procurement/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Procurement.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/procurement/v1;procurementv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProcurementProto";
+option java_package = "com.acme.procurement.v1";
+
+// Where a purchase requisition is in its lifecycle.
+enum PurchaseRequisitionStatus {
+  PURCHASE_REQUISITION_STATUS_UNSPECIFIED = 0;
+  PURCHASE_REQUISITION_STATUS_DRAFT = 1;
+  PURCHASE_REQUISITION_STATUS_ISSUED = 2;
+  PURCHASE_REQUISITION_STATUS_APPROVED = 3;
+  PURCHASE_REQUISITION_STATUS_PAID = 4;
+  PURCHASE_REQUISITION_STATUS_VOID = 5;
+}
+
+// Where a purchase order is in its lifecycle.
+enum PurchaseOrderStatus {
+  PURCHASE_ORDER_STATUS_UNSPECIFIED = 0;
+  PURCHASE_ORDER_STATUS_DRAFT = 1;
+  PURCHASE_ORDER_STATUS_ISSUED = 2;
+  PURCHASE_ORDER_STATUS_APPROVED = 3;
+  PURCHASE_ORDER_STATUS_PAID = 4;
+  PURCHASE_ORDER_STATUS_VOID = 5;
+}
+
+// Where a goods receipt is in its lifecycle.
+enum GoodsReceiptStatus {
+  GOODS_RECEIPT_STATUS_UNSPECIFIED = 0;
+  GOODS_RECEIPT_STATUS_DRAFT = 1;
+  GOODS_RECEIPT_STATUS_ISSUED = 2;
+  GOODS_RECEIPT_STATUS_APPROVED = 3;
+  GOODS_RECEIPT_STATUS_PAID = 4;
+  GOODS_RECEIPT_STATUS_VOID = 5;
+}
+
+// Where a rfq is in its lifecycle.
+enum RfqStatus {
+  RFQ_STATUS_UNSPECIFIED = 0;
+  RFQ_STATUS_NEW = 1;
+  RFQ_STATUS_OPEN = 2;
+  RFQ_STATUS_WAITING = 3;
+  RFQ_STATUS_RESOLVED = 4;
+  RFQ_STATUS_CLOSED = 5;
+}
+
+// The line of a purchase requisition.
+message PurchaseRequisitionLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PurchaseRequisitionLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a purchase requisition line.
+message PurchaseRequisitionLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a purchase requisition.
+message PurchaseRequisitionCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a purchase requisition.
+message PurchaseRequisitionBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a purchase requisition.
+message PurchaseRequisitionAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A purchase requisition of the procurement domain.
+message PurchaseRequisition {
+  string purchase_requisition_id = 1;
+  string number = 2;
+  PurchaseRequisitionStatus status = 3;
+  PurchaseOrderRef counterparty = 4;
+  repeated PurchaseRequisitionLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PurchaseRequisitionCardSettlement card = 8;
+    PurchaseRequisitionBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PurchaseRequisitionAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a purchase order.
+message PurchaseOrderLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PurchaseOrderLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a purchase order line.
+message PurchaseOrderLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a purchase order.
+message PurchaseOrderCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a purchase order.
+message PurchaseOrderBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a purchase order.
+message PurchaseOrderAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A purchase order of the procurement domain.
+message PurchaseOrder {
+  string purchase_order_id = 1;
+  string number = 2;
+  PurchaseOrderStatus status = 3;
+  PurchaseRequisitionRef counterparty = 4;
+  repeated PurchaseOrderLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PurchaseOrderCardSettlement card = 8;
+    PurchaseOrderBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PurchaseOrderAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a goods receipt.
+message GoodsReceiptLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  GoodsReceiptLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a goods receipt line.
+message GoodsReceiptLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a goods receipt.
+message GoodsReceiptCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a goods receipt.
+message GoodsReceiptBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a goods receipt.
+message GoodsReceiptAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A goods receipt of the procurement domain.
+message GoodsReceipt {
+  string goods_receipt_id = 1;
+  string number = 2;
+  GoodsReceiptStatus status = 3;
+  PurchaseRequisitionRef counterparty = 4;
+  repeated GoodsReceiptLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    GoodsReceiptCardSettlement card = 8;
+    GoodsReceiptBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated GoodsReceiptAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a rfq.
+message RfqComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a rfq.
+message RfqSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a rfq.
+message RfqChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a rfq.
+message RfqStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A rfq of the procurement domain.
+message Rfq {
+  string rfq_id = 1;
+  string subject = 2;
+  RfqStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated RfqComment comments = 7;
+  RfqSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    RfqChannelOrigin channel = 11;
+  }
+  repeated RfqStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

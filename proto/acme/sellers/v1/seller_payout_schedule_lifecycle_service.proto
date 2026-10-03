@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerPayoutScheduleLifecycleServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Moves a seller payout schedule between the states of its lifecycle.
+service SellerPayoutScheduleLifecycleService {
+  // Activates a seller payout schedule.
+  rpc ActivateSellerPayoutSchedule(ActivateSellerPayoutScheduleRequest) returns (ActivateSellerPayoutScheduleResponse);
+
+  // Suspends a seller payout schedule.
+  rpc SuspendSellerPayoutSchedule(SuspendSellerPayoutScheduleRequest) returns (SuspendSellerPayoutScheduleResponse);
+
+  // Terminates a seller payout schedule.
+  rpc TerminateSellerPayoutSchedule(TerminateSellerPayoutScheduleRequest) returns (TerminateSellerPayoutScheduleResponse);
+
+  // Renews a seller payout schedule.
+  rpc RenewSellerPayoutSchedule(RenewSellerPayoutScheduleRequest) returns (RenewSellerPayoutScheduleResponse);
+
+  // Expires a seller payout schedule.
+  rpc ExpireSellerPayoutSchedule(ExpireSellerPayoutScheduleRequest) returns (ExpireSellerPayoutScheduleResponse);
+
+  // Returns a seller payout schedule.
+  rpc GetSellerPayoutScheduleLifecycle(GetSellerPayoutScheduleLifecycleRequest) returns (GetSellerPayoutScheduleLifecycleResponse);
+
+  // Schedules a seller payout schedule.
+  rpc ScheduleSellerPayoutScheduleExpiry(ScheduleSellerPayoutScheduleExpiryRequest) returns (ScheduleSellerPayoutScheduleExpiryResponse);
+}
+
+// The request of `ActivateSellerPayoutSchedule`.
+message ActivateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  ActivateSellerPayoutScheduleRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateSellerPayoutSchedule`.
+message ActivateSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ActivateSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendSellerPayoutSchedule`.
+message SuspendSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SuspendSellerPayoutScheduleRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendSellerPayoutSchedule`.
+message SuspendSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  SuspendSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateSellerPayoutSchedule`.
+message TerminateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  TerminateSellerPayoutScheduleRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateSellerPayoutSchedule`.
+message TerminateSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  TerminateSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewSellerPayoutSchedule`.
+message RenewSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  RenewSellerPayoutScheduleRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewSellerPayoutSchedule`.
+message RenewSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  RenewSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireSellerPayoutSchedule`.
+message ExpireSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  ExpireSellerPayoutScheduleRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireSellerPayoutSchedule`.
+message ExpireSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ExpireSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerPayoutScheduleLifecycle`.
+message GetSellerPayoutScheduleLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerPayoutScheduleLifecycle`.
+message GetSellerPayoutScheduleLifecycleResponse {
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleSellerPayoutScheduleExpiry`.
+message ScheduleSellerPayoutScheduleExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  ScheduleSellerPayoutScheduleExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleSellerPayoutScheduleExpiry`.
+message ScheduleSellerPayoutScheduleExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ScheduleSellerPayoutScheduleExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

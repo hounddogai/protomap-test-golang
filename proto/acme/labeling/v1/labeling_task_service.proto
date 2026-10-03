@@ -1,0 +1,180 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.labeling.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/labeling/v1/labeling.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Labeling.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/labeling/v1;labelingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LabelingTaskServiceProto";
+option java_package = "com.acme.labeling.v1";
+
+// Manages labeling tasks: creates, reads, changes, and lists them.
+service LabelingTaskService {
+  // Creates a labeling task.
+  rpc CreateLabelingTask(CreateLabelingTaskRequest) returns (CreateLabelingTaskResponse);
+
+  // Returns a labeling task.
+  rpc GetLabelingTask(GetLabelingTaskRequest) returns (GetLabelingTaskResponse);
+
+  // Changes a labeling task.
+  rpc UpdateLabelingTask(UpdateLabelingTaskRequest) returns (UpdateLabelingTaskResponse);
+
+  // Deletes a labeling task.
+  rpc DeleteLabelingTask(DeleteLabelingTaskRequest) returns (DeleteLabelingTaskResponse);
+
+  // Lists labeling tasks a page at a time.
+  rpc ListLabelingTasks(ListLabelingTasksRequest) returns (ListLabelingTasksResponse);
+
+  // Returns several labeling tasks at once.
+  rpc BatchGetLabelingTasks(BatchGetLabelingTasksRequest) returns (BatchGetLabelingTasksResponse);
+
+  // Lists labeling tasks a page at a time.
+  rpc SearchLabelingTasks(SearchLabelingTasksRequest) returns (SearchLabelingTasksResponse);
+
+  // Creates a labeling task.
+  rpc CloneLabelingTask(CloneLabelingTaskRequest) returns (CloneLabelingTaskResponse);
+}
+
+// The request of `CreateLabelingTask`.
+message CreateLabelingTaskRequest {
+  acme.common.v1.RequestContext context = 1;
+  LabelingTask labeling_task = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateLabelingTask`.
+message CreateLabelingTaskResponse {
+  LabelingTask labeling_task = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetLabelingTask`.
+message GetLabelingTaskRequest {
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLabelingTask`.
+message GetLabelingTaskResponse {
+  LabelingTask labeling_task = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateLabelingTask`.
+message UpdateLabelingTaskRequest {
+  acme.common.v1.RequestContext context = 1;
+  LabelingTask labeling_task = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateLabelingTask`.
+message UpdateLabelingTaskResponse {
+  LabelingTask labeling_task = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteLabelingTask`.
+message DeleteLabelingTaskRequest {
+  acme.common.v1.RequestContext context = 1;
+  string labeling_task_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteLabelingTask`.
+message DeleteLabelingTaskResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListLabelingTasks`.
+message ListLabelingTasksRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LabelingTaskStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListLabelingTasksRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListLabelingTasks`.
+message ListLabelingTasksResponse {
+  repeated LabelingTask labeling_tasks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetLabelingTasks`.
+message BatchGetLabelingTasksRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string labeling_task_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetLabelingTasks`.
+message BatchGetLabelingTasksResponse {
+  repeated LabelingTask labeling_tasks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchLabelingTasks`.
+message SearchLabelingTasksRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LabelingTaskStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchLabelingTasksRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchLabelingTasks`.
+message SearchLabelingTasksResponse {
+  repeated LabelingTask labeling_tasks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneLabelingTask`.
+message CloneLabelingTaskRequest {
+  acme.common.v1.RequestContext context = 1;
+  LabelingTask labeling_task = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneLabelingTask`.
+message CloneLabelingTaskResponse {
+  LabelingTask labeling_task = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CurrencyRateCalculationServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Computes the figures of a currency rate, such as totals, taxes, and estimates.
+service CurrencyRateCalculationService {
+  // Calculates a currency rate.
+  rpc CalculateCurrencyRate(CalculateCurrencyRateRequest) returns (CalculateCurrencyRateResponse);
+
+  // Estimates a currency rate.
+  rpc EstimateCurrencyRate(EstimateCurrencyRateRequest) returns (EstimateCurrencyRateResponse);
+
+  // Quotes a currency rate.
+  rpc QuoteCurrencyRate(QuoteCurrencyRateRequest) returns (QuoteCurrencyRateResponse);
+
+  // Compares a currency rate.
+  rpc CompareCurrencyRateOptions(CompareCurrencyRateOptionsRequest) returns (CompareCurrencyRateOptionsResponse);
+
+  // Recalculates a currency rate.
+  rpc RecalculateCurrencyRates(RecalculateCurrencyRatesRequest) returns (RecalculateCurrencyRatesResponse);
+
+  // Simulates a currency rate.
+  rpc SimulateCurrencyRate(SimulateCurrencyRateRequest) returns (SimulateCurrencyRateResponse);
+
+  // Explains a currency rate.
+  rpc ExplainCurrencyRateCalculation(ExplainCurrencyRateCalculationRequest) returns (ExplainCurrencyRateCalculationResponse);
+
+  // Returns a currency rate.
+  rpc GetCurrencyRateRates(GetCurrencyRateRatesRequest) returns (GetCurrencyRateRatesResponse);
+}
+
+// The request of `CalculateCurrencyRate`.
+message CalculateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  CalculateCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCurrencyRate`.
+message CalculateCurrencyRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCurrencyRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CurrencyRate currency_rate = 1;
+  CalculateCurrencyRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCurrencyRate`.
+message EstimateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  EstimateCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCurrencyRate`.
+message EstimateCurrencyRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCurrencyRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CurrencyRate currency_rate = 1;
+  EstimateCurrencyRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCurrencyRate`.
+message QuoteCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  QuoteCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCurrencyRate`.
+message QuoteCurrencyRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCurrencyRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CurrencyRate currency_rate = 1;
+  QuoteCurrencyRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCurrencyRateOptions`.
+message CompareCurrencyRateOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  CompareCurrencyRateOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCurrencyRateOptions`.
+message CompareCurrencyRateOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCurrencyRateOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CurrencyRate currency_rate = 1;
+  CompareCurrencyRateOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateCurrencyRates`.
+message RecalculateCurrencyRatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  RecalculateCurrencyRatesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateCurrencyRates`.
+message RecalculateCurrencyRatesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateCurrencyRatesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CurrencyRate currency_rate = 1;
+  RecalculateCurrencyRatesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCurrencyRate`.
+message SimulateCurrencyRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  SimulateCurrencyRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCurrencyRate`.
+message SimulateCurrencyRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCurrencyRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CurrencyRate currency_rate = 1;
+  SimulateCurrencyRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCurrencyRateCalculation`.
+message ExplainCurrencyRateCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  CurrencyRate currency_rate = 3;
+  ExplainCurrencyRateCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCurrencyRateCalculation`.
+message ExplainCurrencyRateCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CurrencyRate currency_rate = 1;
+  ExplainCurrencyRateCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCurrencyRateRates`.
+message GetCurrencyRateRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string currency_rate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCurrencyRateRates`.
+message GetCurrencyRateRatesResponse {
+  CurrencyRate currency_rate = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,300 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShopperViewIntegrationServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Connects external systems that send shopper view events.
+service ShopperViewIntegrationService {
+  // Connects a shopper view.
+  rpc ConnectShopperViewSource(ConnectShopperViewSourceRequest) returns (ConnectShopperViewSourceResponse);
+
+  // Disconnects a shopper view.
+  rpc DisconnectShopperViewSource(DisconnectShopperViewSourceRequest) returns (DisconnectShopperViewSourceResponse);
+
+  // Takes a stream of shopper views and answers once at the end.
+  rpc IngestShopperViewEvents(stream IngestShopperViewEventsRequest) returns (IngestShopperViewEventsResponse);
+
+  // Replays a shopper view.
+  rpc ReplayShopperViewEvents(ReplayShopperViewEventsRequest) returns (ReplayShopperViewEventsResponse);
+
+  // Acknowledges a shopper view.
+  rpc AcknowledgeShopperViewEvent(AcknowledgeShopperViewEventRequest) returns (AcknowledgeShopperViewEventResponse);
+
+  // Exchanges changes of shopper views with a peer.
+  rpc RelayShopperViewMessages(stream RelayShopperViewMessagesRequest) returns (stream RelayShopperViewMessagesResponse);
+
+  // Lists shopper views a page at a time.
+  rpc ListShopperViewSources(ListShopperViewSourcesRequest) returns (ListShopperViewSourcesResponse);
+
+  // Tests a shopper view.
+  rpc TestShopperViewConnection(TestShopperViewConnectionRequest) returns (TestShopperViewConnectionResponse);
+}
+
+// The request of `ConnectShopperViewSource`.
+message ConnectShopperViewSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ConnectShopperViewSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ConnectShopperViewSource`.
+message ConnectShopperViewSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  ConnectShopperViewSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DisconnectShopperViewSource`.
+message DisconnectShopperViewSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  DisconnectShopperViewSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `DisconnectShopperViewSource`.
+message DisconnectShopperViewSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  DisconnectShopperViewSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `IngestShopperViewEvents`.
+message IngestShopperViewEventsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    IngestShopperViewEventsRequest.StreamHeader header = 2;
+    ShopperView record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `IngestShopperViewEvents`.
+message IngestShopperViewEventsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string shopper_view_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated IngestShopperViewEventsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ReplayShopperViewEvents`.
+message ReplayShopperViewEventsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ReplayShopperViewEventsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReplayShopperViewEvents`.
+message ReplayShopperViewEventsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  ReplayShopperViewEventsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AcknowledgeShopperViewEvent`.
+message AcknowledgeShopperViewEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  AcknowledgeShopperViewEventRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `AcknowledgeShopperViewEvent`.
+message AcknowledgeShopperViewEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  AcknowledgeShopperViewEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RelayShopperViewMessages`.
+message RelayShopperViewMessagesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    ShopperView change = 2;
+    RelayShopperViewMessagesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `RelayShopperViewMessages`.
+message RelayShopperViewMessagesResponse {
+  ShopperView shopper_view = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListShopperViewSources`.
+message ListShopperViewSourcesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShopperViewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListShopperViewSourcesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListShopperViewSources`.
+message ListShopperViewSourcesResponse {
+  repeated ShopperView shopper_views = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TestShopperViewConnection`.
+message TestShopperViewConnectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  TestShopperViewConnectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TestShopperViewConnection`.
+message TestShopperViewConnectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  TestShopperViewConnectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

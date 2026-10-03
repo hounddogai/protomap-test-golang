@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.collections.v1;
+
+import "acme/collections/v1/collections.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Collections.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/collections/v1;collectionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CollectionCaseQueryServiceProto";
+option java_package = "com.acme.collections.v1";
+
+// Answers read-only questions about collection cases, for screens and reports.
+service CollectionCaseQueryService {
+  // Returns a collection case.
+  rpc LookupCollectionCase(LookupCollectionCaseRequest) returns (LookupCollectionCaseResponse);
+
+  // Lists collection cases a page at a time.
+  rpc BrowseCollectionCases(BrowseCollectionCasesRequest) returns (BrowseCollectionCasesResponse);
+
+  // Lists collection cases a page at a time.
+  rpc FindCollectionCases(FindCollectionCasesRequest) returns (FindCollectionCasesResponse);
+
+  // Counts collection cases by status.
+  rpc CountCollectionCases(CountCollectionCasesRequest) returns (CountCollectionCasesResponse);
+
+  // Returns several collection cases at once.
+  rpc ResolveCollectionCases(ResolveCollectionCasesRequest) returns (ResolveCollectionCasesResponse);
+
+  // Streams every matching collection case.
+  rpc ExportCollectionCases(ExportCollectionCasesRequest) returns (stream ExportCollectionCasesResponse);
+
+  // Summarizes a collection case.
+  rpc SummarizeCollectionCases(SummarizeCollectionCasesRequest) returns (SummarizeCollectionCasesResponse);
+
+  // Lists collection cases a page at a time.
+  rpc SuggestCollectionCases(SuggestCollectionCasesRequest) returns (SuggestCollectionCasesResponse);
+
+  // Returns a collection case.
+  rpc PeekCollectionCase(PeekCollectionCaseRequest) returns (PeekCollectionCaseResponse);
+}
+
+// The request of `LookupCollectionCase`.
+message LookupCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_case_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCollectionCase`.
+message LookupCollectionCaseResponse {
+  CollectionCase collection_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCollectionCases`.
+message BrowseCollectionCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCollectionCasesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCollectionCases`.
+message BrowseCollectionCasesResponse {
+  repeated CollectionCase collection_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCollectionCases`.
+message FindCollectionCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCollectionCasesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCollectionCases`.
+message FindCollectionCasesResponse {
+  repeated CollectionCase collection_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCollectionCases`.
+message CountCollectionCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCollectionCasesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCollectionCases`.
+message CountCollectionCasesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCollectionCases`.
+message ResolveCollectionCasesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string collection_case_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCollectionCases`.
+message ResolveCollectionCasesResponse {
+  repeated CollectionCase collection_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCollectionCases`.
+message ExportCollectionCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCollectionCasesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCollectionCases`.
+message ExportCollectionCasesResponse {
+  CollectionCase collection_case = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCollectionCases`.
+message SummarizeCollectionCasesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string collection_case_id = 2;
+  SummarizeCollectionCasesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCollectionCases`.
+message SummarizeCollectionCasesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCollectionCases`.
+message SuggestCollectionCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCollectionCasesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCollectionCases`.
+message SuggestCollectionCasesResponse {
+  repeated CollectionCase collection_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCollectionCase`.
+message PeekCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_case_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCollectionCase`.
+message PeekCollectionCaseResponse {
+  CollectionCase collection_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}

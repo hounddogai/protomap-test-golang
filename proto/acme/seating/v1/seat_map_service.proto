@@ -1,0 +1,203 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.seating.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/seating/v1/seating.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Seating.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/seating/v1;seatingv1";
+option java_multiple_files = true;
+option java_outer_classname = "SeatMapServiceProto";
+option java_package = "com.acme.seating.v1";
+
+// Manages seat maps: creates, reads, changes, and lists them.
+service SeatMapService {
+  // Creates a seat map.
+  rpc CreateSeatMap(CreateSeatMapRequest) returns (CreateSeatMapResponse);
+
+  // Returns a seat map.
+  rpc GetSeatMap(GetSeatMapRequest) returns (GetSeatMapResponse);
+
+  // Deletes a seat map.
+  rpc DeleteSeatMap(DeleteSeatMapRequest) returns (DeleteSeatMapResponse);
+
+  // Lists seat maps a page at a time.
+  rpc ListSeatMaps(ListSeatMapsRequest) returns (ListSeatMapsResponse);
+
+  // Returns several seat maps at once.
+  rpc BatchGetSeatMaps(BatchGetSeatMapsRequest) returns (BatchGetSeatMapsResponse);
+
+  // Streams the changes of seat maps as they happen.
+  rpc WatchSeatMaps(WatchSeatMapsRequest) returns (stream WatchSeatMapsResponse);
+
+  // Takes a stream of seat maps and answers once at the end.
+  rpc BatchCreateSeatMaps(stream BatchCreateSeatMapsRequest) returns (BatchCreateSeatMapsResponse);
+
+  // Creates a seat map.
+  rpc CloneSeatMap(CloneSeatMapRequest) returns (CloneSeatMapResponse);
+}
+
+// The request of `CreateSeatMap`.
+message CreateSeatMapRequest {
+  acme.common.v1.RequestContext context = 1;
+  SeatMap seat_map = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSeatMap`.
+message CreateSeatMapResponse {
+  SeatMap seat_map = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSeatMap`.
+message GetSeatMapRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSeatMap`.
+message GetSeatMapResponse {
+  SeatMap seat_map = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteSeatMap`.
+message DeleteSeatMapRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteSeatMap`.
+message DeleteSeatMapResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListSeatMaps`.
+message ListSeatMapsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SeatMapStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSeatMapsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSeatMaps`.
+message ListSeatMapsResponse {
+  repeated SeatMap seat_maps = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetSeatMaps`.
+message BatchGetSeatMapsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string seat_map_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetSeatMaps`.
+message BatchGetSeatMapsResponse {
+  repeated SeatMap seat_maps = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchSeatMaps`.
+message WatchSeatMapsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SeatMapStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchSeatMapsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchSeatMaps`.
+message WatchSeatMapsResponse {
+  SeatMap seat_map = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateSeatMaps`.
+message BatchCreateSeatMapsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSeatMapsRequest.StreamHeader header = 2;
+    SeatMap record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSeatMaps`.
+message BatchCreateSeatMapsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string seat_map_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSeatMapsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneSeatMap`.
+message CloneSeatMapRequest {
+  acme.common.v1.RequestContext context = 1;
+  SeatMap seat_map = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneSeatMap`.
+message CloneSeatMapResponse {
+  SeatMap seat_map = 1;
+  acme.common.v1.OperationResult result = 2;
+}

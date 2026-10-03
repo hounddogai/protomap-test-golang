@@ -1,0 +1,219 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockMovementApprovalServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Routes stock movements through approval, with escalation and delegation.
+service StockMovementApprovalService {
+  // Submits a stock movement.
+  rpc SubmitStockMovement(SubmitStockMovementRequest) returns (SubmitStockMovementResponse);
+
+  // Approves a stock movement.
+  rpc ApproveStockMovement(ApproveStockMovementRequest) returns (ApproveStockMovementResponse);
+
+  // Lists stock movements a page at a time.
+  rpc ListPendingStockMovements(ListPendingStockMovementsRequest) returns (ListPendingStockMovementsResponse);
+
+  // Delegates a stock movement.
+  rpc DelegateStockMovementApproval(DelegateStockMovementApprovalRequest) returns (DelegateStockMovementApprovalResponse);
+
+  // Returns a stock movement.
+  rpc GetStockMovementApprovalStatus(GetStockMovementApprovalStatusRequest) returns (GetStockMovementApprovalStatusResponse);
+
+  // Comments a stock movement.
+  rpc CommentStockMovementApproval(CommentStockMovementApprovalRequest) returns (CommentStockMovementApprovalResponse);
+}
+
+// The request of `SubmitStockMovement`.
+message SubmitStockMovementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  SubmitStockMovementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitStockMovement`.
+message SubmitStockMovementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  SubmitStockMovementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveStockMovement`.
+message ApproveStockMovementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  ApproveStockMovementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveStockMovement`.
+message ApproveStockMovementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  ApproveStockMovementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingStockMovements`.
+message ListPendingStockMovementsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockMovementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingStockMovementsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingStockMovements`.
+message ListPendingStockMovementsResponse {
+  repeated StockMovement stock_movements = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateStockMovementApproval`.
+message DelegateStockMovementApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  DelegateStockMovementApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateStockMovementApproval`.
+message DelegateStockMovementApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  DelegateStockMovementApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetStockMovementApprovalStatus`.
+message GetStockMovementApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetStockMovementApprovalStatus`.
+message GetStockMovementApprovalStatusResponse {
+  StockMovement stock_movement = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentStockMovementApproval`.
+message CommentStockMovementApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  CommentStockMovementApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentStockMovementApproval`.
+message CommentStockMovementApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  CommentStockMovementApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

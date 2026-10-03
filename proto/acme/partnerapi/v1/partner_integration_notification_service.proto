@@ -1,0 +1,247 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerIntegrationNotificationServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Tells the people who follow a partner integration what changed.
+service PartnerIntegrationNotificationService {
+  // Subscribes a partner integration.
+  rpc SubscribePartnerIntegrationUpdates(SubscribePartnerIntegrationUpdatesRequest) returns (SubscribePartnerIntegrationUpdatesResponse);
+
+  // Unsubscribes a partner integration.
+  rpc UnsubscribePartnerIntegrationUpdates(UnsubscribePartnerIntegrationUpdatesRequest) returns (UnsubscribePartnerIntegrationUpdatesResponse);
+
+  // Notifys a partner integration.
+  rpc NotifyPartnerIntegrationWatchers(NotifyPartnerIntegrationWatchersRequest) returns (NotifyPartnerIntegrationWatchersResponse);
+
+  // Lists partner integrations a page at a time.
+  rpc ListPartnerIntegrationSubscriptions(ListPartnerIntegrationSubscriptionsRequest) returns (ListPartnerIntegrationSubscriptionsResponse);
+
+  // Sends a partner integration.
+  rpc SendPartnerIntegrationTestNotice(SendPartnerIntegrationTestNoticeRequest) returns (SendPartnerIntegrationTestNoticeResponse);
+
+  // Returns a partner integration.
+  rpc GetPartnerIntegrationPreferences(GetPartnerIntegrationPreferencesRequest) returns (GetPartnerIntegrationPreferencesResponse);
+
+  // Streams the changes of partner integrations as they happen.
+  rpc StreamPartnerIntegrationNotices(StreamPartnerIntegrationNoticesRequest) returns (stream StreamPartnerIntegrationNoticesResponse);
+}
+
+// The request of `SubscribePartnerIntegrationUpdates`.
+message SubscribePartnerIntegrationUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  SubscribePartnerIntegrationUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribePartnerIntegrationUpdates`.
+message SubscribePartnerIntegrationUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  SubscribePartnerIntegrationUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribePartnerIntegrationUpdates`.
+message UnsubscribePartnerIntegrationUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  UnsubscribePartnerIntegrationUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribePartnerIntegrationUpdates`.
+message UnsubscribePartnerIntegrationUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  UnsubscribePartnerIntegrationUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifyPartnerIntegrationWatchers`.
+message NotifyPartnerIntegrationWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  NotifyPartnerIntegrationWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifyPartnerIntegrationWatchers`.
+message NotifyPartnerIntegrationWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  NotifyPartnerIntegrationWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPartnerIntegrationSubscriptions`.
+message ListPartnerIntegrationSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerIntegrationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPartnerIntegrationSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPartnerIntegrationSubscriptions`.
+message ListPartnerIntegrationSubscriptionsResponse {
+  repeated PartnerIntegration partner_integrations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendPartnerIntegrationTestNotice`.
+message SendPartnerIntegrationTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  SendPartnerIntegrationTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendPartnerIntegrationTestNotice`.
+message SendPartnerIntegrationTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  SendPartnerIntegrationTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPartnerIntegrationPreferences`.
+message GetPartnerIntegrationPreferencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPartnerIntegrationPreferences`.
+message GetPartnerIntegrationPreferencesResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StreamPartnerIntegrationNotices`.
+message StreamPartnerIntegrationNoticesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerIntegrationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamPartnerIntegrationNoticesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamPartnerIntegrationNotices`.
+message StreamPartnerIntegrationNoticesResponse {
+  PartnerIntegration partner_integration = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

@@ -1,0 +1,10 @@
+# The protobuf module of the monolith, which buf lints and checks for breaking changes.
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE

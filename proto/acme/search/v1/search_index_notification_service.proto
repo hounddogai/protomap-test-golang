@@ -1,0 +1,230 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchIndexNotificationServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Tells the people who follow a search index what changed.
+service SearchIndexNotificationService {
+  // Subscribes a search index.
+  rpc SubscribeSearchIndexUpdates(SubscribeSearchIndexUpdatesRequest) returns (SubscribeSearchIndexUpdatesResponse);
+
+  // Unsubscribes a search index.
+  rpc UnsubscribeSearchIndexUpdates(UnsubscribeSearchIndexUpdatesRequest) returns (UnsubscribeSearchIndexUpdatesResponse);
+
+  // Notifys a search index.
+  rpc NotifySearchIndexWatchers(NotifySearchIndexWatchersRequest) returns (NotifySearchIndexWatchersResponse);
+
+  // Lists search indexes a page at a time.
+  rpc ListSearchIndexSubscriptions(ListSearchIndexSubscriptionsRequest) returns (ListSearchIndexSubscriptionsResponse);
+
+  // Sends a search index.
+  rpc SendSearchIndexTestNotice(SendSearchIndexTestNoticeRequest) returns (SendSearchIndexTestNoticeResponse);
+
+  // Streams the changes of search indexes as they happen.
+  rpc StreamSearchIndexNotices(StreamSearchIndexNoticesRequest) returns (stream StreamSearchIndexNoticesResponse);
+}
+
+// The request of `SubscribeSearchIndexUpdates`.
+message SubscribeSearchIndexUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SubscribeSearchIndexUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribeSearchIndexUpdates`.
+message SubscribeSearchIndexUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  SubscribeSearchIndexUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribeSearchIndexUpdates`.
+message UnsubscribeSearchIndexUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  UnsubscribeSearchIndexUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribeSearchIndexUpdates`.
+message UnsubscribeSearchIndexUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  UnsubscribeSearchIndexUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifySearchIndexWatchers`.
+message NotifySearchIndexWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  NotifySearchIndexWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifySearchIndexWatchers`.
+message NotifySearchIndexWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  NotifySearchIndexWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListSearchIndexSubscriptions`.
+message ListSearchIndexSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSearchIndexSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSearchIndexSubscriptions`.
+message ListSearchIndexSubscriptionsResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendSearchIndexTestNotice`.
+message SendSearchIndexTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SendSearchIndexTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendSearchIndexTestNotice`.
+message SendSearchIndexTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  SendSearchIndexTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamSearchIndexNotices`.
+message StreamSearchIndexNoticesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamSearchIndexNoticesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamSearchIndexNotices`.
+message StreamSearchIndexNoticesResponse {
+  SearchIndex search_index = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

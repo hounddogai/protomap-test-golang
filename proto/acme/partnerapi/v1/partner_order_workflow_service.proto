@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerOrderWorkflowServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Runs the long-lived workflow that takes a partner order from start to finish.
+service PartnerOrderWorkflowService {
+  // Starts a partner order.
+  rpc StartPartnerOrderWorkflow(StartPartnerOrderWorkflowRequest) returns (StartPartnerOrderWorkflowResponse);
+
+  // Advances a partner order.
+  rpc AdvancePartnerOrderWorkflow(AdvancePartnerOrderWorkflowRequest) returns (AdvancePartnerOrderWorkflowResponse);
+
+  // Cancels a partner order.
+  rpc CancelPartnerOrderWorkflow(CancelPartnerOrderWorkflowRequest) returns (CancelPartnerOrderWorkflowResponse);
+
+  // Retrys a partner order.
+  rpc RetryPartnerOrderWorkflow(RetryPartnerOrderWorkflowRequest) returns (RetryPartnerOrderWorkflowResponse);
+
+  // Pauses a partner order.
+  rpc PausePartnerOrderWorkflow(PausePartnerOrderWorkflowRequest) returns (PausePartnerOrderWorkflowResponse);
+
+  // Resumes a partner order.
+  rpc ResumePartnerOrderWorkflow(ResumePartnerOrderWorkflowRequest) returns (ResumePartnerOrderWorkflowResponse);
+
+  // Returns a partner order.
+  rpc InspectPartnerOrderWorkflow(InspectPartnerOrderWorkflowRequest) returns (InspectPartnerOrderWorkflowResponse);
+
+  // Lists partner orders a page at a time.
+  rpc ListPartnerOrderWorkflows(ListPartnerOrderWorkflowsRequest) returns (ListPartnerOrderWorkflowsResponse);
+
+  // Signals a partner order.
+  rpc SignalPartnerOrderWorkflow(SignalPartnerOrderWorkflowRequest) returns (SignalPartnerOrderWorkflowResponse);
+}
+
+// The request of `StartPartnerOrderWorkflow`.
+message StartPartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  StartPartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPartnerOrderWorkflow`.
+message StartPartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  StartPartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePartnerOrderWorkflow`.
+message AdvancePartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  AdvancePartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePartnerOrderWorkflow`.
+message AdvancePartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  AdvancePartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPartnerOrderWorkflow`.
+message CancelPartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  CancelPartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPartnerOrderWorkflow`.
+message CancelPartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  CancelPartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPartnerOrderWorkflow`.
+message RetryPartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  RetryPartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPartnerOrderWorkflow`.
+message RetryPartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  RetryPartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePartnerOrderWorkflow`.
+message PausePartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  PausePartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePartnerOrderWorkflow`.
+message PausePartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  PausePartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePartnerOrderWorkflow`.
+message ResumePartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  ResumePartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePartnerOrderWorkflow`.
+message ResumePartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  ResumePartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPartnerOrderWorkflow`.
+message InspectPartnerOrderWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPartnerOrderWorkflow`.
+message InspectPartnerOrderWorkflowResponse {
+  PartnerOrder partner_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPartnerOrderWorkflows`.
+message ListPartnerOrderWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPartnerOrderWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPartnerOrderWorkflows`.
+message ListPartnerOrderWorkflowsResponse {
+  repeated PartnerOrder partner_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPartnerOrderWorkflow`.
+message SignalPartnerOrderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  PartnerOrder partner_order = 3;
+  SignalPartnerOrderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPartnerOrderWorkflow`.
+message SignalPartnerOrderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerOrder partner_order = 1;
+  SignalPartnerOrderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payroll.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payroll/v1/payroll.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payroll.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payroll/v1;payrollv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayRunCalculationServiceProto";
+option java_package = "com.acme.payroll.v1";
+
+// Computes the figures of a pay run, such as totals, taxes, and estimates.
+service PayRunCalculationService {
+  // Calculates a pay run.
+  rpc CalculatePayRun(CalculatePayRunRequest) returns (CalculatePayRunResponse);
+
+  // Estimates a pay run.
+  rpc EstimatePayRun(EstimatePayRunRequest) returns (EstimatePayRunResponse);
+
+  // Quotes a pay run.
+  rpc QuotePayRun(QuotePayRunRequest) returns (QuotePayRunResponse);
+
+  // Compares a pay run.
+  rpc ComparePayRunOptions(ComparePayRunOptionsRequest) returns (ComparePayRunOptionsResponse);
+
+  // Simulates a pay run.
+  rpc SimulatePayRun(SimulatePayRunRequest) returns (SimulatePayRunResponse);
+
+  // Explains a pay run.
+  rpc ExplainPayRunCalculation(ExplainPayRunCalculationRequest) returns (ExplainPayRunCalculationResponse);
+
+  // Returns a pay run.
+  rpc GetPayRunRates(GetPayRunRatesRequest) returns (GetPayRunRatesResponse);
+}
+
+// The request of `CalculatePayRun`.
+message CalculatePayRunRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  PayRun pay_run = 3;
+  CalculatePayRunRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculatePayRun`.
+message CalculatePayRunResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculatePayRunResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PayRun pay_run = 1;
+  CalculatePayRunResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimatePayRun`.
+message EstimatePayRunRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  PayRun pay_run = 3;
+  EstimatePayRunRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimatePayRun`.
+message EstimatePayRunResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimatePayRunResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PayRun pay_run = 1;
+  EstimatePayRunResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuotePayRun`.
+message QuotePayRunRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  PayRun pay_run = 3;
+  QuotePayRunRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuotePayRun`.
+message QuotePayRunResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuotePayRunResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PayRun pay_run = 1;
+  QuotePayRunResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ComparePayRunOptions`.
+message ComparePayRunOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  PayRun pay_run = 3;
+  ComparePayRunOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ComparePayRunOptions`.
+message ComparePayRunOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ComparePayRunOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PayRun pay_run = 1;
+  ComparePayRunOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulatePayRun`.
+message SimulatePayRunRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  PayRun pay_run = 3;
+  SimulatePayRunRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulatePayRun`.
+message SimulatePayRunResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulatePayRunResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PayRun pay_run = 1;
+  SimulatePayRunResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPayRunCalculation`.
+message ExplainPayRunCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  PayRun pay_run = 3;
+  ExplainPayRunCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPayRunCalculation`.
+message ExplainPayRunCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PayRun pay_run = 1;
+  ExplainPayRunCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPayRunRates`.
+message GetPayRunRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pay_run_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPayRunRates`.
+message GetPayRunRatesResponse {
+  PayRun pay_run = 1;
+  acme.common.v1.OperationResult result = 2;
+}

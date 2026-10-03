@@ -1,0 +1,194 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "UserServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Manages users: creates, reads, changes, and lists them.
+service UserService {
+  // Creates a user.
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+
+  // Returns a user.
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+
+  // Changes a user.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+
+  // Lists users a page at a time.
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+
+  // Returns several users at once.
+  rpc BatchGetUsers(BatchGetUsersRequest) returns (BatchGetUsersResponse);
+
+  // Lists users a page at a time.
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse);
+
+  // Streams the changes of users as they happen.
+  rpc WatchUsers(WatchUsersRequest) returns (stream WatchUsersResponse);
+
+  // Creates a user.
+  rpc CloneUser(CloneUserRequest) returns (CloneUserResponse);
+}
+
+// The request of `CreateUser`.
+message CreateUserRequest {
+  acme.common.v1.RequestContext context = 1;
+  User user = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateUser`.
+message CreateUserResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetUser`.
+message GetUserRequest {
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetUser`.
+message GetUserResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateUser`.
+message UpdateUserRequest {
+  acme.common.v1.RequestContext context = 1;
+  User user = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateUser`.
+message UpdateUserResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListUsers`.
+message ListUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListUsersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListUsers`.
+message ListUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetUsers`.
+message BatchGetUsersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string user_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetUsers`.
+message BatchGetUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchUsers`.
+message SearchUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchUsersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchUsers`.
+message SearchUsersResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchUsers`.
+message WatchUsersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchUsersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchUsers`.
+message WatchUsersResponse {
+  User user = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `CloneUser`.
+message CloneUserRequest {
+  acme.common.v1.RequestContext context = 1;
+  User user = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneUser`.
+message CloneUserResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}

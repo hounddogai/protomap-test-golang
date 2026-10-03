@@ -1,0 +1,212 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "HouseholdReportingServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Builds and schedules reports about households.
+service HouseholdReportingService {
+  // Generates a household.
+  rpc GenerateHouseholdReport(GenerateHouseholdReportRequest) returns (GenerateHouseholdReportResponse);
+
+  // Returns a household.
+  rpc FetchHouseholdReport(FetchHouseholdReportRequest) returns (FetchHouseholdReportResponse);
+
+  // Schedules a household.
+  rpc ScheduleHouseholdReport(ScheduleHouseholdReportRequest) returns (ScheduleHouseholdReportResponse);
+
+  // Lists households a page at a time.
+  rpc ListHouseholdReports(ListHouseholdReportsRequest) returns (ListHouseholdReportsResponse);
+
+  // Shares a household.
+  rpc ShareHouseholdReport(ShareHouseholdReportRequest) returns (ShareHouseholdReportResponse);
+
+  // Counts households by status.
+  rpc CountHouseholdTotals(CountHouseholdTotalsRequest) returns (CountHouseholdTotalsResponse);
+
+  // Deletes a household.
+  rpc DeleteHouseholdReport(DeleteHouseholdReportRequest) returns (DeleteHouseholdReportResponse);
+}
+
+// The request of `GenerateHouseholdReport`.
+message GenerateHouseholdReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  GenerateHouseholdReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `GenerateHouseholdReport`.
+message GenerateHouseholdReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `FetchHouseholdReport`.
+message FetchHouseholdReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `FetchHouseholdReport`.
+message FetchHouseholdReportResponse {
+  Household household = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleHouseholdReport`.
+message ScheduleHouseholdReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  ScheduleHouseholdReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ScheduleHouseholdReport`.
+message ScheduleHouseholdReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListHouseholdReports`.
+message ListHouseholdReportsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated HouseholdStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListHouseholdReportsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListHouseholdReports`.
+message ListHouseholdReportsResponse {
+  repeated Household households = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ShareHouseholdReport`.
+message ShareHouseholdReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  ShareHouseholdReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ShareHouseholdReport`.
+message ShareHouseholdReportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  ShareHouseholdReportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountHouseholdTotals`.
+message CountHouseholdTotalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated HouseholdStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountHouseholdTotalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountHouseholdTotals`.
+message CountHouseholdTotalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DeleteHouseholdReport`.
+message DeleteHouseholdReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteHouseholdReport`.
+message DeleteHouseholdReportResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

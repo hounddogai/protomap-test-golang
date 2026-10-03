@@ -1,0 +1,228 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.learning.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/learning/v1/learning.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Learning.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/learning/v1;learningv1";
+option java_multiple_files = true;
+option java_outer_classname = "CourseQueryServiceProto";
+option java_package = "com.acme.learning.v1";
+
+// Answers read-only questions about courses, for screens and reports.
+service CourseQueryService {
+  // Returns a course.
+  rpc LookupCourse(LookupCourseRequest) returns (LookupCourseResponse);
+
+  // Lists courses a page at a time.
+  rpc BrowseCourses(BrowseCoursesRequest) returns (BrowseCoursesResponse);
+
+  // Lists courses a page at a time.
+  rpc FindCourses(FindCoursesRequest) returns (FindCoursesResponse);
+
+  // Counts courses by status.
+  rpc CountCourses(CountCoursesRequest) returns (CountCoursesResponse);
+
+  // Streams every matching course.
+  rpc ExportCourses(ExportCoursesRequest) returns (stream ExportCoursesResponse);
+
+  // Summarizes a course.
+  rpc SummarizeCourses(SummarizeCoursesRequest) returns (SummarizeCoursesResponse);
+
+  // Lists courses a page at a time.
+  rpc SuggestCourses(SuggestCoursesRequest) returns (SuggestCoursesResponse);
+
+  // Returns a course.
+  rpc PeekCourse(PeekCourseRequest) returns (PeekCourseResponse);
+}
+
+// The request of `LookupCourse`.
+message LookupCourseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string course_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCourse`.
+message LookupCourseResponse {
+  Course course = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCourses`.
+message BrowseCoursesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CourseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCoursesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCourses`.
+message BrowseCoursesResponse {
+  repeated Course courses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCourses`.
+message FindCoursesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CourseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCoursesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCourses`.
+message FindCoursesResponse {
+  repeated Course courses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCourses`.
+message CountCoursesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CourseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCoursesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCourses`.
+message CountCoursesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCourses`.
+message ExportCoursesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CourseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCoursesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCourses`.
+message ExportCoursesResponse {
+  Course course = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCourses`.
+message SummarizeCoursesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string course_id = 2;
+  SummarizeCoursesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCourses`.
+message SummarizeCoursesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCourses`.
+message SuggestCoursesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CourseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCoursesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCourses`.
+message SuggestCoursesResponse {
+  repeated Course courses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCourse`.
+message PeekCourseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string course_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCourse`.
+message PeekCourseResponse {
+  Course course = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,240 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductVariantApprovalServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Routes product variants through approval, with escalation and delegation.
+service ProductVariantApprovalService {
+  // Submits a product variant.
+  rpc SubmitProductVariant(SubmitProductVariantRequest) returns (SubmitProductVariantResponse);
+
+  // Approves a product variant.
+  rpc ApproveProductVariant(ApproveProductVariantRequest) returns (ApproveProductVariantResponse);
+
+  // Rejects a product variant.
+  rpc RejectProductVariant(RejectProductVariantRequest) returns (RejectProductVariantResponse);
+
+  // Lists product variants a page at a time.
+  rpc ListPendingProductVariants(ListPendingProductVariantsRequest) returns (ListPendingProductVariantsResponse);
+
+  // Recalls a product variant.
+  rpc RecallProductVariant(RecallProductVariantRequest) returns (RecallProductVariantResponse);
+
+  // Comments a product variant.
+  rpc CommentProductVariantApproval(CommentProductVariantApprovalRequest) returns (CommentProductVariantApprovalResponse);
+}
+
+// The request of `SubmitProductVariant`.
+message SubmitProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  SubmitProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitProductVariant`.
+message SubmitProductVariantResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  SubmitProductVariantResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveProductVariant`.
+message ApproveProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  ApproveProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveProductVariant`.
+message ApproveProductVariantResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  ApproveProductVariantResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectProductVariant`.
+message RejectProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  RejectProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectProductVariant`.
+message RejectProductVariantResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  RejectProductVariantResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingProductVariants`.
+message ListPendingProductVariantsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductVariantStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingProductVariantsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingProductVariants`.
+message ListPendingProductVariantsResponse {
+  repeated ProductVariant product_variants = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallProductVariant`.
+message RecallProductVariantRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  RecallProductVariantRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallProductVariant`.
+message RecallProductVariantResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  RecallProductVariantResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CommentProductVariantApproval`.
+message CommentProductVariantApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_variant_id = 2;
+  ProductVariant product_variant = 3;
+  CommentProductVariantApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentProductVariantApproval`.
+message CommentProductVariantApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ProductVariant product_variant = 1;
+  CommentProductVariantApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.metrics.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/metrics/v1/metrics.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Metrics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/metrics/v1;metricsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MetricSeriesValidationServiceProto";
+option java_package = "com.acme.metrics.v1";
+
+// Checks metric serieses against the rules before anything acts on them.
+service MetricSeriesValidationService {
+  // Validates a metric series.
+  rpc ValidateMetricSeries(ValidateMetricSeriesRequest) returns (ValidateMetricSeriesResponse);
+
+  // Previews a metric series.
+  rpc PreviewMetricSeries(PreviewMetricSeriesRequest) returns (PreviewMetricSeriesResponse);
+
+  // Checks a metric series.
+  rpc CheckMetricSeriesEligibility(CheckMetricSeriesEligibilityRequest) returns (CheckMetricSeriesEligibilityResponse);
+
+  // Normalizes a metric series.
+  rpc NormalizeMetricSeries(NormalizeMetricSeriesRequest) returns (NormalizeMetricSeriesResponse);
+
+  // Explains a metric series.
+  rpc ExplainMetricSeriesDecision(ExplainMetricSeriesDecisionRequest) returns (ExplainMetricSeriesDecisionResponse);
+
+  // Scores a metric series.
+  rpc ScoreMetricSeries(ScoreMetricSeriesRequest) returns (ScoreMetricSeriesResponse);
+
+  // Lints a metric series.
+  rpc LintMetricSerieses(LintMetricSeriesesRequest) returns (LintMetricSeriesesResponse);
+
+  // Returns a metric series.
+  rpc GetMetricSeriesRules(GetMetricSeriesRulesRequest) returns (GetMetricSeriesRulesResponse);
+}
+
+// The request of `ValidateMetricSeries`.
+message ValidateMetricSeriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  ValidateMetricSeriesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateMetricSeries`.
+message ValidateMetricSeriesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MetricSeries metric_series = 1;
+  ValidateMetricSeriesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewMetricSeries`.
+message PreviewMetricSeriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  PreviewMetricSeriesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewMetricSeries`.
+message PreviewMetricSeriesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MetricSeries metric_series = 1;
+  PreviewMetricSeriesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckMetricSeriesEligibility`.
+message CheckMetricSeriesEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  CheckMetricSeriesEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckMetricSeriesEligibility`.
+message CheckMetricSeriesEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MetricSeries metric_series = 1;
+  CheckMetricSeriesEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeMetricSeries`.
+message NormalizeMetricSeriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  NormalizeMetricSeriesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeMetricSeries`.
+message NormalizeMetricSeriesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MetricSeries metric_series = 1;
+  NormalizeMetricSeriesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainMetricSeriesDecision`.
+message ExplainMetricSeriesDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  ExplainMetricSeriesDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainMetricSeriesDecision`.
+message ExplainMetricSeriesDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MetricSeries metric_series = 1;
+  ExplainMetricSeriesDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreMetricSeries`.
+message ScoreMetricSeriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  ScoreMetricSeriesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreMetricSeries`.
+message ScoreMetricSeriesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreMetricSeriesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MetricSeries metric_series = 1;
+  ScoreMetricSeriesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintMetricSerieses`.
+message LintMetricSeriesesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  MetricSeries metric_series = 3;
+  LintMetricSeriesesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintMetricSerieses`.
+message LintMetricSeriesesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MetricSeries metric_series = 1;
+  LintMetricSeriesesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMetricSeriesRules`.
+message GetMetricSeriesRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMetricSeriesRules`.
+message GetMetricSeriesRulesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,238 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "CatalogProto";
+option java_package = "com.acme.catalog.v1";
+
+// Where a product is in its lifecycle.
+enum ProductStatus {
+  PRODUCT_STATUS_UNSPECIFIED = 0;
+  PRODUCT_STATUS_PLANNED = 1;
+  PRODUCT_STATUS_AVAILABLE = 2;
+  PRODUCT_STATUS_RESERVED = 3;
+  PRODUCT_STATUS_RETIRED = 4;
+}
+
+// Where a category is in its lifecycle.
+enum CategoryStatus {
+  CATEGORY_STATUS_UNSPECIFIED = 0;
+  CATEGORY_STATUS_ACTIVE = 1;
+  CATEGORY_STATUS_INACTIVE = 2;
+}
+
+// Where a product variant is in its lifecycle.
+enum ProductVariantStatus {
+  PRODUCT_VARIANT_STATUS_UNSPECIFIED = 0;
+  PRODUCT_VARIANT_STATUS_PLANNED = 1;
+  PRODUCT_VARIANT_STATUS_AVAILABLE = 2;
+  PRODUCT_VARIANT_STATUS_RESERVED = 3;
+  PRODUCT_VARIANT_STATUS_RETIRED = 4;
+}
+
+// Where a brand is in its lifecycle.
+enum BrandStatus {
+  BRAND_STATUS_UNSPECIFIED = 0;
+  BRAND_STATUS_PROSPECT = 1;
+  BRAND_STATUS_ACTIVE = 2;
+  BRAND_STATUS_SUSPENDED = 3;
+  BRAND_STATUS_CLOSED = 4;
+}
+
+// Where an attribute is in its lifecycle.
+enum AttributeStatus {
+  ATTRIBUTE_STATUS_UNSPECIFIED = 0;
+  ATTRIBUTE_STATUS_DRAFT = 1;
+  ATTRIBUTE_STATUS_ENABLED = 2;
+  ATTRIBUTE_STATUS_DISABLED = 3;
+  ATTRIBUTE_STATUS_RETIRED = 4;
+}
+
+// The dimensions of a product.
+message ProductDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a product.
+message ProductComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A product of the catalog domain.
+message Product {
+  string product_id = 1;
+  string code = 2;
+  string name = 3;
+  ProductStatus status = 4;
+  repeated string category_path = 5;
+  ProductDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ProductComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// A category of the catalog domain.
+message Category {
+  string category_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Category children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  CategoryStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The dimensions of a product variant.
+message ProductVariantDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a product variant.
+message ProductVariantComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A product variant of the catalog domain.
+message ProductVariant {
+  string product_variant_id = 1;
+  string code = 2;
+  string name = 3;
+  ProductVariantStatus status = 4;
+  repeated string category_path = 5;
+  ProductVariantDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ProductVariantComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The preferences of a brand.
+message BrandPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a brand.
+message BrandPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a brand.
+message BrandNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A brand of the catalog domain.
+message Brand {
+  string brand_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  BrandStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  BrandPreferences preferences = 8;
+  oneof identity_document {
+    BrandPassport passport = 9;
+    BrandNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The condition of an attribute.
+message AttributeCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of an attribute.
+message AttributeDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of an attribute.
+message AttributeRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of an attribute.
+message AttributeBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// An attribute of the catalog domain.
+message Attribute {
+  string attribute_id = 1;
+  string name = 2;
+  string description = 3;
+  AttributeStatus status = 4;
+  int32 priority = 5;
+  repeated AttributeCondition conditions = 6;
+  oneof action {
+    AttributeDiscountAction discount = 7;
+    AttributeRouteAction route = 8;
+    AttributeBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.checkout.v1;
+
+option csharp_namespace = "Acme.Checkout.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/checkout/v1;checkoutv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.checkout.v1";
+
+// A reference to a checkout session of the checkout domain.
+message CheckoutSessionRef {
+  string checkout_session_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a shipping quote of the checkout domain.
+message ShippingQuoteRef {
+  string shipping_quote_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a payment intent of the checkout domain.
+message PaymentIntentRef {
+  string payment_intent_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

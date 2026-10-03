@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudSignalCalculationServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Computes the figures of a fraud signal, such as totals, taxes, and estimates.
+service FraudSignalCalculationService {
+  // Calculates a fraud signal.
+  rpc CalculateFraudSignal(CalculateFraudSignalRequest) returns (CalculateFraudSignalResponse);
+
+  // Estimates a fraud signal.
+  rpc EstimateFraudSignal(EstimateFraudSignalRequest) returns (EstimateFraudSignalResponse);
+
+  // Quotes a fraud signal.
+  rpc QuoteFraudSignal(QuoteFraudSignalRequest) returns (QuoteFraudSignalResponse);
+
+  // Compares a fraud signal.
+  rpc CompareFraudSignalOptions(CompareFraudSignalOptionsRequest) returns (CompareFraudSignalOptionsResponse);
+
+  // Recalculates a fraud signal.
+  rpc RecalculateFraudSignals(RecalculateFraudSignalsRequest) returns (RecalculateFraudSignalsResponse);
+
+  // Simulates a fraud signal.
+  rpc SimulateFraudSignal(SimulateFraudSignalRequest) returns (SimulateFraudSignalResponse);
+
+  // Explains a fraud signal.
+  rpc ExplainFraudSignalCalculation(ExplainFraudSignalCalculationRequest) returns (ExplainFraudSignalCalculationResponse);
+
+  // Returns a fraud signal.
+  rpc GetFraudSignalRates(GetFraudSignalRatesRequest) returns (GetFraudSignalRatesResponse);
+}
+
+// The request of `CalculateFraudSignal`.
+message CalculateFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  CalculateFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateFraudSignal`.
+message CalculateFraudSignalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateFraudSignalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudSignal fraud_signal = 1;
+  CalculateFraudSignalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateFraudSignal`.
+message EstimateFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  EstimateFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateFraudSignal`.
+message EstimateFraudSignalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateFraudSignalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudSignal fraud_signal = 1;
+  EstimateFraudSignalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteFraudSignal`.
+message QuoteFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  QuoteFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteFraudSignal`.
+message QuoteFraudSignalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteFraudSignalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudSignal fraud_signal = 1;
+  QuoteFraudSignalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareFraudSignalOptions`.
+message CompareFraudSignalOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  CompareFraudSignalOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareFraudSignalOptions`.
+message CompareFraudSignalOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareFraudSignalOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudSignal fraud_signal = 1;
+  CompareFraudSignalOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateFraudSignals`.
+message RecalculateFraudSignalsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  RecalculateFraudSignalsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateFraudSignals`.
+message RecalculateFraudSignalsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateFraudSignalsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudSignal fraud_signal = 1;
+  RecalculateFraudSignalsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateFraudSignal`.
+message SimulateFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  SimulateFraudSignalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateFraudSignal`.
+message SimulateFraudSignalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateFraudSignalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FraudSignal fraud_signal = 1;
+  SimulateFraudSignalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainFraudSignalCalculation`.
+message ExplainFraudSignalCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  ExplainFraudSignalCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainFraudSignalCalculation`.
+message ExplainFraudSignalCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  ExplainFraudSignalCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFraudSignalRates`.
+message GetFraudSignalRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFraudSignalRates`.
+message GetFraudSignalRatesResponse {
+  FraudSignal fraud_signal = 1;
+  acme.common.v1.OperationResult result = 2;
+}

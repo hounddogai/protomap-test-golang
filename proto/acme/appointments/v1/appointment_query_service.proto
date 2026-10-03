@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AppointmentQueryServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Answers read-only questions about appointments, for screens and reports.
+service AppointmentQueryService {
+  // Returns an appointment.
+  rpc LookupAppointment(LookupAppointmentRequest) returns (LookupAppointmentResponse);
+
+  // Lists appointments a page at a time.
+  rpc BrowseAppointments(BrowseAppointmentsRequest) returns (BrowseAppointmentsResponse);
+
+  // Lists appointments a page at a time.
+  rpc FindAppointments(FindAppointmentsRequest) returns (FindAppointmentsResponse);
+
+  // Counts appointments by status.
+  rpc CountAppointments(CountAppointmentsRequest) returns (CountAppointmentsResponse);
+
+  // Returns several appointments at once.
+  rpc ResolveAppointments(ResolveAppointmentsRequest) returns (ResolveAppointmentsResponse);
+
+  // Streams every matching appointment.
+  rpc ExportAppointments(ExportAppointmentsRequest) returns (stream ExportAppointmentsResponse);
+
+  // Summarizes an appointment.
+  rpc SummarizeAppointments(SummarizeAppointmentsRequest) returns (SummarizeAppointmentsResponse);
+
+  // Lists appointments a page at a time.
+  rpc SuggestAppointments(SuggestAppointmentsRequest) returns (SuggestAppointmentsResponse);
+
+  // Returns an appointment.
+  rpc PeekAppointment(PeekAppointmentRequest) returns (PeekAppointmentResponse);
+}
+
+// The request of `LookupAppointment`.
+message LookupAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupAppointment`.
+message LookupAppointmentResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseAppointments`.
+message BrowseAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseAppointmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseAppointments`.
+message BrowseAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindAppointments`.
+message FindAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindAppointmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindAppointments`.
+message FindAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountAppointments`.
+message CountAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountAppointmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountAppointments`.
+message CountAppointmentsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveAppointments`.
+message ResolveAppointmentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string appointment_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveAppointments`.
+message ResolveAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportAppointments`.
+message ExportAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportAppointmentsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportAppointments`.
+message ExportAppointmentsResponse {
+  Appointment appointment = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeAppointments`.
+message SummarizeAppointmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  SummarizeAppointmentsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeAppointments`.
+message SummarizeAppointmentsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestAppointments`.
+message SuggestAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestAppointmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestAppointments`.
+message SuggestAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekAppointment`.
+message PeekAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekAppointment`.
+message PeekAppointmentResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

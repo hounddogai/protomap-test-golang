@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerListingWorkflowServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Runs the long-lived workflow that takes a seller listing from start to finish.
+service SellerListingWorkflowService {
+  // Starts a seller listing.
+  rpc StartSellerListingWorkflow(StartSellerListingWorkflowRequest) returns (StartSellerListingWorkflowResponse);
+
+  // Advances a seller listing.
+  rpc AdvanceSellerListingWorkflow(AdvanceSellerListingWorkflowRequest) returns (AdvanceSellerListingWorkflowResponse);
+
+  // Cancels a seller listing.
+  rpc CancelSellerListingWorkflow(CancelSellerListingWorkflowRequest) returns (CancelSellerListingWorkflowResponse);
+
+  // Retrys a seller listing.
+  rpc RetrySellerListingWorkflow(RetrySellerListingWorkflowRequest) returns (RetrySellerListingWorkflowResponse);
+
+  // Pauses a seller listing.
+  rpc PauseSellerListingWorkflow(PauseSellerListingWorkflowRequest) returns (PauseSellerListingWorkflowResponse);
+
+  // Resumes a seller listing.
+  rpc ResumeSellerListingWorkflow(ResumeSellerListingWorkflowRequest) returns (ResumeSellerListingWorkflowResponse);
+
+  // Returns a seller listing.
+  rpc InspectSellerListingWorkflow(InspectSellerListingWorkflowRequest) returns (InspectSellerListingWorkflowResponse);
+
+  // Lists seller listings a page at a time.
+  rpc ListSellerListingWorkflows(ListSellerListingWorkflowsRequest) returns (ListSellerListingWorkflowsResponse);
+}
+
+// The request of `StartSellerListingWorkflow`.
+message StartSellerListingWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  StartSellerListingWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartSellerListingWorkflow`.
+message StartSellerListingWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  StartSellerListingWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceSellerListingWorkflow`.
+message AdvanceSellerListingWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  AdvanceSellerListingWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceSellerListingWorkflow`.
+message AdvanceSellerListingWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  AdvanceSellerListingWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelSellerListingWorkflow`.
+message CancelSellerListingWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  CancelSellerListingWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelSellerListingWorkflow`.
+message CancelSellerListingWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  CancelSellerListingWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetrySellerListingWorkflow`.
+message RetrySellerListingWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  RetrySellerListingWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetrySellerListingWorkflow`.
+message RetrySellerListingWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  RetrySellerListingWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseSellerListingWorkflow`.
+message PauseSellerListingWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  PauseSellerListingWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseSellerListingWorkflow`.
+message PauseSellerListingWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  PauseSellerListingWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeSellerListingWorkflow`.
+message ResumeSellerListingWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  ResumeSellerListingWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeSellerListingWorkflow`.
+message ResumeSellerListingWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ResumeSellerListingWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSellerListingWorkflow`.
+message InspectSellerListingWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSellerListingWorkflow`.
+message InspectSellerListingWorkflowResponse {
+  SellerListing seller_listing = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSellerListingWorkflows`.
+message ListSellerListingWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SellerListingStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSellerListingWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSellerListingWorkflows`.
+message ListSellerListingWorkflowsResponse {
+  repeated SellerListing seller_listings = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

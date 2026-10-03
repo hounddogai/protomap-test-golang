@@ -1,0 +1,223 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.employees.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/employees/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Employees.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/employees/v1;employeesv1";
+option java_multiple_files = true;
+option java_outer_classname = "EmployeesProto";
+option java_package = "com.acme.employees.v1";
+
+// Where an employee is in its lifecycle.
+enum EmployeeStatus {
+  EMPLOYEE_STATUS_UNSPECIFIED = 0;
+  EMPLOYEE_STATUS_PROSPECT = 1;
+  EMPLOYEE_STATUS_ACTIVE = 2;
+  EMPLOYEE_STATUS_SUSPENDED = 3;
+  EMPLOYEE_STATUS_CLOSED = 4;
+}
+
+// Where an org unit is in its lifecycle.
+enum OrgUnitStatus {
+  ORG_UNIT_STATUS_UNSPECIFIED = 0;
+  ORG_UNIT_STATUS_ACTIVE = 1;
+  ORG_UNIT_STATUS_INACTIVE = 2;
+}
+
+// Where a position is in its lifecycle.
+enum PositionStatus {
+  POSITION_STATUS_UNSPECIFIED = 0;
+  POSITION_STATUS_DRAFT = 1;
+  POSITION_STATUS_ENABLED = 2;
+  POSITION_STATUS_DISABLED = 3;
+  POSITION_STATUS_RETIRED = 4;
+}
+
+// Where an employment contract is in its lifecycle.
+enum EmploymentContractStatus {
+  EMPLOYMENT_CONTRACT_STATUS_UNSPECIFIED = 0;
+  EMPLOYMENT_CONTRACT_STATUS_DRAFT = 1;
+  EMPLOYMENT_CONTRACT_STATUS_ISSUED = 2;
+  EMPLOYMENT_CONTRACT_STATUS_APPROVED = 3;
+  EMPLOYMENT_CONTRACT_STATUS_PAID = 4;
+  EMPLOYMENT_CONTRACT_STATUS_VOID = 5;
+}
+
+// The preferences of an employee.
+message EmployeePreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of an employee.
+message EmployeePassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of an employee.
+message EmployeeNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// An employee of the employees domain.
+message Employee {
+  string employee_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  EmployeeStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  EmployeePreferences preferences = 8;
+  oneof identity_document {
+    EmployeePassport passport = 9;
+    EmployeeNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// An org unit of the employees domain.
+message OrgUnit {
+  string org_unit_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated OrgUnit children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  OrgUnitStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The condition of a position.
+message PositionCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a position.
+message PositionDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a position.
+message PositionRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a position.
+message PositionBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A position of the employees domain.
+message Position {
+  string position_id = 1;
+  string name = 2;
+  string description = 3;
+  PositionStatus status = 4;
+  int32 priority = 5;
+  repeated PositionCondition conditions = 6;
+  oneof action {
+    PositionDiscountAction discount = 7;
+    PositionRouteAction route = 8;
+    PositionBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of an employment contract.
+message EmploymentContractLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  EmploymentContractLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an employment contract line.
+message EmploymentContractLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an employment contract.
+message EmploymentContractCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an employment contract.
+message EmploymentContractBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an employment contract.
+message EmploymentContractAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An employment contract of the employees domain.
+message EmploymentContract {
+  string employment_contract_id = 1;
+  string number = 2;
+  EmploymentContractStatus status = 3;
+  EmployeeRef counterparty = 4;
+  repeated EmploymentContractLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    EmploymentContractCardSettlement card = 8;
+    EmploymentContractBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated EmploymentContractAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

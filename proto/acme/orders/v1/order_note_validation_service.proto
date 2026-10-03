@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderNoteValidationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Checks order notes against the rules before anything acts on them.
+service OrderNoteValidationService {
+  // Validates an order note.
+  rpc ValidateOrderNote(ValidateOrderNoteRequest) returns (ValidateOrderNoteResponse);
+
+  // Previews an order note.
+  rpc PreviewOrderNote(PreviewOrderNoteRequest) returns (PreviewOrderNoteResponse);
+
+  // Normalizes an order note.
+  rpc NormalizeOrderNote(NormalizeOrderNoteRequest) returns (NormalizeOrderNoteResponse);
+
+  // Explains an order note.
+  rpc ExplainOrderNoteDecision(ExplainOrderNoteDecisionRequest) returns (ExplainOrderNoteDecisionResponse);
+
+  // Scores an order note.
+  rpc ScoreOrderNote(ScoreOrderNoteRequest) returns (ScoreOrderNoteResponse);
+
+  // Lints an order note.
+  rpc LintOrderNotes(LintOrderNotesRequest) returns (LintOrderNotesResponse);
+
+  // Returns an order note.
+  rpc GetOrderNoteRules(GetOrderNoteRulesRequest) returns (GetOrderNoteRulesResponse);
+}
+
+// The request of `ValidateOrderNote`.
+message ValidateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ValidateOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateOrderNote`.
+message ValidateOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ValidateOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewOrderNote`.
+message PreviewOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  PreviewOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewOrderNote`.
+message PreviewOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  PreviewOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeOrderNote`.
+message NormalizeOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  NormalizeOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeOrderNote`.
+message NormalizeOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  NormalizeOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainOrderNoteDecision`.
+message ExplainOrderNoteDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ExplainOrderNoteDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainOrderNoteDecision`.
+message ExplainOrderNoteDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ExplainOrderNoteDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreOrderNote`.
+message ScoreOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ScoreOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreOrderNote`.
+message ScoreOrderNoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreOrderNoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderNote order_note = 1;
+  ScoreOrderNoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintOrderNotes`.
+message LintOrderNotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  LintOrderNotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintOrderNotes`.
+message LintOrderNotesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  LintOrderNotesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderNoteRules`.
+message GetOrderNoteRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderNoteRules`.
+message GetOrderNoteRulesResponse {
+  OrderNote order_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,243 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchQueryExportServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Exports search queries to files and other systems.
+service SearchQueryExportService {
+  // Streams every matching search query.
+  rpc StreamSearchQueryExport(StreamSearchQueryExportRequest) returns (stream StreamSearchQueryExportResponse);
+
+  // Returns a search query.
+  rpc GetSearchQueryExport(GetSearchQueryExportRequest) returns (GetSearchQueryExportResponse);
+
+  // Cancels a search query.
+  rpc CancelSearchQueryExport(CancelSearchQueryExportRequest) returns (CancelSearchQueryExportResponse);
+
+  // Lists search queries a page at a time.
+  rpc ListSearchQueryExports(ListSearchQueryExportsRequest) returns (ListSearchQueryExportsResponse);
+
+  // Schedules a search query.
+  rpc ScheduleSearchQueryExport(ScheduleSearchQueryExportRequest) returns (ScheduleSearchQueryExportResponse);
+
+  // Retrys a search query.
+  rpc RetrySearchQueryExport(RetrySearchQueryExportRequest) returns (RetrySearchQueryExportResponse);
+
+  // Shares a search query.
+  rpc ShareSearchQueryExport(ShareSearchQueryExportRequest) returns (ShareSearchQueryExportResponse);
+}
+
+// The request of `StreamSearchQueryExport`.
+message StreamSearchQueryExportRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchQueryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamSearchQueryExportRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `StreamSearchQueryExport`.
+message StreamSearchQueryExportResponse {
+  SearchQuery search_query = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `GetSearchQueryExport`.
+message GetSearchQueryExportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchQueryExport`.
+message GetSearchQueryExportResponse {
+  SearchQuery search_query = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CancelSearchQueryExport`.
+message CancelSearchQueryExportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  CancelSearchQueryExportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `CancelSearchQueryExport`.
+message CancelSearchQueryExportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  CancelSearchQueryExportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListSearchQueryExports`.
+message ListSearchQueryExportsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchQueryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSearchQueryExportsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSearchQueryExports`.
+message ListSearchQueryExportsResponse {
+  repeated SearchQuery search_queries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScheduleSearchQueryExport`.
+message ScheduleSearchQueryExportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  ScheduleSearchQueryExportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ScheduleSearchQueryExport`.
+message ScheduleSearchQueryExportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `RetrySearchQueryExport`.
+message RetrySearchQueryExportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  RetrySearchQueryExportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetrySearchQueryExport`.
+message RetrySearchQueryExportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  RetrySearchQueryExportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ShareSearchQueryExport`.
+message ShareSearchQueryExportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  ShareSearchQueryExportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ShareSearchQueryExport`.
+message ShareSearchQueryExportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  ShareSearchQueryExportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.lineage.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/lineage/v1/lineage.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Lineage.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/lineage/v1;lineagev1";
+option java_multiple_files = true;
+option java_outer_classname = "LineageNodeCalculationServiceProto";
+option java_package = "com.acme.lineage.v1";
+
+// Computes the figures of a lineage node, such as totals, taxes, and estimates.
+service LineageNodeCalculationService {
+  // Calculates a lineage node.
+  rpc CalculateLineageNode(CalculateLineageNodeRequest) returns (CalculateLineageNodeResponse);
+
+  // Estimates a lineage node.
+  rpc EstimateLineageNode(EstimateLineageNodeRequest) returns (EstimateLineageNodeResponse);
+
+  // Quotes a lineage node.
+  rpc QuoteLineageNode(QuoteLineageNodeRequest) returns (QuoteLineageNodeResponse);
+
+  // Recalculates a lineage node.
+  rpc RecalculateLineageNodes(RecalculateLineageNodesRequest) returns (RecalculateLineageNodesResponse);
+
+  // Simulates a lineage node.
+  rpc SimulateLineageNode(SimulateLineageNodeRequest) returns (SimulateLineageNodeResponse);
+
+  // Explains a lineage node.
+  rpc ExplainLineageNodeCalculation(ExplainLineageNodeCalculationRequest) returns (ExplainLineageNodeCalculationResponse);
+
+  // Returns a lineage node.
+  rpc GetLineageNodeRates(GetLineageNodeRatesRequest) returns (GetLineageNodeRatesResponse);
+}
+
+// The request of `CalculateLineageNode`.
+message CalculateLineageNodeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  LineageNode lineage_node = 3;
+  CalculateLineageNodeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateLineageNode`.
+message CalculateLineageNodeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateLineageNodeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LineageNode lineage_node = 1;
+  CalculateLineageNodeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateLineageNode`.
+message EstimateLineageNodeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  LineageNode lineage_node = 3;
+  EstimateLineageNodeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateLineageNode`.
+message EstimateLineageNodeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateLineageNodeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LineageNode lineage_node = 1;
+  EstimateLineageNodeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteLineageNode`.
+message QuoteLineageNodeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  LineageNode lineage_node = 3;
+  QuoteLineageNodeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteLineageNode`.
+message QuoteLineageNodeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteLineageNodeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LineageNode lineage_node = 1;
+  QuoteLineageNodeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateLineageNodes`.
+message RecalculateLineageNodesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  LineageNode lineage_node = 3;
+  RecalculateLineageNodesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateLineageNodes`.
+message RecalculateLineageNodesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateLineageNodesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LineageNode lineage_node = 1;
+  RecalculateLineageNodesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateLineageNode`.
+message SimulateLineageNodeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  LineageNode lineage_node = 3;
+  SimulateLineageNodeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateLineageNode`.
+message SimulateLineageNodeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateLineageNodeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LineageNode lineage_node = 1;
+  SimulateLineageNodeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainLineageNodeCalculation`.
+message ExplainLineageNodeCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  LineageNode lineage_node = 3;
+  ExplainLineageNodeCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainLineageNodeCalculation`.
+message ExplainLineageNodeCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LineageNode lineage_node = 1;
+  ExplainLineageNodeCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLineageNodeRates`.
+message GetLineageNodeRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string lineage_node_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLineageNodeRates`.
+message GetLineageNodeRatesResponse {
+  LineageNode lineage_node = 1;
+  acme.common.v1.OperationResult result = 2;
+}

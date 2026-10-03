@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.localization.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/localization/v1/localization.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Localization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/localization/v1;localizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "TranslationKeyCalculationServiceProto";
+option java_package = "com.acme.localization.v1";
+
+// Computes the figures of a translation key, such as totals, taxes, and estimates.
+service TranslationKeyCalculationService {
+  // Calculates a translation key.
+  rpc CalculateTranslationKey(CalculateTranslationKeyRequest) returns (CalculateTranslationKeyResponse);
+
+  // Estimates a translation key.
+  rpc EstimateTranslationKey(EstimateTranslationKeyRequest) returns (EstimateTranslationKeyResponse);
+
+  // Quotes a translation key.
+  rpc QuoteTranslationKey(QuoteTranslationKeyRequest) returns (QuoteTranslationKeyResponse);
+
+  // Compares a translation key.
+  rpc CompareTranslationKeyOptions(CompareTranslationKeyOptionsRequest) returns (CompareTranslationKeyOptionsResponse);
+
+  // Recalculates a translation key.
+  rpc RecalculateTranslationKeys(RecalculateTranslationKeysRequest) returns (RecalculateTranslationKeysResponse);
+
+  // Explains a translation key.
+  rpc ExplainTranslationKeyCalculation(ExplainTranslationKeyCalculationRequest) returns (ExplainTranslationKeyCalculationResponse);
+
+  // Returns a translation key.
+  rpc GetTranslationKeyRates(GetTranslationKeyRatesRequest) returns (GetTranslationKeyRatesResponse);
+}
+
+// The request of `CalculateTranslationKey`.
+message CalculateTranslationKeyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  TranslationKey translation_key = 3;
+  CalculateTranslationKeyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateTranslationKey`.
+message CalculateTranslationKeyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateTranslationKeyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  TranslationKey translation_key = 1;
+  CalculateTranslationKeyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateTranslationKey`.
+message EstimateTranslationKeyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  TranslationKey translation_key = 3;
+  EstimateTranslationKeyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateTranslationKey`.
+message EstimateTranslationKeyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateTranslationKeyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  TranslationKey translation_key = 1;
+  EstimateTranslationKeyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteTranslationKey`.
+message QuoteTranslationKeyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  TranslationKey translation_key = 3;
+  QuoteTranslationKeyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteTranslationKey`.
+message QuoteTranslationKeyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteTranslationKeyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  TranslationKey translation_key = 1;
+  QuoteTranslationKeyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareTranslationKeyOptions`.
+message CompareTranslationKeyOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  TranslationKey translation_key = 3;
+  CompareTranslationKeyOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareTranslationKeyOptions`.
+message CompareTranslationKeyOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareTranslationKeyOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  TranslationKey translation_key = 1;
+  CompareTranslationKeyOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateTranslationKeys`.
+message RecalculateTranslationKeysRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  TranslationKey translation_key = 3;
+  RecalculateTranslationKeysRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateTranslationKeys`.
+message RecalculateTranslationKeysResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateTranslationKeysResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  TranslationKey translation_key = 1;
+  RecalculateTranslationKeysResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainTranslationKeyCalculation`.
+message ExplainTranslationKeyCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  TranslationKey translation_key = 3;
+  ExplainTranslationKeyCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainTranslationKeyCalculation`.
+message ExplainTranslationKeyCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TranslationKey translation_key = 1;
+  ExplainTranslationKeyCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetTranslationKeyRates`.
+message GetTranslationKeyRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string translation_key_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTranslationKeyRates`.
+message GetTranslationKeyRatesResponse {
+  TranslationKey translation_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}

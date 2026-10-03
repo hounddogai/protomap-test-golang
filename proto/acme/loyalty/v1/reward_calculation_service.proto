@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "RewardCalculationServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Computes the figures of a reward, such as totals, taxes, and estimates.
+service RewardCalculationService {
+  // Calculates a reward.
+  rpc CalculateReward(CalculateRewardRequest) returns (CalculateRewardResponse);
+
+  // Estimates a reward.
+  rpc EstimateReward(EstimateRewardRequest) returns (EstimateRewardResponse);
+
+  // Quotes a reward.
+  rpc QuoteReward(QuoteRewardRequest) returns (QuoteRewardResponse);
+
+  // Compares a reward.
+  rpc CompareRewardOptions(CompareRewardOptionsRequest) returns (CompareRewardOptionsResponse);
+
+  // Recalculates a reward.
+  rpc RecalculateRewards(RecalculateRewardsRequest) returns (RecalculateRewardsResponse);
+
+  // Simulates a reward.
+  rpc SimulateReward(SimulateRewardRequest) returns (SimulateRewardResponse);
+
+  // Returns a reward.
+  rpc GetRewardRates(GetRewardRatesRequest) returns (GetRewardRatesResponse);
+}
+
+// The request of `CalculateReward`.
+message CalculateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  CalculateRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateReward`.
+message CalculateRewardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRewardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Reward reward = 1;
+  CalculateRewardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateReward`.
+message EstimateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  EstimateRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateReward`.
+message EstimateRewardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRewardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Reward reward = 1;
+  EstimateRewardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteReward`.
+message QuoteRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  QuoteRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteReward`.
+message QuoteRewardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRewardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Reward reward = 1;
+  QuoteRewardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRewardOptions`.
+message CompareRewardOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  CompareRewardOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRewardOptions`.
+message CompareRewardOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRewardOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Reward reward = 1;
+  CompareRewardOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRewards`.
+message RecalculateRewardsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  RecalculateRewardsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRewards`.
+message RecalculateRewardsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRewardsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Reward reward = 1;
+  RecalculateRewardsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateReward`.
+message SimulateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  SimulateRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateReward`.
+message SimulateRewardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRewardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Reward reward = 1;
+  SimulateRewardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRewardRates`.
+message GetRewardRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRewardRates`.
+message GetRewardRatesResponse {
+  Reward reward = 1;
+  acme.common.v1.OperationResult result = 2;
+}

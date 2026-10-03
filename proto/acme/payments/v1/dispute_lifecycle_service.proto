@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DisputeLifecycleServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Moves a dispute between the states of its lifecycle.
+service DisputeLifecycleService {
+  // Activates a dispute.
+  rpc ActivateDispute(ActivateDisputeRequest) returns (ActivateDisputeResponse);
+
+  // Suspends a dispute.
+  rpc SuspendDispute(SuspendDisputeRequest) returns (SuspendDisputeResponse);
+
+  // Reinstates a dispute.
+  rpc ReinstateDispute(ReinstateDisputeRequest) returns (ReinstateDisputeResponse);
+
+  // Terminates a dispute.
+  rpc TerminateDispute(TerminateDisputeRequest) returns (TerminateDisputeResponse);
+
+  // Renews a dispute.
+  rpc RenewDispute(RenewDisputeRequest) returns (RenewDisputeResponse);
+
+  // Expires a dispute.
+  rpc ExpireDispute(ExpireDisputeRequest) returns (ExpireDisputeResponse);
+
+  // Returns a dispute.
+  rpc GetDisputeLifecycle(GetDisputeLifecycleRequest) returns (GetDisputeLifecycleResponse);
+
+  // Schedules a dispute.
+  rpc ScheduleDisputeExpiry(ScheduleDisputeExpiryRequest) returns (ScheduleDisputeExpiryResponse);
+}
+
+// The request of `ActivateDispute`.
+message ActivateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  ActivateDisputeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateDispute`.
+message ActivateDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ActivateDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendDispute`.
+message SuspendDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  SuspendDisputeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendDispute`.
+message SuspendDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  SuspendDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateDispute`.
+message ReinstateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  ReinstateDisputeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateDispute`.
+message ReinstateDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ReinstateDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateDispute`.
+message TerminateDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  TerminateDisputeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateDispute`.
+message TerminateDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  TerminateDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewDispute`.
+message RenewDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  RenewDisputeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewDispute`.
+message RenewDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  RenewDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireDispute`.
+message ExpireDisputeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  ExpireDisputeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireDispute`.
+message ExpireDisputeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ExpireDisputeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetDisputeLifecycle`.
+message GetDisputeLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDisputeLifecycle`.
+message GetDisputeLifecycleResponse {
+  Dispute dispute = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleDisputeExpiry`.
+message ScheduleDisputeExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispute_id = 2;
+  Dispute dispute = 3;
+  ScheduleDisputeExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleDisputeExpiry`.
+message ScheduleDisputeExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Dispute dispute = 1;
+  ScheduleDisputeExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

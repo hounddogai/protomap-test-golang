@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.seating.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/seating/v1/seating.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Seating.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/seating/v1;seatingv1";
+option java_multiple_files = true;
+option java_outer_classname = "SeatMapCalculationServiceProto";
+option java_package = "com.acme.seating.v1";
+
+// Computes the figures of a seat map, such as totals, taxes, and estimates.
+service SeatMapCalculationService {
+  // Calculates a seat map.
+  rpc CalculateSeatMap(CalculateSeatMapRequest) returns (CalculateSeatMapResponse);
+
+  // Estimates a seat map.
+  rpc EstimateSeatMap(EstimateSeatMapRequest) returns (EstimateSeatMapResponse);
+
+  // Quotes a seat map.
+  rpc QuoteSeatMap(QuoteSeatMapRequest) returns (QuoteSeatMapResponse);
+
+  // Compares a seat map.
+  rpc CompareSeatMapOptions(CompareSeatMapOptionsRequest) returns (CompareSeatMapOptionsResponse);
+
+  // Recalculates a seat map.
+  rpc RecalculateSeatMaps(RecalculateSeatMapsRequest) returns (RecalculateSeatMapsResponse);
+
+  // Explains a seat map.
+  rpc ExplainSeatMapCalculation(ExplainSeatMapCalculationRequest) returns (ExplainSeatMapCalculationResponse);
+
+  // Returns a seat map.
+  rpc GetSeatMapRates(GetSeatMapRatesRequest) returns (GetSeatMapRatesResponse);
+}
+
+// The request of `CalculateSeatMap`.
+message CalculateSeatMapRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  SeatMap seat_map = 3;
+  CalculateSeatMapRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateSeatMap`.
+message CalculateSeatMapResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateSeatMapResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SeatMap seat_map = 1;
+  CalculateSeatMapResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateSeatMap`.
+message EstimateSeatMapRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  SeatMap seat_map = 3;
+  EstimateSeatMapRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateSeatMap`.
+message EstimateSeatMapResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateSeatMapResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SeatMap seat_map = 1;
+  EstimateSeatMapResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteSeatMap`.
+message QuoteSeatMapRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  SeatMap seat_map = 3;
+  QuoteSeatMapRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteSeatMap`.
+message QuoteSeatMapResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteSeatMapResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SeatMap seat_map = 1;
+  QuoteSeatMapResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareSeatMapOptions`.
+message CompareSeatMapOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  SeatMap seat_map = 3;
+  CompareSeatMapOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSeatMapOptions`.
+message CompareSeatMapOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareSeatMapOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SeatMap seat_map = 1;
+  CompareSeatMapOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateSeatMaps`.
+message RecalculateSeatMapsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  SeatMap seat_map = 3;
+  RecalculateSeatMapsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateSeatMaps`.
+message RecalculateSeatMapsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateSeatMapsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SeatMap seat_map = 1;
+  RecalculateSeatMapsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSeatMapCalculation`.
+message ExplainSeatMapCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  SeatMap seat_map = 3;
+  ExplainSeatMapCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSeatMapCalculation`.
+message ExplainSeatMapCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SeatMap seat_map = 1;
+  ExplainSeatMapCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSeatMapRates`.
+message GetSeatMapRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seat_map_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSeatMapRates`.
+message GetSeatMapRatesResponse {
+  SeatMap seat_map = 1;
+  acme.common.v1.OperationResult result = 2;
+}

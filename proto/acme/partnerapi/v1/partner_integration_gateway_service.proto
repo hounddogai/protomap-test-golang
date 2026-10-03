@@ -1,0 +1,314 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerIntegrationGatewayServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// The edge API that apps call for partner integrations.
+service PartnerIntegrationGatewayService {
+  // Fetchs a partner integration.
+  rpc FetchPartnerIntegrationView(FetchPartnerIntegrationViewRequest) returns (FetchPartnerIntegrationViewResponse);
+
+  // Composes a partner integration.
+  rpc ComposePartnerIntegrationPage(ComposePartnerIntegrationPageRequest) returns (ComposePartnerIntegrationPageResponse);
+
+  // Refreshs a partner integration.
+  rpc RefreshPartnerIntegration(RefreshPartnerIntegrationRequest) returns (RefreshPartnerIntegrationResponse);
+
+  // Submits a partner integration.
+  rpc SubmitPartnerIntegrationForm(SubmitPartnerIntegrationFormRequest) returns (SubmitPartnerIntegrationFormResponse);
+
+  // Tracks a partner integration.
+  rpc TrackPartnerIntegration(TrackPartnerIntegrationRequest) returns (TrackPartnerIntegrationResponse);
+
+  // Streams the changes of partner integrations as they happen.
+  rpc StreamPartnerIntegrationUpdates(StreamPartnerIntegrationUpdatesRequest) returns (stream StreamPartnerIntegrationUpdatesResponse);
+
+  // Takes a stream of partner integrations and answers once at the end.
+  rpc UploadPartnerIntegrationAttachments(stream UploadPartnerIntegrationAttachmentsRequest) returns (UploadPartnerIntegrationAttachmentsResponse);
+
+  // Lists partner integrations a page at a time.
+  rpc SearchPartnerIntegrationCatalog(SearchPartnerIntegrationCatalogRequest) returns (SearchPartnerIntegrationCatalogResponse);
+
+  // Returns a partner integration.
+  rpc GetPartnerIntegrationSummary(GetPartnerIntegrationSummaryRequest) returns (GetPartnerIntegrationSummaryResponse);
+
+  // Starts a partner integration.
+  rpc StartPartnerIntegrationCheckout(StartPartnerIntegrationCheckoutRequest) returns (StartPartnerIntegrationCheckoutResponse);
+}
+
+// The request of `FetchPartnerIntegrationView`.
+message FetchPartnerIntegrationViewRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  FetchPartnerIntegrationViewRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `FetchPartnerIntegrationView`.
+message FetchPartnerIntegrationViewResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ComposePartnerIntegrationPage`.
+message ComposePartnerIntegrationPageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  ComposePartnerIntegrationPageRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ComposePartnerIntegrationPage`.
+message ComposePartnerIntegrationPageResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `RefreshPartnerIntegration`.
+message RefreshPartnerIntegrationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  RefreshPartnerIntegrationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RefreshPartnerIntegration`.
+message RefreshPartnerIntegrationResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SubmitPartnerIntegrationForm`.
+message SubmitPartnerIntegrationFormRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  SubmitPartnerIntegrationFormRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPartnerIntegrationForm`.
+message SubmitPartnerIntegrationFormResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `TrackPartnerIntegration`.
+message TrackPartnerIntegrationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  TrackPartnerIntegrationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `TrackPartnerIntegration`.
+message TrackPartnerIntegrationResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StreamPartnerIntegrationUpdates`.
+message StreamPartnerIntegrationUpdatesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerIntegrationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamPartnerIntegrationUpdatesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamPartnerIntegrationUpdates`.
+message StreamPartnerIntegrationUpdatesResponse {
+  PartnerIntegration partner_integration = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `UploadPartnerIntegrationAttachments`.
+message UploadPartnerIntegrationAttachmentsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    UploadPartnerIntegrationAttachmentsRequest.StreamHeader header = 2;
+    PartnerIntegration record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `UploadPartnerIntegrationAttachments`.
+message UploadPartnerIntegrationAttachmentsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string partner_integration_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated UploadPartnerIntegrationAttachmentsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `SearchPartnerIntegrationCatalog`.
+message SearchPartnerIntegrationCatalogRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerIntegrationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPartnerIntegrationCatalogRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPartnerIntegrationCatalog`.
+message SearchPartnerIntegrationCatalogResponse {
+  repeated PartnerIntegration partner_integrations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPartnerIntegrationSummary`.
+message GetPartnerIntegrationSummaryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPartnerIntegrationSummary`.
+message GetPartnerIntegrationSummaryResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StartPartnerIntegrationCheckout`.
+message StartPartnerIntegrationCheckoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  StartPartnerIntegrationCheckoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPartnerIntegrationCheckout`.
+message StartPartnerIntegrationCheckoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  StartPartnerIntegrationCheckoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

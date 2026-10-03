@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Manages orders: creates, reads, changes, and lists them.
+service OrderService {
+  // Creates an order.
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+
+  // Returns an order.
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+
+  // Deletes an order.
+  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+
+  // Lists orders a page at a time.
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+
+  // Returns several orders at once.
+  rpc BatchGetOrders(BatchGetOrdersRequest) returns (BatchGetOrdersResponse);
+
+  // Lists orders a page at a time.
+  rpc SearchOrders(SearchOrdersRequest) returns (SearchOrdersResponse);
+
+  // Streams the changes of orders as they happen.
+  rpc WatchOrders(WatchOrdersRequest) returns (stream WatchOrdersResponse);
+
+  // Takes a stream of orders and answers once at the end.
+  rpc BatchCreateOrders(stream BatchCreateOrdersRequest) returns (BatchCreateOrdersResponse);
+}
+
+// The request of `CreateOrder`.
+message CreateOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  Order order = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateOrder`.
+message CreateOrderResponse {
+  Order order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetOrder`.
+message GetOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrder`.
+message GetOrderResponse {
+  Order order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteOrder`.
+message DeleteOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteOrder`.
+message DeleteOrderResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListOrders`.
+message ListOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListOrders`.
+message ListOrdersResponse {
+  repeated Order orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetOrders`.
+message BatchGetOrdersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string order_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetOrders`.
+message BatchGetOrdersResponse {
+  repeated Order orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchOrders`.
+message SearchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchOrders`.
+message SearchOrdersResponse {
+  repeated Order orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchOrders`.
+message WatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchOrdersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchOrders`.
+message WatchOrdersResponse {
+  Order order = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateOrders`.
+message BatchCreateOrdersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateOrdersRequest.StreamHeader header = 2;
+    Order record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateOrders`.
+message BatchCreateOrdersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string order_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateOrdersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

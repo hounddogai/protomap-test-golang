@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PromotionApprovalServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Routes promotions through approval, with escalation and delegation.
+service PromotionApprovalService {
+  // Submits a promotion.
+  rpc SubmitPromotion(SubmitPromotionRequest) returns (SubmitPromotionResponse);
+
+  // Approves a promotion.
+  rpc ApprovePromotion(ApprovePromotionRequest) returns (ApprovePromotionResponse);
+
+  // Rejects a promotion.
+  rpc RejectPromotion(RejectPromotionRequest) returns (RejectPromotionResponse);
+
+  // Escalates a promotion.
+  rpc EscalatePromotion(EscalatePromotionRequest) returns (EscalatePromotionResponse);
+
+  // Lists promotions a page at a time.
+  rpc ListPendingPromotions(ListPendingPromotionsRequest) returns (ListPendingPromotionsResponse);
+
+  // Delegates a promotion.
+  rpc DelegatePromotionApproval(DelegatePromotionApprovalRequest) returns (DelegatePromotionApprovalResponse);
+
+  // Recalls a promotion.
+  rpc RecallPromotion(RecallPromotionRequest) returns (RecallPromotionResponse);
+
+  // Returns a promotion.
+  rpc GetPromotionApprovalStatus(GetPromotionApprovalStatusRequest) returns (GetPromotionApprovalStatusResponse);
+
+  // Comments a promotion.
+  rpc CommentPromotionApproval(CommentPromotionApprovalRequest) returns (CommentPromotionApprovalResponse);
+}
+
+// The request of `SubmitPromotion`.
+message SubmitPromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  SubmitPromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPromotion`.
+message SubmitPromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  SubmitPromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePromotion`.
+message ApprovePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  ApprovePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePromotion`.
+message ApprovePromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  ApprovePromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPromotion`.
+message RejectPromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  RejectPromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPromotion`.
+message RejectPromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  RejectPromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePromotion`.
+message EscalatePromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  EscalatePromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePromotion`.
+message EscalatePromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  EscalatePromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPromotions`.
+message ListPendingPromotionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PromotionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPromotionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPromotions`.
+message ListPendingPromotionsResponse {
+  repeated Promotion promotions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePromotionApproval`.
+message DelegatePromotionApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  DelegatePromotionApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePromotionApproval`.
+message DelegatePromotionApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  DelegatePromotionApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPromotion`.
+message RecallPromotionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  RecallPromotionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPromotion`.
+message RecallPromotionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  RecallPromotionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPromotionApprovalStatus`.
+message GetPromotionApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPromotionApprovalStatus`.
+message GetPromotionApprovalStatusResponse {
+  Promotion promotion = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPromotionApproval`.
+message CommentPromotionApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string promotion_id = 2;
+  Promotion promotion = 3;
+  CommentPromotionApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPromotionApproval`.
+message CommentPromotionApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Promotion promotion = 1;
+  CommentPromotionApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,185 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.surveys.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/surveys/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Surveys.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/surveys/v1;surveysv1";
+option java_multiple_files = true;
+option java_outer_classname = "SurveysProto";
+option java_package = "com.acme.surveys.v1";
+
+// Where a survey is in its lifecycle.
+enum SurveyStatus {
+  SURVEY_STATUS_UNSPECIFIED = 0;
+  SURVEY_STATUS_DRAFT = 1;
+  SURVEY_STATUS_ISSUED = 2;
+  SURVEY_STATUS_APPROVED = 3;
+  SURVEY_STATUS_PAID = 4;
+  SURVEY_STATUS_VOID = 5;
+}
+
+// Where a survey response is in its lifecycle.
+enum SurveyResponseStatus {
+  SURVEY_RESPONSE_STATUS_UNSPECIFIED = 0;
+  SURVEY_RESPONSE_STATUS_RECEIVED = 1;
+  SURVEY_RESPONSE_STATUS_PROCESSED = 2;
+  SURVEY_RESPONSE_STATUS_DISCARDED = 3;
+}
+
+// Where a question is in its lifecycle.
+enum QuestionStatus {
+  QUESTION_STATUS_UNSPECIFIED = 0;
+  QUESTION_STATUS_DRAFT = 1;
+  QUESTION_STATUS_ENABLED = 2;
+  QUESTION_STATUS_DISABLED = 3;
+  QUESTION_STATUS_RETIRED = 4;
+}
+
+// The line of a survey.
+message SurveyLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  SurveyLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a survey line.
+message SurveyLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a survey.
+message SurveyCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a survey.
+message SurveyBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a survey.
+message SurveyAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A survey of the surveys domain.
+message Survey {
+  string survey_id = 1;
+  string number = 2;
+  SurveyStatus status = 3;
+  QuestionRef counterparty = 4;
+  repeated SurveyLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    SurveyCardSettlement card = 8;
+    SurveyBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated SurveyAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a survey response.
+message SurveyResponseMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A survey response of the surveys domain.
+message SurveyResponse {
+  string survey_response_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated SurveyResponseMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The condition of a question.
+message QuestionCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a question.
+message QuestionDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a question.
+message QuestionRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a question.
+message QuestionBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A question of the surveys domain.
+message Question {
+  string question_id = 1;
+  string name = 2;
+  string description = 3;
+  QuestionStatus status = 4;
+  int32 priority = 5;
+  repeated QuestionCondition conditions = 6;
+  oneof action {
+    QuestionDiscountAction discount = 7;
+    QuestionRouteAction route = 8;
+    QuestionBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

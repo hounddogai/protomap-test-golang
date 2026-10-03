@@ -1,0 +1,201 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.lending.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/lending/v1/lending.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Lending.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/lending/v1;lendingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoanApplicationQueryServiceProto";
+option java_package = "com.acme.lending.v1";
+
+// Answers read-only questions about loan applications, for screens and reports.
+service LoanApplicationQueryService {
+  // Returns a loan application.
+  rpc LookupLoanApplication(LookupLoanApplicationRequest) returns (LookupLoanApplicationResponse);
+
+  // Lists loan applications a page at a time.
+  rpc BrowseLoanApplications(BrowseLoanApplicationsRequest) returns (BrowseLoanApplicationsResponse);
+
+  // Counts loan applications by status.
+  rpc CountLoanApplications(CountLoanApplicationsRequest) returns (CountLoanApplicationsResponse);
+
+  // Returns several loan applications at once.
+  rpc ResolveLoanApplications(ResolveLoanApplicationsRequest) returns (ResolveLoanApplicationsResponse);
+
+  // Streams every matching loan application.
+  rpc ExportLoanApplications(ExportLoanApplicationsRequest) returns (stream ExportLoanApplicationsResponse);
+
+  // Summarizes a loan application.
+  rpc SummarizeLoanApplications(SummarizeLoanApplicationsRequest) returns (SummarizeLoanApplicationsResponse);
+
+  // Lists loan applications a page at a time.
+  rpc SuggestLoanApplications(SuggestLoanApplicationsRequest) returns (SuggestLoanApplicationsResponse);
+}
+
+// The request of `LookupLoanApplication`.
+message LookupLoanApplicationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupLoanApplication`.
+message LookupLoanApplicationResponse {
+  LoanApplication loan_application = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseLoanApplications`.
+message BrowseLoanApplicationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoanApplicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseLoanApplicationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseLoanApplications`.
+message BrowseLoanApplicationsResponse {
+  repeated LoanApplication loan_applications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountLoanApplications`.
+message CountLoanApplicationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoanApplicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountLoanApplicationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountLoanApplications`.
+message CountLoanApplicationsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveLoanApplications`.
+message ResolveLoanApplicationsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string loan_application_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveLoanApplications`.
+message ResolveLoanApplicationsResponse {
+  repeated LoanApplication loan_applications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportLoanApplications`.
+message ExportLoanApplicationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoanApplicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportLoanApplicationsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportLoanApplications`.
+message ExportLoanApplicationsResponse {
+  LoanApplication loan_application = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeLoanApplications`.
+message SummarizeLoanApplicationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  SummarizeLoanApplicationsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeLoanApplications`.
+message SummarizeLoanApplicationsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestLoanApplications`.
+message SuggestLoanApplicationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LoanApplicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestLoanApplicationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestLoanApplications`.
+message SuggestLoanApplicationsResponse {
+  repeated LoanApplication loan_applications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

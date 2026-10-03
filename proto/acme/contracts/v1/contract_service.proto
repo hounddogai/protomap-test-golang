@@ -1,0 +1,230 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.contracts.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/contracts/v1/contracts.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Contracts.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/contracts/v1;contractsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ContractServiceProto";
+option java_package = "com.acme.contracts.v1";
+
+// Manages contracts: creates, reads, changes, and lists them.
+service ContractService {
+  // Creates a contract.
+  rpc CreateContract(CreateContractRequest) returns (CreateContractResponse);
+
+  // Returns a contract.
+  rpc GetContract(GetContractRequest) returns (GetContractResponse);
+
+  // Changes a contract.
+  rpc UpdateContract(UpdateContractRequest) returns (UpdateContractResponse);
+
+  // Lists contracts a page at a time.
+  rpc ListContracts(ListContractsRequest) returns (ListContractsResponse);
+
+  // Returns several contracts at once.
+  rpc BatchGetContracts(BatchGetContractsRequest) returns (BatchGetContractsResponse);
+
+  // Lists contracts a page at a time.
+  rpc SearchContracts(SearchContractsRequest) returns (SearchContractsResponse);
+
+  // Streams the changes of contracts as they happen.
+  rpc WatchContracts(WatchContractsRequest) returns (stream WatchContractsResponse);
+
+  // Takes a stream of contracts and answers once at the end.
+  rpc BatchCreateContracts(stream BatchCreateContractsRequest) returns (BatchCreateContractsResponse);
+
+  // Creates a contract.
+  rpc CloneContract(CloneContractRequest) returns (CloneContractResponse);
+}
+
+// The request of `CreateContract`.
+message CreateContractRequest {
+  acme.common.v1.RequestContext context = 1;
+  Contract contract = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateContract`.
+message CreateContractResponse {
+  Contract contract = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetContract`.
+message GetContractRequest {
+  acme.common.v1.RequestContext context = 1;
+  string contract_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetContract`.
+message GetContractResponse {
+  Contract contract = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateContract`.
+message UpdateContractRequest {
+  acme.common.v1.RequestContext context = 1;
+  Contract contract = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateContract`.
+message UpdateContractResponse {
+  Contract contract = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListContracts`.
+message ListContractsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ContractStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListContractsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListContracts`.
+message ListContractsResponse {
+  repeated Contract contracts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetContracts`.
+message BatchGetContractsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string contract_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetContracts`.
+message BatchGetContractsResponse {
+  repeated Contract contracts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchContracts`.
+message SearchContractsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ContractStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchContractsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchContracts`.
+message SearchContractsResponse {
+  repeated Contract contracts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchContracts`.
+message WatchContractsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ContractStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchContractsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchContracts`.
+message WatchContractsResponse {
+  Contract contract = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateContracts`.
+message BatchCreateContractsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateContractsRequest.StreamHeader header = 2;
+    Contract record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateContracts`.
+message BatchCreateContractsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string contract_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateContractsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneContract`.
+message CloneContractRequest {
+  acme.common.v1.RequestContext context = 1;
+  Contract contract = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneContract`.
+message CloneContractResponse {
+  Contract contract = 1;
+  acme.common.v1.OperationResult result = 2;
+}

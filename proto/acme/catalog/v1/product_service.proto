@@ -1,0 +1,161 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Manages products: creates, reads, changes, and lists them.
+service ProductService {
+  // Creates a product.
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+
+  // Returns a product.
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+
+  // Changes a product.
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+
+  // Deletes a product.
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+
+  // Returns several products at once.
+  rpc BatchGetProducts(BatchGetProductsRequest) returns (BatchGetProductsResponse);
+
+  // Takes a stream of products and answers once at the end.
+  rpc BatchCreateProducts(stream BatchCreateProductsRequest) returns (BatchCreateProductsResponse);
+
+  // Creates a product.
+  rpc CloneProduct(CloneProductRequest) returns (CloneProductResponse);
+}
+
+// The request of `CreateProduct`.
+message CreateProductRequest {
+  acme.common.v1.RequestContext context = 1;
+  Product product = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateProduct`.
+message CreateProductResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetProduct`.
+message GetProductRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProduct`.
+message GetProductResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateProduct`.
+message UpdateProductRequest {
+  acme.common.v1.RequestContext context = 1;
+  Product product = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateProduct`.
+message UpdateProductResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteProduct`.
+message DeleteProductRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteProduct`.
+message DeleteProductResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetProducts`.
+message BatchGetProductsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string product_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetProducts`.
+message BatchGetProductsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateProducts`.
+message BatchCreateProductsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateProductsRequest.StreamHeader header = 2;
+    Product record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateProducts`.
+message BatchCreateProductsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string product_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateProductsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneProduct`.
+message CloneProductRequest {
+  acme.common.v1.RequestContext context = 1;
+  Product product = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneProduct`.
+message CloneProductResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}

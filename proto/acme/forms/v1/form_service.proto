@@ -1,0 +1,180 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.forms.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/forms/v1/forms.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Forms.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/forms/v1;formsv1";
+option java_multiple_files = true;
+option java_outer_classname = "FormServiceProto";
+option java_package = "com.acme.forms.v1";
+
+// Manages forms: creates, reads, changes, and lists them.
+service FormService {
+  // Creates a form.
+  rpc CreateForm(CreateFormRequest) returns (CreateFormResponse);
+
+  // Returns a form.
+  rpc GetForm(GetFormRequest) returns (GetFormResponse);
+
+  // Changes a form.
+  rpc UpdateForm(UpdateFormRequest) returns (UpdateFormResponse);
+
+  // Deletes a form.
+  rpc DeleteForm(DeleteFormRequest) returns (DeleteFormResponse);
+
+  // Lists forms a page at a time.
+  rpc ListForms(ListFormsRequest) returns (ListFormsResponse);
+
+  // Returns several forms at once.
+  rpc BatchGetForms(BatchGetFormsRequest) returns (BatchGetFormsResponse);
+
+  // Lists forms a page at a time.
+  rpc SearchForms(SearchFormsRequest) returns (SearchFormsResponse);
+
+  // Creates a form.
+  rpc CloneForm(CloneFormRequest) returns (CloneFormResponse);
+}
+
+// The request of `CreateForm`.
+message CreateFormRequest {
+  acme.common.v1.RequestContext context = 1;
+  Form form = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateForm`.
+message CreateFormResponse {
+  Form form = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetForm`.
+message GetFormRequest {
+  acme.common.v1.RequestContext context = 1;
+  string form_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetForm`.
+message GetFormResponse {
+  Form form = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateForm`.
+message UpdateFormRequest {
+  acme.common.v1.RequestContext context = 1;
+  Form form = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateForm`.
+message UpdateFormResponse {
+  Form form = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteForm`.
+message DeleteFormRequest {
+  acme.common.v1.RequestContext context = 1;
+  string form_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteForm`.
+message DeleteFormResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListForms`.
+message ListFormsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FormStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFormsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListForms`.
+message ListFormsResponse {
+  repeated Form forms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetForms`.
+message BatchGetFormsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string form_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetForms`.
+message BatchGetFormsResponse {
+  repeated Form forms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchForms`.
+message SearchFormsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FormStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchFormsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchForms`.
+message SearchFormsResponse {
+  repeated Form forms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneForm`.
+message CloneFormRequest {
+  acme.common.v1.RequestContext context = 1;
+  Form form = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneForm`.
+message CloneFormResponse {
+  Form form = 1;
+  acme.common.v1.OperationResult result = 2;
+}

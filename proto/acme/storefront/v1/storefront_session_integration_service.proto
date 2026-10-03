@@ -1,0 +1,263 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "StorefrontSessionIntegrationServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Connects external systems that send storefront session events.
+service StorefrontSessionIntegrationService {
+  // Connects a storefront session.
+  rpc ConnectStorefrontSessionSource(ConnectStorefrontSessionSourceRequest) returns (ConnectStorefrontSessionSourceResponse);
+
+  // Disconnects a storefront session.
+  rpc DisconnectStorefrontSessionSource(DisconnectStorefrontSessionSourceRequest) returns (DisconnectStorefrontSessionSourceResponse);
+
+  // Replays a storefront session.
+  rpc ReplayStorefrontSessionEvents(ReplayStorefrontSessionEventsRequest) returns (ReplayStorefrontSessionEventsResponse);
+
+  // Acknowledges a storefront session.
+  rpc AcknowledgeStorefrontSessionEvent(AcknowledgeStorefrontSessionEventRequest) returns (AcknowledgeStorefrontSessionEventResponse);
+
+  // Exchanges changes of storefront sessions with a peer.
+  rpc RelayStorefrontSessionMessages(stream RelayStorefrontSessionMessagesRequest) returns (stream RelayStorefrontSessionMessagesResponse);
+
+  // Lists storefront sessions a page at a time.
+  rpc ListStorefrontSessionSources(ListStorefrontSessionSourcesRequest) returns (ListStorefrontSessionSourcesResponse);
+
+  // Tests a storefront session.
+  rpc TestStorefrontSessionConnection(TestStorefrontSessionConnectionRequest) returns (TestStorefrontSessionConnectionResponse);
+}
+
+// The request of `ConnectStorefrontSessionSource`.
+message ConnectStorefrontSessionSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  ConnectStorefrontSessionSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ConnectStorefrontSessionSource`.
+message ConnectStorefrontSessionSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  ConnectStorefrontSessionSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DisconnectStorefrontSessionSource`.
+message DisconnectStorefrontSessionSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  DisconnectStorefrontSessionSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `DisconnectStorefrontSessionSource`.
+message DisconnectStorefrontSessionSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  DisconnectStorefrontSessionSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReplayStorefrontSessionEvents`.
+message ReplayStorefrontSessionEventsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  ReplayStorefrontSessionEventsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReplayStorefrontSessionEvents`.
+message ReplayStorefrontSessionEventsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  ReplayStorefrontSessionEventsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AcknowledgeStorefrontSessionEvent`.
+message AcknowledgeStorefrontSessionEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  AcknowledgeStorefrontSessionEventRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `AcknowledgeStorefrontSessionEvent`.
+message AcknowledgeStorefrontSessionEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  AcknowledgeStorefrontSessionEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RelayStorefrontSessionMessages`.
+message RelayStorefrontSessionMessagesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    StorefrontSession change = 2;
+    RelayStorefrontSessionMessagesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `RelayStorefrontSessionMessages`.
+message RelayStorefrontSessionMessagesResponse {
+  StorefrontSession storefront_session = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListStorefrontSessionSources`.
+message ListStorefrontSessionSourcesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorefrontSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListStorefrontSessionSourcesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListStorefrontSessionSources`.
+message ListStorefrontSessionSourcesResponse {
+  repeated StorefrontSession storefront_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TestStorefrontSessionConnection`.
+message TestStorefrontSessionConnectionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  TestStorefrontSessionConnectionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TestStorefrontSessionConnection`.
+message TestStorefrontSessionConnectionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  TestStorefrontSessionConnectionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

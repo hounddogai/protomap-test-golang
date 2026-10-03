@@ -1,0 +1,266 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockReservationApprovalServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Routes stock reservations through approval, with escalation and delegation.
+service StockReservationApprovalService {
+  // Submits a stock reservation.
+  rpc SubmitStockReservation(SubmitStockReservationRequest) returns (SubmitStockReservationResponse);
+
+  // Approves a stock reservation.
+  rpc ApproveStockReservation(ApproveStockReservationRequest) returns (ApproveStockReservationResponse);
+
+  // Escalates a stock reservation.
+  rpc EscalateStockReservation(EscalateStockReservationRequest) returns (EscalateStockReservationResponse);
+
+  // Delegates a stock reservation.
+  rpc DelegateStockReservationApproval(DelegateStockReservationApprovalRequest) returns (DelegateStockReservationApprovalResponse);
+
+  // Recalls a stock reservation.
+  rpc RecallStockReservation(RecallStockReservationRequest) returns (RecallStockReservationResponse);
+
+  // Returns a stock reservation.
+  rpc GetStockReservationApprovalStatus(GetStockReservationApprovalStatusRequest) returns (GetStockReservationApprovalStatusResponse);
+
+  // Comments a stock reservation.
+  rpc CommentStockReservationApproval(CommentStockReservationApprovalRequest) returns (CommentStockReservationApprovalResponse);
+}
+
+// The request of `SubmitStockReservation`.
+message SubmitStockReservationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  SubmitStockReservationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitStockReservation`.
+message SubmitStockReservationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  SubmitStockReservationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveStockReservation`.
+message ApproveStockReservationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  ApproveStockReservationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveStockReservation`.
+message ApproveStockReservationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  ApproveStockReservationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateStockReservation`.
+message EscalateStockReservationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  EscalateStockReservationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateStockReservation`.
+message EscalateStockReservationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  EscalateStockReservationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateStockReservationApproval`.
+message DelegateStockReservationApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  DelegateStockReservationApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateStockReservationApproval`.
+message DelegateStockReservationApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  DelegateStockReservationApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallStockReservation`.
+message RecallStockReservationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  RecallStockReservationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallStockReservation`.
+message RecallStockReservationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  RecallStockReservationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetStockReservationApprovalStatus`.
+message GetStockReservationApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetStockReservationApprovalStatus`.
+message GetStockReservationApprovalStatusResponse {
+  StockReservation stock_reservation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentStockReservationApproval`.
+message CommentStockReservationApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  CommentStockReservationApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentStockReservationApproval`.
+message CommentStockReservationApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  CommentStockReservationApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

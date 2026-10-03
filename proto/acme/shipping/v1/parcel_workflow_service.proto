@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ParcelWorkflowServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Runs the long-lived workflow that takes a parcel from start to finish.
+service ParcelWorkflowService {
+  // Starts a parcel.
+  rpc StartParcelWorkflow(StartParcelWorkflowRequest) returns (StartParcelWorkflowResponse);
+
+  // Advances a parcel.
+  rpc AdvanceParcelWorkflow(AdvanceParcelWorkflowRequest) returns (AdvanceParcelWorkflowResponse);
+
+  // Cancels a parcel.
+  rpc CancelParcelWorkflow(CancelParcelWorkflowRequest) returns (CancelParcelWorkflowResponse);
+
+  // Retrys a parcel.
+  rpc RetryParcelWorkflow(RetryParcelWorkflowRequest) returns (RetryParcelWorkflowResponse);
+
+  // Pauses a parcel.
+  rpc PauseParcelWorkflow(PauseParcelWorkflowRequest) returns (PauseParcelWorkflowResponse);
+
+  // Resumes a parcel.
+  rpc ResumeParcelWorkflow(ResumeParcelWorkflowRequest) returns (ResumeParcelWorkflowResponse);
+
+  // Returns a parcel.
+  rpc InspectParcelWorkflow(InspectParcelWorkflowRequest) returns (InspectParcelWorkflowResponse);
+
+  // Lists parcels a page at a time.
+  rpc ListParcelWorkflows(ListParcelWorkflowsRequest) returns (ListParcelWorkflowsResponse);
+
+  // Signals a parcel.
+  rpc SignalParcelWorkflow(SignalParcelWorkflowRequest) returns (SignalParcelWorkflowResponse);
+}
+
+// The request of `StartParcelWorkflow`.
+message StartParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  StartParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartParcelWorkflow`.
+message StartParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  StartParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceParcelWorkflow`.
+message AdvanceParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  AdvanceParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceParcelWorkflow`.
+message AdvanceParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  AdvanceParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelParcelWorkflow`.
+message CancelParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  CancelParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelParcelWorkflow`.
+message CancelParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  CancelParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryParcelWorkflow`.
+message RetryParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  RetryParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryParcelWorkflow`.
+message RetryParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  RetryParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseParcelWorkflow`.
+message PauseParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  PauseParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseParcelWorkflow`.
+message PauseParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  PauseParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeParcelWorkflow`.
+message ResumeParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  ResumeParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeParcelWorkflow`.
+message ResumeParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  ResumeParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectParcelWorkflow`.
+message InspectParcelWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectParcelWorkflow`.
+message InspectParcelWorkflowResponse {
+  Parcel parcel = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListParcelWorkflows`.
+message ListParcelWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ParcelStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListParcelWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListParcelWorkflows`.
+message ListParcelWorkflowsResponse {
+  repeated Parcel parcels = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalParcelWorkflow`.
+message SignalParcelWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string parcel_id = 2;
+  Parcel parcel = 3;
+  SignalParcelWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalParcelWorkflow`.
+message SignalParcelWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Parcel parcel = 1;
+  SignalParcelWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

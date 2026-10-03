@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchQueryValidationServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Checks search queries against the rules before anything acts on them.
+service SearchQueryValidationService {
+  // Validates a search query.
+  rpc ValidateSearchQuery(ValidateSearchQueryRequest) returns (ValidateSearchQueryResponse);
+
+  // Previews a search query.
+  rpc PreviewSearchQuery(PreviewSearchQueryRequest) returns (PreviewSearchQueryResponse);
+
+  // Normalizes a search query.
+  rpc NormalizeSearchQuery(NormalizeSearchQueryRequest) returns (NormalizeSearchQueryResponse);
+
+  // Explains a search query.
+  rpc ExplainSearchQueryDecision(ExplainSearchQueryDecisionRequest) returns (ExplainSearchQueryDecisionResponse);
+
+  // Scores a search query.
+  rpc ScoreSearchQuery(ScoreSearchQueryRequest) returns (ScoreSearchQueryResponse);
+
+  // Lints a search query.
+  rpc LintSearchQueries(LintSearchQueriesRequest) returns (LintSearchQueriesResponse);
+
+  // Returns a search query.
+  rpc GetSearchQueryRules(GetSearchQueryRulesRequest) returns (GetSearchQueryRulesResponse);
+}
+
+// The request of `ValidateSearchQuery`.
+message ValidateSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  ValidateSearchQueryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateSearchQuery`.
+message ValidateSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  ValidateSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewSearchQuery`.
+message PreviewSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  PreviewSearchQueryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewSearchQuery`.
+message PreviewSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  PreviewSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeSearchQuery`.
+message NormalizeSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  NormalizeSearchQueryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeSearchQuery`.
+message NormalizeSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  NormalizeSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSearchQueryDecision`.
+message ExplainSearchQueryDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  ExplainSearchQueryDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSearchQueryDecision`.
+message ExplainSearchQueryDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  ExplainSearchQueryDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreSearchQuery`.
+message ScoreSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  ScoreSearchQueryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreSearchQuery`.
+message ScoreSearchQueryResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreSearchQueryResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SearchQuery search_query = 1;
+  ScoreSearchQueryResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintSearchQueries`.
+message LintSearchQueriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  LintSearchQueriesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintSearchQueries`.
+message LintSearchQueriesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  LintSearchQueriesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSearchQueryRules`.
+message GetSearchQueryRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchQueryRules`.
+message GetSearchQueryRulesResponse {
+  SearchQuery search_query = 1;
+  acme.common.v1.OperationResult result = 2;
+}

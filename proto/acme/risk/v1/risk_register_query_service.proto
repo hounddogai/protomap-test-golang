@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.risk.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/risk/v1/risk.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Risk.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/risk/v1;riskv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskRegisterQueryServiceProto";
+option java_package = "com.acme.risk.v1";
+
+// Answers read-only questions about risk registers, for screens and reports.
+service RiskRegisterQueryService {
+  // Returns a risk register.
+  rpc LookupRiskRegister(LookupRiskRegisterRequest) returns (LookupRiskRegisterResponse);
+
+  // Lists risk registers a page at a time.
+  rpc BrowseRiskRegisters(BrowseRiskRegistersRequest) returns (BrowseRiskRegistersResponse);
+
+  // Lists risk registers a page at a time.
+  rpc FindRiskRegisters(FindRiskRegistersRequest) returns (FindRiskRegistersResponse);
+
+  // Returns several risk registers at once.
+  rpc ResolveRiskRegisters(ResolveRiskRegistersRequest) returns (ResolveRiskRegistersResponse);
+
+  // Streams every matching risk register.
+  rpc ExportRiskRegisters(ExportRiskRegistersRequest) returns (stream ExportRiskRegistersResponse);
+
+  // Summarizes a risk register.
+  rpc SummarizeRiskRegisters(SummarizeRiskRegistersRequest) returns (SummarizeRiskRegistersResponse);
+
+  // Lists risk registers a page at a time.
+  rpc SuggestRiskRegisters(SuggestRiskRegistersRequest) returns (SuggestRiskRegistersResponse);
+
+  // Returns a risk register.
+  rpc PeekRiskRegister(PeekRiskRegisterRequest) returns (PeekRiskRegisterResponse);
+}
+
+// The request of `LookupRiskRegister`.
+message LookupRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_register_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupRiskRegister`.
+message LookupRiskRegisterResponse {
+  RiskRegister risk_register = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseRiskRegisters`.
+message BrowseRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseRiskRegistersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseRiskRegisters`.
+message BrowseRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindRiskRegisters`.
+message FindRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindRiskRegistersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindRiskRegisters`.
+message FindRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveRiskRegisters`.
+message ResolveRiskRegistersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string risk_register_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveRiskRegisters`.
+message ResolveRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportRiskRegisters`.
+message ExportRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportRiskRegistersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportRiskRegisters`.
+message ExportRiskRegistersResponse {
+  RiskRegister risk_register = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeRiskRegisters`.
+message SummarizeRiskRegistersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_register_id = 2;
+  SummarizeRiskRegistersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeRiskRegisters`.
+message SummarizeRiskRegistersResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestRiskRegisters`.
+message SuggestRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestRiskRegistersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestRiskRegisters`.
+message SuggestRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekRiskRegister`.
+message PeekRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_register_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekRiskRegister`.
+message PeekRiskRegisterResponse {
+  RiskRegister risk_register = 1;
+  acme.common.v1.OperationResult result = 2;
+}

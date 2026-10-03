@@ -1,0 +1,182 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.notifications.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/notifications/v1/notifications.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Notifications.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/notifications/v1;notificationsv1";
+option java_multiple_files = true;
+option java_outer_classname = "NotificationServiceProto";
+option java_package = "com.acme.notifications.v1";
+
+// Manages notifications: creates, reads, changes, and lists them.
+service NotificationService {
+  // Creates a notification.
+  rpc CreateNotification(CreateNotificationRequest) returns (CreateNotificationResponse);
+
+  // Returns a notification.
+  rpc GetNotification(GetNotificationRequest) returns (GetNotificationResponse);
+
+  // Lists notifications a page at a time.
+  rpc ListNotifications(ListNotificationsRequest) returns (ListNotificationsResponse);
+
+  // Returns several notifications at once.
+  rpc BatchGetNotifications(BatchGetNotificationsRequest) returns (BatchGetNotificationsResponse);
+
+  // Lists notifications a page at a time.
+  rpc SearchNotifications(SearchNotificationsRequest) returns (SearchNotificationsResponse);
+
+  // Takes a stream of notifications and answers once at the end.
+  rpc BatchCreateNotifications(stream BatchCreateNotificationsRequest) returns (BatchCreateNotificationsResponse);
+
+  // Creates a notification.
+  rpc CloneNotification(CloneNotificationRequest) returns (CloneNotificationResponse);
+}
+
+// The request of `CreateNotification`.
+message CreateNotificationRequest {
+  acme.common.v1.RequestContext context = 1;
+  Notification notification = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateNotification`.
+message CreateNotificationResponse {
+  Notification notification = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetNotification`.
+message GetNotificationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string notification_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetNotification`.
+message GetNotificationResponse {
+  Notification notification = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListNotifications`.
+message ListNotificationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated NotificationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListNotificationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListNotifications`.
+message ListNotificationsResponse {
+  repeated Notification notifications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetNotifications`.
+message BatchGetNotificationsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string notification_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetNotifications`.
+message BatchGetNotificationsResponse {
+  repeated Notification notifications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchNotifications`.
+message SearchNotificationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated NotificationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchNotificationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchNotifications`.
+message SearchNotificationsResponse {
+  repeated Notification notifications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateNotifications`.
+message BatchCreateNotificationsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateNotificationsRequest.StreamHeader header = 2;
+    Notification record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateNotifications`.
+message BatchCreateNotificationsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string notification_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateNotificationsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneNotification`.
+message CloneNotificationRequest {
+  acme.common.v1.RequestContext context = 1;
+  Notification notification = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneNotification`.
+message CloneNotificationResponse {
+  Notification notification = 1;
+  acme.common.v1.OperationResult result = 2;
+}

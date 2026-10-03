@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.treasury.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/treasury/v1/treasury.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Treasury.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/treasury/v1;treasuryv1";
+option java_multiple_files = true;
+option java_outer_classname = "CashPositionCalculationServiceProto";
+option java_package = "com.acme.treasury.v1";
+
+// Computes the figures of a cash position, such as totals, taxes, and estimates.
+service CashPositionCalculationService {
+  // Calculates a cash position.
+  rpc CalculateCashPosition(CalculateCashPositionRequest) returns (CalculateCashPositionResponse);
+
+  // Estimates a cash position.
+  rpc EstimateCashPosition(EstimateCashPositionRequest) returns (EstimateCashPositionResponse);
+
+  // Quotes a cash position.
+  rpc QuoteCashPosition(QuoteCashPositionRequest) returns (QuoteCashPositionResponse);
+
+  // Compares a cash position.
+  rpc CompareCashPositionOptions(CompareCashPositionOptionsRequest) returns (CompareCashPositionOptionsResponse);
+
+  // Simulates a cash position.
+  rpc SimulateCashPosition(SimulateCashPositionRequest) returns (SimulateCashPositionResponse);
+
+  // Explains a cash position.
+  rpc ExplainCashPositionCalculation(ExplainCashPositionCalculationRequest) returns (ExplainCashPositionCalculationResponse);
+
+  // Returns a cash position.
+  rpc GetCashPositionRates(GetCashPositionRatesRequest) returns (GetCashPositionRatesResponse);
+}
+
+// The request of `CalculateCashPosition`.
+message CalculateCashPositionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  CashPosition cash_position = 3;
+  CalculateCashPositionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCashPosition`.
+message CalculateCashPositionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCashPositionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CashPosition cash_position = 1;
+  CalculateCashPositionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCashPosition`.
+message EstimateCashPositionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  CashPosition cash_position = 3;
+  EstimateCashPositionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCashPosition`.
+message EstimateCashPositionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCashPositionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CashPosition cash_position = 1;
+  EstimateCashPositionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCashPosition`.
+message QuoteCashPositionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  CashPosition cash_position = 3;
+  QuoteCashPositionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCashPosition`.
+message QuoteCashPositionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCashPositionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CashPosition cash_position = 1;
+  QuoteCashPositionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCashPositionOptions`.
+message CompareCashPositionOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  CashPosition cash_position = 3;
+  CompareCashPositionOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCashPositionOptions`.
+message CompareCashPositionOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCashPositionOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CashPosition cash_position = 1;
+  CompareCashPositionOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCashPosition`.
+message SimulateCashPositionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  CashPosition cash_position = 3;
+  SimulateCashPositionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCashPosition`.
+message SimulateCashPositionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCashPositionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CashPosition cash_position = 1;
+  SimulateCashPositionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCashPositionCalculation`.
+message ExplainCashPositionCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  CashPosition cash_position = 3;
+  ExplainCashPositionCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCashPositionCalculation`.
+message ExplainCashPositionCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CashPosition cash_position = 1;
+  ExplainCashPositionCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCashPositionRates`.
+message GetCashPositionRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string cash_position_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCashPositionRates`.
+message GetCashPositionRatesResponse {
+  CashPosition cash_position = 1;
+  acme.common.v1.OperationResult result = 2;
+}

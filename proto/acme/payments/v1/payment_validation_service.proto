@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentValidationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Checks payments against the rules before anything acts on them.
+service PaymentValidationService {
+  // Validates a payment.
+  rpc ValidatePayment(ValidatePaymentRequest) returns (ValidatePaymentResponse);
+
+  // Previews a payment.
+  rpc PreviewPayment(PreviewPaymentRequest) returns (PreviewPaymentResponse);
+
+  // Checks a payment.
+  rpc CheckPaymentEligibility(CheckPaymentEligibilityRequest) returns (CheckPaymentEligibilityResponse);
+
+  // Normalizes a payment.
+  rpc NormalizePayment(NormalizePaymentRequest) returns (NormalizePaymentResponse);
+
+  // Explains a payment.
+  rpc ExplainPaymentDecision(ExplainPaymentDecisionRequest) returns (ExplainPaymentDecisionResponse);
+
+  // Scores a payment.
+  rpc ScorePayment(ScorePaymentRequest) returns (ScorePaymentResponse);
+
+  // Lints a payment.
+  rpc LintPayments(LintPaymentsRequest) returns (LintPaymentsResponse);
+
+  // Returns a payment.
+  rpc GetPaymentRules(GetPaymentRulesRequest) returns (GetPaymentRulesResponse);
+}
+
+// The request of `ValidatePayment`.
+message ValidatePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  ValidatePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePayment`.
+message ValidatePaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  ValidatePaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPayment`.
+message PreviewPaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  PreviewPaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPayment`.
+message PreviewPaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  PreviewPaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPaymentEligibility`.
+message CheckPaymentEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  CheckPaymentEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPaymentEligibility`.
+message CheckPaymentEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  CheckPaymentEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePayment`.
+message NormalizePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  NormalizePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePayment`.
+message NormalizePaymentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  NormalizePaymentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPaymentDecision`.
+message ExplainPaymentDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  ExplainPaymentDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPaymentDecision`.
+message ExplainPaymentDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  ExplainPaymentDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePayment`.
+message ScorePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  ScorePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePayment`.
+message ScorePaymentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePaymentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payment payment = 1;
+  ScorePaymentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPayments`.
+message LintPaymentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  LintPaymentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPayments`.
+message LintPaymentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  LintPaymentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPaymentRules`.
+message GetPaymentRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPaymentRules`.
+message GetPaymentRulesResponse {
+  Payment payment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

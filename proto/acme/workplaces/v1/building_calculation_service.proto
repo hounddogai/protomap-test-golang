@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.workplaces.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/workplaces/v1/workplaces.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Workplaces.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/workplaces/v1;workplacesv1";
+option java_multiple_files = true;
+option java_outer_classname = "BuildingCalculationServiceProto";
+option java_package = "com.acme.workplaces.v1";
+
+// Computes the figures of a building, such as totals, taxes, and estimates.
+service BuildingCalculationService {
+  // Calculates a building.
+  rpc CalculateBuilding(CalculateBuildingRequest) returns (CalculateBuildingResponse);
+
+  // Estimates a building.
+  rpc EstimateBuilding(EstimateBuildingRequest) returns (EstimateBuildingResponse);
+
+  // Quotes a building.
+  rpc QuoteBuilding(QuoteBuildingRequest) returns (QuoteBuildingResponse);
+
+  // Compares a building.
+  rpc CompareBuildingOptions(CompareBuildingOptionsRequest) returns (CompareBuildingOptionsResponse);
+
+  // Recalculates a building.
+  rpc RecalculateBuildings(RecalculateBuildingsRequest) returns (RecalculateBuildingsResponse);
+
+  // Simulates a building.
+  rpc SimulateBuilding(SimulateBuildingRequest) returns (SimulateBuildingResponse);
+
+  // Returns a building.
+  rpc GetBuildingRates(GetBuildingRatesRequest) returns (GetBuildingRatesResponse);
+}
+
+// The request of `CalculateBuilding`.
+message CalculateBuildingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  Building building = 3;
+  CalculateBuildingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateBuilding`.
+message CalculateBuildingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateBuildingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Building building = 1;
+  CalculateBuildingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateBuilding`.
+message EstimateBuildingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  Building building = 3;
+  EstimateBuildingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateBuilding`.
+message EstimateBuildingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateBuildingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Building building = 1;
+  EstimateBuildingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteBuilding`.
+message QuoteBuildingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  Building building = 3;
+  QuoteBuildingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteBuilding`.
+message QuoteBuildingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteBuildingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Building building = 1;
+  QuoteBuildingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareBuildingOptions`.
+message CompareBuildingOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  Building building = 3;
+  CompareBuildingOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareBuildingOptions`.
+message CompareBuildingOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareBuildingOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Building building = 1;
+  CompareBuildingOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateBuildings`.
+message RecalculateBuildingsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  Building building = 3;
+  RecalculateBuildingsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateBuildings`.
+message RecalculateBuildingsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateBuildingsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Building building = 1;
+  RecalculateBuildingsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateBuilding`.
+message SimulateBuildingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  Building building = 3;
+  SimulateBuildingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateBuilding`.
+message SimulateBuildingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateBuildingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Building building = 1;
+  SimulateBuildingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBuildingRates`.
+message GetBuildingRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string building_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBuildingRates`.
+message GetBuildingRatesResponse {
+  Building building = 1;
+  acme.common.v1.OperationResult result = 2;
+}

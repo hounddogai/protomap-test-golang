@@ -1,0 +1,247 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "LandingPageNotificationServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Tells the people who follow a landing page what changed.
+service LandingPageNotificationService {
+  // Subscribes a landing page.
+  rpc SubscribeLandingPageUpdates(SubscribeLandingPageUpdatesRequest) returns (SubscribeLandingPageUpdatesResponse);
+
+  // Unsubscribes a landing page.
+  rpc UnsubscribeLandingPageUpdates(UnsubscribeLandingPageUpdatesRequest) returns (UnsubscribeLandingPageUpdatesResponse);
+
+  // Notifys a landing page.
+  rpc NotifyLandingPageWatchers(NotifyLandingPageWatchersRequest) returns (NotifyLandingPageWatchersResponse);
+
+  // Lists landing pages a page at a time.
+  rpc ListLandingPageSubscriptions(ListLandingPageSubscriptionsRequest) returns (ListLandingPageSubscriptionsResponse);
+
+  // Sends a landing page.
+  rpc SendLandingPageTestNotice(SendLandingPageTestNoticeRequest) returns (SendLandingPageTestNoticeResponse);
+
+  // Returns a landing page.
+  rpc GetLandingPagePreferences(GetLandingPagePreferencesRequest) returns (GetLandingPagePreferencesResponse);
+
+  // Streams the changes of landing pages as they happen.
+  rpc StreamLandingPageNotices(StreamLandingPageNoticesRequest) returns (stream StreamLandingPageNoticesResponse);
+}
+
+// The request of `SubscribeLandingPageUpdates`.
+message SubscribeLandingPageUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  SubscribeLandingPageUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribeLandingPageUpdates`.
+message SubscribeLandingPageUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  SubscribeLandingPageUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribeLandingPageUpdates`.
+message UnsubscribeLandingPageUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  UnsubscribeLandingPageUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribeLandingPageUpdates`.
+message UnsubscribeLandingPageUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  UnsubscribeLandingPageUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifyLandingPageWatchers`.
+message NotifyLandingPageWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  NotifyLandingPageWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifyLandingPageWatchers`.
+message NotifyLandingPageWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  NotifyLandingPageWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListLandingPageSubscriptions`.
+message ListLandingPageSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LandingPageStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListLandingPageSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListLandingPageSubscriptions`.
+message ListLandingPageSubscriptionsResponse {
+  repeated LandingPage landing_pages = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendLandingPageTestNotice`.
+message SendLandingPageTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  SendLandingPageTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendLandingPageTestNotice`.
+message SendLandingPageTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LandingPage landing_page = 1;
+  SendLandingPageTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLandingPagePreferences`.
+message GetLandingPagePreferencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string landing_page_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLandingPagePreferences`.
+message GetLandingPagePreferencesResponse {
+  LandingPage landing_page = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StreamLandingPageNotices`.
+message StreamLandingPageNoticesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated LandingPageStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamLandingPageNoticesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamLandingPageNotices`.
+message StreamLandingPageNoticesResponse {
+  LandingPage landing_page = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

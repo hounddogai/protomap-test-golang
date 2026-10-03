@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.employeeportal.v1;
+
+option csharp_namespace = "Acme.Employeeportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/employeeportal/v1;employeeportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.employeeportal.v1";
+
+// A reference to a portal home of the employeeportal domain.
+message PortalHomeRef {
+  string portal_home_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a self service request of the employeeportal domain.
+message SelfServiceRequestRef {
+  string self_service_request_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to an announcement of the employeeportal domain.
+message AnnouncementRef {
+  string announcement_id = 1;
+  string display_name = 2;
+  string number = 3;
+}

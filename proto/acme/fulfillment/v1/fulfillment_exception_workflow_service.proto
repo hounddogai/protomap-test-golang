@@ -1,0 +1,288 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fulfillment.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fulfillment/v1/fulfillment.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fulfillment.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fulfillment/v1;fulfillmentv1";
+option java_multiple_files = true;
+option java_outer_classname = "FulfillmentExceptionWorkflowServiceProto";
+option java_package = "com.acme.fulfillment.v1";
+
+// Runs the long-lived workflow that takes a fulfillment exception from start to finish.
+service FulfillmentExceptionWorkflowService {
+  // Starts a fulfillment exception.
+  rpc StartFulfillmentExceptionWorkflow(StartFulfillmentExceptionWorkflowRequest) returns (StartFulfillmentExceptionWorkflowResponse);
+
+  // Advances a fulfillment exception.
+  rpc AdvanceFulfillmentExceptionWorkflow(AdvanceFulfillmentExceptionWorkflowRequest) returns (AdvanceFulfillmentExceptionWorkflowResponse);
+
+  // Cancels a fulfillment exception.
+  rpc CancelFulfillmentExceptionWorkflow(CancelFulfillmentExceptionWorkflowRequest) returns (CancelFulfillmentExceptionWorkflowResponse);
+
+  // Retrys a fulfillment exception.
+  rpc RetryFulfillmentExceptionWorkflow(RetryFulfillmentExceptionWorkflowRequest) returns (RetryFulfillmentExceptionWorkflowResponse);
+
+  // Pauses a fulfillment exception.
+  rpc PauseFulfillmentExceptionWorkflow(PauseFulfillmentExceptionWorkflowRequest) returns (PauseFulfillmentExceptionWorkflowResponse);
+
+  // Resumes a fulfillment exception.
+  rpc ResumeFulfillmentExceptionWorkflow(ResumeFulfillmentExceptionWorkflowRequest) returns (ResumeFulfillmentExceptionWorkflowResponse);
+
+  // Signals a fulfillment exception.
+  rpc SignalFulfillmentExceptionWorkflow(SignalFulfillmentExceptionWorkflowRequest) returns (SignalFulfillmentExceptionWorkflowResponse);
+}
+
+// The request of `StartFulfillmentExceptionWorkflow`.
+message StartFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  StartFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartFulfillmentExceptionWorkflow`.
+message StartFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  StartFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceFulfillmentExceptionWorkflow`.
+message AdvanceFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  AdvanceFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceFulfillmentExceptionWorkflow`.
+message AdvanceFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  AdvanceFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelFulfillmentExceptionWorkflow`.
+message CancelFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  CancelFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelFulfillmentExceptionWorkflow`.
+message CancelFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  CancelFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryFulfillmentExceptionWorkflow`.
+message RetryFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  RetryFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryFulfillmentExceptionWorkflow`.
+message RetryFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  RetryFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseFulfillmentExceptionWorkflow`.
+message PauseFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  PauseFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseFulfillmentExceptionWorkflow`.
+message PauseFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  PauseFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeFulfillmentExceptionWorkflow`.
+message ResumeFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  ResumeFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeFulfillmentExceptionWorkflow`.
+message ResumeFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  ResumeFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalFulfillmentExceptionWorkflow`.
+message SignalFulfillmentExceptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  SignalFulfillmentExceptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalFulfillmentExceptionWorkflow`.
+message SignalFulfillmentExceptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  SignalFulfillmentExceptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

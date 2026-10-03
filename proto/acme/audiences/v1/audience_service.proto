@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.audiences.v1;
+
+import "acme/audiences/v1/audiences.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Audiences.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/audiences/v1;audiencesv1";
+option java_multiple_files = true;
+option java_outer_classname = "AudienceServiceProto";
+option java_package = "com.acme.audiences.v1";
+
+// Manages audiences: creates, reads, changes, and lists them.
+service AudienceService {
+  // Creates an audience.
+  rpc CreateAudience(CreateAudienceRequest) returns (CreateAudienceResponse);
+
+  // Returns an audience.
+  rpc GetAudience(GetAudienceRequest) returns (GetAudienceResponse);
+
+  // Changes an audience.
+  rpc UpdateAudience(UpdateAudienceRequest) returns (UpdateAudienceResponse);
+
+  // Deletes an audience.
+  rpc DeleteAudience(DeleteAudienceRequest) returns (DeleteAudienceResponse);
+
+  // Lists audiences a page at a time.
+  rpc ListAudiences(ListAudiencesRequest) returns (ListAudiencesResponse);
+
+  // Returns several audiences at once.
+  rpc BatchGetAudiences(BatchGetAudiencesRequest) returns (BatchGetAudiencesResponse);
+
+  // Lists audiences a page at a time.
+  rpc SearchAudiences(SearchAudiencesRequest) returns (SearchAudiencesResponse);
+
+  // Streams the changes of audiences as they happen.
+  rpc WatchAudiences(WatchAudiencesRequest) returns (stream WatchAudiencesResponse);
+
+  // Takes a stream of audiences and answers once at the end.
+  rpc BatchCreateAudiences(stream BatchCreateAudiencesRequest) returns (BatchCreateAudiencesResponse);
+
+  // Creates an audience.
+  rpc CloneAudience(CloneAudienceRequest) returns (CloneAudienceResponse);
+}
+
+// The request of `CreateAudience`.
+message CreateAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  Audience audience = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateAudience`.
+message CreateAudienceResponse {
+  Audience audience = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetAudience`.
+message GetAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string audience_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAudience`.
+message GetAudienceResponse {
+  Audience audience = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateAudience`.
+message UpdateAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  Audience audience = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateAudience`.
+message UpdateAudienceResponse {
+  Audience audience = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteAudience`.
+message DeleteAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string audience_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteAudience`.
+message DeleteAudienceResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListAudiences`.
+message ListAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAudiencesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAudiences`.
+message ListAudiencesResponse {
+  repeated Audience audiences = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetAudiences`.
+message BatchGetAudiencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string audience_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetAudiences`.
+message BatchGetAudiencesResponse {
+  repeated Audience audiences = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchAudiences`.
+message SearchAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchAudiencesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchAudiences`.
+message SearchAudiencesResponse {
+  repeated Audience audiences = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchAudiences`.
+message WatchAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchAudiencesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchAudiences`.
+message WatchAudiencesResponse {
+  Audience audience = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateAudiences`.
+message BatchCreateAudiencesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateAudiencesRequest.StreamHeader header = 2;
+    Audience record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateAudiences`.
+message BatchCreateAudiencesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string audience_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateAudiencesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneAudience`.
+message CloneAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  Audience audience = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneAudience`.
+message CloneAudienceResponse {
+  Audience audience = 1;
+  acme.common.v1.OperationResult result = 2;
+}

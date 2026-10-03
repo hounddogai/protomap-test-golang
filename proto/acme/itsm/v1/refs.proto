@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.itsm.v1;
+
+option csharp_namespace = "Acme.Itsm.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/itsm/v1;itsmv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.itsm.v1";
+
+// A reference to an incident of the itsm domain.
+message IncidentRef {
+  string incident_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a change request of the itsm domain.
+message ChangeRequestRef {
+  string change_request_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a service asset of the itsm domain.
+message ServiceAssetRef {
+  string service_asset_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a problem of the itsm domain.
+message ProblemRef {
+  string problem_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

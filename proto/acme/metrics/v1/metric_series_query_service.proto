@@ -1,0 +1,169 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.metrics.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/metrics/v1/metrics.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Metrics.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/metrics/v1;metricsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MetricSeriesQueryServiceProto";
+option java_package = "com.acme.metrics.v1";
+
+// Answers read-only questions about metric serieses, for screens and reports.
+service MetricSeriesQueryService {
+  // Returns a metric series.
+  rpc LookupMetricSeries(LookupMetricSeriesRequest) returns (LookupMetricSeriesResponse);
+
+  // Lists metric serieses a page at a time.
+  rpc BrowseMetricSerieses(BrowseMetricSeriesesRequest) returns (BrowseMetricSeriesesResponse);
+
+  // Counts metric serieses by status.
+  rpc CountMetricSerieses(CountMetricSeriesesRequest) returns (CountMetricSeriesesResponse);
+
+  // Summarizes a metric series.
+  rpc SummarizeMetricSerieses(SummarizeMetricSeriesesRequest) returns (SummarizeMetricSeriesesResponse);
+
+  // Lists metric serieses a page at a time.
+  rpc SuggestMetricSerieses(SuggestMetricSeriesesRequest) returns (SuggestMetricSeriesesResponse);
+
+  // Returns a metric series.
+  rpc PeekMetricSeries(PeekMetricSeriesRequest) returns (PeekMetricSeriesResponse);
+}
+
+// The request of `LookupMetricSeries`.
+message LookupMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupMetricSeries`.
+message LookupMetricSeriesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseMetricSerieses`.
+message BrowseMetricSeriesesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MetricSeriesStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseMetricSeriesesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseMetricSerieses`.
+message BrowseMetricSeriesesResponse {
+  repeated MetricSeries metric_serieses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountMetricSerieses`.
+message CountMetricSeriesesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MetricSeriesStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountMetricSeriesesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountMetricSerieses`.
+message CountMetricSeriesesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeMetricSerieses`.
+message SummarizeMetricSeriesesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  SummarizeMetricSeriesesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeMetricSerieses`.
+message SummarizeMetricSeriesesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestMetricSerieses`.
+message SuggestMetricSeriesesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MetricSeriesStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestMetricSeriesesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestMetricSerieses`.
+message SuggestMetricSeriesesResponse {
+  repeated MetricSeries metric_serieses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekMetricSeries`.
+message PeekMetricSeriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string metric_series_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekMetricSeries`.
+message PeekMetricSeriesResponse {
+  MetricSeries metric_series = 1;
+  acme.common.v1.OperationResult result = 2;
+}

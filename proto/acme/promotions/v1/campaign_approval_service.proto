@@ -1,0 +1,240 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CampaignApprovalServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Routes campaigns through approval, with escalation and delegation.
+service CampaignApprovalService {
+  // Submits a campaign.
+  rpc SubmitCampaign(SubmitCampaignRequest) returns (SubmitCampaignResponse);
+
+  // Approves a campaign.
+  rpc ApproveCampaign(ApproveCampaignRequest) returns (ApproveCampaignResponse);
+
+  // Rejects a campaign.
+  rpc RejectCampaign(RejectCampaignRequest) returns (RejectCampaignResponse);
+
+  // Escalates a campaign.
+  rpc EscalateCampaign(EscalateCampaignRequest) returns (EscalateCampaignResponse);
+
+  // Lists campaigns a page at a time.
+  rpc ListPendingCampaigns(ListPendingCampaignsRequest) returns (ListPendingCampaignsResponse);
+
+  // Comments a campaign.
+  rpc CommentCampaignApproval(CommentCampaignApprovalRequest) returns (CommentCampaignApprovalResponse);
+}
+
+// The request of `SubmitCampaign`.
+message SubmitCampaignRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  SubmitCampaignRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCampaign`.
+message SubmitCampaignResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  SubmitCampaignResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCampaign`.
+message ApproveCampaignRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  ApproveCampaignRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCampaign`.
+message ApproveCampaignResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  ApproveCampaignResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCampaign`.
+message RejectCampaignRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  RejectCampaignRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCampaign`.
+message RejectCampaignResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  RejectCampaignResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCampaign`.
+message EscalateCampaignRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  EscalateCampaignRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCampaign`.
+message EscalateCampaignResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  EscalateCampaignResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCampaigns`.
+message ListPendingCampaignsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CampaignStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCampaignsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCampaigns`.
+message ListPendingCampaignsResponse {
+  repeated Campaign campaigns = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CommentCampaignApproval`.
+message CommentCampaignApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string campaign_id = 2;
+  Campaign campaign = 3;
+  CommentCampaignApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCampaignApproval`.
+message CommentCampaignApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Campaign campaign = 1;
+  CommentCampaignApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

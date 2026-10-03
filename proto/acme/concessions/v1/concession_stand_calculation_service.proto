@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.concessions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/concessions/v1/concessions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Concessions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/concessions/v1;concessionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConcessionStandCalculationServiceProto";
+option java_package = "com.acme.concessions.v1";
+
+// Computes the figures of a concession stand, such as totals, taxes, and estimates.
+service ConcessionStandCalculationService {
+  // Calculates a concession stand.
+  rpc CalculateConcessionStand(CalculateConcessionStandRequest) returns (CalculateConcessionStandResponse);
+
+  // Estimates a concession stand.
+  rpc EstimateConcessionStand(EstimateConcessionStandRequest) returns (EstimateConcessionStandResponse);
+
+  // Quotes a concession stand.
+  rpc QuoteConcessionStand(QuoteConcessionStandRequest) returns (QuoteConcessionStandResponse);
+
+  // Compares a concession stand.
+  rpc CompareConcessionStandOptions(CompareConcessionStandOptionsRequest) returns (CompareConcessionStandOptionsResponse);
+
+  // Recalculates a concession stand.
+  rpc RecalculateConcessionStands(RecalculateConcessionStandsRequest) returns (RecalculateConcessionStandsResponse);
+
+  // Simulates a concession stand.
+  rpc SimulateConcessionStand(SimulateConcessionStandRequest) returns (SimulateConcessionStandResponse);
+
+  // Explains a concession stand.
+  rpc ExplainConcessionStandCalculation(ExplainConcessionStandCalculationRequest) returns (ExplainConcessionStandCalculationResponse);
+
+  // Returns a concession stand.
+  rpc GetConcessionStandRates(GetConcessionStandRatesRequest) returns (GetConcessionStandRatesResponse);
+}
+
+// The request of `CalculateConcessionStand`.
+message CalculateConcessionStandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  CalculateConcessionStandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateConcessionStand`.
+message CalculateConcessionStandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateConcessionStandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConcessionStand concession_stand = 1;
+  CalculateConcessionStandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateConcessionStand`.
+message EstimateConcessionStandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  EstimateConcessionStandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateConcessionStand`.
+message EstimateConcessionStandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateConcessionStandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConcessionStand concession_stand = 1;
+  EstimateConcessionStandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteConcessionStand`.
+message QuoteConcessionStandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  QuoteConcessionStandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteConcessionStand`.
+message QuoteConcessionStandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteConcessionStandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConcessionStand concession_stand = 1;
+  QuoteConcessionStandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareConcessionStandOptions`.
+message CompareConcessionStandOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  CompareConcessionStandOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareConcessionStandOptions`.
+message CompareConcessionStandOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareConcessionStandOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConcessionStand concession_stand = 1;
+  CompareConcessionStandOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateConcessionStands`.
+message RecalculateConcessionStandsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  RecalculateConcessionStandsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateConcessionStands`.
+message RecalculateConcessionStandsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateConcessionStandsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConcessionStand concession_stand = 1;
+  RecalculateConcessionStandsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateConcessionStand`.
+message SimulateConcessionStandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  SimulateConcessionStandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateConcessionStand`.
+message SimulateConcessionStandResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateConcessionStandResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConcessionStand concession_stand = 1;
+  SimulateConcessionStandResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainConcessionStandCalculation`.
+message ExplainConcessionStandCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  ConcessionStand concession_stand = 3;
+  ExplainConcessionStandCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainConcessionStandCalculation`.
+message ExplainConcessionStandCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConcessionStand concession_stand = 1;
+  ExplainConcessionStandCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetConcessionStandRates`.
+message GetConcessionStandRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConcessionStandRates`.
+message GetConcessionStandRatesResponse {
+  ConcessionStand concession_stand = 1;
+  acme.common.v1.OperationResult result = 2;
+}

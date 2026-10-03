@@ -1,0 +1,119 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.datasets.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Datasets.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/datasets/v1;datasetsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DatasetsProto";
+option java_package = "com.acme.datasets.v1";
+
+// Where a dataset is in its lifecycle.
+enum DatasetStatus {
+  DATASET_STATUS_UNSPECIFIED = 0;
+  DATASET_STATUS_PLANNED = 1;
+  DATASET_STATUS_AVAILABLE = 2;
+  DATASET_STATUS_RESERVED = 3;
+  DATASET_STATUS_RETIRED = 4;
+}
+
+// Where a dataset version is in its lifecycle.
+enum DatasetVersionStatus {
+  DATASET_VERSION_STATUS_UNSPECIFIED = 0;
+  DATASET_VERSION_STATUS_RECEIVED = 1;
+  DATASET_VERSION_STATUS_PROCESSED = 2;
+  DATASET_VERSION_STATUS_DISCARDED = 3;
+}
+
+// Where a data schema is in its lifecycle.
+enum DataSchemaStatus {
+  DATA_SCHEMA_STATUS_UNSPECIFIED = 0;
+  DATA_SCHEMA_STATUS_ACTIVE = 1;
+  DATA_SCHEMA_STATUS_INACTIVE = 2;
+}
+
+// The dimensions of a dataset.
+message DatasetDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a dataset.
+message DatasetComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A dataset of the datasets domain.
+message Dataset {
+  string dataset_id = 1;
+  string code = 2;
+  string name = 3;
+  DatasetStatus status = 4;
+  repeated string category_path = 5;
+  DatasetDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, DatasetComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a dataset version.
+message DatasetVersionMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A dataset version of the datasets domain.
+message DatasetVersion {
+  string dataset_version_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated DatasetVersionMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// A data schema of the datasets domain.
+message DataSchema {
+  string data_schema_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated DataSchema children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  DataSchemaStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}

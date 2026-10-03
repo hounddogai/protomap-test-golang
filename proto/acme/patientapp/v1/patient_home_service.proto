@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientHomeServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// Manages patient homes: creates, reads, changes, and lists them.
+service PatientHomeService {
+  // Creates a patient home.
+  rpc CreatePatientHome(CreatePatientHomeRequest) returns (CreatePatientHomeResponse);
+
+  // Returns a patient home.
+  rpc GetPatientHome(GetPatientHomeRequest) returns (GetPatientHomeResponse);
+
+  // Changes a patient home.
+  rpc UpdatePatientHome(UpdatePatientHomeRequest) returns (UpdatePatientHomeResponse);
+
+  // Deletes a patient home.
+  rpc DeletePatientHome(DeletePatientHomeRequest) returns (DeletePatientHomeResponse);
+
+  // Lists patient homes a page at a time.
+  rpc ListPatientHomes(ListPatientHomesRequest) returns (ListPatientHomesResponse);
+
+  // Returns several patient homes at once.
+  rpc BatchGetPatientHomes(BatchGetPatientHomesRequest) returns (BatchGetPatientHomesResponse);
+
+  // Lists patient homes a page at a time.
+  rpc SearchPatientHomes(SearchPatientHomesRequest) returns (SearchPatientHomesResponse);
+
+  // Streams the changes of patient homes as they happen.
+  rpc WatchPatientHomes(WatchPatientHomesRequest) returns (stream WatchPatientHomesResponse);
+
+  // Takes a stream of patient homes and answers once at the end.
+  rpc BatchCreatePatientHomes(stream BatchCreatePatientHomesRequest) returns (BatchCreatePatientHomesResponse);
+
+  // Creates a patient home.
+  rpc ClonePatientHome(ClonePatientHomeRequest) returns (ClonePatientHomeResponse);
+}
+
+// The request of `CreatePatientHome`.
+message CreatePatientHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  PatientHome patient_home = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePatientHome`.
+message CreatePatientHomeResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPatientHome`.
+message GetPatientHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatientHome`.
+message GetPatientHomeResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePatientHome`.
+message UpdatePatientHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  PatientHome patient_home = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePatientHome`.
+message UpdatePatientHomeResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePatientHome`.
+message DeletePatientHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePatientHome`.
+message DeletePatientHomeResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPatientHomes`.
+message ListPatientHomesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPatientHomesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPatientHomes`.
+message ListPatientHomesResponse {
+  repeated PatientHome patient_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPatientHomes`.
+message BatchGetPatientHomesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string patient_home_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPatientHomes`.
+message BatchGetPatientHomesResponse {
+  repeated PatientHome patient_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPatientHomes`.
+message SearchPatientHomesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPatientHomesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPatientHomes`.
+message SearchPatientHomesResponse {
+  repeated PatientHome patient_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPatientHomes`.
+message WatchPatientHomesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPatientHomesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPatientHomes`.
+message WatchPatientHomesResponse {
+  PatientHome patient_home = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreatePatientHomes`.
+message BatchCreatePatientHomesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePatientHomesRequest.StreamHeader header = 2;
+    PatientHome record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePatientHomes`.
+message BatchCreatePatientHomesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string patient_home_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePatientHomesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePatientHome`.
+message ClonePatientHomeRequest {
+  acme.common.v1.RequestContext context = 1;
+  PatientHome patient_home = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePatientHome`.
+message ClonePatientHomeResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}

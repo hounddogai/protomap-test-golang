@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "CartApprovalServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Routes carts through approval, with escalation and delegation.
+service CartApprovalService {
+  // Submits a cart.
+  rpc SubmitCart(SubmitCartRequest) returns (SubmitCartResponse);
+
+  // Approves a cart.
+  rpc ApproveCart(ApproveCartRequest) returns (ApproveCartResponse);
+
+  // Rejects a cart.
+  rpc RejectCart(RejectCartRequest) returns (RejectCartResponse);
+
+  // Escalates a cart.
+  rpc EscalateCart(EscalateCartRequest) returns (EscalateCartResponse);
+
+  // Lists carts a page at a time.
+  rpc ListPendingCarts(ListPendingCartsRequest) returns (ListPendingCartsResponse);
+
+  // Delegates a cart.
+  rpc DelegateCartApproval(DelegateCartApprovalRequest) returns (DelegateCartApprovalResponse);
+
+  // Returns a cart.
+  rpc GetCartApprovalStatus(GetCartApprovalStatusRequest) returns (GetCartApprovalStatusResponse);
+
+  // Comments a cart.
+  rpc CommentCartApproval(CommentCartApprovalRequest) returns (CommentCartApprovalResponse);
+}
+
+// The request of `SubmitCart`.
+message SubmitCartRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  Cart cart = 3;
+  SubmitCartRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCart`.
+message SubmitCartResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Cart cart = 1;
+  SubmitCartResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCart`.
+message ApproveCartRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  Cart cart = 3;
+  ApproveCartRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCart`.
+message ApproveCartResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Cart cart = 1;
+  ApproveCartResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCart`.
+message RejectCartRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  Cart cart = 3;
+  RejectCartRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCart`.
+message RejectCartResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Cart cart = 1;
+  RejectCartResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCart`.
+message EscalateCartRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  Cart cart = 3;
+  EscalateCartRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCart`.
+message EscalateCartResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Cart cart = 1;
+  EscalateCartResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCarts`.
+message ListPendingCartsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CartStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCartsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCarts`.
+message ListPendingCartsResponse {
+  repeated Cart carts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCartApproval`.
+message DelegateCartApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  Cart cart = 3;
+  DelegateCartApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCartApproval`.
+message DelegateCartApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Cart cart = 1;
+  DelegateCartApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCartApprovalStatus`.
+message GetCartApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCartApprovalStatus`.
+message GetCartApprovalStatusResponse {
+  Cart cart = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCartApproval`.
+message CommentCartApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  Cart cart = 3;
+  CommentCartApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCartApproval`.
+message CommentCartApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Cart cart = 1;
+  CommentCartApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

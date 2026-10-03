@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "WarehouseServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Manages warehouses: creates, reads, changes, and lists them.
+service WarehouseService {
+  // Creates a warehouse.
+  rpc CreateWarehouse(CreateWarehouseRequest) returns (CreateWarehouseResponse);
+
+  // Returns a warehouse.
+  rpc GetWarehouse(GetWarehouseRequest) returns (GetWarehouseResponse);
+
+  // Changes a warehouse.
+  rpc UpdateWarehouse(UpdateWarehouseRequest) returns (UpdateWarehouseResponse);
+
+  // Deletes a warehouse.
+  rpc DeleteWarehouse(DeleteWarehouseRequest) returns (DeleteWarehouseResponse);
+
+  // Returns several warehouses at once.
+  rpc BatchGetWarehouses(BatchGetWarehousesRequest) returns (BatchGetWarehousesResponse);
+
+  // Lists warehouses a page at a time.
+  rpc SearchWarehouses(SearchWarehousesRequest) returns (SearchWarehousesResponse);
+
+  // Streams the changes of warehouses as they happen.
+  rpc WatchWarehouses(WatchWarehousesRequest) returns (stream WatchWarehousesResponse);
+
+  // Takes a stream of warehouses and answers once at the end.
+  rpc BatchCreateWarehouses(stream BatchCreateWarehousesRequest) returns (BatchCreateWarehousesResponse);
+
+  // Creates a warehouse.
+  rpc CloneWarehouse(CloneWarehouseRequest) returns (CloneWarehouseResponse);
+}
+
+// The request of `CreateWarehouse`.
+message CreateWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  Warehouse warehouse = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateWarehouse`.
+message CreateWarehouseResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetWarehouse`.
+message GetWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetWarehouse`.
+message GetWarehouseResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateWarehouse`.
+message UpdateWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  Warehouse warehouse = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateWarehouse`.
+message UpdateWarehouseResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteWarehouse`.
+message DeleteWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteWarehouse`.
+message DeleteWarehouseResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetWarehouses`.
+message BatchGetWarehousesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string warehouse_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetWarehouses`.
+message BatchGetWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchWarehouses`.
+message SearchWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchWarehousesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchWarehouses`.
+message SearchWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchWarehouses`.
+message WatchWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchWarehousesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchWarehouses`.
+message WatchWarehousesResponse {
+  Warehouse warehouse = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateWarehouses`.
+message BatchCreateWarehousesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateWarehousesRequest.StreamHeader header = 2;
+    Warehouse record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateWarehouses`.
+message BatchCreateWarehousesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string warehouse_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateWarehousesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneWarehouse`.
+message CloneWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  Warehouse warehouse = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneWarehouse`.
+message CloneWarehouseResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}

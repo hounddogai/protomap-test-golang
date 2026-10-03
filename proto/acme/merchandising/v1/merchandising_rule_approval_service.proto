@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "MerchandisingRuleApprovalServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Routes merchandising rules through approval, with escalation and delegation.
+service MerchandisingRuleApprovalService {
+  // Submits a merchandising rule.
+  rpc SubmitMerchandisingRule(SubmitMerchandisingRuleRequest) returns (SubmitMerchandisingRuleResponse);
+
+  // Approves a merchandising rule.
+  rpc ApproveMerchandisingRule(ApproveMerchandisingRuleRequest) returns (ApproveMerchandisingRuleResponse);
+
+  // Escalates a merchandising rule.
+  rpc EscalateMerchandisingRule(EscalateMerchandisingRuleRequest) returns (EscalateMerchandisingRuleResponse);
+
+  // Lists merchandising rules a page at a time.
+  rpc ListPendingMerchandisingRules(ListPendingMerchandisingRulesRequest) returns (ListPendingMerchandisingRulesResponse);
+
+  // Delegates a merchandising rule.
+  rpc DelegateMerchandisingRuleApproval(DelegateMerchandisingRuleApprovalRequest) returns (DelegateMerchandisingRuleApprovalResponse);
+
+  // Recalls a merchandising rule.
+  rpc RecallMerchandisingRule(RecallMerchandisingRuleRequest) returns (RecallMerchandisingRuleResponse);
+
+  // Returns a merchandising rule.
+  rpc GetMerchandisingRuleApprovalStatus(GetMerchandisingRuleApprovalStatusRequest) returns (GetMerchandisingRuleApprovalStatusResponse);
+
+  // Comments a merchandising rule.
+  rpc CommentMerchandisingRuleApproval(CommentMerchandisingRuleApprovalRequest) returns (CommentMerchandisingRuleApprovalResponse);
+}
+
+// The request of `SubmitMerchandisingRule`.
+message SubmitMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  SubmitMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitMerchandisingRule`.
+message SubmitMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  SubmitMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveMerchandisingRule`.
+message ApproveMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  ApproveMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveMerchandisingRule`.
+message ApproveMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  ApproveMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateMerchandisingRule`.
+message EscalateMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  EscalateMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateMerchandisingRule`.
+message EscalateMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  EscalateMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingMerchandisingRules`.
+message ListPendingMerchandisingRulesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MerchandisingRuleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingMerchandisingRulesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingMerchandisingRules`.
+message ListPendingMerchandisingRulesResponse {
+  repeated MerchandisingRule merchandising_rules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateMerchandisingRuleApproval`.
+message DelegateMerchandisingRuleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  DelegateMerchandisingRuleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateMerchandisingRuleApproval`.
+message DelegateMerchandisingRuleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  DelegateMerchandisingRuleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallMerchandisingRule`.
+message RecallMerchandisingRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  RecallMerchandisingRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallMerchandisingRule`.
+message RecallMerchandisingRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  RecallMerchandisingRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMerchandisingRuleApprovalStatus`.
+message GetMerchandisingRuleApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMerchandisingRuleApprovalStatus`.
+message GetMerchandisingRuleApprovalStatusResponse {
+  MerchandisingRule merchandising_rule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentMerchandisingRuleApproval`.
+message CommentMerchandisingRuleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  CommentMerchandisingRuleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentMerchandisingRuleApproval`.
+message CommentMerchandisingRuleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  CommentMerchandisingRuleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

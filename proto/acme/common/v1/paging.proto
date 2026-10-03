@@ -1,0 +1,24 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.common.v1;
+
+option csharp_namespace = "Acme.Common.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/common/v1;commonv1";
+option java_multiple_files = true;
+option java_outer_classname = "PagingProto";
+option java_package = "com.acme.common.v1";
+
+// Which page of a list to answer.
+message PageRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+// Where a page of a list is in it.
+message PageInfo {
+  string next_page_token = 1;
+  int64 total_size = 2;
+}

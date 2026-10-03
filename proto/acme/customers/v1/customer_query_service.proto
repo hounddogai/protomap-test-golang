@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerQueryServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Answers read-only questions about customers, for screens and reports.
+service CustomerQueryService {
+  // Returns a customer.
+  rpc LookupCustomer(LookupCustomerRequest) returns (LookupCustomerResponse);
+
+  // Lists customers a page at a time.
+  rpc BrowseCustomers(BrowseCustomersRequest) returns (BrowseCustomersResponse);
+
+  // Lists customers a page at a time.
+  rpc FindCustomers(FindCustomersRequest) returns (FindCustomersResponse);
+
+  // Counts customers by status.
+  rpc CountCustomers(CountCustomersRequest) returns (CountCustomersResponse);
+
+  // Returns several customers at once.
+  rpc ResolveCustomers(ResolveCustomersRequest) returns (ResolveCustomersResponse);
+
+  // Streams every matching customer.
+  rpc ExportCustomers(ExportCustomersRequest) returns (stream ExportCustomersResponse);
+
+  // Summarizes a customer.
+  rpc SummarizeCustomers(SummarizeCustomersRequest) returns (SummarizeCustomersResponse);
+
+  // Lists customers a page at a time.
+  rpc SuggestCustomers(SuggestCustomersRequest) returns (SuggestCustomersResponse);
+
+  // Returns a customer.
+  rpc PeekCustomer(PeekCustomerRequest) returns (PeekCustomerResponse);
+}
+
+// The request of `LookupCustomer`.
+message LookupCustomerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCustomer`.
+message LookupCustomerResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCustomers`.
+message BrowseCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCustomers`.
+message BrowseCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCustomers`.
+message FindCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCustomers`.
+message FindCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCustomers`.
+message CountCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCustomers`.
+message CountCustomersResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCustomers`.
+message ResolveCustomersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string customer_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCustomers`.
+message ResolveCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCustomers`.
+message ExportCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCustomersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCustomers`.
+message ExportCustomersResponse {
+  Customer customer = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCustomers`.
+message SummarizeCustomersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  SummarizeCustomersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCustomers`.
+message SummarizeCustomersResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCustomers`.
+message SuggestCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCustomers`.
+message SuggestCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCustomer`.
+message PeekCustomerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCustomer`.
+message PeekCustomerResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}

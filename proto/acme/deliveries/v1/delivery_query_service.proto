@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.deliveries.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/deliveries/v1/deliveries.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Deliveries.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/deliveries/v1;deliveriesv1";
+option java_multiple_files = true;
+option java_outer_classname = "DeliveryQueryServiceProto";
+option java_package = "com.acme.deliveries.v1";
+
+// Answers read-only questions about deliveries, for screens and reports.
+service DeliveryQueryService {
+  // Returns a delivery.
+  rpc LookupDelivery(LookupDeliveryRequest) returns (LookupDeliveryResponse);
+
+  // Lists deliveries a page at a time.
+  rpc BrowseDeliveries(BrowseDeliveriesRequest) returns (BrowseDeliveriesResponse);
+
+  // Lists deliveries a page at a time.
+  rpc FindDeliveries(FindDeliveriesRequest) returns (FindDeliveriesResponse);
+
+  // Counts deliveries by status.
+  rpc CountDeliveries(CountDeliveriesRequest) returns (CountDeliveriesResponse);
+
+  // Returns several deliveries at once.
+  rpc ResolveDeliveries(ResolveDeliveriesRequest) returns (ResolveDeliveriesResponse);
+
+  // Streams every matching delivery.
+  rpc ExportDeliveries(ExportDeliveriesRequest) returns (stream ExportDeliveriesResponse);
+
+  // Summarizes a delivery.
+  rpc SummarizeDeliveries(SummarizeDeliveriesRequest) returns (SummarizeDeliveriesResponse);
+
+  // Lists deliveries a page at a time.
+  rpc SuggestDeliveries(SuggestDeliveriesRequest) returns (SuggestDeliveriesResponse);
+
+  // Returns a delivery.
+  rpc PeekDelivery(PeekDeliveryRequest) returns (PeekDeliveryResponse);
+}
+
+// The request of `LookupDelivery`.
+message LookupDeliveryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string delivery_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupDelivery`.
+message LookupDeliveryResponse {
+  Delivery delivery = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseDeliveries`.
+message BrowseDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseDeliveriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseDeliveries`.
+message BrowseDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindDeliveries`.
+message FindDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindDeliveriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindDeliveries`.
+message FindDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountDeliveries`.
+message CountDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountDeliveriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountDeliveries`.
+message CountDeliveriesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveDeliveries`.
+message ResolveDeliveriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string delivery_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveDeliveries`.
+message ResolveDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportDeliveries`.
+message ExportDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportDeliveriesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportDeliveries`.
+message ExportDeliveriesResponse {
+  Delivery delivery = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeDeliveries`.
+message SummarizeDeliveriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string delivery_id = 2;
+  SummarizeDeliveriesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeDeliveries`.
+message SummarizeDeliveriesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestDeliveries`.
+message SuggestDeliveriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DeliveryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestDeliveriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestDeliveries`.
+message SuggestDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekDelivery`.
+message PeekDeliveryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string delivery_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekDelivery`.
+message PeekDeliveryResponse {
+  Delivery delivery = 1;
+  acme.common.v1.OperationResult result = 2;
+}

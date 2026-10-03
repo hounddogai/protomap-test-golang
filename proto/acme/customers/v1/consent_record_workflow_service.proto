@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConsentRecordWorkflowServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Runs the long-lived workflow that takes a consent record from start to finish.
+service ConsentRecordWorkflowService {
+  // Starts a consent record.
+  rpc StartConsentRecordWorkflow(StartConsentRecordWorkflowRequest) returns (StartConsentRecordWorkflowResponse);
+
+  // Advances a consent record.
+  rpc AdvanceConsentRecordWorkflow(AdvanceConsentRecordWorkflowRequest) returns (AdvanceConsentRecordWorkflowResponse);
+
+  // Cancels a consent record.
+  rpc CancelConsentRecordWorkflow(CancelConsentRecordWorkflowRequest) returns (CancelConsentRecordWorkflowResponse);
+
+  // Pauses a consent record.
+  rpc PauseConsentRecordWorkflow(PauseConsentRecordWorkflowRequest) returns (PauseConsentRecordWorkflowResponse);
+
+  // Resumes a consent record.
+  rpc ResumeConsentRecordWorkflow(ResumeConsentRecordWorkflowRequest) returns (ResumeConsentRecordWorkflowResponse);
+
+  // Returns a consent record.
+  rpc InspectConsentRecordWorkflow(InspectConsentRecordWorkflowRequest) returns (InspectConsentRecordWorkflowResponse);
+
+  // Lists consent records a page at a time.
+  rpc ListConsentRecordWorkflows(ListConsentRecordWorkflowsRequest) returns (ListConsentRecordWorkflowsResponse);
+}
+
+// The request of `StartConsentRecordWorkflow`.
+message StartConsentRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  StartConsentRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartConsentRecordWorkflow`.
+message StartConsentRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  StartConsentRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceConsentRecordWorkflow`.
+message AdvanceConsentRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  AdvanceConsentRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceConsentRecordWorkflow`.
+message AdvanceConsentRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  AdvanceConsentRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelConsentRecordWorkflow`.
+message CancelConsentRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  CancelConsentRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelConsentRecordWorkflow`.
+message CancelConsentRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  CancelConsentRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseConsentRecordWorkflow`.
+message PauseConsentRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  PauseConsentRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseConsentRecordWorkflow`.
+message PauseConsentRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  PauseConsentRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeConsentRecordWorkflow`.
+message ResumeConsentRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  ResumeConsentRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeConsentRecordWorkflow`.
+message ResumeConsentRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ResumeConsentRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectConsentRecordWorkflow`.
+message InspectConsentRecordWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectConsentRecordWorkflow`.
+message InspectConsentRecordWorkflowResponse {
+  ConsentRecord consent_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListConsentRecordWorkflows`.
+message ListConsentRecordWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConsentRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListConsentRecordWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListConsentRecordWorkflows`.
+message ListConsentRecordWorkflowsResponse {
+  repeated ConsentRecord consent_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CouponApprovalServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Routes coupons through approval, with escalation and delegation.
+service CouponApprovalService {
+  // Submits a coupon.
+  rpc SubmitCoupon(SubmitCouponRequest) returns (SubmitCouponResponse);
+
+  // Approves a coupon.
+  rpc ApproveCoupon(ApproveCouponRequest) returns (ApproveCouponResponse);
+
+  // Rejects a coupon.
+  rpc RejectCoupon(RejectCouponRequest) returns (RejectCouponResponse);
+
+  // Escalates a coupon.
+  rpc EscalateCoupon(EscalateCouponRequest) returns (EscalateCouponResponse);
+
+  // Lists coupons a page at a time.
+  rpc ListPendingCoupons(ListPendingCouponsRequest) returns (ListPendingCouponsResponse);
+
+  // Delegates a coupon.
+  rpc DelegateCouponApproval(DelegateCouponApprovalRequest) returns (DelegateCouponApprovalResponse);
+
+  // Recalls a coupon.
+  rpc RecallCoupon(RecallCouponRequest) returns (RecallCouponResponse);
+
+  // Returns a coupon.
+  rpc GetCouponApprovalStatus(GetCouponApprovalStatusRequest) returns (GetCouponApprovalStatusResponse);
+}
+
+// The request of `SubmitCoupon`.
+message SubmitCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  SubmitCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCoupon`.
+message SubmitCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  SubmitCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCoupon`.
+message ApproveCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  ApproveCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCoupon`.
+message ApproveCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  ApproveCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCoupon`.
+message RejectCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  RejectCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCoupon`.
+message RejectCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  RejectCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCoupon`.
+message EscalateCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  EscalateCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCoupon`.
+message EscalateCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  EscalateCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCoupons`.
+message ListPendingCouponsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CouponStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCouponsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCoupons`.
+message ListPendingCouponsResponse {
+  repeated Coupon coupons = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCouponApproval`.
+message DelegateCouponApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  DelegateCouponApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCouponApproval`.
+message DelegateCouponApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  DelegateCouponApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallCoupon`.
+message RecallCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  RecallCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallCoupon`.
+message RecallCouponResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  RecallCouponResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCouponApprovalStatus`.
+message GetCouponApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCouponApprovalStatus`.
+message GetCouponApprovalStatusResponse {
+  Coupon coupon = 1;
+  acme.common.v1.OperationResult result = 2;
+}

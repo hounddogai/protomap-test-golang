@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fulfillment.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fulfillment/v1/fulfillment.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fulfillment.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fulfillment/v1;fulfillmentv1";
+option java_multiple_files = true;
+option java_outer_classname = "PackingSlipWorkflowServiceProto";
+option java_package = "com.acme.fulfillment.v1";
+
+// Runs the long-lived workflow that takes a packing slip from start to finish.
+service PackingSlipWorkflowService {
+  // Starts a packing slip.
+  rpc StartPackingSlipWorkflow(StartPackingSlipWorkflowRequest) returns (StartPackingSlipWorkflowResponse);
+
+  // Advances a packing slip.
+  rpc AdvancePackingSlipWorkflow(AdvancePackingSlipWorkflowRequest) returns (AdvancePackingSlipWorkflowResponse);
+
+  // Cancels a packing slip.
+  rpc CancelPackingSlipWorkflow(CancelPackingSlipWorkflowRequest) returns (CancelPackingSlipWorkflowResponse);
+
+  // Retrys a packing slip.
+  rpc RetryPackingSlipWorkflow(RetryPackingSlipWorkflowRequest) returns (RetryPackingSlipWorkflowResponse);
+
+  // Pauses a packing slip.
+  rpc PausePackingSlipWorkflow(PausePackingSlipWorkflowRequest) returns (PausePackingSlipWorkflowResponse);
+
+  // Resumes a packing slip.
+  rpc ResumePackingSlipWorkflow(ResumePackingSlipWorkflowRequest) returns (ResumePackingSlipWorkflowResponse);
+
+  // Returns a packing slip.
+  rpc InspectPackingSlipWorkflow(InspectPackingSlipWorkflowRequest) returns (InspectPackingSlipWorkflowResponse);
+
+  // Lists packing slips a page at a time.
+  rpc ListPackingSlipWorkflows(ListPackingSlipWorkflowsRequest) returns (ListPackingSlipWorkflowsResponse);
+
+  // Signals a packing slip.
+  rpc SignalPackingSlipWorkflow(SignalPackingSlipWorkflowRequest) returns (SignalPackingSlipWorkflowResponse);
+}
+
+// The request of `StartPackingSlipWorkflow`.
+message StartPackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  StartPackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPackingSlipWorkflow`.
+message StartPackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  StartPackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePackingSlipWorkflow`.
+message AdvancePackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  AdvancePackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePackingSlipWorkflow`.
+message AdvancePackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  AdvancePackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPackingSlipWorkflow`.
+message CancelPackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  CancelPackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPackingSlipWorkflow`.
+message CancelPackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  CancelPackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPackingSlipWorkflow`.
+message RetryPackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  RetryPackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPackingSlipWorkflow`.
+message RetryPackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  RetryPackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePackingSlipWorkflow`.
+message PausePackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  PausePackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePackingSlipWorkflow`.
+message PausePackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  PausePackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePackingSlipWorkflow`.
+message ResumePackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  ResumePackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePackingSlipWorkflow`.
+message ResumePackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  ResumePackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPackingSlipWorkflow`.
+message InspectPackingSlipWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPackingSlipWorkflow`.
+message InspectPackingSlipWorkflowResponse {
+  PackingSlip packing_slip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPackingSlipWorkflows`.
+message ListPackingSlipWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PackingSlipStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPackingSlipWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPackingSlipWorkflows`.
+message ListPackingSlipWorkflowsResponse {
+  repeated PackingSlip packing_slips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPackingSlipWorkflow`.
+message SignalPackingSlipWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  SignalPackingSlipWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPackingSlipWorkflow`.
+message SignalPackingSlipWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  SignalPackingSlipWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

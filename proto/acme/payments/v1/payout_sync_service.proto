@@ -1,0 +1,284 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayoutSyncServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Keeps payouts in step with the systems of record in other regions.
+service PayoutSyncService {
+  // Syncs a payout.
+  rpc SyncPayouts(SyncPayoutsRequest) returns (SyncPayoutsResponse);
+
+  // Pushs a payout.
+  rpc PushPayout(PushPayoutRequest) returns (PushPayoutResponse);
+
+  // Pulls a payout.
+  rpc PullPayouts(PullPayoutsRequest) returns (PullPayoutsResponse);
+
+  // Reconciles a payout.
+  rpc ReconcilePayouts(ReconcilePayoutsRequest) returns (ReconcilePayoutsResponse);
+
+  // Exchanges changes of payouts with a peer.
+  rpc StreamPayoutChanges(stream StreamPayoutChangesRequest) returns (stream StreamPayoutChangesResponse);
+
+  // Resolves a payout.
+  rpc ResolvePayoutConflict(ResolvePayoutConflictRequest) returns (ResolvePayoutConflictResponse);
+
+  // Returns a payout.
+  rpc GetPayoutSyncState(GetPayoutSyncStateRequest) returns (GetPayoutSyncStateResponse);
+
+  // Lists payouts a page at a time.
+  rpc ListPayoutConflicts(ListPayoutConflictsRequest) returns (ListPayoutConflictsResponse);
+}
+
+// The request of `SyncPayouts`.
+message SyncPayoutsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  SyncPayoutsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncPayouts`.
+message SyncPayoutsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  SyncPayoutsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushPayout`.
+message PushPayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  PushPayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushPayout`.
+message PushPayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  PushPayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullPayouts`.
+message PullPayoutsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  PullPayoutsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullPayouts`.
+message PullPayoutsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  PullPayoutsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcilePayouts`.
+message ReconcilePayoutsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  ReconcilePayoutsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcilePayouts`.
+message ReconcilePayoutsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  ReconcilePayoutsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamPayoutChanges`.
+message StreamPayoutChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Payout change = 2;
+    StreamPayoutChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamPayoutChanges`.
+message StreamPayoutChangesResponse {
+  Payout payout = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolvePayoutConflict`.
+message ResolvePayoutConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  ResolvePayoutConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolvePayoutConflict`.
+message ResolvePayoutConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  ResolvePayoutConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPayoutSyncState`.
+message GetPayoutSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPayoutSyncState`.
+message GetPayoutSyncStateResponse {
+  Payout payout = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPayoutConflicts`.
+message ListPayoutConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayoutStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPayoutConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPayoutConflicts`.
+message ListPayoutConflictsResponse {
+  repeated Payout payouts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewVoteWorkflowServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Runs the long-lived workflow that takes a review vote from start to finish.
+service ReviewVoteWorkflowService {
+  // Starts a review vote.
+  rpc StartReviewVoteWorkflow(StartReviewVoteWorkflowRequest) returns (StartReviewVoteWorkflowResponse);
+
+  // Advances a review vote.
+  rpc AdvanceReviewVoteWorkflow(AdvanceReviewVoteWorkflowRequest) returns (AdvanceReviewVoteWorkflowResponse);
+
+  // Retrys a review vote.
+  rpc RetryReviewVoteWorkflow(RetryReviewVoteWorkflowRequest) returns (RetryReviewVoteWorkflowResponse);
+
+  // Pauses a review vote.
+  rpc PauseReviewVoteWorkflow(PauseReviewVoteWorkflowRequest) returns (PauseReviewVoteWorkflowResponse);
+
+  // Resumes a review vote.
+  rpc ResumeReviewVoteWorkflow(ResumeReviewVoteWorkflowRequest) returns (ResumeReviewVoteWorkflowResponse);
+
+  // Returns a review vote.
+  rpc InspectReviewVoteWorkflow(InspectReviewVoteWorkflowRequest) returns (InspectReviewVoteWorkflowResponse);
+
+  // Lists review votes a page at a time.
+  rpc ListReviewVoteWorkflows(ListReviewVoteWorkflowsRequest) returns (ListReviewVoteWorkflowsResponse);
+
+  // Signals a review vote.
+  rpc SignalReviewVoteWorkflow(SignalReviewVoteWorkflowRequest) returns (SignalReviewVoteWorkflowResponse);
+}
+
+// The request of `StartReviewVoteWorkflow`.
+message StartReviewVoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  StartReviewVoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartReviewVoteWorkflow`.
+message StartReviewVoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  StartReviewVoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceReviewVoteWorkflow`.
+message AdvanceReviewVoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  AdvanceReviewVoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceReviewVoteWorkflow`.
+message AdvanceReviewVoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  AdvanceReviewVoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryReviewVoteWorkflow`.
+message RetryReviewVoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  RetryReviewVoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryReviewVoteWorkflow`.
+message RetryReviewVoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  RetryReviewVoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseReviewVoteWorkflow`.
+message PauseReviewVoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  PauseReviewVoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseReviewVoteWorkflow`.
+message PauseReviewVoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  PauseReviewVoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeReviewVoteWorkflow`.
+message ResumeReviewVoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  ResumeReviewVoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeReviewVoteWorkflow`.
+message ResumeReviewVoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  ResumeReviewVoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectReviewVoteWorkflow`.
+message InspectReviewVoteWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectReviewVoteWorkflow`.
+message InspectReviewVoteWorkflowResponse {
+  ReviewVote review_vote = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListReviewVoteWorkflows`.
+message ListReviewVoteWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReviewVoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListReviewVoteWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListReviewVoteWorkflows`.
+message ListReviewVoteWorkflowsResponse {
+  repeated ReviewVote review_votes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalReviewVoteWorkflow`.
+message SignalReviewVoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  SignalReviewVoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalReviewVoteWorkflow`.
+message SignalReviewVoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  SignalReviewVoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

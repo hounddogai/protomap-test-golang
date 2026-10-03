@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.travel.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/travel/v1/travel.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Travel.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/travel/v1;travelv1";
+option java_multiple_files = true;
+option java_outer_classname = "TripQueryServiceProto";
+option java_package = "com.acme.travel.v1";
+
+// Answers read-only questions about trips, for screens and reports.
+service TripQueryService {
+  // Returns a trip.
+  rpc LookupTrip(LookupTripRequest) returns (LookupTripResponse);
+
+  // Lists trips a page at a time.
+  rpc BrowseTrips(BrowseTripsRequest) returns (BrowseTripsResponse);
+
+  // Lists trips a page at a time.
+  rpc FindTrips(FindTripsRequest) returns (FindTripsResponse);
+
+  // Counts trips by status.
+  rpc CountTrips(CountTripsRequest) returns (CountTripsResponse);
+
+  // Returns several trips at once.
+  rpc ResolveTrips(ResolveTripsRequest) returns (ResolveTripsResponse);
+
+  // Streams every matching trip.
+  rpc ExportTrips(ExportTripsRequest) returns (stream ExportTripsResponse);
+
+  // Summarizes a trip.
+  rpc SummarizeTrips(SummarizeTripsRequest) returns (SummarizeTripsResponse);
+
+  // Lists trips a page at a time.
+  rpc SuggestTrips(SuggestTripsRequest) returns (SuggestTripsResponse);
+
+  // Returns a trip.
+  rpc PeekTrip(PeekTripRequest) returns (PeekTripResponse);
+}
+
+// The request of `LookupTrip`.
+message LookupTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  string trip_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupTrip`.
+message LookupTripResponse {
+  Trip trip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseTrips`.
+message BrowseTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseTripsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseTrips`.
+message BrowseTripsResponse {
+  repeated Trip trips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindTrips`.
+message FindTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindTripsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindTrips`.
+message FindTripsResponse {
+  repeated Trip trips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountTrips`.
+message CountTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountTripsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountTrips`.
+message CountTripsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveTrips`.
+message ResolveTripsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string trip_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveTrips`.
+message ResolveTripsResponse {
+  repeated Trip trips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportTrips`.
+message ExportTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportTripsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportTrips`.
+message ExportTripsResponse {
+  Trip trip = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeTrips`.
+message SummarizeTripsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string trip_id = 2;
+  SummarizeTripsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeTrips`.
+message SummarizeTripsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestTrips`.
+message SuggestTripsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TripStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestTripsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestTrips`.
+message SuggestTripsResponse {
+  repeated Trip trips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekTrip`.
+message PeekTripRequest {
+  acme.common.v1.RequestContext context = 1;
+  string trip_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekTrip`.
+message PeekTripResponse {
+  Trip trip = 1;
+  acme.common.v1.OperationResult result = 2;
+}

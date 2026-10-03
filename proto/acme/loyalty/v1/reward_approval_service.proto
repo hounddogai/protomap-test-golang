@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "RewardApprovalServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Routes rewards through approval, with escalation and delegation.
+service RewardApprovalService {
+  // Submits a reward.
+  rpc SubmitReward(SubmitRewardRequest) returns (SubmitRewardResponse);
+
+  // Approves a reward.
+  rpc ApproveReward(ApproveRewardRequest) returns (ApproveRewardResponse);
+
+  // Rejects a reward.
+  rpc RejectReward(RejectRewardRequest) returns (RejectRewardResponse);
+
+  // Escalates a reward.
+  rpc EscalateReward(EscalateRewardRequest) returns (EscalateRewardResponse);
+
+  // Lists rewards a page at a time.
+  rpc ListPendingRewards(ListPendingRewardsRequest) returns (ListPendingRewardsResponse);
+
+  // Delegates a reward.
+  rpc DelegateRewardApproval(DelegateRewardApprovalRequest) returns (DelegateRewardApprovalResponse);
+
+  // Recalls a reward.
+  rpc RecallReward(RecallRewardRequest) returns (RecallRewardResponse);
+
+  // Returns a reward.
+  rpc GetRewardApprovalStatus(GetRewardApprovalStatusRequest) returns (GetRewardApprovalStatusResponse);
+}
+
+// The request of `SubmitReward`.
+message SubmitRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  SubmitRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitReward`.
+message SubmitRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  SubmitRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveReward`.
+message ApproveRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  ApproveRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveReward`.
+message ApproveRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  ApproveRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectReward`.
+message RejectRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  RejectRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectReward`.
+message RejectRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  RejectRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateReward`.
+message EscalateRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  EscalateRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateReward`.
+message EscalateRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  EscalateRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingRewards`.
+message ListPendingRewardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RewardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingRewardsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingRewards`.
+message ListPendingRewardsResponse {
+  repeated Reward rewards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateRewardApproval`.
+message DelegateRewardApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  DelegateRewardApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateRewardApproval`.
+message DelegateRewardApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  DelegateRewardApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallReward`.
+message RecallRewardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  RecallRewardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallReward`.
+message RecallRewardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  RecallRewardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRewardApprovalStatus`.
+message GetRewardApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRewardApprovalStatus`.
+message GetRewardApprovalStatusResponse {
+  Reward reward = 1;
+  acme.common.v1.OperationResult result = 2;
+}

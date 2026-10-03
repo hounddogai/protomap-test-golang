@@ -1,0 +1,288 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PlacementValidationServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Checks placements against the rules before anything acts on them.
+service PlacementValidationService {
+  // Validates a placement.
+  rpc ValidatePlacement(ValidatePlacementRequest) returns (ValidatePlacementResponse);
+
+  // Previews a placement.
+  rpc PreviewPlacement(PreviewPlacementRequest) returns (PreviewPlacementResponse);
+
+  // Checks a placement.
+  rpc CheckPlacementEligibility(CheckPlacementEligibilityRequest) returns (CheckPlacementEligibilityResponse);
+
+  // Normalizes a placement.
+  rpc NormalizePlacement(NormalizePlacementRequest) returns (NormalizePlacementResponse);
+
+  // Explains a placement.
+  rpc ExplainPlacementDecision(ExplainPlacementDecisionRequest) returns (ExplainPlacementDecisionResponse);
+
+  // Scores a placement.
+  rpc ScorePlacement(ScorePlacementRequest) returns (ScorePlacementResponse);
+
+  // Lints a placement.
+  rpc LintPlacements(LintPlacementsRequest) returns (LintPlacementsResponse);
+}
+
+// The request of `ValidatePlacement`.
+message ValidatePlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  ValidatePlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePlacement`.
+message ValidatePlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  ValidatePlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPlacement`.
+message PreviewPlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  PreviewPlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPlacement`.
+message PreviewPlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  PreviewPlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPlacementEligibility`.
+message CheckPlacementEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  CheckPlacementEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPlacementEligibility`.
+message CheckPlacementEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  CheckPlacementEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePlacement`.
+message NormalizePlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  NormalizePlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePlacement`.
+message NormalizePlacementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  NormalizePlacementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPlacementDecision`.
+message ExplainPlacementDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  ExplainPlacementDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPlacementDecision`.
+message ExplainPlacementDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  ExplainPlacementDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePlacement`.
+message ScorePlacementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  ScorePlacementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePlacement`.
+message ScorePlacementResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePlacementResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Placement placement = 1;
+  ScorePlacementResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPlacements`.
+message LintPlacementsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  Placement placement = 3;
+  LintPlacementsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPlacements`.
+message LintPlacementsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Placement placement = 1;
+  LintPlacementsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

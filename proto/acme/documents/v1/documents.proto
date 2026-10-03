@@ -1,0 +1,226 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.documents.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/documents/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Documents.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/documents/v1;documentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DocumentsProto";
+option java_package = "com.acme.documents.v1";
+
+// Where a document is in its lifecycle.
+enum DocumentStatus {
+  DOCUMENT_STATUS_UNSPECIFIED = 0;
+  DOCUMENT_STATUS_DRAFT = 1;
+  DOCUMENT_STATUS_ISSUED = 2;
+  DOCUMENT_STATUS_APPROVED = 3;
+  DOCUMENT_STATUS_PAID = 4;
+  DOCUMENT_STATUS_VOID = 5;
+}
+
+// Where a document folder is in its lifecycle.
+enum DocumentFolderStatus {
+  DOCUMENT_FOLDER_STATUS_UNSPECIFIED = 0;
+  DOCUMENT_FOLDER_STATUS_ACTIVE = 1;
+  DOCUMENT_FOLDER_STATUS_INACTIVE = 2;
+}
+
+// Where a signature is in its lifecycle.
+enum SignatureStatus {
+  SIGNATURE_STATUS_UNSPECIFIED = 0;
+  SIGNATURE_STATUS_RECEIVED = 1;
+  SIGNATURE_STATUS_PROCESSED = 2;
+  SIGNATURE_STATUS_DISCARDED = 3;
+}
+
+// Where a document template is in its lifecycle.
+enum DocumentTemplateStatus {
+  DOCUMENT_TEMPLATE_STATUS_UNSPECIFIED = 0;
+  DOCUMENT_TEMPLATE_STATUS_DRAFT = 1;
+  DOCUMENT_TEMPLATE_STATUS_ISSUED = 2;
+  DOCUMENT_TEMPLATE_STATUS_APPROVED = 3;
+  DOCUMENT_TEMPLATE_STATUS_PAID = 4;
+  DOCUMENT_TEMPLATE_STATUS_VOID = 5;
+}
+
+// The line of a document.
+message DocumentLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  DocumentLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a document line.
+message DocumentLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a document.
+message DocumentCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a document.
+message DocumentBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a document.
+message DocumentAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A document of the documents domain.
+message Document {
+  string document_id = 1;
+  string number = 2;
+  DocumentStatus status = 3;
+  DocumentFolderRef counterparty = 4;
+  repeated DocumentLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    DocumentCardSettlement card = 8;
+    DocumentBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated DocumentAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// A document folder of the documents domain.
+message DocumentFolder {
+  string document_folder_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated DocumentFolder children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  DocumentFolderStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The measurement of a signature.
+message SignatureMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A signature of the documents domain.
+message Signature {
+  string signature_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  DocumentRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated SignatureMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The line of a document template.
+message DocumentTemplateLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  DocumentTemplateLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a document template line.
+message DocumentTemplateLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a document template.
+message DocumentTemplateCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a document template.
+message DocumentTemplateBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a document template.
+message DocumentTemplateAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A document template of the documents domain.
+message DocumentTemplate {
+  string document_template_id = 1;
+  string number = 2;
+  DocumentTemplateStatus status = 3;
+  DocumentFolderRef counterparty = 4;
+  repeated DocumentTemplateLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    DocumentTemplateCardSettlement card = 8;
+    DocumentTemplateBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated DocumentTemplateAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

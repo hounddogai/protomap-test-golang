@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.notifications.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/notifications/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Notifications.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/notifications/v1;notificationsv1";
+option java_multiple_files = true;
+option java_outer_classname = "NotificationsProto";
+option java_package = "com.acme.notifications.v1";
+
+// Where a notification is in its lifecycle.
+enum NotificationStatus {
+  NOTIFICATION_STATUS_UNSPECIFIED = 0;
+  NOTIFICATION_STATUS_NEW = 1;
+  NOTIFICATION_STATUS_OPEN = 2;
+  NOTIFICATION_STATUS_WAITING = 3;
+  NOTIFICATION_STATUS_RESOLVED = 4;
+  NOTIFICATION_STATUS_CLOSED = 5;
+}
+
+// Where a notification template is in its lifecycle.
+enum NotificationTemplateStatus {
+  NOTIFICATION_TEMPLATE_STATUS_UNSPECIFIED = 0;
+  NOTIFICATION_TEMPLATE_STATUS_DRAFT = 1;
+  NOTIFICATION_TEMPLATE_STATUS_ISSUED = 2;
+  NOTIFICATION_TEMPLATE_STATUS_APPROVED = 3;
+  NOTIFICATION_TEMPLATE_STATUS_PAID = 4;
+  NOTIFICATION_TEMPLATE_STATUS_VOID = 5;
+}
+
+// Where a delivery attempt is in its lifecycle.
+enum DeliveryAttemptStatus {
+  DELIVERY_ATTEMPT_STATUS_UNSPECIFIED = 0;
+  DELIVERY_ATTEMPT_STATUS_RECEIVED = 1;
+  DELIVERY_ATTEMPT_STATUS_PROCESSED = 2;
+  DELIVERY_ATTEMPT_STATUS_DISCARDED = 3;
+}
+
+// Where a subscription is in its lifecycle.
+enum SubscriptionStatus {
+  SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
+  SUBSCRIPTION_STATUS_DRAFT = 1;
+  SUBSCRIPTION_STATUS_ENABLED = 2;
+  SUBSCRIPTION_STATUS_DISABLED = 3;
+  SUBSCRIPTION_STATUS_RETIRED = 4;
+}
+
+// The comment of a notification.
+message NotificationComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a notification.
+message NotificationSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a notification.
+message NotificationChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a notification.
+message NotificationStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A notification of the notifications domain.
+message Notification {
+  string notification_id = 1;
+  string subject = 2;
+  NotificationStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated NotificationComment comments = 7;
+  NotificationSla sla = 8;
+  oneof origin {
+    NotificationTemplateRef customer = 9;
+    string external_reference = 10;
+    NotificationChannelOrigin channel = 11;
+  }
+  repeated NotificationStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of a notification template.
+message NotificationTemplateLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  NotificationTemplateLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a notification template line.
+message NotificationTemplateLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a notification template.
+message NotificationTemplateCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a notification template.
+message NotificationTemplateBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a notification template.
+message NotificationTemplateAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A notification template of the notifications domain.
+message NotificationTemplate {
+  string notification_template_id = 1;
+  string number = 2;
+  NotificationTemplateStatus status = 3;
+  NotificationRef counterparty = 4;
+  repeated NotificationTemplateLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    NotificationTemplateCardSettlement card = 8;
+    NotificationTemplateBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated NotificationTemplateAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a delivery attempt.
+message DeliveryAttemptMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A delivery attempt of the notifications domain.
+message DeliveryAttempt {
+  string delivery_attempt_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  NotificationTemplateRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated DeliveryAttemptMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The condition of a subscription.
+message SubscriptionCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a subscription.
+message SubscriptionDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a subscription.
+message SubscriptionRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a subscription.
+message SubscriptionBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A subscription of the notifications domain.
+message Subscription {
+  string subscription_id = 1;
+  string name = 2;
+  string description = 3;
+  SubscriptionStatus status = 4;
+  int32 priority = 5;
+  repeated SubscriptionCondition conditions = 6;
+  oneof action {
+    SubscriptionDiscountAction discount = 7;
+    SubscriptionRouteAction route = 8;
+    SubscriptionBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "AttributeCalculationServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Computes the figures of an attribute, such as totals, taxes, and estimates.
+service AttributeCalculationService {
+  // Calculates an attribute.
+  rpc CalculateAttribute(CalculateAttributeRequest) returns (CalculateAttributeResponse);
+
+  // Estimates an attribute.
+  rpc EstimateAttribute(EstimateAttributeRequest) returns (EstimateAttributeResponse);
+
+  // Quotes an attribute.
+  rpc QuoteAttribute(QuoteAttributeRequest) returns (QuoteAttributeResponse);
+
+  // Compares an attribute.
+  rpc CompareAttributeOptions(CompareAttributeOptionsRequest) returns (CompareAttributeOptionsResponse);
+
+  // Recalculates an attribute.
+  rpc RecalculateAttributes(RecalculateAttributesRequest) returns (RecalculateAttributesResponse);
+
+  // Explains an attribute.
+  rpc ExplainAttributeCalculation(ExplainAttributeCalculationRequest) returns (ExplainAttributeCalculationResponse);
+
+  // Returns an attribute.
+  rpc GetAttributeRates(GetAttributeRatesRequest) returns (GetAttributeRatesResponse);
+}
+
+// The request of `CalculateAttribute`.
+message CalculateAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  CalculateAttributeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateAttribute`.
+message CalculateAttributeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateAttributeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Attribute attribute = 1;
+  CalculateAttributeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateAttribute`.
+message EstimateAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  EstimateAttributeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateAttribute`.
+message EstimateAttributeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateAttributeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Attribute attribute = 1;
+  EstimateAttributeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteAttribute`.
+message QuoteAttributeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  QuoteAttributeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteAttribute`.
+message QuoteAttributeResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteAttributeResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Attribute attribute = 1;
+  QuoteAttributeResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareAttributeOptions`.
+message CompareAttributeOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  CompareAttributeOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareAttributeOptions`.
+message CompareAttributeOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareAttributeOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Attribute attribute = 1;
+  CompareAttributeOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateAttributes`.
+message RecalculateAttributesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  RecalculateAttributesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateAttributes`.
+message RecalculateAttributesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateAttributesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Attribute attribute = 1;
+  RecalculateAttributesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainAttributeCalculation`.
+message ExplainAttributeCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  Attribute attribute = 3;
+  ExplainAttributeCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainAttributeCalculation`.
+message ExplainAttributeCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Attribute attribute = 1;
+  ExplainAttributeCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAttributeRates`.
+message GetAttributeRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string attribute_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAttributeRates`.
+message GetAttributeRatesResponse {
+  Attribute attribute = 1;
+  acme.common.v1.OperationResult result = 2;
+}

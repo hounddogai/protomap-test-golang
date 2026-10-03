@@ -1,0 +1,240 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/giftcards/v1/giftcards.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftCardApprovalServiceProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Routes gift cards through approval, with escalation and delegation.
+service GiftCardApprovalService {
+  // Submits a gift card.
+  rpc SubmitGiftCard(SubmitGiftCardRequest) returns (SubmitGiftCardResponse);
+
+  // Approves a gift card.
+  rpc ApproveGiftCard(ApproveGiftCardRequest) returns (ApproveGiftCardResponse);
+
+  // Rejects a gift card.
+  rpc RejectGiftCard(RejectGiftCardRequest) returns (RejectGiftCardResponse);
+
+  // Lists gift cards a page at a time.
+  rpc ListPendingGiftCards(ListPendingGiftCardsRequest) returns (ListPendingGiftCardsResponse);
+
+  // Delegates a gift card.
+  rpc DelegateGiftCardApproval(DelegateGiftCardApprovalRequest) returns (DelegateGiftCardApprovalResponse);
+
+  // Recalls a gift card.
+  rpc RecallGiftCard(RecallGiftCardRequest) returns (RecallGiftCardResponse);
+}
+
+// The request of `SubmitGiftCard`.
+message SubmitGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  SubmitGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitGiftCard`.
+message SubmitGiftCardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCard gift_card = 1;
+  SubmitGiftCardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveGiftCard`.
+message ApproveGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  ApproveGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveGiftCard`.
+message ApproveGiftCardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCard gift_card = 1;
+  ApproveGiftCardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectGiftCard`.
+message RejectGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  RejectGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectGiftCard`.
+message RejectGiftCardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCard gift_card = 1;
+  RejectGiftCardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingGiftCards`.
+message ListPendingGiftCardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingGiftCardsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingGiftCards`.
+message ListPendingGiftCardsResponse {
+  repeated GiftCard gift_cards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateGiftCardApproval`.
+message DelegateGiftCardApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  DelegateGiftCardApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateGiftCardApproval`.
+message DelegateGiftCardApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCard gift_card = 1;
+  DelegateGiftCardApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallGiftCard`.
+message RecallGiftCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  GiftCard gift_card = 3;
+  RecallGiftCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallGiftCard`.
+message RecallGiftCardResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCard gift_card = 1;
+  RecallGiftCardResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

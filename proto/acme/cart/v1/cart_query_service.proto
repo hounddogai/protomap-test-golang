@@ -1,0 +1,189 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "CartQueryServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Answers read-only questions about carts, for screens and reports.
+service CartQueryService {
+  // Returns a cart.
+  rpc LookupCart(LookupCartRequest) returns (LookupCartResponse);
+
+  // Lists carts a page at a time.
+  rpc BrowseCarts(BrowseCartsRequest) returns (BrowseCartsResponse);
+
+  // Returns several carts at once.
+  rpc ResolveCarts(ResolveCartsRequest) returns (ResolveCartsResponse);
+
+  // Streams every matching cart.
+  rpc ExportCarts(ExportCartsRequest) returns (stream ExportCartsResponse);
+
+  // Summarizes a cart.
+  rpc SummarizeCarts(SummarizeCartsRequest) returns (SummarizeCartsResponse);
+
+  // Lists carts a page at a time.
+  rpc SuggestCarts(SuggestCartsRequest) returns (SuggestCartsResponse);
+
+  // Returns a cart.
+  rpc PeekCart(PeekCartRequest) returns (PeekCartResponse);
+}
+
+// The request of `LookupCart`.
+message LookupCartRequest {
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCart`.
+message LookupCartResponse {
+  Cart cart = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCarts`.
+message BrowseCartsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CartStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCartsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCarts`.
+message BrowseCartsResponse {
+  repeated Cart carts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCarts`.
+message ResolveCartsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string cart_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCarts`.
+message ResolveCartsResponse {
+  repeated Cart carts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCarts`.
+message ExportCartsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CartStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCartsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCarts`.
+message ExportCartsResponse {
+  Cart cart = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCarts`.
+message SummarizeCartsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  SummarizeCartsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCarts`.
+message SummarizeCartsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCarts`.
+message SuggestCartsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CartStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCartsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCarts`.
+message SuggestCartsResponse {
+  repeated Cart carts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCart`.
+message PeekCartRequest {
+  acme.common.v1.RequestContext context = 1;
+  string cart_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCart`.
+message PeekCartResponse {
+  Cart cart = 1;
+  acme.common.v1.OperationResult result = 2;
+}

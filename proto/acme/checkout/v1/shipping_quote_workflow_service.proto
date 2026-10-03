@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.checkout.v1;
+
+import "acme/checkout/v1/checkout.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Checkout.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/checkout/v1;checkoutv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShippingQuoteWorkflowServiceProto";
+option java_package = "com.acme.checkout.v1";
+
+// Runs the long-lived workflow that takes a shipping quote from start to finish.
+service ShippingQuoteWorkflowService {
+  // Starts a shipping quote.
+  rpc StartShippingQuoteWorkflow(StartShippingQuoteWorkflowRequest) returns (StartShippingQuoteWorkflowResponse);
+
+  // Advances a shipping quote.
+  rpc AdvanceShippingQuoteWorkflow(AdvanceShippingQuoteWorkflowRequest) returns (AdvanceShippingQuoteWorkflowResponse);
+
+  // Cancels a shipping quote.
+  rpc CancelShippingQuoteWorkflow(CancelShippingQuoteWorkflowRequest) returns (CancelShippingQuoteWorkflowResponse);
+
+  // Pauses a shipping quote.
+  rpc PauseShippingQuoteWorkflow(PauseShippingQuoteWorkflowRequest) returns (PauseShippingQuoteWorkflowResponse);
+
+  // Returns a shipping quote.
+  rpc InspectShippingQuoteWorkflow(InspectShippingQuoteWorkflowRequest) returns (InspectShippingQuoteWorkflowResponse);
+
+  // Lists shipping quotes a page at a time.
+  rpc ListShippingQuoteWorkflows(ListShippingQuoteWorkflowsRequest) returns (ListShippingQuoteWorkflowsResponse);
+
+  // Signals a shipping quote.
+  rpc SignalShippingQuoteWorkflow(SignalShippingQuoteWorkflowRequest) returns (SignalShippingQuoteWorkflowResponse);
+}
+
+// The request of `StartShippingQuoteWorkflow`.
+message StartShippingQuoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  ShippingQuote shipping_quote = 3;
+  StartShippingQuoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartShippingQuoteWorkflow`.
+message StartShippingQuoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShippingQuote shipping_quote = 1;
+  StartShippingQuoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceShippingQuoteWorkflow`.
+message AdvanceShippingQuoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  ShippingQuote shipping_quote = 3;
+  AdvanceShippingQuoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceShippingQuoteWorkflow`.
+message AdvanceShippingQuoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShippingQuote shipping_quote = 1;
+  AdvanceShippingQuoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelShippingQuoteWorkflow`.
+message CancelShippingQuoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  ShippingQuote shipping_quote = 3;
+  CancelShippingQuoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelShippingQuoteWorkflow`.
+message CancelShippingQuoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShippingQuote shipping_quote = 1;
+  CancelShippingQuoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseShippingQuoteWorkflow`.
+message PauseShippingQuoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  ShippingQuote shipping_quote = 3;
+  PauseShippingQuoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseShippingQuoteWorkflow`.
+message PauseShippingQuoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShippingQuote shipping_quote = 1;
+  PauseShippingQuoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectShippingQuoteWorkflow`.
+message InspectShippingQuoteWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectShippingQuoteWorkflow`.
+message InspectShippingQuoteWorkflowResponse {
+  ShippingQuote shipping_quote = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListShippingQuoteWorkflows`.
+message ListShippingQuoteWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShippingQuoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListShippingQuoteWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListShippingQuoteWorkflows`.
+message ListShippingQuoteWorkflowsResponse {
+  repeated ShippingQuote shipping_quotes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalShippingQuoteWorkflow`.
+message SignalShippingQuoteWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shipping_quote_id = 2;
+  ShippingQuote shipping_quote = 3;
+  SignalShippingQuoteWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalShippingQuoteWorkflow`.
+message SignalShippingQuoteWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShippingQuote shipping_quote = 1;
+  SignalShippingQuoteWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

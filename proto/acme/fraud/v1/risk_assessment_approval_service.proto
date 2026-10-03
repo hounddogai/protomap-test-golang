@@ -1,0 +1,304 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskAssessmentApprovalServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Routes risk assessments through approval, with escalation and delegation.
+service RiskAssessmentApprovalService {
+  // Submits a risk assessment.
+  rpc SubmitRiskAssessment(SubmitRiskAssessmentRequest) returns (SubmitRiskAssessmentResponse);
+
+  // Approves a risk assessment.
+  rpc ApproveRiskAssessment(ApproveRiskAssessmentRequest) returns (ApproveRiskAssessmentResponse);
+
+  // Rejects a risk assessment.
+  rpc RejectRiskAssessment(RejectRiskAssessmentRequest) returns (RejectRiskAssessmentResponse);
+
+  // Escalates a risk assessment.
+  rpc EscalateRiskAssessment(EscalateRiskAssessmentRequest) returns (EscalateRiskAssessmentResponse);
+
+  // Delegates a risk assessment.
+  rpc DelegateRiskAssessmentApproval(DelegateRiskAssessmentApprovalRequest) returns (DelegateRiskAssessmentApprovalResponse);
+
+  // Recalls a risk assessment.
+  rpc RecallRiskAssessment(RecallRiskAssessmentRequest) returns (RecallRiskAssessmentResponse);
+
+  // Returns a risk assessment.
+  rpc GetRiskAssessmentApprovalStatus(GetRiskAssessmentApprovalStatusRequest) returns (GetRiskAssessmentApprovalStatusResponse);
+
+  // Comments a risk assessment.
+  rpc CommentRiskAssessmentApproval(CommentRiskAssessmentApprovalRequest) returns (CommentRiskAssessmentApprovalResponse);
+}
+
+// The request of `SubmitRiskAssessment`.
+message SubmitRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  SubmitRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitRiskAssessment`.
+message SubmitRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  SubmitRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveRiskAssessment`.
+message ApproveRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  ApproveRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveRiskAssessment`.
+message ApproveRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  ApproveRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectRiskAssessment`.
+message RejectRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  RejectRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectRiskAssessment`.
+message RejectRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  RejectRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateRiskAssessment`.
+message EscalateRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  EscalateRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateRiskAssessment`.
+message EscalateRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  EscalateRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateRiskAssessmentApproval`.
+message DelegateRiskAssessmentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  DelegateRiskAssessmentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateRiskAssessmentApproval`.
+message DelegateRiskAssessmentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  DelegateRiskAssessmentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallRiskAssessment`.
+message RecallRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  RecallRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallRiskAssessment`.
+message RecallRiskAssessmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  RecallRiskAssessmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRiskAssessmentApprovalStatus`.
+message GetRiskAssessmentApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRiskAssessmentApprovalStatus`.
+message GetRiskAssessmentApprovalStatusResponse {
+  RiskAssessment risk_assessment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentRiskAssessmentApproval`.
+message CommentRiskAssessmentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  CommentRiskAssessmentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentRiskAssessmentApproval`.
+message CommentRiskAssessmentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  CommentRiskAssessmentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

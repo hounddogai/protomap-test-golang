@@ -1,0 +1,174 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.recommendations.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Recommendations.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/recommendations/v1;recommendationsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RecommendationsProto";
+option java_package = "com.acme.recommendations.v1";
+
+// Where a recommendation set is in its lifecycle.
+enum RecommendationSetStatus {
+  RECOMMENDATION_SET_STATUS_UNSPECIFIED = 0;
+  RECOMMENDATION_SET_STATUS_DRAFT = 1;
+  RECOMMENDATION_SET_STATUS_ISSUED = 2;
+  RECOMMENDATION_SET_STATUS_APPROVED = 3;
+  RECOMMENDATION_SET_STATUS_PAID = 4;
+  RECOMMENDATION_SET_STATUS_VOID = 5;
+}
+
+// Where a recommendation model is in its lifecycle.
+enum RecommendationModelStatus {
+  RECOMMENDATION_MODEL_STATUS_UNSPECIFIED = 0;
+  RECOMMENDATION_MODEL_STATUS_PLANNED = 1;
+  RECOMMENDATION_MODEL_STATUS_AVAILABLE = 2;
+  RECOMMENDATION_MODEL_STATUS_RESERVED = 3;
+  RECOMMENDATION_MODEL_STATUS_RETIRED = 4;
+}
+
+// Where an interaction is in its lifecycle.
+enum InteractionStatus {
+  INTERACTION_STATUS_UNSPECIFIED = 0;
+  INTERACTION_STATUS_RECEIVED = 1;
+  INTERACTION_STATUS_PROCESSED = 2;
+  INTERACTION_STATUS_DISCARDED = 3;
+}
+
+// The line of a recommendation set.
+message RecommendationSetLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  RecommendationSetLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a recommendation set line.
+message RecommendationSetLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a recommendation set.
+message RecommendationSetCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a recommendation set.
+message RecommendationSetBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a recommendation set.
+message RecommendationSetAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A recommendation set of the recommendations domain.
+message RecommendationSet {
+  string recommendation_set_id = 1;
+  string number = 2;
+  RecommendationSetStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated RecommendationSetLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    RecommendationSetCardSettlement card = 8;
+    RecommendationSetBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated RecommendationSetAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The dimensions of a recommendation model.
+message RecommendationModelDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a recommendation model.
+message RecommendationModelComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A recommendation model of the recommendations domain.
+message RecommendationModel {
+  string recommendation_model_id = 1;
+  string code = 2;
+  string name = 3;
+  RecommendationModelStatus status = 4;
+  repeated string category_path = 5;
+  RecommendationModelDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, RecommendationModelComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of an interaction.
+message InteractionMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// An interaction of the recommendations domain.
+message Interaction {
+  string interaction_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated InteractionMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

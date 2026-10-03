@@ -1,0 +1,300 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.treasury.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/treasury/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Treasury.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/treasury/v1;treasuryv1";
+option java_multiple_files = true;
+option java_outer_classname = "TreasuryProto";
+option java_package = "com.acme.treasury.v1";
+
+// Where a cash position is in its lifecycle.
+enum CashPositionStatus {
+  CASH_POSITION_STATUS_UNSPECIFIED = 0;
+  CASH_POSITION_STATUS_PENDING = 1;
+  CASH_POSITION_STATUS_OPEN = 2;
+  CASH_POSITION_STATUS_FROZEN = 3;
+  CASH_POSITION_STATUS_CLOSED = 4;
+}
+
+// Where a bank transfer is in its lifecycle.
+enum BankTransferStatus {
+  BANK_TRANSFER_STATUS_UNSPECIFIED = 0;
+  BANK_TRANSFER_STATUS_DRAFT = 1;
+  BANK_TRANSFER_STATUS_ISSUED = 2;
+  BANK_TRANSFER_STATUS_APPROVED = 3;
+  BANK_TRANSFER_STATUS_PAID = 4;
+  BANK_TRANSFER_STATUS_VOID = 5;
+}
+
+// Where a fx hedge is in its lifecycle.
+enum FxHedgeStatus {
+  FX_HEDGE_STATUS_UNSPECIFIED = 0;
+  FX_HEDGE_STATUS_DRAFT = 1;
+  FX_HEDGE_STATUS_ISSUED = 2;
+  FX_HEDGE_STATUS_APPROVED = 3;
+  FX_HEDGE_STATUS_PAID = 4;
+  FX_HEDGE_STATUS_VOID = 5;
+}
+
+// Where a liquidity forecast is in its lifecycle.
+enum LiquidityForecastStatus {
+  LIQUIDITY_FORECAST_STATUS_UNSPECIFIED = 0;
+  LIQUIDITY_FORECAST_STATUS_DRAFT = 1;
+  LIQUIDITY_FORECAST_STATUS_ISSUED = 2;
+  LIQUIDITY_FORECAST_STATUS_APPROVED = 3;
+  LIQUIDITY_FORECAST_STATUS_PAID = 4;
+  LIQUIDITY_FORECAST_STATUS_VOID = 5;
+}
+
+// The limit of a cash position.
+message CashPositionLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a cash position.
+message CashPositionCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a cash position.
+message CashPositionBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A cash position of the treasury domain.
+message CashPosition {
+  string cash_position_id = 1;
+  FxHedgeRef holder = 2;
+  CashPositionStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated CashPositionLimit limits = 7;
+  oneof funding {
+    CashPositionCardFunding card = 8;
+    CashPositionBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The line of a bank transfer.
+message BankTransferLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  BankTransferLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a bank transfer line.
+message BankTransferLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a bank transfer.
+message BankTransferCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a bank transfer.
+message BankTransferBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a bank transfer.
+message BankTransferAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A bank transfer of the treasury domain.
+message BankTransfer {
+  string bank_transfer_id = 1;
+  string number = 2;
+  BankTransferStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated BankTransferLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    BankTransferCardSettlement card = 8;
+    BankTransferBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated BankTransferAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a fx hedge.
+message FxHedgeLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  FxHedgeLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a fx hedge line.
+message FxHedgeLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a fx hedge.
+message FxHedgeCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a fx hedge.
+message FxHedgeBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a fx hedge.
+message FxHedgeAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A fx hedge of the treasury domain.
+message FxHedge {
+  string fx_hedge_id = 1;
+  string number = 2;
+  FxHedgeStatus status = 3;
+  CashPositionRef counterparty = 4;
+  repeated FxHedgeLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    FxHedgeCardSettlement card = 8;
+    FxHedgeBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated FxHedgeAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a liquidity forecast.
+message LiquidityForecastLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  LiquidityForecastLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a liquidity forecast line.
+message LiquidityForecastLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a liquidity forecast.
+message LiquidityForecastCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a liquidity forecast.
+message LiquidityForecastBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a liquidity forecast.
+message LiquidityForecastAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A liquidity forecast of the treasury domain.
+message LiquidityForecast {
+  string liquidity_forecast_id = 1;
+  string number = 2;
+  LiquidityForecastStatus status = 3;
+  CashPositionRef counterparty = 4;
+  repeated LiquidityForecastLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    LiquidityForecastCardSettlement card = 8;
+    LiquidityForecastBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated LiquidityForecastAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

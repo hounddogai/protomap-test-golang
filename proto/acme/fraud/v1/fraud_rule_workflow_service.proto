@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudRuleWorkflowServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Runs the long-lived workflow that takes a fraud rule from start to finish.
+service FraudRuleWorkflowService {
+  // Starts a fraud rule.
+  rpc StartFraudRuleWorkflow(StartFraudRuleWorkflowRequest) returns (StartFraudRuleWorkflowResponse);
+
+  // Advances a fraud rule.
+  rpc AdvanceFraudRuleWorkflow(AdvanceFraudRuleWorkflowRequest) returns (AdvanceFraudRuleWorkflowResponse);
+
+  // Cancels a fraud rule.
+  rpc CancelFraudRuleWorkflow(CancelFraudRuleWorkflowRequest) returns (CancelFraudRuleWorkflowResponse);
+
+  // Retrys a fraud rule.
+  rpc RetryFraudRuleWorkflow(RetryFraudRuleWorkflowRequest) returns (RetryFraudRuleWorkflowResponse);
+
+  // Pauses a fraud rule.
+  rpc PauseFraudRuleWorkflow(PauseFraudRuleWorkflowRequest) returns (PauseFraudRuleWorkflowResponse);
+
+  // Resumes a fraud rule.
+  rpc ResumeFraudRuleWorkflow(ResumeFraudRuleWorkflowRequest) returns (ResumeFraudRuleWorkflowResponse);
+
+  // Returns a fraud rule.
+  rpc InspectFraudRuleWorkflow(InspectFraudRuleWorkflowRequest) returns (InspectFraudRuleWorkflowResponse);
+
+  // Lists fraud rules a page at a time.
+  rpc ListFraudRuleWorkflows(ListFraudRuleWorkflowsRequest) returns (ListFraudRuleWorkflowsResponse);
+
+  // Signals a fraud rule.
+  rpc SignalFraudRuleWorkflow(SignalFraudRuleWorkflowRequest) returns (SignalFraudRuleWorkflowResponse);
+}
+
+// The request of `StartFraudRuleWorkflow`.
+message StartFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  StartFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartFraudRuleWorkflow`.
+message StartFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  StartFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceFraudRuleWorkflow`.
+message AdvanceFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  AdvanceFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceFraudRuleWorkflow`.
+message AdvanceFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  AdvanceFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelFraudRuleWorkflow`.
+message CancelFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  CancelFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelFraudRuleWorkflow`.
+message CancelFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  CancelFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryFraudRuleWorkflow`.
+message RetryFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  RetryFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryFraudRuleWorkflow`.
+message RetryFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  RetryFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseFraudRuleWorkflow`.
+message PauseFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  PauseFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseFraudRuleWorkflow`.
+message PauseFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  PauseFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeFraudRuleWorkflow`.
+message ResumeFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  ResumeFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeFraudRuleWorkflow`.
+message ResumeFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  ResumeFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectFraudRuleWorkflow`.
+message InspectFraudRuleWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectFraudRuleWorkflow`.
+message InspectFraudRuleWorkflowResponse {
+  FraudRule fraud_rule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListFraudRuleWorkflows`.
+message ListFraudRuleWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudRuleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFraudRuleWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFraudRuleWorkflows`.
+message ListFraudRuleWorkflowsResponse {
+  repeated FraudRule fraud_rules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalFraudRuleWorkflow`.
+message SignalFraudRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  SignalFraudRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalFraudRuleWorkflow`.
+message SignalFraudRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  SignalFraudRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

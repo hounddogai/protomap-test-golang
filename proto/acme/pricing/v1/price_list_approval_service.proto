@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceListApprovalServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Routes price lists through approval, with escalation and delegation.
+service PriceListApprovalService {
+  // Submits a price list.
+  rpc SubmitPriceList(SubmitPriceListRequest) returns (SubmitPriceListResponse);
+
+  // Approves a price list.
+  rpc ApprovePriceList(ApprovePriceListRequest) returns (ApprovePriceListResponse);
+
+  // Escalates a price list.
+  rpc EscalatePriceList(EscalatePriceListRequest) returns (EscalatePriceListResponse);
+
+  // Lists price lists a page at a time.
+  rpc ListPendingPriceLists(ListPendingPriceListsRequest) returns (ListPendingPriceListsResponse);
+
+  // Delegates a price list.
+  rpc DelegatePriceListApproval(DelegatePriceListApprovalRequest) returns (DelegatePriceListApprovalResponse);
+
+  // Recalls a price list.
+  rpc RecallPriceList(RecallPriceListRequest) returns (RecallPriceListResponse);
+
+  // Returns a price list.
+  rpc GetPriceListApprovalStatus(GetPriceListApprovalStatusRequest) returns (GetPriceListApprovalStatusResponse);
+
+  // Comments a price list.
+  rpc CommentPriceListApproval(CommentPriceListApprovalRequest) returns (CommentPriceListApprovalResponse);
+}
+
+// The request of `SubmitPriceList`.
+message SubmitPriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  SubmitPriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPriceList`.
+message SubmitPriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  SubmitPriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePriceList`.
+message ApprovePriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  ApprovePriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePriceList`.
+message ApprovePriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  ApprovePriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePriceList`.
+message EscalatePriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  EscalatePriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePriceList`.
+message EscalatePriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  EscalatePriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPriceLists`.
+message ListPendingPriceListsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPriceListsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPriceLists`.
+message ListPendingPriceListsResponse {
+  repeated PriceList price_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePriceListApproval`.
+message DelegatePriceListApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  DelegatePriceListApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePriceListApproval`.
+message DelegatePriceListApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  DelegatePriceListApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPriceList`.
+message RecallPriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  RecallPriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPriceList`.
+message RecallPriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  RecallPriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPriceListApprovalStatus`.
+message GetPriceListApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPriceListApprovalStatus`.
+message GetPriceListApprovalStatusResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPriceListApproval`.
+message CommentPriceListApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  CommentPriceListApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPriceListApproval`.
+message CommentPriceListApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  CommentPriceListApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

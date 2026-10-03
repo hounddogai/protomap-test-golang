@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "BrandApprovalServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Routes brands through approval, with escalation and delegation.
+service BrandApprovalService {
+  // Submits a brand.
+  rpc SubmitBrand(SubmitBrandRequest) returns (SubmitBrandResponse);
+
+  // Approves a brand.
+  rpc ApproveBrand(ApproveBrandRequest) returns (ApproveBrandResponse);
+
+  // Escalates a brand.
+  rpc EscalateBrand(EscalateBrandRequest) returns (EscalateBrandResponse);
+
+  // Lists brands a page at a time.
+  rpc ListPendingBrands(ListPendingBrandsRequest) returns (ListPendingBrandsResponse);
+
+  // Delegates a brand.
+  rpc DelegateBrandApproval(DelegateBrandApprovalRequest) returns (DelegateBrandApprovalResponse);
+
+  // Recalls a brand.
+  rpc RecallBrand(RecallBrandRequest) returns (RecallBrandResponse);
+
+  // Returns a brand.
+  rpc GetBrandApprovalStatus(GetBrandApprovalStatusRequest) returns (GetBrandApprovalStatusResponse);
+
+  // Comments a brand.
+  rpc CommentBrandApproval(CommentBrandApprovalRequest) returns (CommentBrandApprovalResponse);
+}
+
+// The request of `SubmitBrand`.
+message SubmitBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  SubmitBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitBrand`.
+message SubmitBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  SubmitBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveBrand`.
+message ApproveBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  ApproveBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveBrand`.
+message ApproveBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ApproveBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateBrand`.
+message EscalateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  EscalateBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateBrand`.
+message EscalateBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  EscalateBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingBrands`.
+message ListPendingBrandsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BrandStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingBrandsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingBrands`.
+message ListPendingBrandsResponse {
+  repeated Brand brands = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateBrandApproval`.
+message DelegateBrandApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  DelegateBrandApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateBrandApproval`.
+message DelegateBrandApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  DelegateBrandApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallBrand`.
+message RecallBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  RecallBrandRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallBrand`.
+message RecallBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  RecallBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBrandApprovalStatus`.
+message GetBrandApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBrandApprovalStatus`.
+message GetBrandApprovalStatusResponse {
+  Brand brand = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentBrandApproval`.
+message CommentBrandApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  CommentBrandApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentBrandApproval`.
+message CommentBrandApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  CommentBrandApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

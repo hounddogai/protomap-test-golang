@@ -1,0 +1,155 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fanportal.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fanportal/v1/fanportal.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fanportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fanportal/v1;fanportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "FanSessionQueryServiceProto";
+option java_package = "com.acme.fanportal.v1";
+
+// Answers read-only questions about fan sessions, for screens and reports.
+service FanSessionQueryService {
+  // Returns a fan session.
+  rpc LookupFanSession(LookupFanSessionRequest) returns (LookupFanSessionResponse);
+
+  // Lists fan sessions a page at a time.
+  rpc BrowseFanSessions(BrowseFanSessionsRequest) returns (BrowseFanSessionsResponse);
+
+  // Lists fan sessions a page at a time.
+  rpc FindFanSessions(FindFanSessionsRequest) returns (FindFanSessionsResponse);
+
+  // Counts fan sessions by status.
+  rpc CountFanSessions(CountFanSessionsRequest) returns (CountFanSessionsResponse);
+
+  // Returns several fan sessions at once.
+  rpc ResolveFanSessions(ResolveFanSessionsRequest) returns (ResolveFanSessionsResponse);
+
+  // Returns a fan session.
+  rpc PeekFanSession(PeekFanSessionRequest) returns (PeekFanSessionResponse);
+}
+
+// The request of `LookupFanSession`.
+message LookupFanSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fan_session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupFanSession`.
+message LookupFanSessionResponse {
+  FanSession fan_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseFanSessions`.
+message BrowseFanSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FanSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseFanSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseFanSessions`.
+message BrowseFanSessionsResponse {
+  repeated FanSession fan_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindFanSessions`.
+message FindFanSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FanSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindFanSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindFanSessions`.
+message FindFanSessionsResponse {
+  repeated FanSession fan_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountFanSessions`.
+message CountFanSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FanSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountFanSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountFanSessions`.
+message CountFanSessionsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveFanSessions`.
+message ResolveFanSessionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string fan_session_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveFanSessions`.
+message ResolveFanSessionsResponse {
+  repeated FanSession fan_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekFanSession`.
+message PeekFanSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fan_session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekFanSession`.
+message PeekFanSessionResponse {
+  FanSession fan_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}

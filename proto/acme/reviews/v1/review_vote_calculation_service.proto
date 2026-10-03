@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewVoteCalculationServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Computes the figures of a review vote, such as totals, taxes, and estimates.
+service ReviewVoteCalculationService {
+  // Calculates a review vote.
+  rpc CalculateReviewVote(CalculateReviewVoteRequest) returns (CalculateReviewVoteResponse);
+
+  // Estimates a review vote.
+  rpc EstimateReviewVote(EstimateReviewVoteRequest) returns (EstimateReviewVoteResponse);
+
+  // Quotes a review vote.
+  rpc QuoteReviewVote(QuoteReviewVoteRequest) returns (QuoteReviewVoteResponse);
+
+  // Compares a review vote.
+  rpc CompareReviewVoteOptions(CompareReviewVoteOptionsRequest) returns (CompareReviewVoteOptionsResponse);
+
+  // Recalculates a review vote.
+  rpc RecalculateReviewVotes(RecalculateReviewVotesRequest) returns (RecalculateReviewVotesResponse);
+
+  // Explains a review vote.
+  rpc ExplainReviewVoteCalculation(ExplainReviewVoteCalculationRequest) returns (ExplainReviewVoteCalculationResponse);
+
+  // Returns a review vote.
+  rpc GetReviewVoteRates(GetReviewVoteRatesRequest) returns (GetReviewVoteRatesResponse);
+}
+
+// The request of `CalculateReviewVote`.
+message CalculateReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  CalculateReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateReviewVote`.
+message CalculateReviewVoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateReviewVoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReviewVote review_vote = 1;
+  CalculateReviewVoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateReviewVote`.
+message EstimateReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  EstimateReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateReviewVote`.
+message EstimateReviewVoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateReviewVoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReviewVote review_vote = 1;
+  EstimateReviewVoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteReviewVote`.
+message QuoteReviewVoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  QuoteReviewVoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteReviewVote`.
+message QuoteReviewVoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteReviewVoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReviewVote review_vote = 1;
+  QuoteReviewVoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareReviewVoteOptions`.
+message CompareReviewVoteOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  CompareReviewVoteOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareReviewVoteOptions`.
+message CompareReviewVoteOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareReviewVoteOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReviewVote review_vote = 1;
+  CompareReviewVoteOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateReviewVotes`.
+message RecalculateReviewVotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  RecalculateReviewVotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateReviewVotes`.
+message RecalculateReviewVotesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateReviewVotesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReviewVote review_vote = 1;
+  RecalculateReviewVotesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReviewVoteCalculation`.
+message ExplainReviewVoteCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  ReviewVote review_vote = 3;
+  ExplainReviewVoteCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReviewVoteCalculation`.
+message ExplainReviewVoteCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewVote review_vote = 1;
+  ExplainReviewVoteCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReviewVoteRates`.
+message GetReviewVoteRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_vote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReviewVoteRates`.
+message GetReviewVoteRatesResponse {
+  ReviewVote review_vote = 1;
+  acme.common.v1.OperationResult result = 2;
+}

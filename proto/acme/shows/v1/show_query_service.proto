@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shows.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/shows/v1/shows.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shows.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shows/v1;showsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShowQueryServiceProto";
+option java_package = "com.acme.shows.v1";
+
+// Answers read-only questions about shows, for screens and reports.
+service ShowQueryService {
+  // Returns a show.
+  rpc LookupShow(LookupShowRequest) returns (LookupShowResponse);
+
+  // Lists shows a page at a time.
+  rpc BrowseShows(BrowseShowsRequest) returns (BrowseShowsResponse);
+
+  // Lists shows a page at a time.
+  rpc FindShows(FindShowsRequest) returns (FindShowsResponse);
+
+  // Counts shows by status.
+  rpc CountShows(CountShowsRequest) returns (CountShowsResponse);
+
+  // Returns several shows at once.
+  rpc ResolveShows(ResolveShowsRequest) returns (ResolveShowsResponse);
+
+  // Streams every matching show.
+  rpc ExportShows(ExportShowsRequest) returns (stream ExportShowsResponse);
+
+  // Summarizes a show.
+  rpc SummarizeShows(SummarizeShowsRequest) returns (SummarizeShowsResponse);
+
+  // Lists shows a page at a time.
+  rpc SuggestShows(SuggestShowsRequest) returns (SuggestShowsResponse);
+
+  // Returns a show.
+  rpc PeekShow(PeekShowRequest) returns (PeekShowResponse);
+}
+
+// The request of `LookupShow`.
+message LookupShowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupShow`.
+message LookupShowResponse {
+  Show show = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseShows`.
+message BrowseShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseShowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseShows`.
+message BrowseShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindShows`.
+message FindShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindShowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindShows`.
+message FindShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountShows`.
+message CountShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountShowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountShows`.
+message CountShowsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveShows`.
+message ResolveShowsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string show_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveShows`.
+message ResolveShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportShows`.
+message ExportShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportShowsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportShows`.
+message ExportShowsResponse {
+  Show show = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeShows`.
+message SummarizeShowsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  SummarizeShowsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeShows`.
+message SummarizeShowsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestShows`.
+message SuggestShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestShowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestShows`.
+message SuggestShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekShow`.
+message PeekShowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekShow`.
+message PeekShowResponse {
+  Show show = 1;
+  acme.common.v1.OperationResult result = 2;
+}

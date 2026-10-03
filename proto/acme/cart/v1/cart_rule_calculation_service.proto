@@ -1,0 +1,275 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.cart.v1;
+
+import "acme/cart/v1/cart.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Cart.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/cart/v1;cartv1";
+option java_multiple_files = true;
+option java_outer_classname = "CartRuleCalculationServiceProto";
+option java_package = "com.acme.cart.v1";
+
+// Computes the figures of a cart rule, such as totals, taxes, and estimates.
+service CartRuleCalculationService {
+  // Calculates a cart rule.
+  rpc CalculateCartRule(CalculateCartRuleRequest) returns (CalculateCartRuleResponse);
+
+  // Estimates a cart rule.
+  rpc EstimateCartRule(EstimateCartRuleRequest) returns (EstimateCartRuleResponse);
+
+  // Quotes a cart rule.
+  rpc QuoteCartRule(QuoteCartRuleRequest) returns (QuoteCartRuleResponse);
+
+  // Compares a cart rule.
+  rpc CompareCartRuleOptions(CompareCartRuleOptionsRequest) returns (CompareCartRuleOptionsResponse);
+
+  // Simulates a cart rule.
+  rpc SimulateCartRule(SimulateCartRuleRequest) returns (SimulateCartRuleResponse);
+
+  // Explains a cart rule.
+  rpc ExplainCartRuleCalculation(ExplainCartRuleCalculationRequest) returns (ExplainCartRuleCalculationResponse);
+}
+
+// The request of `CalculateCartRule`.
+message CalculateCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  CalculateCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCartRule`.
+message CalculateCartRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCartRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CartRule cart_rule = 1;
+  CalculateCartRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCartRule`.
+message EstimateCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  EstimateCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCartRule`.
+message EstimateCartRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCartRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CartRule cart_rule = 1;
+  EstimateCartRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCartRule`.
+message QuoteCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  QuoteCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCartRule`.
+message QuoteCartRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCartRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CartRule cart_rule = 1;
+  QuoteCartRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCartRuleOptions`.
+message CompareCartRuleOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  CompareCartRuleOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCartRuleOptions`.
+message CompareCartRuleOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCartRuleOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CartRule cart_rule = 1;
+  CompareCartRuleOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCartRule`.
+message SimulateCartRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  SimulateCartRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCartRule`.
+message SimulateCartRuleResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCartRuleResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CartRule cart_rule = 1;
+  SimulateCartRuleResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCartRuleCalculation`.
+message ExplainCartRuleCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string cart_rule_id = 2;
+  CartRule cart_rule = 3;
+  ExplainCartRuleCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCartRuleCalculation`.
+message ExplainCartRuleCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CartRule cart_rule = 1;
+  ExplainCartRuleCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

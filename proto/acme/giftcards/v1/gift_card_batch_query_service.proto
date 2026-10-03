@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/giftcards/v1/giftcards.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftCardBatchQueryServiceProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Answers read-only questions about gift card batches, for screens and reports.
+service GiftCardBatchQueryService {
+  // Returns a gift card batch.
+  rpc LookupGiftCardBatch(LookupGiftCardBatchRequest) returns (LookupGiftCardBatchResponse);
+
+  // Lists gift card batches a page at a time.
+  rpc BrowseGiftCardBatches(BrowseGiftCardBatchesRequest) returns (BrowseGiftCardBatchesResponse);
+
+  // Lists gift card batches a page at a time.
+  rpc FindGiftCardBatches(FindGiftCardBatchesRequest) returns (FindGiftCardBatchesResponse);
+
+  // Counts gift card batches by status.
+  rpc CountGiftCardBatches(CountGiftCardBatchesRequest) returns (CountGiftCardBatchesResponse);
+
+  // Returns several gift card batches at once.
+  rpc ResolveGiftCardBatches(ResolveGiftCardBatchesRequest) returns (ResolveGiftCardBatchesResponse);
+
+  // Streams every matching gift card batch.
+  rpc ExportGiftCardBatches(ExportGiftCardBatchesRequest) returns (stream ExportGiftCardBatchesResponse);
+
+  // Summarizes a gift card batch.
+  rpc SummarizeGiftCardBatches(SummarizeGiftCardBatchesRequest) returns (SummarizeGiftCardBatchesResponse);
+
+  // Lists gift card batches a page at a time.
+  rpc SuggestGiftCardBatches(SuggestGiftCardBatchesRequest) returns (SuggestGiftCardBatchesResponse);
+
+  // Returns a gift card batch.
+  rpc PeekGiftCardBatch(PeekGiftCardBatchRequest) returns (PeekGiftCardBatchResponse);
+}
+
+// The request of `LookupGiftCardBatch`.
+message LookupGiftCardBatchRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_batch_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupGiftCardBatch`.
+message LookupGiftCardBatchResponse {
+  GiftCardBatch gift_card_batch = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseGiftCardBatches`.
+message BrowseGiftCardBatchesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardBatchStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseGiftCardBatchesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseGiftCardBatches`.
+message BrowseGiftCardBatchesResponse {
+  repeated GiftCardBatch gift_card_batches = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindGiftCardBatches`.
+message FindGiftCardBatchesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardBatchStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindGiftCardBatchesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindGiftCardBatches`.
+message FindGiftCardBatchesResponse {
+  repeated GiftCardBatch gift_card_batches = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountGiftCardBatches`.
+message CountGiftCardBatchesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardBatchStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountGiftCardBatchesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountGiftCardBatches`.
+message CountGiftCardBatchesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveGiftCardBatches`.
+message ResolveGiftCardBatchesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string gift_card_batch_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveGiftCardBatches`.
+message ResolveGiftCardBatchesResponse {
+  repeated GiftCardBatch gift_card_batches = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportGiftCardBatches`.
+message ExportGiftCardBatchesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardBatchStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportGiftCardBatchesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportGiftCardBatches`.
+message ExportGiftCardBatchesResponse {
+  GiftCardBatch gift_card_batch = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeGiftCardBatches`.
+message SummarizeGiftCardBatchesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_batch_id = 2;
+  SummarizeGiftCardBatchesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeGiftCardBatches`.
+message SummarizeGiftCardBatchesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestGiftCardBatches`.
+message SuggestGiftCardBatchesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardBatchStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestGiftCardBatchesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestGiftCardBatches`.
+message SuggestGiftCardBatchesResponse {
+  repeated GiftCardBatch gift_card_batches = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekGiftCardBatch`.
+message PeekGiftCardBatchRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_batch_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekGiftCardBatch`.
+message PeekGiftCardBatchResponse {
+  GiftCardBatch gift_card_batch = 1;
+  acme.common.v1.OperationResult result = 2;
+}

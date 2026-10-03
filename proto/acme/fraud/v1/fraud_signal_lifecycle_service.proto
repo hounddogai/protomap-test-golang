@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudSignalLifecycleServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Moves a fraud signal between the states of its lifecycle.
+service FraudSignalLifecycleService {
+  // Activates a fraud signal.
+  rpc ActivateFraudSignal(ActivateFraudSignalRequest) returns (ActivateFraudSignalResponse);
+
+  // Suspends a fraud signal.
+  rpc SuspendFraudSignal(SuspendFraudSignalRequest) returns (SuspendFraudSignalResponse);
+
+  // Terminates a fraud signal.
+  rpc TerminateFraudSignal(TerminateFraudSignalRequest) returns (TerminateFraudSignalResponse);
+
+  // Renews a fraud signal.
+  rpc RenewFraudSignal(RenewFraudSignalRequest) returns (RenewFraudSignalResponse);
+
+  // Expires a fraud signal.
+  rpc ExpireFraudSignal(ExpireFraudSignalRequest) returns (ExpireFraudSignalResponse);
+
+  // Returns a fraud signal.
+  rpc GetFraudSignalLifecycle(GetFraudSignalLifecycleRequest) returns (GetFraudSignalLifecycleResponse);
+
+  // Schedules a fraud signal.
+  rpc ScheduleFraudSignalExpiry(ScheduleFraudSignalExpiryRequest) returns (ScheduleFraudSignalExpiryResponse);
+}
+
+// The request of `ActivateFraudSignal`.
+message ActivateFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  ActivateFraudSignalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateFraudSignal`.
+message ActivateFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  ActivateFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendFraudSignal`.
+message SuspendFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  SuspendFraudSignalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendFraudSignal`.
+message SuspendFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  SuspendFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateFraudSignal`.
+message TerminateFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  TerminateFraudSignalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateFraudSignal`.
+message TerminateFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  TerminateFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewFraudSignal`.
+message RenewFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  RenewFraudSignalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewFraudSignal`.
+message RenewFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  RenewFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireFraudSignal`.
+message ExpireFraudSignalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  ExpireFraudSignalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireFraudSignal`.
+message ExpireFraudSignalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  ExpireFraudSignalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFraudSignalLifecycle`.
+message GetFraudSignalLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFraudSignalLifecycle`.
+message GetFraudSignalLifecycleResponse {
+  FraudSignal fraud_signal = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleFraudSignalExpiry`.
+message ScheduleFraudSignalExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  FraudSignal fraud_signal = 3;
+  ScheduleFraudSignalExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleFraudSignalExpiry`.
+message ScheduleFraudSignalExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudSignal fraud_signal = 1;
+  ScheduleFraudSignalExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

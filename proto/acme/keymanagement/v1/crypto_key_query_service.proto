@@ -1,0 +1,198 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.keymanagement.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/keymanagement/v1/keymanagement.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Keymanagement.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/keymanagement/v1;keymanagementv1";
+option java_multiple_files = true;
+option java_outer_classname = "CryptoKeyQueryServiceProto";
+option java_package = "com.acme.keymanagement.v1";
+
+// Answers read-only questions about crypto keys, for screens and reports.
+service CryptoKeyQueryService {
+  // Returns a crypto key.
+  rpc LookupCryptoKey(LookupCryptoKeyRequest) returns (LookupCryptoKeyResponse);
+
+  // Lists crypto keys a page at a time.
+  rpc BrowseCryptoKeys(BrowseCryptoKeysRequest) returns (BrowseCryptoKeysResponse);
+
+  // Lists crypto keys a page at a time.
+  rpc FindCryptoKeys(FindCryptoKeysRequest) returns (FindCryptoKeysResponse);
+
+  // Counts crypto keys by status.
+  rpc CountCryptoKeys(CountCryptoKeysRequest) returns (CountCryptoKeysResponse);
+
+  // Returns several crypto keys at once.
+  rpc ResolveCryptoKeys(ResolveCryptoKeysRequest) returns (ResolveCryptoKeysResponse);
+
+  // Streams every matching crypto key.
+  rpc ExportCryptoKeys(ExportCryptoKeysRequest) returns (stream ExportCryptoKeysResponse);
+
+  // Lists crypto keys a page at a time.
+  rpc SuggestCryptoKeys(SuggestCryptoKeysRequest) returns (SuggestCryptoKeysResponse);
+}
+
+// The request of `LookupCryptoKey`.
+message LookupCryptoKeyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string crypto_key_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCryptoKey`.
+message LookupCryptoKeyResponse {
+  CryptoKey crypto_key = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCryptoKeys`.
+message BrowseCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCryptoKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCryptoKeys`.
+message BrowseCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCryptoKeys`.
+message FindCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCryptoKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCryptoKeys`.
+message FindCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCryptoKeys`.
+message CountCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCryptoKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCryptoKeys`.
+message CountCryptoKeysResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCryptoKeys`.
+message ResolveCryptoKeysRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string crypto_key_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCryptoKeys`.
+message ResolveCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCryptoKeys`.
+message ExportCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCryptoKeysRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCryptoKeys`.
+message ExportCryptoKeysResponse {
+  CryptoKey crypto_key = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCryptoKeys`.
+message SuggestCryptoKeysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CryptoKeyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCryptoKeysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCryptoKeys`.
+message SuggestCryptoKeysResponse {
+  repeated CryptoKey crypto_keys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

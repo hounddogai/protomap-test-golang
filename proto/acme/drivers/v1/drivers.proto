@@ -1,0 +1,178 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.drivers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/drivers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Drivers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/drivers/v1;driversv1";
+option java_multiple_files = true;
+option java_outer_classname = "DriversProto";
+option java_package = "com.acme.drivers.v1";
+
+// Where a driver is in its lifecycle.
+enum DriverStatus {
+  DRIVER_STATUS_UNSPECIFIED = 0;
+  DRIVER_STATUS_PROSPECT = 1;
+  DRIVER_STATUS_ACTIVE = 2;
+  DRIVER_STATUS_SUSPENDED = 3;
+  DRIVER_STATUS_CLOSED = 4;
+}
+
+// Where a driver license is in its lifecycle.
+enum DriverLicenseStatus {
+  DRIVER_LICENSE_STATUS_UNSPECIFIED = 0;
+  DRIVER_LICENSE_STATUS_DRAFT = 1;
+  DRIVER_LICENSE_STATUS_ISSUED = 2;
+  DRIVER_LICENSE_STATUS_APPROVED = 3;
+  DRIVER_LICENSE_STATUS_PAID = 4;
+  DRIVER_LICENSE_STATUS_VOID = 5;
+}
+
+// Where a duty status is in its lifecycle.
+enum DutyStatusStatus {
+  DUTY_STATUS_STATUS_UNSPECIFIED = 0;
+  DUTY_STATUS_STATUS_RECEIVED = 1;
+  DUTY_STATUS_STATUS_PROCESSED = 2;
+  DUTY_STATUS_STATUS_DISCARDED = 3;
+}
+
+// The preferences of a driver.
+message DriverPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a driver.
+message DriverPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a driver.
+message DriverNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A driver of the drivers domain.
+message Driver {
+  string driver_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  DriverStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  DriverPreferences preferences = 8;
+  oneof identity_document {
+    DriverPassport passport = 9;
+    DriverNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a driver license.
+message DriverLicenseLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  DriverLicenseLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a driver license line.
+message DriverLicenseLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a driver license.
+message DriverLicenseCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a driver license.
+message DriverLicenseBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a driver license.
+message DriverLicenseAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A driver license of the drivers domain.
+message DriverLicense {
+  string driver_license_id = 1;
+  string number = 2;
+  DriverLicenseStatus status = 3;
+  DriverRef counterparty = 4;
+  repeated DriverLicenseLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    DriverLicenseCardSettlement card = 8;
+    DriverLicenseBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated DriverLicenseAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a duty status.
+message DutyStatusMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A duty status of the drivers domain.
+message DutyStatus {
+  string duty_status_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  DriverLicenseRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated DutyStatusMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

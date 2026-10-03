@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.onboarding.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/onboarding/v1/onboarding.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Onboarding.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/onboarding/v1;onboardingv1";
+option java_multiple_files = true;
+option java_outer_classname = "OnboardingPlanQueryServiceProto";
+option java_package = "com.acme.onboarding.v1";
+
+// Answers read-only questions about onboarding plans, for screens and reports.
+service OnboardingPlanQueryService {
+  // Returns an onboarding plan.
+  rpc LookupOnboardingPlan(LookupOnboardingPlanRequest) returns (LookupOnboardingPlanResponse);
+
+  // Lists onboarding plans a page at a time.
+  rpc BrowseOnboardingPlans(BrowseOnboardingPlansRequest) returns (BrowseOnboardingPlansResponse);
+
+  // Lists onboarding plans a page at a time.
+  rpc FindOnboardingPlans(FindOnboardingPlansRequest) returns (FindOnboardingPlansResponse);
+
+  // Counts onboarding plans by status.
+  rpc CountOnboardingPlans(CountOnboardingPlansRequest) returns (CountOnboardingPlansResponse);
+
+  // Returns several onboarding plans at once.
+  rpc ResolveOnboardingPlans(ResolveOnboardingPlansRequest) returns (ResolveOnboardingPlansResponse);
+
+  // Streams every matching onboarding plan.
+  rpc ExportOnboardingPlans(ExportOnboardingPlansRequest) returns (stream ExportOnboardingPlansResponse);
+
+  // Summarizes an onboarding plan.
+  rpc SummarizeOnboardingPlans(SummarizeOnboardingPlansRequest) returns (SummarizeOnboardingPlansResponse);
+
+  // Lists onboarding plans a page at a time.
+  rpc SuggestOnboardingPlans(SuggestOnboardingPlansRequest) returns (SuggestOnboardingPlansResponse);
+
+  // Returns an onboarding plan.
+  rpc PeekOnboardingPlan(PeekOnboardingPlanRequest) returns (PeekOnboardingPlanResponse);
+}
+
+// The request of `LookupOnboardingPlan`.
+message LookupOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupOnboardingPlan`.
+message LookupOnboardingPlanResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseOnboardingPlans`.
+message BrowseOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseOnboardingPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseOnboardingPlans`.
+message BrowseOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindOnboardingPlans`.
+message FindOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindOnboardingPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindOnboardingPlans`.
+message FindOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountOnboardingPlans`.
+message CountOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountOnboardingPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountOnboardingPlans`.
+message CountOnboardingPlansResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveOnboardingPlans`.
+message ResolveOnboardingPlansRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string onboarding_plan_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveOnboardingPlans`.
+message ResolveOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportOnboardingPlans`.
+message ExportOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportOnboardingPlansRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportOnboardingPlans`.
+message ExportOnboardingPlansResponse {
+  OnboardingPlan onboarding_plan = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeOnboardingPlans`.
+message SummarizeOnboardingPlansRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  SummarizeOnboardingPlansRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeOnboardingPlans`.
+message SummarizeOnboardingPlansResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestOnboardingPlans`.
+message SuggestOnboardingPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OnboardingPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestOnboardingPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestOnboardingPlans`.
+message SuggestOnboardingPlansResponse {
+  repeated OnboardingPlan onboarding_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekOnboardingPlan`.
+message PeekOnboardingPlanRequest {
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekOnboardingPlan`.
+message PeekOnboardingPlanResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

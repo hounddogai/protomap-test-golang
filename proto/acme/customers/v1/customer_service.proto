@@ -1,0 +1,230 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Manages customers: creates, reads, changes, and lists them.
+service CustomerService {
+  // Creates a customer.
+  rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);
+
+  // Returns a customer.
+  rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
+
+  // Changes a customer.
+  rpc UpdateCustomer(UpdateCustomerRequest) returns (UpdateCustomerResponse);
+
+  // Lists customers a page at a time.
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse);
+
+  // Returns several customers at once.
+  rpc BatchGetCustomers(BatchGetCustomersRequest) returns (BatchGetCustomersResponse);
+
+  // Lists customers a page at a time.
+  rpc SearchCustomers(SearchCustomersRequest) returns (SearchCustomersResponse);
+
+  // Streams the changes of customers as they happen.
+  rpc WatchCustomers(WatchCustomersRequest) returns (stream WatchCustomersResponse);
+
+  // Takes a stream of customers and answers once at the end.
+  rpc BatchCreateCustomers(stream BatchCreateCustomersRequest) returns (BatchCreateCustomersResponse);
+
+  // Creates a customer.
+  rpc CloneCustomer(CloneCustomerRequest) returns (CloneCustomerResponse);
+}
+
+// The request of `CreateCustomer`.
+message CreateCustomerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Customer customer = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateCustomer`.
+message CreateCustomerResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetCustomer`.
+message GetCustomerRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomer`.
+message GetCustomerResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateCustomer`.
+message UpdateCustomerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Customer customer = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateCustomer`.
+message UpdateCustomerResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListCustomers`.
+message ListCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCustomers`.
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetCustomers`.
+message BatchGetCustomersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string customer_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetCustomers`.
+message BatchGetCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchCustomers`.
+message SearchCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchCustomersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchCustomers`.
+message SearchCustomersResponse {
+  repeated Customer customers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchCustomers`.
+message WatchCustomersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CustomerStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchCustomersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchCustomers`.
+message WatchCustomersResponse {
+  Customer customer = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateCustomers`.
+message BatchCreateCustomersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateCustomersRequest.StreamHeader header = 2;
+    Customer record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateCustomers`.
+message BatchCreateCustomersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string customer_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateCustomersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneCustomer`.
+message CloneCustomerRequest {
+  acme.common.v1.RequestContext context = 1;
+  Customer customer = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneCustomer`.
+message CloneCustomerResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}

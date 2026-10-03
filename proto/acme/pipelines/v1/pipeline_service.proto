@@ -1,0 +1,200 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pipelines.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/pipelines/v1/pipelines.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pipelines.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pipelines/v1;pipelinesv1";
+option java_multiple_files = true;
+option java_outer_classname = "PipelineServiceProto";
+option java_package = "com.acme.pipelines.v1";
+
+// Manages pipelines: creates, reads, changes, and lists them.
+service PipelineService {
+  // Creates a pipeline.
+  rpc CreatePipeline(CreatePipelineRequest) returns (CreatePipelineResponse);
+
+  // Returns a pipeline.
+  rpc GetPipeline(GetPipelineRequest) returns (GetPipelineResponse);
+
+  // Changes a pipeline.
+  rpc UpdatePipeline(UpdatePipelineRequest) returns (UpdatePipelineResponse);
+
+  // Deletes a pipeline.
+  rpc DeletePipeline(DeletePipelineRequest) returns (DeletePipelineResponse);
+
+  // Lists pipelines a page at a time.
+  rpc ListPipelines(ListPipelinesRequest) returns (ListPipelinesResponse);
+
+  // Lists pipelines a page at a time.
+  rpc SearchPipelines(SearchPipelinesRequest) returns (SearchPipelinesResponse);
+
+  // Takes a stream of pipelines and answers once at the end.
+  rpc BatchCreatePipelines(stream BatchCreatePipelinesRequest) returns (BatchCreatePipelinesResponse);
+
+  // Creates a pipeline.
+  rpc ClonePipeline(ClonePipelineRequest) returns (ClonePipelineResponse);
+}
+
+// The request of `CreatePipeline`.
+message CreatePipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  Pipeline pipeline = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePipeline`.
+message CreatePipelineResponse {
+  Pipeline pipeline = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPipeline`.
+message GetPipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pipeline_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPipeline`.
+message GetPipelineResponse {
+  Pipeline pipeline = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePipeline`.
+message UpdatePipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  Pipeline pipeline = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePipeline`.
+message UpdatePipelineResponse {
+  Pipeline pipeline = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePipeline`.
+message DeletePipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pipeline_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePipeline`.
+message DeletePipelineResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPipelines`.
+message ListPipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPipelinesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPipelines`.
+message ListPipelinesResponse {
+  repeated Pipeline pipelines = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPipelines`.
+message SearchPipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPipelinesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPipelines`.
+message SearchPipelinesResponse {
+  repeated Pipeline pipelines = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreatePipelines`.
+message BatchCreatePipelinesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePipelinesRequest.StreamHeader header = 2;
+    Pipeline record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePipelines`.
+message BatchCreatePipelinesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string pipeline_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePipelinesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePipeline`.
+message ClonePipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  Pipeline pipeline = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePipeline`.
+message ClonePipelineResponse {
+  Pipeline pipeline = 1;
+  acme.common.v1.OperationResult result = 2;
+}

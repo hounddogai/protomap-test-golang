@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.documents.v1;
+
+option csharp_namespace = "Acme.Documents.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/documents/v1;documentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.documents.v1";
+
+// A reference to a document of the documents domain.
+message DocumentRef {
+  string document_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a document folder of the documents domain.
+message DocumentFolderRef {
+  string document_folder_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a signature of the documents domain.
+message SignatureRef {
+  string signature_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a document template of the documents domain.
+message DocumentTemplateRef {
+  string document_template_id = 1;
+  string display_name = 2;
+  string number = 3;
+}

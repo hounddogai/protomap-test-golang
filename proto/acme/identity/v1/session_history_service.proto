@@ -1,0 +1,232 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "SessionHistoryServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Keeps every version of a session and restores earlier ones.
+service SessionHistoryService {
+  // Records a session.
+  rpc RecordSessionVersion(RecordSessionVersionRequest) returns (RecordSessionVersionResponse);
+
+  // Lists sessions a page at a time.
+  rpc ListSessionVersions(ListSessionVersionsRequest) returns (ListSessionVersionsResponse);
+
+  // Returns a session.
+  rpc GetSessionVersion(GetSessionVersionRequest) returns (GetSessionVersionResponse);
+
+  // Compares a session.
+  rpc CompareSessionVersions(CompareSessionVersionsRequest) returns (CompareSessionVersionsResponse);
+
+  // Reverts a session.
+  rpc RevertSession(RevertSessionRequest) returns (RevertSessionResponse);
+
+  // Annotates a session.
+  rpc AnnotateSessionVersion(AnnotateSessionVersionRequest) returns (AnnotateSessionVersionResponse);
+
+  // Deletes a session.
+  rpc PruneSessionVersions(PruneSessionVersionsRequest) returns (PruneSessionVersionsResponse);
+}
+
+// The request of `RecordSessionVersion`.
+message RecordSessionVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  Session session = 3;
+  RecordSessionVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecordSessionVersion`.
+message RecordSessionVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  RecordSessionVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListSessionVersions`.
+message ListSessionVersionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSessionVersionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSessionVersions`.
+message ListSessionVersionsResponse {
+  repeated Session sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSessionVersion`.
+message GetSessionVersionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSessionVersion`.
+message GetSessionVersionResponse {
+  Session session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CompareSessionVersions`.
+message CompareSessionVersionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  Session session = 3;
+  CompareSessionVersionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSessionVersions`.
+message CompareSessionVersionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  CompareSessionVersionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RevertSession`.
+message RevertSessionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  Session session = 3;
+  RevertSessionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RevertSession`.
+message RevertSessionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  RevertSessionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AnnotateSessionVersion`.
+message AnnotateSessionVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  Session session = 3;
+  AnnotateSessionVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AnnotateSessionVersion`.
+message AnnotateSessionVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  AnnotateSessionVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PruneSessionVersions`.
+message PruneSessionVersionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `PruneSessionVersions`.
+message PruneSessionVersionsResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

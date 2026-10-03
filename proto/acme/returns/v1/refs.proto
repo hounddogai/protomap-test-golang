@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.returns.v1";
+
+// A reference to a return request of the returns domain.
+message ReturnRequestRef {
+  string return_request_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a return label of the returns domain.
+message ReturnLabelRef {
+  string return_label_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to an inspection of the returns domain.
+message InspectionRef {
+  string inspection_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a restock decision of the returns domain.
+message RestockDecisionRef {
+  string restock_decision_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

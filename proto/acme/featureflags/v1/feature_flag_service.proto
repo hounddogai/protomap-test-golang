@@ -1,0 +1,154 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.featureflags.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/featureflags/v1/featureflags.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Featureflags.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/featureflags/v1;featureflagsv1";
+option java_multiple_files = true;
+option java_outer_classname = "FeatureFlagServiceProto";
+option java_package = "com.acme.featureflags.v1";
+
+// Manages feature flags: creates, reads, changes, and lists them.
+service FeatureFlagService {
+  // Creates a feature flag.
+  rpc CreateFeatureFlag(CreateFeatureFlagRequest) returns (CreateFeatureFlagResponse);
+
+  // Returns a feature flag.
+  rpc GetFeatureFlag(GetFeatureFlagRequest) returns (GetFeatureFlagResponse);
+
+  // Lists feature flags a page at a time.
+  rpc ListFeatureFlags(ListFeatureFlagsRequest) returns (ListFeatureFlagsResponse);
+
+  // Returns several feature flags at once.
+  rpc BatchGetFeatureFlags(BatchGetFeatureFlagsRequest) returns (BatchGetFeatureFlagsResponse);
+
+  // Takes a stream of feature flags and answers once at the end.
+  rpc BatchCreateFeatureFlags(stream BatchCreateFeatureFlagsRequest) returns (BatchCreateFeatureFlagsResponse);
+
+  // Creates a feature flag.
+  rpc CloneFeatureFlag(CloneFeatureFlagRequest) returns (CloneFeatureFlagResponse);
+}
+
+// The request of `CreateFeatureFlag`.
+message CreateFeatureFlagRequest {
+  acme.common.v1.RequestContext context = 1;
+  FeatureFlag feature_flag = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateFeatureFlag`.
+message CreateFeatureFlagResponse {
+  FeatureFlag feature_flag = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetFeatureFlag`.
+message GetFeatureFlagRequest {
+  acme.common.v1.RequestContext context = 1;
+  string feature_flag_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFeatureFlag`.
+message GetFeatureFlagResponse {
+  FeatureFlag feature_flag = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListFeatureFlags`.
+message ListFeatureFlagsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FeatureFlagStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFeatureFlagsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFeatureFlags`.
+message ListFeatureFlagsResponse {
+  repeated FeatureFlag feature_flags = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetFeatureFlags`.
+message BatchGetFeatureFlagsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string feature_flag_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetFeatureFlags`.
+message BatchGetFeatureFlagsResponse {
+  repeated FeatureFlag feature_flags = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateFeatureFlags`.
+message BatchCreateFeatureFlagsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateFeatureFlagsRequest.StreamHeader header = 2;
+    FeatureFlag record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateFeatureFlags`.
+message BatchCreateFeatureFlagsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string feature_flag_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateFeatureFlagsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneFeatureFlag`.
+message CloneFeatureFlagRequest {
+  acme.common.v1.RequestContext context = 1;
+  FeatureFlag feature_flag = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneFeatureFlag`.
+message CloneFeatureFlagResponse {
+  FeatureFlag feature_flag = 1;
+  acme.common.v1.OperationResult result = 2;
+}

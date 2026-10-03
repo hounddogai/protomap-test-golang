@@ -1,0 +1,255 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.performance.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/performance/v1/refs.proto";
+import "acme/recruiting/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Performance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/performance/v1;performancev1";
+option java_multiple_files = true;
+option java_outer_classname = "PerformanceProto";
+option java_package = "com.acme.performance.v1";
+
+// Where a review is in its lifecycle.
+enum ReviewStatus {
+  REVIEW_STATUS_UNSPECIFIED = 0;
+  REVIEW_STATUS_DRAFT = 1;
+  REVIEW_STATUS_ISSUED = 2;
+  REVIEW_STATUS_APPROVED = 3;
+  REVIEW_STATUS_PAID = 4;
+  REVIEW_STATUS_VOID = 5;
+}
+
+// Where a goal is in its lifecycle.
+enum GoalStatus {
+  GOAL_STATUS_UNSPECIFIED = 0;
+  GOAL_STATUS_NEW = 1;
+  GOAL_STATUS_OPEN = 2;
+  GOAL_STATUS_WAITING = 3;
+  GOAL_STATUS_RESOLVED = 4;
+  GOAL_STATUS_CLOSED = 5;
+}
+
+// Where a feedback is in its lifecycle.
+enum FeedbackStatus {
+  FEEDBACK_STATUS_UNSPECIFIED = 0;
+  FEEDBACK_STATUS_RECEIVED = 1;
+  FEEDBACK_STATUS_PROCESSED = 2;
+  FEEDBACK_STATUS_DISCARDED = 3;
+}
+
+// Where a calibration is in its lifecycle.
+enum CalibrationStatus {
+  CALIBRATION_STATUS_UNSPECIFIED = 0;
+  CALIBRATION_STATUS_NEW = 1;
+  CALIBRATION_STATUS_OPEN = 2;
+  CALIBRATION_STATUS_WAITING = 3;
+  CALIBRATION_STATUS_RESOLVED = 4;
+  CALIBRATION_STATUS_CLOSED = 5;
+}
+
+// The line of a review.
+message ReviewLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ReviewLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a review line.
+message ReviewLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a review.
+message ReviewCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a review.
+message ReviewBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a review.
+message ReviewAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A review of the performance domain.
+message Review {
+  string review_id = 1;
+  string number = 2;
+  ReviewStatus status = 3;
+  GoalRef counterparty = 4;
+  repeated ReviewLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ReviewCardSettlement card = 8;
+    ReviewBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ReviewAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of a goal.
+message GoalComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a goal.
+message GoalSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a goal.
+message GoalChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a goal.
+message GoalStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A goal of the performance domain.
+message Goal {
+  string goal_id = 1;
+  string subject = 2;
+  GoalStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated GoalComment comments = 7;
+  GoalSla sla = 8;
+  oneof origin {
+    ReviewRef customer = 9;
+    string external_reference = 10;
+    GoalChannelOrigin channel = 11;
+  }
+  repeated GoalStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a feedback.
+message FeedbackMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A feedback of the performance domain.
+message Feedback {
+  string feedback_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.recruiting.v1.CandidateRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated FeedbackMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The comment of a calibration.
+message CalibrationComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a calibration.
+message CalibrationSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a calibration.
+message CalibrationChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a calibration.
+message CalibrationStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A calibration of the performance domain.
+message Calibration {
+  string calibration_id = 1;
+  string subject = 2;
+  CalibrationStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated CalibrationComment comments = 7;
+  CalibrationSla sla = 8;
+  oneof origin {
+    ReviewRef customer = 9;
+    string external_reference = 10;
+    CalibrationChannelOrigin channel = 11;
+  }
+  repeated CalibrationStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

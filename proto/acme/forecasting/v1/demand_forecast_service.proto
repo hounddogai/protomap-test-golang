@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.forecasting.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/forecasting/v1/forecasting.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Forecasting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/forecasting/v1;forecastingv1";
+option java_multiple_files = true;
+option java_outer_classname = "DemandForecastServiceProto";
+option java_package = "com.acme.forecasting.v1";
+
+// Manages demand forecasts: creates, reads, changes, and lists them.
+service DemandForecastService {
+  // Creates a demand forecast.
+  rpc CreateDemandForecast(CreateDemandForecastRequest) returns (CreateDemandForecastResponse);
+
+  // Returns a demand forecast.
+  rpc GetDemandForecast(GetDemandForecastRequest) returns (GetDemandForecastResponse);
+
+  // Changes a demand forecast.
+  rpc UpdateDemandForecast(UpdateDemandForecastRequest) returns (UpdateDemandForecastResponse);
+
+  // Deletes a demand forecast.
+  rpc DeleteDemandForecast(DeleteDemandForecastRequest) returns (DeleteDemandForecastResponse);
+
+  // Lists demand forecasts a page at a time.
+  rpc ListDemandForecasts(ListDemandForecastsRequest) returns (ListDemandForecastsResponse);
+
+  // Returns several demand forecasts at once.
+  rpc BatchGetDemandForecasts(BatchGetDemandForecastsRequest) returns (BatchGetDemandForecastsResponse);
+
+  // Lists demand forecasts a page at a time.
+  rpc SearchDemandForecasts(SearchDemandForecastsRequest) returns (SearchDemandForecastsResponse);
+
+  // Takes a stream of demand forecasts and answers once at the end.
+  rpc BatchCreateDemandForecasts(stream BatchCreateDemandForecastsRequest) returns (BatchCreateDemandForecastsResponse);
+
+  // Creates a demand forecast.
+  rpc CloneDemandForecast(CloneDemandForecastRequest) returns (CloneDemandForecastResponse);
+}
+
+// The request of `CreateDemandForecast`.
+message CreateDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  DemandForecast demand_forecast = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateDemandForecast`.
+message CreateDemandForecastResponse {
+  DemandForecast demand_forecast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetDemandForecast`.
+message GetDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  string demand_forecast_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDemandForecast`.
+message GetDemandForecastResponse {
+  DemandForecast demand_forecast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateDemandForecast`.
+message UpdateDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  DemandForecast demand_forecast = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateDemandForecast`.
+message UpdateDemandForecastResponse {
+  DemandForecast demand_forecast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteDemandForecast`.
+message DeleteDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  string demand_forecast_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteDemandForecast`.
+message DeleteDemandForecastResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListDemandForecasts`.
+message ListDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListDemandForecastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListDemandForecasts`.
+message ListDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetDemandForecasts`.
+message BatchGetDemandForecastsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string demand_forecast_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetDemandForecasts`.
+message BatchGetDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchDemandForecasts`.
+message SearchDemandForecastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DemandForecastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchDemandForecastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchDemandForecasts`.
+message SearchDemandForecastsResponse {
+  repeated DemandForecast demand_forecasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreateDemandForecasts`.
+message BatchCreateDemandForecastsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateDemandForecastsRequest.StreamHeader header = 2;
+    DemandForecast record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateDemandForecasts`.
+message BatchCreateDemandForecastsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string demand_forecast_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateDemandForecastsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneDemandForecast`.
+message CloneDemandForecastRequest {
+  acme.common.v1.RequestContext context = 1;
+  DemandForecast demand_forecast = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneDemandForecast`.
+message CloneDemandForecastResponse {
+  DemandForecast demand_forecast = 1;
+  acme.common.v1.OperationResult result = 2;
+}

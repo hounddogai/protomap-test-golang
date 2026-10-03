@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/reviews/v1/reviews.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReviewModerationValidationServiceProto";
+option java_package = "com.acme.reviews.v1";
+
+// Checks review moderations against the rules before anything acts on them.
+service ReviewModerationValidationService {
+  // Validates a review moderation.
+  rpc ValidateReviewModeration(ValidateReviewModerationRequest) returns (ValidateReviewModerationResponse);
+
+  // Previews a review moderation.
+  rpc PreviewReviewModeration(PreviewReviewModerationRequest) returns (PreviewReviewModerationResponse);
+
+  // Checks a review moderation.
+  rpc CheckReviewModerationEligibility(CheckReviewModerationEligibilityRequest) returns (CheckReviewModerationEligibilityResponse);
+
+  // Normalizes a review moderation.
+  rpc NormalizeReviewModeration(NormalizeReviewModerationRequest) returns (NormalizeReviewModerationResponse);
+
+  // Explains a review moderation.
+  rpc ExplainReviewModerationDecision(ExplainReviewModerationDecisionRequest) returns (ExplainReviewModerationDecisionResponse);
+
+  // Scores a review moderation.
+  rpc ScoreReviewModeration(ScoreReviewModerationRequest) returns (ScoreReviewModerationResponse);
+
+  // Returns a review moderation.
+  rpc GetReviewModerationRules(GetReviewModerationRulesRequest) returns (GetReviewModerationRulesResponse);
+}
+
+// The request of `ValidateReviewModeration`.
+message ValidateReviewModerationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  ReviewModeration review_moderation = 3;
+  ValidateReviewModerationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateReviewModeration`.
+message ValidateReviewModerationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewModeration review_moderation = 1;
+  ValidateReviewModerationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewReviewModeration`.
+message PreviewReviewModerationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  ReviewModeration review_moderation = 3;
+  PreviewReviewModerationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewReviewModeration`.
+message PreviewReviewModerationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewModeration review_moderation = 1;
+  PreviewReviewModerationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckReviewModerationEligibility`.
+message CheckReviewModerationEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  ReviewModeration review_moderation = 3;
+  CheckReviewModerationEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckReviewModerationEligibility`.
+message CheckReviewModerationEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewModeration review_moderation = 1;
+  CheckReviewModerationEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeReviewModeration`.
+message NormalizeReviewModerationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  ReviewModeration review_moderation = 3;
+  NormalizeReviewModerationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeReviewModeration`.
+message NormalizeReviewModerationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewModeration review_moderation = 1;
+  NormalizeReviewModerationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReviewModerationDecision`.
+message ExplainReviewModerationDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  ReviewModeration review_moderation = 3;
+  ExplainReviewModerationDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReviewModerationDecision`.
+message ExplainReviewModerationDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReviewModeration review_moderation = 1;
+  ExplainReviewModerationDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreReviewModeration`.
+message ScoreReviewModerationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  ReviewModeration review_moderation = 3;
+  ScoreReviewModerationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreReviewModeration`.
+message ScoreReviewModerationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreReviewModerationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReviewModeration review_moderation = 1;
+  ScoreReviewModerationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReviewModerationRules`.
+message GetReviewModerationRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string review_moderation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReviewModerationRules`.
+message GetReviewModerationRulesResponse {
+  ReviewModeration review_moderation = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "MerchandisingRuleWorkflowServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Runs the long-lived workflow that takes a merchandising rule from start to finish.
+service MerchandisingRuleWorkflowService {
+  // Starts a merchandising rule.
+  rpc StartMerchandisingRuleWorkflow(StartMerchandisingRuleWorkflowRequest) returns (StartMerchandisingRuleWorkflowResponse);
+
+  // Advances a merchandising rule.
+  rpc AdvanceMerchandisingRuleWorkflow(AdvanceMerchandisingRuleWorkflowRequest) returns (AdvanceMerchandisingRuleWorkflowResponse);
+
+  // Cancels a merchandising rule.
+  rpc CancelMerchandisingRuleWorkflow(CancelMerchandisingRuleWorkflowRequest) returns (CancelMerchandisingRuleWorkflowResponse);
+
+  // Retrys a merchandising rule.
+  rpc RetryMerchandisingRuleWorkflow(RetryMerchandisingRuleWorkflowRequest) returns (RetryMerchandisingRuleWorkflowResponse);
+
+  // Pauses a merchandising rule.
+  rpc PauseMerchandisingRuleWorkflow(PauseMerchandisingRuleWorkflowRequest) returns (PauseMerchandisingRuleWorkflowResponse);
+
+  // Resumes a merchandising rule.
+  rpc ResumeMerchandisingRuleWorkflow(ResumeMerchandisingRuleWorkflowRequest) returns (ResumeMerchandisingRuleWorkflowResponse);
+
+  // Returns a merchandising rule.
+  rpc InspectMerchandisingRuleWorkflow(InspectMerchandisingRuleWorkflowRequest) returns (InspectMerchandisingRuleWorkflowResponse);
+
+  // Lists merchandising rules a page at a time.
+  rpc ListMerchandisingRuleWorkflows(ListMerchandisingRuleWorkflowsRequest) returns (ListMerchandisingRuleWorkflowsResponse);
+
+  // Signals a merchandising rule.
+  rpc SignalMerchandisingRuleWorkflow(SignalMerchandisingRuleWorkflowRequest) returns (SignalMerchandisingRuleWorkflowResponse);
+}
+
+// The request of `StartMerchandisingRuleWorkflow`.
+message StartMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  StartMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartMerchandisingRuleWorkflow`.
+message StartMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  StartMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceMerchandisingRuleWorkflow`.
+message AdvanceMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  AdvanceMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceMerchandisingRuleWorkflow`.
+message AdvanceMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  AdvanceMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelMerchandisingRuleWorkflow`.
+message CancelMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  CancelMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelMerchandisingRuleWorkflow`.
+message CancelMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  CancelMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryMerchandisingRuleWorkflow`.
+message RetryMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  RetryMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryMerchandisingRuleWorkflow`.
+message RetryMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  RetryMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseMerchandisingRuleWorkflow`.
+message PauseMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  PauseMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseMerchandisingRuleWorkflow`.
+message PauseMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  PauseMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeMerchandisingRuleWorkflow`.
+message ResumeMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  ResumeMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeMerchandisingRuleWorkflow`.
+message ResumeMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  ResumeMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectMerchandisingRuleWorkflow`.
+message InspectMerchandisingRuleWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectMerchandisingRuleWorkflow`.
+message InspectMerchandisingRuleWorkflowResponse {
+  MerchandisingRule merchandising_rule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListMerchandisingRuleWorkflows`.
+message ListMerchandisingRuleWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MerchandisingRuleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMerchandisingRuleWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMerchandisingRuleWorkflows`.
+message ListMerchandisingRuleWorkflowsResponse {
+  repeated MerchandisingRule merchandising_rules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalMerchandisingRuleWorkflow`.
+message SignalMerchandisingRuleWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string merchandising_rule_id = 2;
+  MerchandisingRule merchandising_rule = 3;
+  SignalMerchandisingRuleWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalMerchandisingRuleWorkflow`.
+message SignalMerchandisingRuleWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MerchandisingRule merchandising_rule = 1;
+  SignalMerchandisingRuleWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

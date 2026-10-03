@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerOrderServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Manages partner orders: creates, reads, changes, and lists them.
+service PartnerOrderService {
+  // Creates a partner order.
+  rpc CreatePartnerOrder(CreatePartnerOrderRequest) returns (CreatePartnerOrderResponse);
+
+  // Returns a partner order.
+  rpc GetPartnerOrder(GetPartnerOrderRequest) returns (GetPartnerOrderResponse);
+
+  // Changes a partner order.
+  rpc UpdatePartnerOrder(UpdatePartnerOrderRequest) returns (UpdatePartnerOrderResponse);
+
+  // Deletes a partner order.
+  rpc DeletePartnerOrder(DeletePartnerOrderRequest) returns (DeletePartnerOrderResponse);
+
+  // Lists partner orders a page at a time.
+  rpc ListPartnerOrders(ListPartnerOrdersRequest) returns (ListPartnerOrdersResponse);
+
+  // Returns several partner orders at once.
+  rpc BatchGetPartnerOrders(BatchGetPartnerOrdersRequest) returns (BatchGetPartnerOrdersResponse);
+
+  // Lists partner orders a page at a time.
+  rpc SearchPartnerOrders(SearchPartnerOrdersRequest) returns (SearchPartnerOrdersResponse);
+
+  // Streams the changes of partner orders as they happen.
+  rpc WatchPartnerOrders(WatchPartnerOrdersRequest) returns (stream WatchPartnerOrdersResponse);
+
+  // Takes a stream of partner orders and answers once at the end.
+  rpc BatchCreatePartnerOrders(stream BatchCreatePartnerOrdersRequest) returns (BatchCreatePartnerOrdersResponse);
+}
+
+// The request of `CreatePartnerOrder`.
+message CreatePartnerOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  PartnerOrder partner_order = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePartnerOrder`.
+message CreatePartnerOrderResponse {
+  PartnerOrder partner_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPartnerOrder`.
+message GetPartnerOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPartnerOrder`.
+message GetPartnerOrderResponse {
+  PartnerOrder partner_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePartnerOrder`.
+message UpdatePartnerOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  PartnerOrder partner_order = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePartnerOrder`.
+message UpdatePartnerOrderResponse {
+  PartnerOrder partner_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePartnerOrder`.
+message DeletePartnerOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_order_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePartnerOrder`.
+message DeletePartnerOrderResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPartnerOrders`.
+message ListPartnerOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPartnerOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPartnerOrders`.
+message ListPartnerOrdersResponse {
+  repeated PartnerOrder partner_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPartnerOrders`.
+message BatchGetPartnerOrdersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string partner_order_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPartnerOrders`.
+message BatchGetPartnerOrdersResponse {
+  repeated PartnerOrder partner_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPartnerOrders`.
+message SearchPartnerOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPartnerOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPartnerOrders`.
+message SearchPartnerOrdersResponse {
+  repeated PartnerOrder partner_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPartnerOrders`.
+message WatchPartnerOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPartnerOrdersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPartnerOrders`.
+message WatchPartnerOrdersResponse {
+  PartnerOrder partner_order = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreatePartnerOrders`.
+message BatchCreatePartnerOrdersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePartnerOrdersRequest.StreamHeader header = 2;
+    PartnerOrder record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePartnerOrders`.
+message BatchCreatePartnerOrdersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string partner_order_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePartnerOrdersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskAssessmentCalculationServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Computes the figures of a risk assessment, such as totals, taxes, and estimates.
+service RiskAssessmentCalculationService {
+  // Calculates a risk assessment.
+  rpc CalculateRiskAssessment(CalculateRiskAssessmentRequest) returns (CalculateRiskAssessmentResponse);
+
+  // Estimates a risk assessment.
+  rpc EstimateRiskAssessment(EstimateRiskAssessmentRequest) returns (EstimateRiskAssessmentResponse);
+
+  // Quotes a risk assessment.
+  rpc QuoteRiskAssessment(QuoteRiskAssessmentRequest) returns (QuoteRiskAssessmentResponse);
+
+  // Compares a risk assessment.
+  rpc CompareRiskAssessmentOptions(CompareRiskAssessmentOptionsRequest) returns (CompareRiskAssessmentOptionsResponse);
+
+  // Recalculates a risk assessment.
+  rpc RecalculateRiskAssessments(RecalculateRiskAssessmentsRequest) returns (RecalculateRiskAssessmentsResponse);
+
+  // Simulates a risk assessment.
+  rpc SimulateRiskAssessment(SimulateRiskAssessmentRequest) returns (SimulateRiskAssessmentResponse);
+
+  // Explains a risk assessment.
+  rpc ExplainRiskAssessmentCalculation(ExplainRiskAssessmentCalculationRequest) returns (ExplainRiskAssessmentCalculationResponse);
+
+  // Returns a risk assessment.
+  rpc GetRiskAssessmentRates(GetRiskAssessmentRatesRequest) returns (GetRiskAssessmentRatesResponse);
+}
+
+// The request of `CalculateRiskAssessment`.
+message CalculateRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  CalculateRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRiskAssessment`.
+message CalculateRiskAssessmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRiskAssessmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  CalculateRiskAssessmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRiskAssessment`.
+message EstimateRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  EstimateRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRiskAssessment`.
+message EstimateRiskAssessmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRiskAssessmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  EstimateRiskAssessmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRiskAssessment`.
+message QuoteRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  QuoteRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRiskAssessment`.
+message QuoteRiskAssessmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRiskAssessmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  QuoteRiskAssessmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRiskAssessmentOptions`.
+message CompareRiskAssessmentOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  CompareRiskAssessmentOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRiskAssessmentOptions`.
+message CompareRiskAssessmentOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRiskAssessmentOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  CompareRiskAssessmentOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRiskAssessments`.
+message RecalculateRiskAssessmentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  RecalculateRiskAssessmentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRiskAssessments`.
+message RecalculateRiskAssessmentsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRiskAssessmentsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  RecalculateRiskAssessmentsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRiskAssessment`.
+message SimulateRiskAssessmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  SimulateRiskAssessmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRiskAssessment`.
+message SimulateRiskAssessmentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRiskAssessmentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  SimulateRiskAssessmentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRiskAssessmentCalculation`.
+message ExplainRiskAssessmentCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  RiskAssessment risk_assessment = 3;
+  ExplainRiskAssessmentCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRiskAssessmentCalculation`.
+message ExplainRiskAssessmentCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RiskAssessment risk_assessment = 1;
+  ExplainRiskAssessmentCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRiskAssessmentRates`.
+message GetRiskAssessmentRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_assessment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRiskAssessmentRates`.
+message GetRiskAssessmentRatesResponse {
+  RiskAssessment risk_assessment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerCalculationServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Computes the figures of a customer, such as totals, taxes, and estimates.
+service CustomerCalculationService {
+  // Calculates a customer.
+  rpc CalculateCustomer(CalculateCustomerRequest) returns (CalculateCustomerResponse);
+
+  // Estimates a customer.
+  rpc EstimateCustomer(EstimateCustomerRequest) returns (EstimateCustomerResponse);
+
+  // Quotes a customer.
+  rpc QuoteCustomer(QuoteCustomerRequest) returns (QuoteCustomerResponse);
+
+  // Recalculates a customer.
+  rpc RecalculateCustomers(RecalculateCustomersRequest) returns (RecalculateCustomersResponse);
+
+  // Simulates a customer.
+  rpc SimulateCustomer(SimulateCustomerRequest) returns (SimulateCustomerResponse);
+
+  // Explains a customer.
+  rpc ExplainCustomerCalculation(ExplainCustomerCalculationRequest) returns (ExplainCustomerCalculationResponse);
+
+  // Returns a customer.
+  rpc GetCustomerRates(GetCustomerRatesRequest) returns (GetCustomerRatesResponse);
+}
+
+// The request of `CalculateCustomer`.
+message CalculateCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  CalculateCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCustomer`.
+message CalculateCustomerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCustomerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Customer customer = 1;
+  CalculateCustomerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCustomer`.
+message EstimateCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  EstimateCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCustomer`.
+message EstimateCustomerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCustomerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Customer customer = 1;
+  EstimateCustomerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCustomer`.
+message QuoteCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  QuoteCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCustomer`.
+message QuoteCustomerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCustomerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Customer customer = 1;
+  QuoteCustomerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateCustomers`.
+message RecalculateCustomersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  RecalculateCustomersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateCustomers`.
+message RecalculateCustomersResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateCustomersResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Customer customer = 1;
+  RecalculateCustomersResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCustomer`.
+message SimulateCustomerRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  SimulateCustomerRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCustomer`.
+message SimulateCustomerResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCustomerResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Customer customer = 1;
+  SimulateCustomerResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCustomerCalculation`.
+message ExplainCustomerCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  Customer customer = 3;
+  ExplainCustomerCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCustomerCalculation`.
+message ExplainCustomerCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Customer customer = 1;
+  ExplainCustomerCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCustomerRates`.
+message GetCustomerRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string customer_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCustomerRates`.
+message GetCustomerRatesResponse {
+  Customer customer = 1;
+  acme.common.v1.OperationResult result = 2;
+}

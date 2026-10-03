@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockItemQueryServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Answers read-only questions about stock items, for screens and reports.
+service StockItemQueryService {
+  // Returns a stock item.
+  rpc LookupStockItem(LookupStockItemRequest) returns (LookupStockItemResponse);
+
+  // Lists stock items a page at a time.
+  rpc BrowseStockItems(BrowseStockItemsRequest) returns (BrowseStockItemsResponse);
+
+  // Lists stock items a page at a time.
+  rpc FindStockItems(FindStockItemsRequest) returns (FindStockItemsResponse);
+
+  // Counts stock items by status.
+  rpc CountStockItems(CountStockItemsRequest) returns (CountStockItemsResponse);
+
+  // Returns several stock items at once.
+  rpc ResolveStockItems(ResolveStockItemsRequest) returns (ResolveStockItemsResponse);
+
+  // Streams every matching stock item.
+  rpc ExportStockItems(ExportStockItemsRequest) returns (stream ExportStockItemsResponse);
+
+  // Summarizes a stock item.
+  rpc SummarizeStockItems(SummarizeStockItemsRequest) returns (SummarizeStockItemsResponse);
+
+  // Lists stock items a page at a time.
+  rpc SuggestStockItems(SuggestStockItemsRequest) returns (SuggestStockItemsResponse);
+
+  // Returns a stock item.
+  rpc PeekStockItem(PeekStockItemRequest) returns (PeekStockItemResponse);
+}
+
+// The request of `LookupStockItem`.
+message LookupStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupStockItem`.
+message LookupStockItemResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseStockItems`.
+message BrowseStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseStockItemsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseStockItems`.
+message BrowseStockItemsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindStockItems`.
+message FindStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindStockItemsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindStockItems`.
+message FindStockItemsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountStockItems`.
+message CountStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountStockItemsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountStockItems`.
+message CountStockItemsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveStockItems`.
+message ResolveStockItemsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string stock_item_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveStockItems`.
+message ResolveStockItemsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportStockItems`.
+message ExportStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportStockItemsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportStockItems`.
+message ExportStockItemsResponse {
+  StockItem stock_item = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeStockItems`.
+message SummarizeStockItemsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  SummarizeStockItemsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeStockItems`.
+message SummarizeStockItemsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestStockItems`.
+message SuggestStockItemsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestStockItemsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestStockItems`.
+message SuggestStockItemsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekStockItem`.
+message PeekStockItemRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekStockItem`.
+message PeekStockItemResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}

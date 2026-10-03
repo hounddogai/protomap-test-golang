@@ -1,0 +1,178 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.insurance.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/insurance/v1/insurance.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Insurance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/insurance/v1;insurancev1";
+option java_multiple_files = true;
+option java_outer_classname = "PolicyServiceProto";
+option java_package = "com.acme.insurance.v1";
+
+// Manages policies: creates, reads, changes, and lists them.
+service PolicyService {
+  // Creates a policy.
+  rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse);
+
+  // Returns a policy.
+  rpc GetPolicy(GetPolicyRequest) returns (GetPolicyResponse);
+
+  // Changes a policy.
+  rpc UpdatePolicy(UpdatePolicyRequest) returns (UpdatePolicyResponse);
+
+  // Deletes a policy.
+  rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse);
+
+  // Lists policies a page at a time.
+  rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse);
+
+  // Lists policies a page at a time.
+  rpc SearchPolicies(SearchPoliciesRequest) returns (SearchPoliciesResponse);
+
+  // Streams the changes of policies as they happen.
+  rpc WatchPolicies(WatchPoliciesRequest) returns (stream WatchPoliciesResponse);
+}
+
+// The request of `CreatePolicy`.
+message CreatePolicyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Policy policy = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePolicy`.
+message CreatePolicyResponse {
+  Policy policy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPolicy`.
+message GetPolicyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string policy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPolicy`.
+message GetPolicyResponse {
+  Policy policy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePolicy`.
+message UpdatePolicyRequest {
+  acme.common.v1.RequestContext context = 1;
+  Policy policy = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePolicy`.
+message UpdatePolicyResponse {
+  Policy policy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePolicy`.
+message DeletePolicyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string policy_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePolicy`.
+message DeletePolicyResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPolicies`.
+message ListPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPoliciesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPolicies`.
+message ListPoliciesResponse {
+  repeated Policy policies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPolicies`.
+message SearchPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPoliciesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPolicies`.
+message SearchPoliciesResponse {
+  repeated Policy policies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchPolicies`.
+message WatchPoliciesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PolicyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchPoliciesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchPolicies`.
+message WatchPoliciesResponse {
+  Policy policy = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

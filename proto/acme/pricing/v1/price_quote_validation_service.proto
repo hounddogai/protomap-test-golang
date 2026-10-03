@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceQuoteValidationServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Checks price quotes against the rules before anything acts on them.
+service PriceQuoteValidationService {
+  // Validates a price quote.
+  rpc ValidatePriceQuote(ValidatePriceQuoteRequest) returns (ValidatePriceQuoteResponse);
+
+  // Previews a price quote.
+  rpc PreviewPriceQuote(PreviewPriceQuoteRequest) returns (PreviewPriceQuoteResponse);
+
+  // Checks a price quote.
+  rpc CheckPriceQuoteEligibility(CheckPriceQuoteEligibilityRequest) returns (CheckPriceQuoteEligibilityResponse);
+
+  // Normalizes a price quote.
+  rpc NormalizePriceQuote(NormalizePriceQuoteRequest) returns (NormalizePriceQuoteResponse);
+
+  // Explains a price quote.
+  rpc ExplainPriceQuoteDecision(ExplainPriceQuoteDecisionRequest) returns (ExplainPriceQuoteDecisionResponse);
+
+  // Scores a price quote.
+  rpc ScorePriceQuote(ScorePriceQuoteRequest) returns (ScorePriceQuoteResponse);
+
+  // Lints a price quote.
+  rpc LintPriceQuotes(LintPriceQuotesRequest) returns (LintPriceQuotesResponse);
+
+  // Returns a price quote.
+  rpc GetPriceQuoteRules(GetPriceQuoteRulesRequest) returns (GetPriceQuoteRulesResponse);
+}
+
+// The request of `ValidatePriceQuote`.
+message ValidatePriceQuoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  ValidatePriceQuoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePriceQuote`.
+message ValidatePriceQuoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceQuote price_quote = 1;
+  ValidatePriceQuoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPriceQuote`.
+message PreviewPriceQuoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  PreviewPriceQuoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPriceQuote`.
+message PreviewPriceQuoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceQuote price_quote = 1;
+  PreviewPriceQuoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPriceQuoteEligibility`.
+message CheckPriceQuoteEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  CheckPriceQuoteEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPriceQuoteEligibility`.
+message CheckPriceQuoteEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceQuote price_quote = 1;
+  CheckPriceQuoteEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePriceQuote`.
+message NormalizePriceQuoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  NormalizePriceQuoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePriceQuote`.
+message NormalizePriceQuoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceQuote price_quote = 1;
+  NormalizePriceQuoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPriceQuoteDecision`.
+message ExplainPriceQuoteDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  ExplainPriceQuoteDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPriceQuoteDecision`.
+message ExplainPriceQuoteDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceQuote price_quote = 1;
+  ExplainPriceQuoteDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePriceQuote`.
+message ScorePriceQuoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  ScorePriceQuoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePriceQuote`.
+message ScorePriceQuoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePriceQuoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PriceQuote price_quote = 1;
+  ScorePriceQuoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPriceQuotes`.
+message LintPriceQuotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  PriceQuote price_quote = 3;
+  LintPriceQuotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPriceQuotes`.
+message LintPriceQuotesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceQuote price_quote = 1;
+  LintPriceQuotesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPriceQuoteRules`.
+message GetPriceQuoteRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_quote_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPriceQuoteRules`.
+message GetPriceQuoteRulesResponse {
+  PriceQuote price_quote = 1;
+  acme.common.v1.OperationResult result = 2;
+}

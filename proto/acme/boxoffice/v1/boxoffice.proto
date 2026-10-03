@@ -1,0 +1,223 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.boxoffice.v1;
+
+import "acme/boxoffice/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Boxoffice.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/boxoffice/v1;boxofficev1";
+option java_multiple_files = true;
+option java_outer_classname = "BoxofficeProto";
+option java_package = "com.acme.boxoffice.v1";
+
+// Where a box office sale is in its lifecycle.
+enum BoxOfficeSaleStatus {
+  BOX_OFFICE_SALE_STATUS_UNSPECIFIED = 0;
+  BOX_OFFICE_SALE_STATUS_DRAFT = 1;
+  BOX_OFFICE_SALE_STATUS_ISSUED = 2;
+  BOX_OFFICE_SALE_STATUS_APPROVED = 3;
+  BOX_OFFICE_SALE_STATUS_PAID = 4;
+  BOX_OFFICE_SALE_STATUS_VOID = 5;
+}
+
+// Where a cash drawer is in its lifecycle.
+enum CashDrawerStatus {
+  CASH_DRAWER_STATUS_UNSPECIFIED = 0;
+  CASH_DRAWER_STATUS_PENDING = 1;
+  CASH_DRAWER_STATUS_OPEN = 2;
+  CASH_DRAWER_STATUS_FROZEN = 3;
+  CASH_DRAWER_STATUS_CLOSED = 4;
+}
+
+// Where a guest list is in its lifecycle.
+enum GuestListStatus {
+  GUEST_LIST_STATUS_UNSPECIFIED = 0;
+  GUEST_LIST_STATUS_DRAFT = 1;
+  GUEST_LIST_STATUS_ISSUED = 2;
+  GUEST_LIST_STATUS_APPROVED = 3;
+  GUEST_LIST_STATUS_PAID = 4;
+  GUEST_LIST_STATUS_VOID = 5;
+}
+
+// The line of a box office sale.
+message BoxOfficeSaleLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  BoxOfficeSaleLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a box office sale line.
+message BoxOfficeSaleLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a box office sale.
+message BoxOfficeSaleCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a box office sale.
+message BoxOfficeSaleBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a box office sale.
+message BoxOfficeSaleAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A box office sale of the boxoffice domain.
+message BoxOfficeSale {
+  string box_office_sale_id = 1;
+  string number = 2;
+  BoxOfficeSaleStatus status = 3;
+  CashDrawerRef counterparty = 4;
+  repeated BoxOfficeSaleLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    BoxOfficeSaleCardSettlement card = 8;
+    BoxOfficeSaleBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated BoxOfficeSaleAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The limit of a cash drawer.
+message CashDrawerLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a cash drawer.
+message CashDrawerCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a cash drawer.
+message CashDrawerBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A cash drawer of the boxoffice domain.
+message CashDrawer {
+  string cash_drawer_id = 1;
+  BoxOfficeSaleRef holder = 2;
+  CashDrawerStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated CashDrawerLimit limits = 7;
+  oneof funding {
+    CashDrawerCardFunding card = 8;
+    CashDrawerBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The line of a guest list.
+message GuestListLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  GuestListLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a guest list line.
+message GuestListLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a guest list.
+message GuestListCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a guest list.
+message GuestListBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a guest list.
+message GuestListAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A guest list of the boxoffice domain.
+message GuestList {
+  string guest_list_id = 1;
+  string number = 2;
+  GuestListStatus status = 3;
+  CashDrawerRef counterparty = 4;
+  repeated GuestListLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    GuestListCardSettlement card = 8;
+    GuestListBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated GuestListAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

@@ -1,0 +1,220 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VideoVisitServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Manages video visits: creates, reads, changes, and lists them.
+service VideoVisitService {
+  // Creates a video visit.
+  rpc CreateVideoVisit(CreateVideoVisitRequest) returns (CreateVideoVisitResponse);
+
+  // Returns a video visit.
+  rpc GetVideoVisit(GetVideoVisitRequest) returns (GetVideoVisitResponse);
+
+  // Changes a video visit.
+  rpc UpdateVideoVisit(UpdateVideoVisitRequest) returns (UpdateVideoVisitResponse);
+
+  // Deletes a video visit.
+  rpc DeleteVideoVisit(DeleteVideoVisitRequest) returns (DeleteVideoVisitResponse);
+
+  // Returns several video visits at once.
+  rpc BatchGetVideoVisits(BatchGetVideoVisitsRequest) returns (BatchGetVideoVisitsResponse);
+
+  // Lists video visits a page at a time.
+  rpc SearchVideoVisits(SearchVideoVisitsRequest) returns (SearchVideoVisitsResponse);
+
+  // Streams the changes of video visits as they happen.
+  rpc WatchVideoVisits(WatchVideoVisitsRequest) returns (stream WatchVideoVisitsResponse);
+
+  // Takes a stream of video visits and answers once at the end.
+  rpc BatchCreateVideoVisits(stream BatchCreateVideoVisitsRequest) returns (BatchCreateVideoVisitsResponse);
+
+  // Creates a video visit.
+  rpc CloneVideoVisit(CloneVideoVisitRequest) returns (CloneVideoVisitResponse);
+}
+
+// The request of `CreateVideoVisit`.
+message CreateVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  VideoVisit video_visit = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateVideoVisit`.
+message CreateVideoVisitResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetVideoVisit`.
+message GetVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVideoVisit`.
+message GetVideoVisitResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateVideoVisit`.
+message UpdateVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  VideoVisit video_visit = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateVideoVisit`.
+message UpdateVideoVisitResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteVideoVisit`.
+message DeleteVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteVideoVisit`.
+message DeleteVideoVisitResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetVideoVisits`.
+message BatchGetVideoVisitsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string video_visit_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetVideoVisits`.
+message BatchGetVideoVisitsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchVideoVisits`.
+message SearchVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchVideoVisitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchVideoVisits`.
+message SearchVideoVisitsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchVideoVisits`.
+message WatchVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchVideoVisitsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchVideoVisits`.
+message WatchVideoVisitsResponse {
+  VideoVisit video_visit = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateVideoVisits`.
+message BatchCreateVideoVisitsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateVideoVisitsRequest.StreamHeader header = 2;
+    VideoVisit record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateVideoVisits`.
+message BatchCreateVideoVisitsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string video_visit_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateVideoVisitsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneVideoVisit`.
+message CloneVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  VideoVisit video_visit = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneVideoVisit`.
+message CloneVideoVisitResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}

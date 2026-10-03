@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "CategoryQueryServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Answers read-only questions about categories, for screens and reports.
+service CategoryQueryService {
+  // Returns a category.
+  rpc LookupCategory(LookupCategoryRequest) returns (LookupCategoryResponse);
+
+  // Lists categories a page at a time.
+  rpc BrowseCategories(BrowseCategoriesRequest) returns (BrowseCategoriesResponse);
+
+  // Lists categories a page at a time.
+  rpc FindCategories(FindCategoriesRequest) returns (FindCategoriesResponse);
+
+  // Counts categories by status.
+  rpc CountCategories(CountCategoriesRequest) returns (CountCategoriesResponse);
+
+  // Returns several categories at once.
+  rpc ResolveCategories(ResolveCategoriesRequest) returns (ResolveCategoriesResponse);
+
+  // Streams every matching category.
+  rpc ExportCategories(ExportCategoriesRequest) returns (stream ExportCategoriesResponse);
+
+  // Summarizes a category.
+  rpc SummarizeCategories(SummarizeCategoriesRequest) returns (SummarizeCategoriesResponse);
+
+  // Lists categories a page at a time.
+  rpc SuggestCategories(SuggestCategoriesRequest) returns (SuggestCategoriesResponse);
+
+  // Returns a category.
+  rpc PeekCategory(PeekCategoryRequest) returns (PeekCategoryResponse);
+}
+
+// The request of `LookupCategory`.
+message LookupCategoryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCategory`.
+message LookupCategoryResponse {
+  Category category = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCategories`.
+message BrowseCategoriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CategoryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCategoriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCategories`.
+message BrowseCategoriesResponse {
+  repeated Category categories = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCategories`.
+message FindCategoriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CategoryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCategoriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCategories`.
+message FindCategoriesResponse {
+  repeated Category categories = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCategories`.
+message CountCategoriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CategoryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCategoriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCategories`.
+message CountCategoriesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCategories`.
+message ResolveCategoriesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string category_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCategories`.
+message ResolveCategoriesResponse {
+  repeated Category categories = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCategories`.
+message ExportCategoriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CategoryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCategoriesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCategories`.
+message ExportCategoriesResponse {
+  Category category = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCategories`.
+message SummarizeCategoriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  SummarizeCategoriesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCategories`.
+message SummarizeCategoriesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCategories`.
+message SuggestCategoriesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CategoryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCategoriesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCategories`.
+message SuggestCategoriesResponse {
+  repeated Category categories = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCategory`.
+message PeekCategoryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCategory`.
+message PeekCategoryResponse {
+  Category category = 1;
+  acme.common.v1.OperationResult result = 2;
+}

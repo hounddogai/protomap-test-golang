@@ -1,0 +1,213 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.workplaces.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/employees/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Workplaces.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/workplaces/v1;workplacesv1";
+option java_multiple_files = true;
+option java_outer_classname = "WorkplacesProto";
+option java_package = "com.acme.workplaces.v1";
+
+// Where a building is in its lifecycle.
+enum BuildingStatus {
+  BUILDING_STATUS_UNSPECIFIED = 0;
+  BUILDING_STATUS_ACTIVE = 1;
+  BUILDING_STATUS_INACTIVE = 2;
+}
+
+// Where a desk is in its lifecycle.
+enum DeskStatus {
+  DESK_STATUS_UNSPECIFIED = 0;
+  DESK_STATUS_PLANNED = 1;
+  DESK_STATUS_AVAILABLE = 2;
+  DESK_STATUS_RESERVED = 3;
+  DESK_STATUS_RETIRED = 4;
+}
+
+// Where a room booking is in its lifecycle.
+enum RoomBookingStatus {
+  ROOM_BOOKING_STATUS_UNSPECIFIED = 0;
+  ROOM_BOOKING_STATUS_TENTATIVE = 1;
+  ROOM_BOOKING_STATUS_CONFIRMED = 2;
+  ROOM_BOOKING_STATUS_CANCELLED = 3;
+  ROOM_BOOKING_STATUS_COMPLETED = 4;
+}
+
+// Where a visitor pass is in its lifecycle.
+enum VisitorPassStatus {
+  VISITOR_PASS_STATUS_UNSPECIFIED = 0;
+  VISITOR_PASS_STATUS_DRAFT = 1;
+  VISITOR_PASS_STATUS_ISSUED = 2;
+  VISITOR_PASS_STATUS_APPROVED = 3;
+  VISITOR_PASS_STATUS_PAID = 4;
+  VISITOR_PASS_STATUS_VOID = 5;
+}
+
+// A building of the workplaces domain.
+message Building {
+  string building_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Building children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  BuildingStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The dimensions of a desk.
+message DeskDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a desk.
+message DeskComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A desk of the workplaces domain.
+message Desk {
+  string desk_id = 1;
+  string code = 2;
+  string name = 3;
+  DeskStatus status = 4;
+  repeated string category_path = 5;
+  DeskDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, DeskComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a room booking.
+message RoomBookingParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a room booking.
+message RoomBookingDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a room booking.
+message RoomBookingWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A room booking of the workplaces domain.
+message RoomBooking {
+  string room_booking_id = 1;
+  string title = 2;
+  RoomBookingStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated RoomBookingParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    RoomBookingDailyRule daily = 7;
+    RoomBookingWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a visitor pass.
+message VisitorPassLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  VisitorPassLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a visitor pass line.
+message VisitorPassLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a visitor pass.
+message VisitorPassCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a visitor pass.
+message VisitorPassBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a visitor pass.
+message VisitorPassAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A visitor pass of the workplaces domain.
+message VisitorPass {
+  string visitor_pass_id = 1;
+  string number = 2;
+  VisitorPassStatus status = 3;
+  acme.employees.v1.EmployeeRef counterparty = 4;
+  repeated VisitorPassLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    VisitorPassCardSettlement card = 8;
+    VisitorPassBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated VisitorPassAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

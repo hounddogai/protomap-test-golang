@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "UsageRecordCalculationServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Computes the figures of a usage record, such as totals, taxes, and estimates.
+service UsageRecordCalculationService {
+  // Calculates a usage record.
+  rpc CalculateUsageRecord(CalculateUsageRecordRequest) returns (CalculateUsageRecordResponse);
+
+  // Estimates a usage record.
+  rpc EstimateUsageRecord(EstimateUsageRecordRequest) returns (EstimateUsageRecordResponse);
+
+  // Compares a usage record.
+  rpc CompareUsageRecordOptions(CompareUsageRecordOptionsRequest) returns (CompareUsageRecordOptionsResponse);
+
+  // Recalculates a usage record.
+  rpc RecalculateUsageRecords(RecalculateUsageRecordsRequest) returns (RecalculateUsageRecordsResponse);
+
+  // Simulates a usage record.
+  rpc SimulateUsageRecord(SimulateUsageRecordRequest) returns (SimulateUsageRecordResponse);
+
+  // Explains a usage record.
+  rpc ExplainUsageRecordCalculation(ExplainUsageRecordCalculationRequest) returns (ExplainUsageRecordCalculationResponse);
+
+  // Returns a usage record.
+  rpc GetUsageRecordRates(GetUsageRecordRatesRequest) returns (GetUsageRecordRatesResponse);
+}
+
+// The request of `CalculateUsageRecord`.
+message CalculateUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  CalculateUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateUsageRecord`.
+message CalculateUsageRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateUsageRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  UsageRecord usage_record = 1;
+  CalculateUsageRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateUsageRecord`.
+message EstimateUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  EstimateUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateUsageRecord`.
+message EstimateUsageRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateUsageRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  UsageRecord usage_record = 1;
+  EstimateUsageRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareUsageRecordOptions`.
+message CompareUsageRecordOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  CompareUsageRecordOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareUsageRecordOptions`.
+message CompareUsageRecordOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareUsageRecordOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  UsageRecord usage_record = 1;
+  CompareUsageRecordOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateUsageRecords`.
+message RecalculateUsageRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  RecalculateUsageRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateUsageRecords`.
+message RecalculateUsageRecordsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateUsageRecordsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  UsageRecord usage_record = 1;
+  RecalculateUsageRecordsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateUsageRecord`.
+message SimulateUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  SimulateUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateUsageRecord`.
+message SimulateUsageRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateUsageRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  UsageRecord usage_record = 1;
+  SimulateUsageRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainUsageRecordCalculation`.
+message ExplainUsageRecordCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  ExplainUsageRecordCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainUsageRecordCalculation`.
+message ExplainUsageRecordCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  ExplainUsageRecordCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetUsageRecordRates`.
+message GetUsageRecordRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetUsageRecordRates`.
+message GetUsageRecordRatesResponse {
+  UsageRecord usage_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}

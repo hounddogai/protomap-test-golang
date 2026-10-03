@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.certificates.v1;
+
+import "acme/certificates/v1/certificates.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Certificates.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/certificates/v1;certificatesv1";
+option java_multiple_files = true;
+option java_outer_classname = "CertificateQueryServiceProto";
+option java_package = "com.acme.certificates.v1";
+
+// Answers read-only questions about certificates, for screens and reports.
+service CertificateQueryService {
+  // Returns a certificate.
+  rpc LookupCertificate(LookupCertificateRequest) returns (LookupCertificateResponse);
+
+  // Lists certificates a page at a time.
+  rpc BrowseCertificates(BrowseCertificatesRequest) returns (BrowseCertificatesResponse);
+
+  // Counts certificates by status.
+  rpc CountCertificates(CountCertificatesRequest) returns (CountCertificatesResponse);
+
+  // Returns several certificates at once.
+  rpc ResolveCertificates(ResolveCertificatesRequest) returns (ResolveCertificatesResponse);
+
+  // Streams every matching certificate.
+  rpc ExportCertificates(ExportCertificatesRequest) returns (stream ExportCertificatesResponse);
+
+  // Summarizes a certificate.
+  rpc SummarizeCertificates(SummarizeCertificatesRequest) returns (SummarizeCertificatesResponse);
+
+  // Lists certificates a page at a time.
+  rpc SuggestCertificates(SuggestCertificatesRequest) returns (SuggestCertificatesResponse);
+
+  // Returns a certificate.
+  rpc PeekCertificate(PeekCertificateRequest) returns (PeekCertificateResponse);
+}
+
+// The request of `LookupCertificate`.
+message LookupCertificateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string certificate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCertificate`.
+message LookupCertificateResponse {
+  Certificate certificate = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCertificates`.
+message BrowseCertificatesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CertificateStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCertificatesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCertificates`.
+message BrowseCertificatesResponse {
+  repeated Certificate certificates = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCertificates`.
+message CountCertificatesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CertificateStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCertificatesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCertificates`.
+message CountCertificatesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCertificates`.
+message ResolveCertificatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string certificate_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCertificates`.
+message ResolveCertificatesResponse {
+  repeated Certificate certificates = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCertificates`.
+message ExportCertificatesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CertificateStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCertificatesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCertificates`.
+message ExportCertificatesResponse {
+  Certificate certificate = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCertificates`.
+message SummarizeCertificatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string certificate_id = 2;
+  SummarizeCertificatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCertificates`.
+message SummarizeCertificatesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCertificates`.
+message SuggestCertificatesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CertificateStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCertificatesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCertificates`.
+message SuggestCertificatesResponse {
+  repeated Certificate certificates = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCertificate`.
+message PeekCertificateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string certificate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCertificate`.
+message PeekCertificateResponse {
+  Certificate certificate = 1;
+  acme.common.v1.OperationResult result = 2;
+}

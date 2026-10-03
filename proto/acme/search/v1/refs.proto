@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.search.v1";
+
+// A reference to a search index of the search domain.
+message SearchIndexRef {
+  string search_index_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a search query of the search domain.
+message SearchQueryRef {
+  string search_query_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}
+
+// A reference to a synonym of the search domain.
+message SynonymRef {
+  string synonym_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}

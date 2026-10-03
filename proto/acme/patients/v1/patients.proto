@@ -1,0 +1,178 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientsProto";
+option java_package = "com.acme.patients.v1";
+
+// Where a patient is in its lifecycle.
+enum PatientStatus {
+  PATIENT_STATUS_UNSPECIFIED = 0;
+  PATIENT_STATUS_PROSPECT = 1;
+  PATIENT_STATUS_ACTIVE = 2;
+  PATIENT_STATUS_SUSPENDED = 3;
+  PATIENT_STATUS_CLOSED = 4;
+}
+
+// Where a medical record is in its lifecycle.
+enum MedicalRecordStatus {
+  MEDICAL_RECORD_STATUS_UNSPECIFIED = 0;
+  MEDICAL_RECORD_STATUS_DRAFT = 1;
+  MEDICAL_RECORD_STATUS_ISSUED = 2;
+  MEDICAL_RECORD_STATUS_APPROVED = 3;
+  MEDICAL_RECORD_STATUS_PAID = 4;
+  MEDICAL_RECORD_STATUS_VOID = 5;
+}
+
+// Where an allergy is in its lifecycle.
+enum AllergyStatus {
+  ALLERGY_STATUS_UNSPECIFIED = 0;
+  ALLERGY_STATUS_RECEIVED = 1;
+  ALLERGY_STATUS_PROCESSED = 2;
+  ALLERGY_STATUS_DISCARDED = 3;
+}
+
+// The preferences of a patient.
+message PatientPreferences {
+  string language = 1;
+  bool marketing_opt_in = 2;
+  repeated string channels = 3;
+  acme.common.v1.TimeWindow quiet_hours = 4;
+}
+
+// The passport of a patient.
+message PatientPassport {
+  string number = 1;
+  string issuing_country = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// The national id of a patient.
+message PatientNationalId {
+  string number = 1;
+  string issuing_country = 2;
+}
+
+// A patient of the patients domain.
+message Patient {
+  string patient_id = 1;
+  acme.common.v1.PersonName name = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  acme.common.v1.PostalAddress primary_address = 4;
+  PatientStatus status = 5;
+  repeated string segments = 6;
+  map<string, string> attributes = 7;
+  PatientPreferences preferences = 8;
+  oneof identity_document {
+    PatientPassport passport = 9;
+    PatientNationalId national_id = 10;
+    string tax_number = 11;
+  }
+  acme.identity.v1.UserRef relationship_manager = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a medical record.
+message MedicalRecordLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  MedicalRecordLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a medical record line.
+message MedicalRecordLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a medical record.
+message MedicalRecordCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a medical record.
+message MedicalRecordBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a medical record.
+message MedicalRecordAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A medical record of the patients domain.
+message MedicalRecord {
+  string medical_record_id = 1;
+  string number = 2;
+  MedicalRecordStatus status = 3;
+  PatientRef counterparty = 4;
+  repeated MedicalRecordLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    MedicalRecordCardSettlement card = 8;
+    MedicalRecordBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated MedicalRecordAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of an allergy.
+message AllergyMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// An allergy of the patients domain.
+message Allergy {
+  string allergy_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  PatientRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated AllergyMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

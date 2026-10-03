@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.featureflags.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Featureflags.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/featureflags/v1;featureflagsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.featureflags.v1";
+
+// A reference to a feature flag of the featureflags domain.
+message FeatureFlagRef {
+  string feature_flag_id = 1;
+  string display_name = 2;
+  int64 version = 3;
+}
+
+// A reference to a flag rollout of the featureflags domain.
+message FlagRolloutRef {
+  string flag_rollout_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}
+
+// A reference to a flag evaluation of the featureflags domain.
+message FlagEvaluationRef {
+  string flag_evaluation_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}

@@ -1,0 +1,304 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.expenses.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/expenses/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Expenses.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/expenses/v1;expensesv1";
+option java_multiple_files = true;
+option java_outer_classname = "ExpensesProto";
+option java_package = "com.acme.expenses.v1";
+
+// Where an expense report is in its lifecycle.
+enum ExpenseReportStatus {
+  EXPENSE_REPORT_STATUS_UNSPECIFIED = 0;
+  EXPENSE_REPORT_STATUS_DRAFT = 1;
+  EXPENSE_REPORT_STATUS_ISSUED = 2;
+  EXPENSE_REPORT_STATUS_APPROVED = 3;
+  EXPENSE_REPORT_STATUS_PAID = 4;
+  EXPENSE_REPORT_STATUS_VOID = 5;
+}
+
+// Where a receipt is in its lifecycle.
+enum ReceiptStatus {
+  RECEIPT_STATUS_UNSPECIFIED = 0;
+  RECEIPT_STATUS_DRAFT = 1;
+  RECEIPT_STATUS_ISSUED = 2;
+  RECEIPT_STATUS_APPROVED = 3;
+  RECEIPT_STATUS_PAID = 4;
+  RECEIPT_STATUS_VOID = 5;
+}
+
+// Where a mileage claim is in its lifecycle.
+enum MileageClaimStatus {
+  MILEAGE_CLAIM_STATUS_UNSPECIFIED = 0;
+  MILEAGE_CLAIM_STATUS_DRAFT = 1;
+  MILEAGE_CLAIM_STATUS_ISSUED = 2;
+  MILEAGE_CLAIM_STATUS_APPROVED = 3;
+  MILEAGE_CLAIM_STATUS_PAID = 4;
+  MILEAGE_CLAIM_STATUS_VOID = 5;
+}
+
+// Where an expense policy is in its lifecycle.
+enum ExpensePolicyStatus {
+  EXPENSE_POLICY_STATUS_UNSPECIFIED = 0;
+  EXPENSE_POLICY_STATUS_DRAFT = 1;
+  EXPENSE_POLICY_STATUS_ENABLED = 2;
+  EXPENSE_POLICY_STATUS_DISABLED = 3;
+  EXPENSE_POLICY_STATUS_RETIRED = 4;
+}
+
+// The line of an expense report.
+message ExpenseReportLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ExpenseReportLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an expense report line.
+message ExpenseReportLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an expense report.
+message ExpenseReportCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an expense report.
+message ExpenseReportBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an expense report.
+message ExpenseReportAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An expense report of the expenses domain.
+message ExpenseReport {
+  string expense_report_id = 1;
+  string number = 2;
+  ExpenseReportStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated ExpenseReportLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ExpenseReportCardSettlement card = 8;
+    ExpenseReportBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ExpenseReportAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a receipt.
+message ReceiptLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ReceiptLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a receipt line.
+message ReceiptLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a receipt.
+message ReceiptCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a receipt.
+message ReceiptBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a receipt.
+message ReceiptAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A receipt of the expenses domain.
+message Receipt {
+  string receipt_id = 1;
+  string number = 2;
+  ReceiptStatus status = 3;
+  MileageClaimRef counterparty = 4;
+  repeated ReceiptLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ReceiptCardSettlement card = 8;
+    ReceiptBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ReceiptAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a mileage claim.
+message MileageClaimLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  MileageClaimLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a mileage claim line.
+message MileageClaimLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a mileage claim.
+message MileageClaimCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a mileage claim.
+message MileageClaimBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a mileage claim.
+message MileageClaimAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A mileage claim of the expenses domain.
+message MileageClaim {
+  string mileage_claim_id = 1;
+  string number = 2;
+  MileageClaimStatus status = 3;
+  ReceiptRef counterparty = 4;
+  repeated MileageClaimLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    MileageClaimCardSettlement card = 8;
+    MileageClaimBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated MileageClaimAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of an expense policy.
+message ExpensePolicyCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of an expense policy.
+message ExpensePolicyDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of an expense policy.
+message ExpensePolicyRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of an expense policy.
+message ExpensePolicyBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// An expense policy of the expenses domain.
+message ExpensePolicy {
+  string expense_policy_id = 1;
+  string name = 2;
+  string description = 3;
+  ExpensePolicyStatus status = 4;
+  int32 priority = 5;
+  repeated ExpensePolicyCondition conditions = 6;
+  oneof action {
+    ExpensePolicyDiscountAction discount = 7;
+    ExpensePolicyRouteAction route = 8;
+    ExpensePolicyBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

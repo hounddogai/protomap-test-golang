@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceListServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Manages price lists: creates, reads, changes, and lists them.
+service PriceListService {
+  // Creates a price list.
+  rpc CreatePriceList(CreatePriceListRequest) returns (CreatePriceListResponse);
+
+  // Returns a price list.
+  rpc GetPriceList(GetPriceListRequest) returns (GetPriceListResponse);
+
+  // Changes a price list.
+  rpc UpdatePriceList(UpdatePriceListRequest) returns (UpdatePriceListResponse);
+
+  // Deletes a price list.
+  rpc DeletePriceList(DeletePriceListRequest) returns (DeletePriceListResponse);
+
+  // Lists price lists a page at a time.
+  rpc ListPriceLists(ListPriceListsRequest) returns (ListPriceListsResponse);
+
+  // Returns several price lists at once.
+  rpc BatchGetPriceLists(BatchGetPriceListsRequest) returns (BatchGetPriceListsResponse);
+
+  // Lists price lists a page at a time.
+  rpc SearchPriceLists(SearchPriceListsRequest) returns (SearchPriceListsResponse);
+
+  // Takes a stream of price lists and answers once at the end.
+  rpc BatchCreatePriceLists(stream BatchCreatePriceListsRequest) returns (BatchCreatePriceListsResponse);
+
+  // Creates a price list.
+  rpc ClonePriceList(ClonePriceListRequest) returns (ClonePriceListResponse);
+}
+
+// The request of `CreatePriceList`.
+message CreatePriceListRequest {
+  acme.common.v1.RequestContext context = 1;
+  PriceList price_list = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreatePriceList`.
+message CreatePriceListResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetPriceList`.
+message GetPriceListRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPriceList`.
+message GetPriceListResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdatePriceList`.
+message UpdatePriceListRequest {
+  acme.common.v1.RequestContext context = 1;
+  PriceList price_list = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdatePriceList`.
+message UpdatePriceListResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeletePriceList`.
+message DeletePriceListRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeletePriceList`.
+message DeletePriceListResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListPriceLists`.
+message ListPriceListsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPriceListsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPriceLists`.
+message ListPriceListsResponse {
+  repeated PriceList price_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetPriceLists`.
+message BatchGetPriceListsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string price_list_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetPriceLists`.
+message BatchGetPriceListsResponse {
+  repeated PriceList price_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchPriceLists`.
+message SearchPriceListsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PriceListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPriceListsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPriceLists`.
+message SearchPriceListsResponse {
+  repeated PriceList price_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchCreatePriceLists`.
+message BatchCreatePriceListsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreatePriceListsRequest.StreamHeader header = 2;
+    PriceList record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreatePriceLists`.
+message BatchCreatePriceListsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string price_list_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreatePriceListsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ClonePriceList`.
+message ClonePriceListRequest {
+  acme.common.v1.RequestContext context = 1;
+  PriceList price_list = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `ClonePriceList`.
+message ClonePriceListResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}

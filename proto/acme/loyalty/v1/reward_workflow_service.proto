@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/loyalty/v1/loyalty.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "RewardWorkflowServiceProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Runs the long-lived workflow that takes a reward from start to finish.
+service RewardWorkflowService {
+  // Starts a reward.
+  rpc StartRewardWorkflow(StartRewardWorkflowRequest) returns (StartRewardWorkflowResponse);
+
+  // Advances a reward.
+  rpc AdvanceRewardWorkflow(AdvanceRewardWorkflowRequest) returns (AdvanceRewardWorkflowResponse);
+
+  // Cancels a reward.
+  rpc CancelRewardWorkflow(CancelRewardWorkflowRequest) returns (CancelRewardWorkflowResponse);
+
+  // Pauses a reward.
+  rpc PauseRewardWorkflow(PauseRewardWorkflowRequest) returns (PauseRewardWorkflowResponse);
+
+  // Resumes a reward.
+  rpc ResumeRewardWorkflow(ResumeRewardWorkflowRequest) returns (ResumeRewardWorkflowResponse);
+
+  // Returns a reward.
+  rpc InspectRewardWorkflow(InspectRewardWorkflowRequest) returns (InspectRewardWorkflowResponse);
+
+  // Lists rewards a page at a time.
+  rpc ListRewardWorkflows(ListRewardWorkflowsRequest) returns (ListRewardWorkflowsResponse);
+
+  // Signals a reward.
+  rpc SignalRewardWorkflow(SignalRewardWorkflowRequest) returns (SignalRewardWorkflowResponse);
+}
+
+// The request of `StartRewardWorkflow`.
+message StartRewardWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  StartRewardWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartRewardWorkflow`.
+message StartRewardWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  StartRewardWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceRewardWorkflow`.
+message AdvanceRewardWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  AdvanceRewardWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceRewardWorkflow`.
+message AdvanceRewardWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  AdvanceRewardWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelRewardWorkflow`.
+message CancelRewardWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  CancelRewardWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelRewardWorkflow`.
+message CancelRewardWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  CancelRewardWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseRewardWorkflow`.
+message PauseRewardWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  PauseRewardWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseRewardWorkflow`.
+message PauseRewardWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  PauseRewardWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeRewardWorkflow`.
+message ResumeRewardWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  ResumeRewardWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeRewardWorkflow`.
+message ResumeRewardWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  ResumeRewardWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectRewardWorkflow`.
+message InspectRewardWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectRewardWorkflow`.
+message InspectRewardWorkflowResponse {
+  Reward reward = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListRewardWorkflows`.
+message ListRewardWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RewardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRewardWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRewardWorkflows`.
+message ListRewardWorkflowsResponse {
+  repeated Reward rewards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalRewardWorkflow`.
+message SignalRewardWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string reward_id = 2;
+  Reward reward = 3;
+  SignalRewardWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalRewardWorkflow`.
+message SignalRewardWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Reward reward = 1;
+  SignalRewardWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,311 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SynonymAdminServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Operator actions on synonyms that support staff run by hand.
+service SynonymAdminService {
+  // Archives a synonym.
+  rpc ArchiveSynonym(ArchiveSynonymRequest) returns (ArchiveSynonymResponse);
+
+  // Restores a synonym.
+  rpc RestoreSynonym(RestoreSynonymRequest) returns (RestoreSynonymResponse);
+
+  // Deletes a synonym.
+  rpc PurgeSynonym(PurgeSynonymRequest) returns (PurgeSynonymResponse);
+
+  // Reassigns a synonym.
+  rpc ReassignSynonym(ReassignSynonymRequest) returns (ReassignSynonymResponse);
+
+  // Locks a synonym.
+  rpc LockSynonym(LockSynonymRequest) returns (LockSynonymResponse);
+
+  // Unlocks a synonym.
+  rpc UnlockSynonym(UnlockSynonymRequest) returns (UnlockSynonymResponse);
+
+  // Transfers a synonym.
+  rpc TransferSynonym(TransferSynonymRequest) returns (TransferSynonymResponse);
+
+  // Repairs a synonym.
+  rpc RepairSynonym(RepairSynonymRequest) returns (RepairSynonymResponse);
+
+  // Returns a synonym.
+  rpc InspectSynonym(InspectSynonymRequest) returns (InspectSynonymResponse);
+}
+
+// The request of `ArchiveSynonym`.
+message ArchiveSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  ArchiveSynonymRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ArchiveSynonym`.
+message ArchiveSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  ArchiveSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RestoreSynonym`.
+message RestoreSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  RestoreSynonymRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RestoreSynonym`.
+message RestoreSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  RestoreSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PurgeSynonym`.
+message PurgeSynonymRequest {
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `PurgeSynonym`.
+message PurgeSynonymResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ReassignSynonym`.
+message ReassignSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.identity.v1.UserRef assignee = 1;
+    string queue = 2;
+    int32 capacity = 3;
+    string assignee_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  ReassignSynonymRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReassignSynonym`.
+message ReassignSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  ReassignSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LockSynonym`.
+message LockSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  LockSynonymRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `LockSynonym`.
+message LockSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  LockSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnlockSynonym`.
+message UnlockSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  UnlockSynonymRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnlockSynonym`.
+message UnlockSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  UnlockSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TransferSynonym`.
+message TransferSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  TransferSynonymRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TransferSynonym`.
+message TransferSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  TransferSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RepairSynonym`.
+message RepairSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  RepairSynonymRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RepairSynonym`.
+message RepairSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  RepairSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSynonym`.
+message InspectSynonymRequest {
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSynonym`.
+message InspectSynonymResponse {
+  Synonym synonym = 1;
+  acme.common.v1.OperationResult result = 2;
+}

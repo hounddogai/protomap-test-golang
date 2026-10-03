@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.onboarding.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/onboarding/v1/onboarding.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Onboarding.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/onboarding/v1;onboardingv1";
+option java_multiple_files = true;
+option java_outer_classname = "OnboardingPlanCalculationServiceProto";
+option java_package = "com.acme.onboarding.v1";
+
+// Computes the figures of an onboarding plan, such as totals, taxes, and estimates.
+service OnboardingPlanCalculationService {
+  // Calculates an onboarding plan.
+  rpc CalculateOnboardingPlan(CalculateOnboardingPlanRequest) returns (CalculateOnboardingPlanResponse);
+
+  // Estimates an onboarding plan.
+  rpc EstimateOnboardingPlan(EstimateOnboardingPlanRequest) returns (EstimateOnboardingPlanResponse);
+
+  // Quotes an onboarding plan.
+  rpc QuoteOnboardingPlan(QuoteOnboardingPlanRequest) returns (QuoteOnboardingPlanResponse);
+
+  // Compares an onboarding plan.
+  rpc CompareOnboardingPlanOptions(CompareOnboardingPlanOptionsRequest) returns (CompareOnboardingPlanOptionsResponse);
+
+  // Simulates an onboarding plan.
+  rpc SimulateOnboardingPlan(SimulateOnboardingPlanRequest) returns (SimulateOnboardingPlanResponse);
+
+  // Explains an onboarding plan.
+  rpc ExplainOnboardingPlanCalculation(ExplainOnboardingPlanCalculationRequest) returns (ExplainOnboardingPlanCalculationResponse);
+
+  // Returns an onboarding plan.
+  rpc GetOnboardingPlanRates(GetOnboardingPlanRatesRequest) returns (GetOnboardingPlanRatesResponse);
+}
+
+// The request of `CalculateOnboardingPlan`.
+message CalculateOnboardingPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  OnboardingPlan onboarding_plan = 3;
+  CalculateOnboardingPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateOnboardingPlan`.
+message CalculateOnboardingPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateOnboardingPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OnboardingPlan onboarding_plan = 1;
+  CalculateOnboardingPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateOnboardingPlan`.
+message EstimateOnboardingPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  OnboardingPlan onboarding_plan = 3;
+  EstimateOnboardingPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateOnboardingPlan`.
+message EstimateOnboardingPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateOnboardingPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OnboardingPlan onboarding_plan = 1;
+  EstimateOnboardingPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteOnboardingPlan`.
+message QuoteOnboardingPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  OnboardingPlan onboarding_plan = 3;
+  QuoteOnboardingPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteOnboardingPlan`.
+message QuoteOnboardingPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteOnboardingPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OnboardingPlan onboarding_plan = 1;
+  QuoteOnboardingPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareOnboardingPlanOptions`.
+message CompareOnboardingPlanOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  OnboardingPlan onboarding_plan = 3;
+  CompareOnboardingPlanOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareOnboardingPlanOptions`.
+message CompareOnboardingPlanOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareOnboardingPlanOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OnboardingPlan onboarding_plan = 1;
+  CompareOnboardingPlanOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateOnboardingPlan`.
+message SimulateOnboardingPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  OnboardingPlan onboarding_plan = 3;
+  SimulateOnboardingPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateOnboardingPlan`.
+message SimulateOnboardingPlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateOnboardingPlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OnboardingPlan onboarding_plan = 1;
+  SimulateOnboardingPlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainOnboardingPlanCalculation`.
+message ExplainOnboardingPlanCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  OnboardingPlan onboarding_plan = 3;
+  ExplainOnboardingPlanCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainOnboardingPlanCalculation`.
+message ExplainOnboardingPlanCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OnboardingPlan onboarding_plan = 1;
+  ExplainOnboardingPlanCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOnboardingPlanRates`.
+message GetOnboardingPlanRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string onboarding_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOnboardingPlanRates`.
+message GetOnboardingPlanRatesResponse {
+  OnboardingPlan onboarding_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

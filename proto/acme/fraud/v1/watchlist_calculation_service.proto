@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "WatchlistCalculationServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Computes the figures of a watchlist, such as totals, taxes, and estimates.
+service WatchlistCalculationService {
+  // Calculates a watchlist.
+  rpc CalculateWatchlist(CalculateWatchlistRequest) returns (CalculateWatchlistResponse);
+
+  // Estimates a watchlist.
+  rpc EstimateWatchlist(EstimateWatchlistRequest) returns (EstimateWatchlistResponse);
+
+  // Quotes a watchlist.
+  rpc QuoteWatchlist(QuoteWatchlistRequest) returns (QuoteWatchlistResponse);
+
+  // Compares a watchlist.
+  rpc CompareWatchlistOptions(CompareWatchlistOptionsRequest) returns (CompareWatchlistOptionsResponse);
+
+  // Recalculates a watchlist.
+  rpc RecalculateWatchlists(RecalculateWatchlistsRequest) returns (RecalculateWatchlistsResponse);
+
+  // Simulates a watchlist.
+  rpc SimulateWatchlist(SimulateWatchlistRequest) returns (SimulateWatchlistResponse);
+
+  // Explains a watchlist.
+  rpc ExplainWatchlistCalculation(ExplainWatchlistCalculationRequest) returns (ExplainWatchlistCalculationResponse);
+
+  // Returns a watchlist.
+  rpc GetWatchlistRates(GetWatchlistRatesRequest) returns (GetWatchlistRatesResponse);
+}
+
+// The request of `CalculateWatchlist`.
+message CalculateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  CalculateWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateWatchlist`.
+message CalculateWatchlistResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateWatchlistResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  CalculateWatchlistResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateWatchlist`.
+message EstimateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  EstimateWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateWatchlist`.
+message EstimateWatchlistResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateWatchlistResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  EstimateWatchlistResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteWatchlist`.
+message QuoteWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  QuoteWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteWatchlist`.
+message QuoteWatchlistResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteWatchlistResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  QuoteWatchlistResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareWatchlistOptions`.
+message CompareWatchlistOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  CompareWatchlistOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareWatchlistOptions`.
+message CompareWatchlistOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareWatchlistOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  CompareWatchlistOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateWatchlists`.
+message RecalculateWatchlistsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  RecalculateWatchlistsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateWatchlists`.
+message RecalculateWatchlistsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateWatchlistsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  RecalculateWatchlistsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateWatchlist`.
+message SimulateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  SimulateWatchlistRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateWatchlist`.
+message SimulateWatchlistResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateWatchlistResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Watchlist watchlist = 1;
+  SimulateWatchlistResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainWatchlistCalculation`.
+message ExplainWatchlistCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  ExplainWatchlistCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainWatchlistCalculation`.
+message ExplainWatchlistCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ExplainWatchlistCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetWatchlistRates`.
+message GetWatchlistRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetWatchlistRates`.
+message GetWatchlistRatesResponse {
+  Watchlist watchlist = 1;
+  acme.common.v1.OperationResult result = 2;
+}

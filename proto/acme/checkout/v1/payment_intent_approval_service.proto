@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.checkout.v1;
+
+import "acme/checkout/v1/checkout.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Checkout.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/checkout/v1;checkoutv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentIntentApprovalServiceProto";
+option java_package = "com.acme.checkout.v1";
+
+// Routes payment intents through approval, with escalation and delegation.
+service PaymentIntentApprovalService {
+  // Submits a payment intent.
+  rpc SubmitPaymentIntent(SubmitPaymentIntentRequest) returns (SubmitPaymentIntentResponse);
+
+  // Approves a payment intent.
+  rpc ApprovePaymentIntent(ApprovePaymentIntentRequest) returns (ApprovePaymentIntentResponse);
+
+  // Rejects a payment intent.
+  rpc RejectPaymentIntent(RejectPaymentIntentRequest) returns (RejectPaymentIntentResponse);
+
+  // Escalates a payment intent.
+  rpc EscalatePaymentIntent(EscalatePaymentIntentRequest) returns (EscalatePaymentIntentResponse);
+
+  // Lists payment intents a page at a time.
+  rpc ListPendingPaymentIntents(ListPendingPaymentIntentsRequest) returns (ListPendingPaymentIntentsResponse);
+
+  // Delegates a payment intent.
+  rpc DelegatePaymentIntentApproval(DelegatePaymentIntentApprovalRequest) returns (DelegatePaymentIntentApprovalResponse);
+
+  // Recalls a payment intent.
+  rpc RecallPaymentIntent(RecallPaymentIntentRequest) returns (RecallPaymentIntentResponse);
+
+  // Returns a payment intent.
+  rpc GetPaymentIntentApprovalStatus(GetPaymentIntentApprovalStatusRequest) returns (GetPaymentIntentApprovalStatusResponse);
+
+  // Comments a payment intent.
+  rpc CommentPaymentIntentApproval(CommentPaymentIntentApprovalRequest) returns (CommentPaymentIntentApprovalResponse);
+}
+
+// The request of `SubmitPaymentIntent`.
+message SubmitPaymentIntentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  SubmitPaymentIntentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPaymentIntent`.
+message SubmitPaymentIntentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  SubmitPaymentIntentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePaymentIntent`.
+message ApprovePaymentIntentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  ApprovePaymentIntentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePaymentIntent`.
+message ApprovePaymentIntentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  ApprovePaymentIntentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPaymentIntent`.
+message RejectPaymentIntentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  RejectPaymentIntentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPaymentIntent`.
+message RejectPaymentIntentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  RejectPaymentIntentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePaymentIntent`.
+message EscalatePaymentIntentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  EscalatePaymentIntentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePaymentIntent`.
+message EscalatePaymentIntentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  EscalatePaymentIntentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPaymentIntents`.
+message ListPendingPaymentIntentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentIntentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPaymentIntentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPaymentIntents`.
+message ListPendingPaymentIntentsResponse {
+  repeated PaymentIntent payment_intents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePaymentIntentApproval`.
+message DelegatePaymentIntentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  DelegatePaymentIntentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePaymentIntentApproval`.
+message DelegatePaymentIntentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  DelegatePaymentIntentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPaymentIntent`.
+message RecallPaymentIntentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  RecallPaymentIntentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPaymentIntent`.
+message RecallPaymentIntentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  RecallPaymentIntentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPaymentIntentApprovalStatus`.
+message GetPaymentIntentApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPaymentIntentApprovalStatus`.
+message GetPaymentIntentApprovalStatusResponse {
+  PaymentIntent payment_intent = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPaymentIntentApproval`.
+message CommentPaymentIntentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_intent_id = 2;
+  PaymentIntent payment_intent = 3;
+  CommentPaymentIntentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPaymentIntentApproval`.
+message CommentPaymentIntentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentIntent payment_intent = 1;
+  CommentPaymentIntentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

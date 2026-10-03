@@ -1,0 +1,230 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.licensing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/licensing/v1/licensing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Licensing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/licensing/v1;licensingv1";
+option java_multiple_files = true;
+option java_outer_classname = "SoftwareLicenseServiceProto";
+option java_package = "com.acme.licensing.v1";
+
+// Manages software licenses: creates, reads, changes, and lists them.
+service SoftwareLicenseService {
+  // Creates a software license.
+  rpc CreateSoftwareLicense(CreateSoftwareLicenseRequest) returns (CreateSoftwareLicenseResponse);
+
+  // Returns a software license.
+  rpc GetSoftwareLicense(GetSoftwareLicenseRequest) returns (GetSoftwareLicenseResponse);
+
+  // Changes a software license.
+  rpc UpdateSoftwareLicense(UpdateSoftwareLicenseRequest) returns (UpdateSoftwareLicenseResponse);
+
+  // Lists software licenses a page at a time.
+  rpc ListSoftwareLicenses(ListSoftwareLicensesRequest) returns (ListSoftwareLicensesResponse);
+
+  // Returns several software licenses at once.
+  rpc BatchGetSoftwareLicenses(BatchGetSoftwareLicensesRequest) returns (BatchGetSoftwareLicensesResponse);
+
+  // Lists software licenses a page at a time.
+  rpc SearchSoftwareLicenses(SearchSoftwareLicensesRequest) returns (SearchSoftwareLicensesResponse);
+
+  // Streams the changes of software licenses as they happen.
+  rpc WatchSoftwareLicenses(WatchSoftwareLicensesRequest) returns (stream WatchSoftwareLicensesResponse);
+
+  // Takes a stream of software licenses and answers once at the end.
+  rpc BatchCreateSoftwareLicenses(stream BatchCreateSoftwareLicensesRequest) returns (BatchCreateSoftwareLicensesResponse);
+
+  // Creates a software license.
+  rpc CloneSoftwareLicense(CloneSoftwareLicenseRequest) returns (CloneSoftwareLicenseResponse);
+}
+
+// The request of `CreateSoftwareLicense`.
+message CreateSoftwareLicenseRequest {
+  acme.common.v1.RequestContext context = 1;
+  SoftwareLicense software_license = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSoftwareLicense`.
+message CreateSoftwareLicenseResponse {
+  SoftwareLicense software_license = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSoftwareLicense`.
+message GetSoftwareLicenseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string software_license_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSoftwareLicense`.
+message GetSoftwareLicenseResponse {
+  SoftwareLicense software_license = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateSoftwareLicense`.
+message UpdateSoftwareLicenseRequest {
+  acme.common.v1.RequestContext context = 1;
+  SoftwareLicense software_license = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateSoftwareLicense`.
+message UpdateSoftwareLicenseResponse {
+  SoftwareLicense software_license = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSoftwareLicenses`.
+message ListSoftwareLicensesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SoftwareLicenseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSoftwareLicensesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSoftwareLicenses`.
+message ListSoftwareLicensesResponse {
+  repeated SoftwareLicense software_licenses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetSoftwareLicenses`.
+message BatchGetSoftwareLicensesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string software_license_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetSoftwareLicenses`.
+message BatchGetSoftwareLicensesResponse {
+  repeated SoftwareLicense software_licenses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchSoftwareLicenses`.
+message SearchSoftwareLicensesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SoftwareLicenseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchSoftwareLicensesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchSoftwareLicenses`.
+message SearchSoftwareLicensesResponse {
+  repeated SoftwareLicense software_licenses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchSoftwareLicenses`.
+message WatchSoftwareLicensesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SoftwareLicenseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchSoftwareLicensesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchSoftwareLicenses`.
+message WatchSoftwareLicensesResponse {
+  SoftwareLicense software_license = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateSoftwareLicenses`.
+message BatchCreateSoftwareLicensesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSoftwareLicensesRequest.StreamHeader header = 2;
+    SoftwareLicense record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSoftwareLicenses`.
+message BatchCreateSoftwareLicensesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string software_license_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSoftwareLicensesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneSoftwareLicense`.
+message CloneSoftwareLicenseRequest {
+  acme.common.v1.RequestContext context = 1;
+  SoftwareLicense software_license = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneSoftwareLicense`.
+message CloneSoftwareLicenseResponse {
+  SoftwareLicense software_license = 1;
+  acme.common.v1.OperationResult result = 2;
+}

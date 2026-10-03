@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarrierRateCalculationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Computes the figures of a carrier rate, such as totals, taxes, and estimates.
+service CarrierRateCalculationService {
+  // Calculates a carrier rate.
+  rpc CalculateCarrierRate(CalculateCarrierRateRequest) returns (CalculateCarrierRateResponse);
+
+  // Estimates a carrier rate.
+  rpc EstimateCarrierRate(EstimateCarrierRateRequest) returns (EstimateCarrierRateResponse);
+
+  // Quotes a carrier rate.
+  rpc QuoteCarrierRate(QuoteCarrierRateRequest) returns (QuoteCarrierRateResponse);
+
+  // Compares a carrier rate.
+  rpc CompareCarrierRateOptions(CompareCarrierRateOptionsRequest) returns (CompareCarrierRateOptionsResponse);
+
+  // Recalculates a carrier rate.
+  rpc RecalculateCarrierRates(RecalculateCarrierRatesRequest) returns (RecalculateCarrierRatesResponse);
+
+  // Simulates a carrier rate.
+  rpc SimulateCarrierRate(SimulateCarrierRateRequest) returns (SimulateCarrierRateResponse);
+
+  // Explains a carrier rate.
+  rpc ExplainCarrierRateCalculation(ExplainCarrierRateCalculationRequest) returns (ExplainCarrierRateCalculationResponse);
+
+  // Returns a carrier rate.
+  rpc GetCarrierRateRates(GetCarrierRateRatesRequest) returns (GetCarrierRateRatesResponse);
+}
+
+// The request of `CalculateCarrierRate`.
+message CalculateCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  CalculateCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCarrierRate`.
+message CalculateCarrierRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCarrierRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  CalculateCarrierRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCarrierRate`.
+message EstimateCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  EstimateCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCarrierRate`.
+message EstimateCarrierRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCarrierRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  EstimateCarrierRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCarrierRate`.
+message QuoteCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  QuoteCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCarrierRate`.
+message QuoteCarrierRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCarrierRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  QuoteCarrierRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCarrierRateOptions`.
+message CompareCarrierRateOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  CompareCarrierRateOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCarrierRateOptions`.
+message CompareCarrierRateOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCarrierRateOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  CompareCarrierRateOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateCarrierRates`.
+message RecalculateCarrierRatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  RecalculateCarrierRatesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateCarrierRates`.
+message RecalculateCarrierRatesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateCarrierRatesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  RecalculateCarrierRatesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCarrierRate`.
+message SimulateCarrierRateRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  SimulateCarrierRateRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCarrierRate`.
+message SimulateCarrierRateResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCarrierRateResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarrierRate carrier_rate = 1;
+  SimulateCarrierRateResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCarrierRateCalculation`.
+message ExplainCarrierRateCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  CarrierRate carrier_rate = 3;
+  ExplainCarrierRateCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCarrierRateCalculation`.
+message ExplainCarrierRateCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarrierRate carrier_rate = 1;
+  ExplainCarrierRateCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCarrierRateRates`.
+message GetCarrierRateRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string carrier_rate_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCarrierRateRates`.
+message GetCarrierRateRatesResponse {
+  CarrierRate carrier_rate = 1;
+  acme.common.v1.OperationResult result = 2;
+}

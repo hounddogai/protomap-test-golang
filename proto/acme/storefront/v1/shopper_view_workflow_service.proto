@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShopperViewWorkflowServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Runs the long-lived workflow that takes a shopper view from start to finish.
+service ShopperViewWorkflowService {
+  // Starts a shopper view.
+  rpc StartShopperViewWorkflow(StartShopperViewWorkflowRequest) returns (StartShopperViewWorkflowResponse);
+
+  // Advances a shopper view.
+  rpc AdvanceShopperViewWorkflow(AdvanceShopperViewWorkflowRequest) returns (AdvanceShopperViewWorkflowResponse);
+
+  // Cancels a shopper view.
+  rpc CancelShopperViewWorkflow(CancelShopperViewWorkflowRequest) returns (CancelShopperViewWorkflowResponse);
+
+  // Retrys a shopper view.
+  rpc RetryShopperViewWorkflow(RetryShopperViewWorkflowRequest) returns (RetryShopperViewWorkflowResponse);
+
+  // Pauses a shopper view.
+  rpc PauseShopperViewWorkflow(PauseShopperViewWorkflowRequest) returns (PauseShopperViewWorkflowResponse);
+
+  // Resumes a shopper view.
+  rpc ResumeShopperViewWorkflow(ResumeShopperViewWorkflowRequest) returns (ResumeShopperViewWorkflowResponse);
+
+  // Returns a shopper view.
+  rpc InspectShopperViewWorkflow(InspectShopperViewWorkflowRequest) returns (InspectShopperViewWorkflowResponse);
+
+  // Lists shopper views a page at a time.
+  rpc ListShopperViewWorkflows(ListShopperViewWorkflowsRequest) returns (ListShopperViewWorkflowsResponse);
+
+  // Signals a shopper view.
+  rpc SignalShopperViewWorkflow(SignalShopperViewWorkflowRequest) returns (SignalShopperViewWorkflowResponse);
+}
+
+// The request of `StartShopperViewWorkflow`.
+message StartShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  StartShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartShopperViewWorkflow`.
+message StartShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  StartShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceShopperViewWorkflow`.
+message AdvanceShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  AdvanceShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceShopperViewWorkflow`.
+message AdvanceShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  AdvanceShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelShopperViewWorkflow`.
+message CancelShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  CancelShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelShopperViewWorkflow`.
+message CancelShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  CancelShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryShopperViewWorkflow`.
+message RetryShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  RetryShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryShopperViewWorkflow`.
+message RetryShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  RetryShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseShopperViewWorkflow`.
+message PauseShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  PauseShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseShopperViewWorkflow`.
+message PauseShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  PauseShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeShopperViewWorkflow`.
+message ResumeShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  ResumeShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeShopperViewWorkflow`.
+message ResumeShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  ResumeShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectShopperViewWorkflow`.
+message InspectShopperViewWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectShopperViewWorkflow`.
+message InspectShopperViewWorkflowResponse {
+  ShopperView shopper_view = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListShopperViewWorkflows`.
+message ListShopperViewWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShopperViewStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListShopperViewWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListShopperViewWorkflows`.
+message ListShopperViewWorkflowsResponse {
+  repeated ShopperView shopper_views = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalShopperViewWorkflow`.
+message SignalShopperViewWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string shopper_view_id = 2;
+  ShopperView shopper_view = 3;
+  SignalShopperViewWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalShopperViewWorkflow`.
+message SignalShopperViewWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ShopperView shopper_view = 1;
+  SignalShopperViewWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

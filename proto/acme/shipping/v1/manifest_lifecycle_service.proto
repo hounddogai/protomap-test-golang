@@ -1,0 +1,222 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ManifestLifecycleServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Moves a manifest between the states of its lifecycle.
+service ManifestLifecycleService {
+  // Activates a manifest.
+  rpc ActivateManifest(ActivateManifestRequest) returns (ActivateManifestResponse);
+
+  // Suspends a manifest.
+  rpc SuspendManifest(SuspendManifestRequest) returns (SuspendManifestResponse);
+
+  // Reinstates a manifest.
+  rpc ReinstateManifest(ReinstateManifestRequest) returns (ReinstateManifestResponse);
+
+  // Expires a manifest.
+  rpc ExpireManifest(ExpireManifestRequest) returns (ExpireManifestResponse);
+
+  // Returns a manifest.
+  rpc GetManifestLifecycle(GetManifestLifecycleRequest) returns (GetManifestLifecycleResponse);
+
+  // Schedules a manifest.
+  rpc ScheduleManifestExpiry(ScheduleManifestExpiryRequest) returns (ScheduleManifestExpiryResponse);
+}
+
+// The request of `ActivateManifest`.
+message ActivateManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  ActivateManifestRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateManifest`.
+message ActivateManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ActivateManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendManifest`.
+message SuspendManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  SuspendManifestRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendManifest`.
+message SuspendManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  SuspendManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateManifest`.
+message ReinstateManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  ReinstateManifestRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateManifest`.
+message ReinstateManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ReinstateManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireManifest`.
+message ExpireManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  ExpireManifestRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireManifest`.
+message ExpireManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ExpireManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetManifestLifecycle`.
+message GetManifestLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetManifestLifecycle`.
+message GetManifestLifecycleResponse {
+  Manifest manifest = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleManifestExpiry`.
+message ScheduleManifestExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  ScheduleManifestExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleManifestExpiry`.
+message ScheduleManifestExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ScheduleManifestExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

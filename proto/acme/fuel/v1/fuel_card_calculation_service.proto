@@ -1,0 +1,249 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fuel.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fuel/v1/fuel.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fuel.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fuel/v1;fuelv1";
+option java_multiple_files = true;
+option java_outer_classname = "FuelCardCalculationServiceProto";
+option java_package = "com.acme.fuel.v1";
+
+// Computes the figures of a fuel card, such as totals, taxes, and estimates.
+service FuelCardCalculationService {
+  // Calculates a fuel card.
+  rpc CalculateFuelCard(CalculateFuelCardRequest) returns (CalculateFuelCardResponse);
+
+  // Estimates a fuel card.
+  rpc EstimateFuelCard(EstimateFuelCardRequest) returns (EstimateFuelCardResponse);
+
+  // Quotes a fuel card.
+  rpc QuoteFuelCard(QuoteFuelCardRequest) returns (QuoteFuelCardResponse);
+
+  // Simulates a fuel card.
+  rpc SimulateFuelCard(SimulateFuelCardRequest) returns (SimulateFuelCardResponse);
+
+  // Explains a fuel card.
+  rpc ExplainFuelCardCalculation(ExplainFuelCardCalculationRequest) returns (ExplainFuelCardCalculationResponse);
+
+  // Returns a fuel card.
+  rpc GetFuelCardRates(GetFuelCardRatesRequest) returns (GetFuelCardRatesResponse);
+}
+
+// The request of `CalculateFuelCard`.
+message CalculateFuelCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  FuelCard fuel_card = 3;
+  CalculateFuelCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateFuelCard`.
+message CalculateFuelCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateFuelCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FuelCard fuel_card = 1;
+  CalculateFuelCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateFuelCard`.
+message EstimateFuelCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  FuelCard fuel_card = 3;
+  EstimateFuelCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateFuelCard`.
+message EstimateFuelCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateFuelCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FuelCard fuel_card = 1;
+  EstimateFuelCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteFuelCard`.
+message QuoteFuelCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  FuelCard fuel_card = 3;
+  QuoteFuelCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteFuelCard`.
+message QuoteFuelCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteFuelCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FuelCard fuel_card = 1;
+  QuoteFuelCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateFuelCard`.
+message SimulateFuelCardRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  FuelCard fuel_card = 3;
+  SimulateFuelCardRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateFuelCard`.
+message SimulateFuelCardResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateFuelCardResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FuelCard fuel_card = 1;
+  SimulateFuelCardResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainFuelCardCalculation`.
+message ExplainFuelCardCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  FuelCard fuel_card = 3;
+  ExplainFuelCardCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainFuelCardCalculation`.
+message ExplainFuelCardCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FuelCard fuel_card = 1;
+  ExplainFuelCardCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFuelCardRates`.
+message GetFuelCardRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFuelCardRates`.
+message GetFuelCardRatesResponse {
+  FuelCard fuel_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}

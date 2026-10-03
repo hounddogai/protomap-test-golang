@@ -1,0 +1,284 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SynonymSyncServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Keeps synonyms in step with the systems of record in other regions.
+service SynonymSyncService {
+  // Syncs a synonym.
+  rpc SyncSynonyms(SyncSynonymsRequest) returns (SyncSynonymsResponse);
+
+  // Pushs a synonym.
+  rpc PushSynonym(PushSynonymRequest) returns (PushSynonymResponse);
+
+  // Pulls a synonym.
+  rpc PullSynonyms(PullSynonymsRequest) returns (PullSynonymsResponse);
+
+  // Reconciles a synonym.
+  rpc ReconcileSynonyms(ReconcileSynonymsRequest) returns (ReconcileSynonymsResponse);
+
+  // Exchanges changes of synonyms with a peer.
+  rpc StreamSynonymChanges(stream StreamSynonymChangesRequest) returns (stream StreamSynonymChangesResponse);
+
+  // Resolves a synonym.
+  rpc ResolveSynonymConflict(ResolveSynonymConflictRequest) returns (ResolveSynonymConflictResponse);
+
+  // Returns a synonym.
+  rpc GetSynonymSyncState(GetSynonymSyncStateRequest) returns (GetSynonymSyncStateResponse);
+
+  // Lists synonyms a page at a time.
+  rpc ListSynonymConflicts(ListSynonymConflictsRequest) returns (ListSynonymConflictsResponse);
+}
+
+// The request of `SyncSynonyms`.
+message SyncSynonymsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  SyncSynonymsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncSynonyms`.
+message SyncSynonymsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  SyncSynonymsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushSynonym`.
+message PushSynonymRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  PushSynonymRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushSynonym`.
+message PushSynonymResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  PushSynonymResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullSynonyms`.
+message PullSynonymsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  PullSynonymsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullSynonyms`.
+message PullSynonymsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  PullSynonymsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileSynonyms`.
+message ReconcileSynonymsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  ReconcileSynonymsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileSynonyms`.
+message ReconcileSynonymsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  ReconcileSynonymsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamSynonymChanges`.
+message StreamSynonymChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Synonym change = 2;
+    StreamSynonymChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamSynonymChanges`.
+message StreamSynonymChangesResponse {
+  Synonym synonym = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveSynonymConflict`.
+message ResolveSynonymConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  Synonym synonym = 3;
+  ResolveSynonymConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveSynonymConflict`.
+message ResolveSynonymConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Synonym synonym = 1;
+  ResolveSynonymConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSynonymSyncState`.
+message GetSynonymSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string synonym_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSynonymSyncState`.
+message GetSynonymSyncStateResponse {
+  Synonym synonym = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListSynonymConflicts`.
+message ListSynonymConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SynonymStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSynonymConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSynonymConflicts`.
+message ListSynonymConflictsResponse {
+  repeated Synonym synonyms = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

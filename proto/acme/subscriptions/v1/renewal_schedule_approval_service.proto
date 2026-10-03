@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RenewalScheduleApprovalServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Routes renewal schedules through approval, with escalation and delegation.
+service RenewalScheduleApprovalService {
+  // Submits a renewal schedule.
+  rpc SubmitRenewalSchedule(SubmitRenewalScheduleRequest) returns (SubmitRenewalScheduleResponse);
+
+  // Approves a renewal schedule.
+  rpc ApproveRenewalSchedule(ApproveRenewalScheduleRequest) returns (ApproveRenewalScheduleResponse);
+
+  // Rejects a renewal schedule.
+  rpc RejectRenewalSchedule(RejectRenewalScheduleRequest) returns (RejectRenewalScheduleResponse);
+
+  // Escalates a renewal schedule.
+  rpc EscalateRenewalSchedule(EscalateRenewalScheduleRequest) returns (EscalateRenewalScheduleResponse);
+
+  // Lists renewal schedules a page at a time.
+  rpc ListPendingRenewalSchedules(ListPendingRenewalSchedulesRequest) returns (ListPendingRenewalSchedulesResponse);
+
+  // Delegates a renewal schedule.
+  rpc DelegateRenewalScheduleApproval(DelegateRenewalScheduleApprovalRequest) returns (DelegateRenewalScheduleApprovalResponse);
+
+  // Returns a renewal schedule.
+  rpc GetRenewalScheduleApprovalStatus(GetRenewalScheduleApprovalStatusRequest) returns (GetRenewalScheduleApprovalStatusResponse);
+}
+
+// The request of `SubmitRenewalSchedule`.
+message SubmitRenewalScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  SubmitRenewalScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitRenewalSchedule`.
+message SubmitRenewalScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  SubmitRenewalScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveRenewalSchedule`.
+message ApproveRenewalScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  ApproveRenewalScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveRenewalSchedule`.
+message ApproveRenewalScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  ApproveRenewalScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectRenewalSchedule`.
+message RejectRenewalScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  RejectRenewalScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectRenewalSchedule`.
+message RejectRenewalScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  RejectRenewalScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateRenewalSchedule`.
+message EscalateRenewalScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  EscalateRenewalScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateRenewalSchedule`.
+message EscalateRenewalScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  EscalateRenewalScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingRenewalSchedules`.
+message ListPendingRenewalSchedulesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RenewalScheduleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingRenewalSchedulesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingRenewalSchedules`.
+message ListPendingRenewalSchedulesResponse {
+  repeated RenewalSchedule renewal_schedules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateRenewalScheduleApproval`.
+message DelegateRenewalScheduleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  RenewalSchedule renewal_schedule = 3;
+  DelegateRenewalScheduleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateRenewalScheduleApproval`.
+message DelegateRenewalScheduleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  RenewalSchedule renewal_schedule = 1;
+  DelegateRenewalScheduleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRenewalScheduleApprovalStatus`.
+message GetRenewalScheduleApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string renewal_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRenewalScheduleApprovalStatus`.
+message GetRenewalScheduleApprovalStatusResponse {
+  RenewalSchedule renewal_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}

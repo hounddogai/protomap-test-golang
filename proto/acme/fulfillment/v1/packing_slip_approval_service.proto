@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fulfillment.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fulfillment/v1/fulfillment.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fulfillment.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fulfillment/v1;fulfillmentv1";
+option java_multiple_files = true;
+option java_outer_classname = "PackingSlipApprovalServiceProto";
+option java_package = "com.acme.fulfillment.v1";
+
+// Routes packing slips through approval, with escalation and delegation.
+service PackingSlipApprovalService {
+  // Submits a packing slip.
+  rpc SubmitPackingSlip(SubmitPackingSlipRequest) returns (SubmitPackingSlipResponse);
+
+  // Approves a packing slip.
+  rpc ApprovePackingSlip(ApprovePackingSlipRequest) returns (ApprovePackingSlipResponse);
+
+  // Rejects a packing slip.
+  rpc RejectPackingSlip(RejectPackingSlipRequest) returns (RejectPackingSlipResponse);
+
+  // Escalates a packing slip.
+  rpc EscalatePackingSlip(EscalatePackingSlipRequest) returns (EscalatePackingSlipResponse);
+
+  // Lists packing slips a page at a time.
+  rpc ListPendingPackingSlips(ListPendingPackingSlipsRequest) returns (ListPendingPackingSlipsResponse);
+
+  // Delegates a packing slip.
+  rpc DelegatePackingSlipApproval(DelegatePackingSlipApprovalRequest) returns (DelegatePackingSlipApprovalResponse);
+
+  // Recalls a packing slip.
+  rpc RecallPackingSlip(RecallPackingSlipRequest) returns (RecallPackingSlipResponse);
+
+  // Returns a packing slip.
+  rpc GetPackingSlipApprovalStatus(GetPackingSlipApprovalStatusRequest) returns (GetPackingSlipApprovalStatusResponse);
+
+  // Comments a packing slip.
+  rpc CommentPackingSlipApproval(CommentPackingSlipApprovalRequest) returns (CommentPackingSlipApprovalResponse);
+}
+
+// The request of `SubmitPackingSlip`.
+message SubmitPackingSlipRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  SubmitPackingSlipRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPackingSlip`.
+message SubmitPackingSlipResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  SubmitPackingSlipResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePackingSlip`.
+message ApprovePackingSlipRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  ApprovePackingSlipRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePackingSlip`.
+message ApprovePackingSlipResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  ApprovePackingSlipResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPackingSlip`.
+message RejectPackingSlipRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  RejectPackingSlipRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPackingSlip`.
+message RejectPackingSlipResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  RejectPackingSlipResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePackingSlip`.
+message EscalatePackingSlipRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  EscalatePackingSlipRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePackingSlip`.
+message EscalatePackingSlipResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  EscalatePackingSlipResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPackingSlips`.
+message ListPendingPackingSlipsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PackingSlipStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPackingSlipsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPackingSlips`.
+message ListPendingPackingSlipsResponse {
+  repeated PackingSlip packing_slips = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePackingSlipApproval`.
+message DelegatePackingSlipApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  DelegatePackingSlipApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePackingSlipApproval`.
+message DelegatePackingSlipApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  DelegatePackingSlipApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPackingSlip`.
+message RecallPackingSlipRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  RecallPackingSlipRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPackingSlip`.
+message RecallPackingSlipResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  RecallPackingSlipResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPackingSlipApprovalStatus`.
+message GetPackingSlipApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPackingSlipApprovalStatus`.
+message GetPackingSlipApprovalStatusResponse {
+  PackingSlip packing_slip = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPackingSlipApproval`.
+message CommentPackingSlipApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string packing_slip_id = 2;
+  PackingSlip packing_slip = 3;
+  CommentPackingSlipApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPackingSlipApproval`.
+message CommentPackingSlipApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PackingSlip packing_slip = 1;
+  CommentPackingSlipApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

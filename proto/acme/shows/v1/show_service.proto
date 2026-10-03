@@ -1,0 +1,163 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shows.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/shows/v1/shows.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shows.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shows/v1;showsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShowServiceProto";
+option java_package = "com.acme.shows.v1";
+
+// Manages shows: creates, reads, changes, and lists them.
+service ShowService {
+  // Creates a show.
+  rpc CreateShow(CreateShowRequest) returns (CreateShowResponse);
+
+  // Returns a show.
+  rpc GetShow(GetShowRequest) returns (GetShowResponse);
+
+  // Deletes a show.
+  rpc DeleteShow(DeleteShowRequest) returns (DeleteShowResponse);
+
+  // Lists shows a page at a time.
+  rpc ListShows(ListShowsRequest) returns (ListShowsResponse);
+
+  // Returns several shows at once.
+  rpc BatchGetShows(BatchGetShowsRequest) returns (BatchGetShowsResponse);
+
+  // Lists shows a page at a time.
+  rpc SearchShows(SearchShowsRequest) returns (SearchShowsResponse);
+
+  // Creates a show.
+  rpc CloneShow(CloneShowRequest) returns (CloneShowResponse);
+}
+
+// The request of `CreateShow`.
+message CreateShowRequest {
+  acme.common.v1.RequestContext context = 1;
+  Show show = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateShow`.
+message CreateShowResponse {
+  Show show = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetShow`.
+message GetShowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetShow`.
+message GetShowResponse {
+  Show show = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteShow`.
+message DeleteShowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string show_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteShow`.
+message DeleteShowResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListShows`.
+message ListShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListShowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListShows`.
+message ListShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetShows`.
+message BatchGetShowsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string show_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetShows`.
+message BatchGetShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchShows`.
+message SearchShowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ShowStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchShowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchShows`.
+message SearchShowsResponse {
+  repeated Show shows = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneShow`.
+message CloneShowRequest {
+  acme.common.v1.RequestContext context = 1;
+  Show show = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneShow`.
+message CloneShowResponse {
+  Show show = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockMovementValidationServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Checks stock movements against the rules before anything acts on them.
+service StockMovementValidationService {
+  // Validates a stock movement.
+  rpc ValidateStockMovement(ValidateStockMovementRequest) returns (ValidateStockMovementResponse);
+
+  // Previews a stock movement.
+  rpc PreviewStockMovement(PreviewStockMovementRequest) returns (PreviewStockMovementResponse);
+
+  // Checks a stock movement.
+  rpc CheckStockMovementEligibility(CheckStockMovementEligibilityRequest) returns (CheckStockMovementEligibilityResponse);
+
+  // Normalizes a stock movement.
+  rpc NormalizeStockMovement(NormalizeStockMovementRequest) returns (NormalizeStockMovementResponse);
+
+  // Explains a stock movement.
+  rpc ExplainStockMovementDecision(ExplainStockMovementDecisionRequest) returns (ExplainStockMovementDecisionResponse);
+
+  // Scores a stock movement.
+  rpc ScoreStockMovement(ScoreStockMovementRequest) returns (ScoreStockMovementResponse);
+
+  // Lints a stock movement.
+  rpc LintStockMovements(LintStockMovementsRequest) returns (LintStockMovementsResponse);
+
+  // Returns a stock movement.
+  rpc GetStockMovementRules(GetStockMovementRulesRequest) returns (GetStockMovementRulesResponse);
+}
+
+// The request of `ValidateStockMovement`.
+message ValidateStockMovementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  ValidateStockMovementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateStockMovement`.
+message ValidateStockMovementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  ValidateStockMovementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewStockMovement`.
+message PreviewStockMovementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  PreviewStockMovementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewStockMovement`.
+message PreviewStockMovementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  PreviewStockMovementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckStockMovementEligibility`.
+message CheckStockMovementEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  CheckStockMovementEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckStockMovementEligibility`.
+message CheckStockMovementEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  CheckStockMovementEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeStockMovement`.
+message NormalizeStockMovementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  NormalizeStockMovementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeStockMovement`.
+message NormalizeStockMovementResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  NormalizeStockMovementResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainStockMovementDecision`.
+message ExplainStockMovementDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  ExplainStockMovementDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainStockMovementDecision`.
+message ExplainStockMovementDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  ExplainStockMovementDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreStockMovement`.
+message ScoreStockMovementRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  ScoreStockMovementRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreStockMovement`.
+message ScoreStockMovementResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreStockMovementResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  StockMovement stock_movement = 1;
+  ScoreStockMovementResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintStockMovements`.
+message LintStockMovementsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  StockMovement stock_movement = 3;
+  LintStockMovementsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintStockMovements`.
+message LintStockMovementsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockMovement stock_movement = 1;
+  LintStockMovementsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetStockMovementRules`.
+message GetStockMovementRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_movement_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetStockMovementRules`.
+message GetStockMovementRulesResponse {
+  StockMovement stock_movement = 1;
+  acme.common.v1.OperationResult result = 2;
+}

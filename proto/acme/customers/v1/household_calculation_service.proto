@@ -1,0 +1,318 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "HouseholdCalculationServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Computes the figures of a household, such as totals, taxes, and estimates.
+service HouseholdCalculationService {
+  // Calculates a household.
+  rpc CalculateHousehold(CalculateHouseholdRequest) returns (CalculateHouseholdResponse);
+
+  // Estimates a household.
+  rpc EstimateHousehold(EstimateHouseholdRequest) returns (EstimateHouseholdResponse);
+
+  // Quotes a household.
+  rpc QuoteHousehold(QuoteHouseholdRequest) returns (QuoteHouseholdResponse);
+
+  // Compares a household.
+  rpc CompareHouseholdOptions(CompareHouseholdOptionsRequest) returns (CompareHouseholdOptionsResponse);
+
+  // Recalculates a household.
+  rpc RecalculateHouseholds(RecalculateHouseholdsRequest) returns (RecalculateHouseholdsResponse);
+
+  // Simulates a household.
+  rpc SimulateHousehold(SimulateHouseholdRequest) returns (SimulateHouseholdResponse);
+
+  // Explains a household.
+  rpc ExplainHouseholdCalculation(ExplainHouseholdCalculationRequest) returns (ExplainHouseholdCalculationResponse);
+}
+
+// The request of `CalculateHousehold`.
+message CalculateHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  CalculateHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateHousehold`.
+message CalculateHouseholdResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateHouseholdResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  CalculateHouseholdResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateHousehold`.
+message EstimateHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  EstimateHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateHousehold`.
+message EstimateHouseholdResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateHouseholdResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  EstimateHouseholdResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteHousehold`.
+message QuoteHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  QuoteHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteHousehold`.
+message QuoteHouseholdResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteHouseholdResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  QuoteHouseholdResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareHouseholdOptions`.
+message CompareHouseholdOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  CompareHouseholdOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareHouseholdOptions`.
+message CompareHouseholdOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareHouseholdOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  CompareHouseholdOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateHouseholds`.
+message RecalculateHouseholdsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  RecalculateHouseholdsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateHouseholds`.
+message RecalculateHouseholdsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateHouseholdsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  RecalculateHouseholdsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateHousehold`.
+message SimulateHouseholdRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  SimulateHouseholdRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateHousehold`.
+message SimulateHouseholdResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateHouseholdResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Household household = 1;
+  SimulateHouseholdResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainHouseholdCalculation`.
+message ExplainHouseholdCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string household_id = 2;
+  Household household = 3;
+  ExplainHouseholdCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainHouseholdCalculation`.
+message ExplainHouseholdCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Household household = 1;
+  ExplainHouseholdCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

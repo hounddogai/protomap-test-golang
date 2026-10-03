@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.dispatch.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/dispatch/v1/dispatch.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Dispatch.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/dispatch/v1;dispatchv1";
+option java_multiple_files = true;
+option java_outer_classname = "DispatchOrderQueryServiceProto";
+option java_package = "com.acme.dispatch.v1";
+
+// Answers read-only questions about dispatch orders, for screens and reports.
+service DispatchOrderQueryService {
+  // Returns a dispatch order.
+  rpc LookupDispatchOrder(LookupDispatchOrderRequest) returns (LookupDispatchOrderResponse);
+
+  // Lists dispatch orders a page at a time.
+  rpc BrowseDispatchOrders(BrowseDispatchOrdersRequest) returns (BrowseDispatchOrdersResponse);
+
+  // Counts dispatch orders by status.
+  rpc CountDispatchOrders(CountDispatchOrdersRequest) returns (CountDispatchOrdersResponse);
+
+  // Returns several dispatch orders at once.
+  rpc ResolveDispatchOrders(ResolveDispatchOrdersRequest) returns (ResolveDispatchOrdersResponse);
+
+  // Streams every matching dispatch order.
+  rpc ExportDispatchOrders(ExportDispatchOrdersRequest) returns (stream ExportDispatchOrdersResponse);
+
+  // Summarizes a dispatch order.
+  rpc SummarizeDispatchOrders(SummarizeDispatchOrdersRequest) returns (SummarizeDispatchOrdersResponse);
+
+  // Lists dispatch orders a page at a time.
+  rpc SuggestDispatchOrders(SuggestDispatchOrdersRequest) returns (SuggestDispatchOrdersResponse);
+
+  // Returns a dispatch order.
+  rpc PeekDispatchOrder(PeekDispatchOrderRequest) returns (PeekDispatchOrderResponse);
+}
+
+// The request of `LookupDispatchOrder`.
+message LookupDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispatch_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupDispatchOrder`.
+message LookupDispatchOrderResponse {
+  DispatchOrder dispatch_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseDispatchOrders`.
+message BrowseDispatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DispatchOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseDispatchOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseDispatchOrders`.
+message BrowseDispatchOrdersResponse {
+  repeated DispatchOrder dispatch_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountDispatchOrders`.
+message CountDispatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DispatchOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountDispatchOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountDispatchOrders`.
+message CountDispatchOrdersResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveDispatchOrders`.
+message ResolveDispatchOrdersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string dispatch_order_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveDispatchOrders`.
+message ResolveDispatchOrdersResponse {
+  repeated DispatchOrder dispatch_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportDispatchOrders`.
+message ExportDispatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DispatchOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportDispatchOrdersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportDispatchOrders`.
+message ExportDispatchOrdersResponse {
+  DispatchOrder dispatch_order = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeDispatchOrders`.
+message SummarizeDispatchOrdersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string dispatch_order_id = 2;
+  SummarizeDispatchOrdersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeDispatchOrders`.
+message SummarizeDispatchOrdersResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestDispatchOrders`.
+message SuggestDispatchOrdersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DispatchOrderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestDispatchOrdersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestDispatchOrders`.
+message SuggestDispatchOrdersResponse {
+  repeated DispatchOrder dispatch_orders = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekDispatchOrder`.
+message PeekDispatchOrderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string dispatch_order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekDispatchOrder`.
+message PeekDispatchOrderResponse {
+  DispatchOrder dispatch_order = 1;
+  acme.common.v1.OperationResult result = 2;
+}

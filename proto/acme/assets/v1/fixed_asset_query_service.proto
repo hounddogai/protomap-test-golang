@@ -1,0 +1,170 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.assets.v1;
+
+import "acme/assets/v1/assets.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Assets.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/assets/v1;assetsv1";
+option java_multiple_files = true;
+option java_outer_classname = "FixedAssetQueryServiceProto";
+option java_package = "com.acme.assets.v1";
+
+// Answers read-only questions about fixed assets, for screens and reports.
+service FixedAssetQueryService {
+  // Returns a fixed asset.
+  rpc LookupFixedAsset(LookupFixedAssetRequest) returns (LookupFixedAssetResponse);
+
+  // Lists fixed assets a page at a time.
+  rpc BrowseFixedAssets(BrowseFixedAssetsRequest) returns (BrowseFixedAssetsResponse);
+
+  // Lists fixed assets a page at a time.
+  rpc FindFixedAssets(FindFixedAssetsRequest) returns (FindFixedAssetsResponse);
+
+  // Counts fixed assets by status.
+  rpc CountFixedAssets(CountFixedAssetsRequest) returns (CountFixedAssetsResponse);
+
+  // Returns several fixed assets at once.
+  rpc ResolveFixedAssets(ResolveFixedAssetsRequest) returns (ResolveFixedAssetsResponse);
+
+  // Summarizes a fixed asset.
+  rpc SummarizeFixedAssets(SummarizeFixedAssetsRequest) returns (SummarizeFixedAssetsResponse);
+}
+
+// The request of `LookupFixedAsset`.
+message LookupFixedAssetRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fixed_asset_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupFixedAsset`.
+message LookupFixedAssetResponse {
+  FixedAsset fixed_asset = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseFixedAssets`.
+message BrowseFixedAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FixedAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseFixedAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseFixedAssets`.
+message BrowseFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindFixedAssets`.
+message FindFixedAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FixedAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindFixedAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindFixedAssets`.
+message FindFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountFixedAssets`.
+message CountFixedAssetsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FixedAssetStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountFixedAssetsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountFixedAssets`.
+message CountFixedAssetsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveFixedAssets`.
+message ResolveFixedAssetsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string fixed_asset_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveFixedAssets`.
+message ResolveFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeFixedAssets`.
+message SummarizeFixedAssetsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fixed_asset_id = 2;
+  SummarizeFixedAssetsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeFixedAssets`.
+message SummarizeFixedAssetsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}

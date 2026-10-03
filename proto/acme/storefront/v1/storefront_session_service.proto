@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "StorefrontSessionServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Manages storefront sessions: creates, reads, changes, and lists them.
+service StorefrontSessionService {
+  // Creates a storefront session.
+  rpc CreateStorefrontSession(CreateStorefrontSessionRequest) returns (CreateStorefrontSessionResponse);
+
+  // Returns a storefront session.
+  rpc GetStorefrontSession(GetStorefrontSessionRequest) returns (GetStorefrontSessionResponse);
+
+  // Changes a storefront session.
+  rpc UpdateStorefrontSession(UpdateStorefrontSessionRequest) returns (UpdateStorefrontSessionResponse);
+
+  // Deletes a storefront session.
+  rpc DeleteStorefrontSession(DeleteStorefrontSessionRequest) returns (DeleteStorefrontSessionResponse);
+
+  // Lists storefront sessions a page at a time.
+  rpc ListStorefrontSessions(ListStorefrontSessionsRequest) returns (ListStorefrontSessionsResponse);
+
+  // Returns several storefront sessions at once.
+  rpc BatchGetStorefrontSessions(BatchGetStorefrontSessionsRequest) returns (BatchGetStorefrontSessionsResponse);
+
+  // Lists storefront sessions a page at a time.
+  rpc SearchStorefrontSessions(SearchStorefrontSessionsRequest) returns (SearchStorefrontSessionsResponse);
+
+  // Streams the changes of storefront sessions as they happen.
+  rpc WatchStorefrontSessions(WatchStorefrontSessionsRequest) returns (stream WatchStorefrontSessionsResponse);
+
+  // Takes a stream of storefront sessions and answers once at the end.
+  rpc BatchCreateStorefrontSessions(stream BatchCreateStorefrontSessionsRequest) returns (BatchCreateStorefrontSessionsResponse);
+
+  // Creates a storefront session.
+  rpc CloneStorefrontSession(CloneStorefrontSessionRequest) returns (CloneStorefrontSessionResponse);
+}
+
+// The request of `CreateStorefrontSession`.
+message CreateStorefrontSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  StorefrontSession storefront_session = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateStorefrontSession`.
+message CreateStorefrontSessionResponse {
+  StorefrontSession storefront_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetStorefrontSession`.
+message GetStorefrontSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetStorefrontSession`.
+message GetStorefrontSessionResponse {
+  StorefrontSession storefront_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateStorefrontSession`.
+message UpdateStorefrontSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  StorefrontSession storefront_session = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateStorefrontSession`.
+message UpdateStorefrontSessionResponse {
+  StorefrontSession storefront_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteStorefrontSession`.
+message DeleteStorefrontSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteStorefrontSession`.
+message DeleteStorefrontSessionResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListStorefrontSessions`.
+message ListStorefrontSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorefrontSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListStorefrontSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListStorefrontSessions`.
+message ListStorefrontSessionsResponse {
+  repeated StorefrontSession storefront_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetStorefrontSessions`.
+message BatchGetStorefrontSessionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string storefront_session_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetStorefrontSessions`.
+message BatchGetStorefrontSessionsResponse {
+  repeated StorefrontSession storefront_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchStorefrontSessions`.
+message SearchStorefrontSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorefrontSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchStorefrontSessionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchStorefrontSessions`.
+message SearchStorefrontSessionsResponse {
+  repeated StorefrontSession storefront_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchStorefrontSessions`.
+message WatchStorefrontSessionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorefrontSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchStorefrontSessionsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchStorefrontSessions`.
+message WatchStorefrontSessionsResponse {
+  StorefrontSession storefront_session = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateStorefrontSessions`.
+message BatchCreateStorefrontSessionsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateStorefrontSessionsRequest.StreamHeader header = 2;
+    StorefrontSession record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateStorefrontSessions`.
+message BatchCreateStorefrontSessionsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string storefront_session_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateStorefrontSessionsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneStorefrontSession`.
+message CloneStorefrontSessionRequest {
+  acme.common.v1.RequestContext context = 1;
+  StorefrontSession storefront_session = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneStorefrontSession`.
+message CloneStorefrontSessionResponse {
+  StorefrontSession storefront_session = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.storefront.v1";
+
+// A reference to a storefront session of the storefront domain.
+message StorefrontSessionRef {
+  string storefront_session_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a shopper view of the storefront domain.
+message ShopperViewRef {
+  string shopper_view_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a landing page of the storefront domain.
+message LandingPageRef {
+  string landing_page_id = 1;
+  string display_name = 2;
+  string number = 3;
+}

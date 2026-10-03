@@ -1,0 +1,40 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.warehousing.v1";
+
+// A reference to a warehouse of the warehousing domain.
+message WarehouseRef {
+  string warehouse_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a storage bin of the warehousing domain.
+message StorageBinRef {
+  string storage_bin_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a pick list of the warehousing domain.
+message PickListRef {
+  string pick_list_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a putaway task of the warehousing domain.
+message PutawayTaskRef {
+  string putaway_task_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

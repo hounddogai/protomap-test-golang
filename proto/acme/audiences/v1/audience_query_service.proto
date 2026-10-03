@@ -1,0 +1,186 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.audiences.v1;
+
+import "acme/audiences/v1/audiences.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Audiences.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/audiences/v1;audiencesv1";
+option java_multiple_files = true;
+option java_outer_classname = "AudienceQueryServiceProto";
+option java_package = "com.acme.audiences.v1";
+
+// Answers read-only questions about audiences, for screens and reports.
+service AudienceQueryService {
+  // Returns an audience.
+  rpc LookupAudience(LookupAudienceRequest) returns (LookupAudienceResponse);
+
+  // Lists audiences a page at a time.
+  rpc BrowseAudiences(BrowseAudiencesRequest) returns (BrowseAudiencesResponse);
+
+  // Counts audiences by status.
+  rpc CountAudiences(CountAudiencesRequest) returns (CountAudiencesResponse);
+
+  // Returns several audiences at once.
+  rpc ResolveAudiences(ResolveAudiencesRequest) returns (ResolveAudiencesResponse);
+
+  // Streams every matching audience.
+  rpc ExportAudiences(ExportAudiencesRequest) returns (stream ExportAudiencesResponse);
+
+  // Lists audiences a page at a time.
+  rpc SuggestAudiences(SuggestAudiencesRequest) returns (SuggestAudiencesResponse);
+
+  // Returns an audience.
+  rpc PeekAudience(PeekAudienceRequest) returns (PeekAudienceResponse);
+}
+
+// The request of `LookupAudience`.
+message LookupAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string audience_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupAudience`.
+message LookupAudienceResponse {
+  Audience audience = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseAudiences`.
+message BrowseAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseAudiencesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseAudiences`.
+message BrowseAudiencesResponse {
+  repeated Audience audiences = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountAudiences`.
+message CountAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountAudiencesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountAudiences`.
+message CountAudiencesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveAudiences`.
+message ResolveAudiencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string audience_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveAudiences`.
+message ResolveAudiencesResponse {
+  repeated Audience audiences = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportAudiences`.
+message ExportAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportAudiencesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportAudiences`.
+message ExportAudiencesResponse {
+  Audience audience = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestAudiences`.
+message SuggestAudiencesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AudienceStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestAudiencesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestAudiences`.
+message SuggestAudiencesResponse {
+  repeated Audience audiences = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekAudience`.
+message PeekAudienceRequest {
+  acme.common.v1.RequestContext context = 1;
+  string audience_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekAudience`.
+message PeekAudienceResponse {
+  Audience audience = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,237 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.accounting.v1;
+
+import "acme/accounting/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Accounting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/accounting/v1;accountingv1";
+option java_multiple_files = true;
+option java_outer_classname = "AccountingProto";
+option java_package = "com.acme.accounting.v1";
+
+// Where a chart of accounts is in its lifecycle.
+enum ChartOfAccountsStatus {
+  CHART_OF_ACCOUNTS_STATUS_UNSPECIFIED = 0;
+  CHART_OF_ACCOUNTS_STATUS_ACTIVE = 1;
+  CHART_OF_ACCOUNTS_STATUS_INACTIVE = 2;
+}
+
+// Where an accrual is in its lifecycle.
+enum AccrualStatus {
+  ACCRUAL_STATUS_UNSPECIFIED = 0;
+  ACCRUAL_STATUS_DRAFT = 1;
+  ACCRUAL_STATUS_ISSUED = 2;
+  ACCRUAL_STATUS_APPROVED = 3;
+  ACCRUAL_STATUS_PAID = 4;
+  ACCRUAL_STATUS_VOID = 5;
+}
+
+// Where an allocation is in its lifecycle.
+enum AllocationStatus {
+  ALLOCATION_STATUS_UNSPECIFIED = 0;
+  ALLOCATION_STATUS_DRAFT = 1;
+  ALLOCATION_STATUS_ENABLED = 2;
+  ALLOCATION_STATUS_DISABLED = 3;
+  ALLOCATION_STATUS_RETIRED = 4;
+}
+
+// Where a reconciliation is in its lifecycle.
+enum ReconciliationStatus {
+  RECONCILIATION_STATUS_UNSPECIFIED = 0;
+  RECONCILIATION_STATUS_NEW = 1;
+  RECONCILIATION_STATUS_OPEN = 2;
+  RECONCILIATION_STATUS_WAITING = 3;
+  RECONCILIATION_STATUS_RESOLVED = 4;
+  RECONCILIATION_STATUS_CLOSED = 5;
+}
+
+// A chart of accounts of the accounting domain.
+message ChartOfAccounts {
+  string chart_of_accounts_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated ChartOfAccounts children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  ChartOfAccountsStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The line of an accrual.
+message AccrualLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  AccrualLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an accrual line.
+message AccrualLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an accrual.
+message AccrualCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an accrual.
+message AccrualBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an accrual.
+message AccrualAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An accrual of the accounting domain.
+message Accrual {
+  string accrual_id = 1;
+  string number = 2;
+  AccrualStatus status = 3;
+  AllocationRef counterparty = 4;
+  repeated AccrualLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    AccrualCardSettlement card = 8;
+    AccrualBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated AccrualAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of an allocation.
+message AllocationCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of an allocation.
+message AllocationDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of an allocation.
+message AllocationRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of an allocation.
+message AllocationBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// An allocation of the accounting domain.
+message Allocation {
+  string allocation_id = 1;
+  string name = 2;
+  string description = 3;
+  AllocationStatus status = 4;
+  int32 priority = 5;
+  repeated AllocationCondition conditions = 6;
+  oneof action {
+    AllocationDiscountAction discount = 7;
+    AllocationRouteAction route = 8;
+    AllocationBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a reconciliation.
+message ReconciliationComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a reconciliation.
+message ReconciliationSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a reconciliation.
+message ReconciliationChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a reconciliation.
+message ReconciliationStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A reconciliation of the accounting domain.
+message Reconciliation {
+  string reconciliation_id = 1;
+  string subject = 2;
+  ReconciliationStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated ReconciliationComment comments = 7;
+  ReconciliationSla sla = 8;
+  oneof origin {
+    ChartOfAccountsRef customer = 9;
+    string external_reference = 10;
+    ReconciliationChannelOrigin channel = 11;
+  }
+  repeated ReconciliationStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

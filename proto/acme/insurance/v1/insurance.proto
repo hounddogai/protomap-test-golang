@@ -1,0 +1,330 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.insurance.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/insurance/v1/refs.proto";
+import "acme/suppliers/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Insurance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/insurance/v1;insurancev1";
+option java_multiple_files = true;
+option java_outer_classname = "InsuranceProto";
+option java_package = "com.acme.insurance.v1";
+
+// Where a policy is in its lifecycle.
+enum PolicyStatus {
+  POLICY_STATUS_UNSPECIFIED = 0;
+  POLICY_STATUS_PENDING = 1;
+  POLICY_STATUS_OPEN = 2;
+  POLICY_STATUS_FROZEN = 3;
+  POLICY_STATUS_CLOSED = 4;
+}
+
+// Where a claim is in its lifecycle.
+enum ClaimStatus {
+  CLAIM_STATUS_UNSPECIFIED = 0;
+  CLAIM_STATUS_NEW = 1;
+  CLAIM_STATUS_OPEN = 2;
+  CLAIM_STATUS_WAITING = 3;
+  CLAIM_STATUS_RESOLVED = 4;
+  CLAIM_STATUS_CLOSED = 5;
+}
+
+// Where a coverage is in its lifecycle.
+enum CoverageStatus {
+  COVERAGE_STATUS_UNSPECIFIED = 0;
+  COVERAGE_STATUS_DRAFT = 1;
+  COVERAGE_STATUS_ENABLED = 2;
+  COVERAGE_STATUS_DISABLED = 3;
+  COVERAGE_STATUS_RETIRED = 4;
+}
+
+// Where a premium is in its lifecycle.
+enum PremiumStatus {
+  PREMIUM_STATUS_UNSPECIFIED = 0;
+  PREMIUM_STATUS_DRAFT = 1;
+  PREMIUM_STATUS_ISSUED = 2;
+  PREMIUM_STATUS_APPROVED = 3;
+  PREMIUM_STATUS_PAID = 4;
+  PREMIUM_STATUS_VOID = 5;
+}
+
+// Where an underwriting is in its lifecycle.
+enum UnderwritingStatus {
+  UNDERWRITING_STATUS_UNSPECIFIED = 0;
+  UNDERWRITING_STATUS_NEW = 1;
+  UNDERWRITING_STATUS_OPEN = 2;
+  UNDERWRITING_STATUS_WAITING = 3;
+  UNDERWRITING_STATUS_RESOLVED = 4;
+  UNDERWRITING_STATUS_CLOSED = 5;
+}
+
+// The limit of a policy.
+message PolicyLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a policy.
+message PolicyCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a policy.
+message PolicyBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A policy of the insurance domain.
+message Policy {
+  string policy_id = 1;
+  CoverageRef holder = 2;
+  PolicyStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated PolicyLimit limits = 7;
+  oneof funding {
+    PolicyCardFunding card = 8;
+    PolicyBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The comment of a claim.
+message ClaimComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a claim.
+message ClaimSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a claim.
+message ClaimChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a claim.
+message ClaimStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A claim of the insurance domain.
+message Claim {
+  string claim_id = 1;
+  string subject = 2;
+  ClaimStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated ClaimComment comments = 7;
+  ClaimSla sla = 8;
+  oneof origin {
+    acme.customers.v1.CustomerRef customer = 9;
+    string external_reference = 10;
+    ClaimChannelOrigin channel = 11;
+  }
+  repeated ClaimStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a coverage.
+message CoverageCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a coverage.
+message CoverageDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a coverage.
+message CoverageRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a coverage.
+message CoverageBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A coverage of the insurance domain.
+message Coverage {
+  string coverage_id = 1;
+  string name = 2;
+  string description = 3;
+  CoverageStatus status = 4;
+  int32 priority = 5;
+  repeated CoverageCondition conditions = 6;
+  oneof action {
+    CoverageDiscountAction discount = 7;
+    CoverageRouteAction route = 8;
+    CoverageBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of a premium.
+message PremiumLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PremiumLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a premium line.
+message PremiumLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a premium.
+message PremiumCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a premium.
+message PremiumBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a premium.
+message PremiumAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A premium of the insurance domain.
+message Premium {
+  string premium_id = 1;
+  string number = 2;
+  PremiumStatus status = 3;
+  acme.suppliers.v1.SupplierRef counterparty = 4;
+  repeated PremiumLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PremiumCardSettlement card = 8;
+    PremiumBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PremiumAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The comment of an underwriting.
+message UnderwritingComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of an underwriting.
+message UnderwritingSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of an underwriting.
+message UnderwritingChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of an underwriting.
+message UnderwritingStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// An underwriting of the insurance domain.
+message Underwriting {
+  string underwriting_id = 1;
+  string subject = 2;
+  UnderwritingStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated UnderwritingComment comments = 7;
+  UnderwritingSla sla = 8;
+  oneof origin {
+    ClaimRef customer = 9;
+    string external_reference = 10;
+    UnderwritingChannelOrigin channel = 11;
+  }
+  repeated UnderwritingStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fulfillment.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fulfillment/v1/fulfillment.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fulfillment.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fulfillment/v1;fulfillmentv1";
+option java_multiple_files = true;
+option java_outer_classname = "FulfillmentExceptionValidationServiceProto";
+option java_package = "com.acme.fulfillment.v1";
+
+// Checks fulfillment exceptions against the rules before anything acts on them.
+service FulfillmentExceptionValidationService {
+  // Validates a fulfillment exception.
+  rpc ValidateFulfillmentException(ValidateFulfillmentExceptionRequest) returns (ValidateFulfillmentExceptionResponse);
+
+  // Previews a fulfillment exception.
+  rpc PreviewFulfillmentException(PreviewFulfillmentExceptionRequest) returns (PreviewFulfillmentExceptionResponse);
+
+  // Checks a fulfillment exception.
+  rpc CheckFulfillmentExceptionEligibility(CheckFulfillmentExceptionEligibilityRequest) returns (CheckFulfillmentExceptionEligibilityResponse);
+
+  // Normalizes a fulfillment exception.
+  rpc NormalizeFulfillmentException(NormalizeFulfillmentExceptionRequest) returns (NormalizeFulfillmentExceptionResponse);
+
+  // Explains a fulfillment exception.
+  rpc ExplainFulfillmentExceptionDecision(ExplainFulfillmentExceptionDecisionRequest) returns (ExplainFulfillmentExceptionDecisionResponse);
+
+  // Scores a fulfillment exception.
+  rpc ScoreFulfillmentException(ScoreFulfillmentExceptionRequest) returns (ScoreFulfillmentExceptionResponse);
+
+  // Lints a fulfillment exception.
+  rpc LintFulfillmentExceptions(LintFulfillmentExceptionsRequest) returns (LintFulfillmentExceptionsResponse);
+
+  // Returns a fulfillment exception.
+  rpc GetFulfillmentExceptionRules(GetFulfillmentExceptionRulesRequest) returns (GetFulfillmentExceptionRulesResponse);
+}
+
+// The request of `ValidateFulfillmentException`.
+message ValidateFulfillmentExceptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  ValidateFulfillmentExceptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateFulfillmentException`.
+message ValidateFulfillmentExceptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  ValidateFulfillmentExceptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewFulfillmentException`.
+message PreviewFulfillmentExceptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  PreviewFulfillmentExceptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewFulfillmentException`.
+message PreviewFulfillmentExceptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  PreviewFulfillmentExceptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckFulfillmentExceptionEligibility`.
+message CheckFulfillmentExceptionEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  CheckFulfillmentExceptionEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckFulfillmentExceptionEligibility`.
+message CheckFulfillmentExceptionEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  CheckFulfillmentExceptionEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeFulfillmentException`.
+message NormalizeFulfillmentExceptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  NormalizeFulfillmentExceptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeFulfillmentException`.
+message NormalizeFulfillmentExceptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  NormalizeFulfillmentExceptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainFulfillmentExceptionDecision`.
+message ExplainFulfillmentExceptionDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  ExplainFulfillmentExceptionDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainFulfillmentExceptionDecision`.
+message ExplainFulfillmentExceptionDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  ExplainFulfillmentExceptionDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreFulfillmentException`.
+message ScoreFulfillmentExceptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  ScoreFulfillmentExceptionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreFulfillmentException`.
+message ScoreFulfillmentExceptionResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreFulfillmentExceptionResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  ScoreFulfillmentExceptionResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintFulfillmentExceptions`.
+message LintFulfillmentExceptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  FulfillmentException fulfillment_exception = 3;
+  LintFulfillmentExceptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintFulfillmentExceptions`.
+message LintFulfillmentExceptionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FulfillmentException fulfillment_exception = 1;
+  LintFulfillmentExceptionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFulfillmentExceptionRules`.
+message GetFulfillmentExceptionRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_exception_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFulfillmentExceptionRules`.
+message GetFulfillmentExceptionRulesResponse {
+  FulfillmentException fulfillment_exception = 1;
+  acme.common.v1.OperationResult result = 2;
+}

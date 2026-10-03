@@ -1,0 +1,186 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.documents.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/documents/v1/documents.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Documents.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/documents/v1;documentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "DocumentServiceProto";
+option java_package = "com.acme.documents.v1";
+
+// Manages documents: creates, reads, changes, and lists them.
+service DocumentService {
+  // Creates a document.
+  rpc CreateDocument(CreateDocumentRequest) returns (CreateDocumentResponse);
+
+  // Returns a document.
+  rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
+
+  // Deletes a document.
+  rpc DeleteDocument(DeleteDocumentRequest) returns (DeleteDocumentResponse);
+
+  // Lists documents a page at a time.
+  rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);
+
+  // Returns several documents at once.
+  rpc BatchGetDocuments(BatchGetDocumentsRequest) returns (BatchGetDocumentsResponse);
+
+  // Streams the changes of documents as they happen.
+  rpc WatchDocuments(WatchDocumentsRequest) returns (stream WatchDocumentsResponse);
+
+  // Takes a stream of documents and answers once at the end.
+  rpc BatchCreateDocuments(stream BatchCreateDocumentsRequest) returns (BatchCreateDocumentsResponse);
+}
+
+// The request of `CreateDocument`.
+message CreateDocumentRequest {
+  acme.common.v1.RequestContext context = 1;
+  Document document = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateDocument`.
+message CreateDocumentResponse {
+  Document document = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetDocument`.
+message GetDocumentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string document_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetDocument`.
+message GetDocumentResponse {
+  Document document = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteDocument`.
+message DeleteDocumentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string document_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteDocument`.
+message DeleteDocumentResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListDocuments`.
+message ListDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListDocumentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListDocuments`.
+message ListDocumentsResponse {
+  repeated Document documents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetDocuments`.
+message BatchGetDocumentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string document_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetDocuments`.
+message BatchGetDocumentsResponse {
+  repeated Document documents = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchDocuments`.
+message WatchDocumentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated DocumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchDocumentsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchDocuments`.
+message WatchDocumentsResponse {
+  Document document = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateDocuments`.
+message BatchCreateDocumentsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateDocumentsRequest.StreamHeader header = 2;
+    Document record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateDocuments`.
+message BatchCreateDocumentsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string document_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateDocumentsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerWebhookWorkflowServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Runs the long-lived workflow that takes a partner webhook from start to finish.
+service PartnerWebhookWorkflowService {
+  // Starts a partner webhook.
+  rpc StartPartnerWebhookWorkflow(StartPartnerWebhookWorkflowRequest) returns (StartPartnerWebhookWorkflowResponse);
+
+  // Advances a partner webhook.
+  rpc AdvancePartnerWebhookWorkflow(AdvancePartnerWebhookWorkflowRequest) returns (AdvancePartnerWebhookWorkflowResponse);
+
+  // Cancels a partner webhook.
+  rpc CancelPartnerWebhookWorkflow(CancelPartnerWebhookWorkflowRequest) returns (CancelPartnerWebhookWorkflowResponse);
+
+  // Retrys a partner webhook.
+  rpc RetryPartnerWebhookWorkflow(RetryPartnerWebhookWorkflowRequest) returns (RetryPartnerWebhookWorkflowResponse);
+
+  // Pauses a partner webhook.
+  rpc PausePartnerWebhookWorkflow(PausePartnerWebhookWorkflowRequest) returns (PausePartnerWebhookWorkflowResponse);
+
+  // Resumes a partner webhook.
+  rpc ResumePartnerWebhookWorkflow(ResumePartnerWebhookWorkflowRequest) returns (ResumePartnerWebhookWorkflowResponse);
+
+  // Returns a partner webhook.
+  rpc InspectPartnerWebhookWorkflow(InspectPartnerWebhookWorkflowRequest) returns (InspectPartnerWebhookWorkflowResponse);
+
+  // Lists partner webhooks a page at a time.
+  rpc ListPartnerWebhookWorkflows(ListPartnerWebhookWorkflowsRequest) returns (ListPartnerWebhookWorkflowsResponse);
+}
+
+// The request of `StartPartnerWebhookWorkflow`.
+message StartPartnerWebhookWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  PartnerWebhook partner_webhook = 3;
+  StartPartnerWebhookWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPartnerWebhookWorkflow`.
+message StartPartnerWebhookWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  StartPartnerWebhookWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePartnerWebhookWorkflow`.
+message AdvancePartnerWebhookWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  PartnerWebhook partner_webhook = 3;
+  AdvancePartnerWebhookWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePartnerWebhookWorkflow`.
+message AdvancePartnerWebhookWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  AdvancePartnerWebhookWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPartnerWebhookWorkflow`.
+message CancelPartnerWebhookWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  PartnerWebhook partner_webhook = 3;
+  CancelPartnerWebhookWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPartnerWebhookWorkflow`.
+message CancelPartnerWebhookWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  CancelPartnerWebhookWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPartnerWebhookWorkflow`.
+message RetryPartnerWebhookWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  PartnerWebhook partner_webhook = 3;
+  RetryPartnerWebhookWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPartnerWebhookWorkflow`.
+message RetryPartnerWebhookWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  RetryPartnerWebhookWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePartnerWebhookWorkflow`.
+message PausePartnerWebhookWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  PartnerWebhook partner_webhook = 3;
+  PausePartnerWebhookWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePartnerWebhookWorkflow`.
+message PausePartnerWebhookWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  PausePartnerWebhookWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePartnerWebhookWorkflow`.
+message ResumePartnerWebhookWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  PartnerWebhook partner_webhook = 3;
+  ResumePartnerWebhookWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePartnerWebhookWorkflow`.
+message ResumePartnerWebhookWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerWebhook partner_webhook = 1;
+  ResumePartnerWebhookWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPartnerWebhookWorkflow`.
+message InspectPartnerWebhookWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_webhook_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPartnerWebhookWorkflow`.
+message InspectPartnerWebhookWorkflowResponse {
+  PartnerWebhook partner_webhook = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPartnerWebhookWorkflows`.
+message ListPartnerWebhookWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerWebhookStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPartnerWebhookWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPartnerWebhookWorkflows`.
+message ListPartnerWebhookWorkflowsResponse {
+  repeated PartnerWebhook partner_webhooks = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

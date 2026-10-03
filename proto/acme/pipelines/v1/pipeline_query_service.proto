@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pipelines.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/pipelines/v1/pipelines.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pipelines.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pipelines/v1;pipelinesv1";
+option java_multiple_files = true;
+option java_outer_classname = "PipelineQueryServiceProto";
+option java_package = "com.acme.pipelines.v1";
+
+// Answers read-only questions about pipelines, for screens and reports.
+service PipelineQueryService {
+  // Returns a pipeline.
+  rpc LookupPipeline(LookupPipelineRequest) returns (LookupPipelineResponse);
+
+  // Lists pipelines a page at a time.
+  rpc BrowsePipelines(BrowsePipelinesRequest) returns (BrowsePipelinesResponse);
+
+  // Lists pipelines a page at a time.
+  rpc FindPipelines(FindPipelinesRequest) returns (FindPipelinesResponse);
+
+  // Counts pipelines by status.
+  rpc CountPipelines(CountPipelinesRequest) returns (CountPipelinesResponse);
+
+  // Returns several pipelines at once.
+  rpc ResolvePipelines(ResolvePipelinesRequest) returns (ResolvePipelinesResponse);
+
+  // Streams every matching pipeline.
+  rpc ExportPipelines(ExportPipelinesRequest) returns (stream ExportPipelinesResponse);
+
+  // Lists pipelines a page at a time.
+  rpc SuggestPipelines(SuggestPipelinesRequest) returns (SuggestPipelinesResponse);
+
+  // Returns a pipeline.
+  rpc PeekPipeline(PeekPipelineRequest) returns (PeekPipelineResponse);
+}
+
+// The request of `LookupPipeline`.
+message LookupPipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pipeline_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPipeline`.
+message LookupPipelineResponse {
+  Pipeline pipeline = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePipelines`.
+message BrowsePipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePipelinesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePipelines`.
+message BrowsePipelinesResponse {
+  repeated Pipeline pipelines = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindPipelines`.
+message FindPipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindPipelinesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindPipelines`.
+message FindPipelinesResponse {
+  repeated Pipeline pipelines = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountPipelines`.
+message CountPipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountPipelinesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountPipelines`.
+message CountPipelinesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolvePipelines`.
+message ResolvePipelinesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string pipeline_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolvePipelines`.
+message ResolvePipelinesResponse {
+  repeated Pipeline pipelines = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportPipelines`.
+message ExportPipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportPipelinesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportPipelines`.
+message ExportPipelinesResponse {
+  Pipeline pipeline = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestPipelines`.
+message SuggestPipelinesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PipelineStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestPipelinesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestPipelines`.
+message SuggestPipelinesResponse {
+  repeated Pipeline pipelines = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekPipeline`.
+message PeekPipelineRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pipeline_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekPipeline`.
+message PeekPipelineResponse {
+  Pipeline pipeline = 1;
+  acme.common.v1.OperationResult result = 2;
+}

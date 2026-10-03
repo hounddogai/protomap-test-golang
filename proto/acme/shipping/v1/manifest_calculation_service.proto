@@ -1,0 +1,279 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/shipping/v1/shipping.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ManifestCalculationServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Computes the figures of a manifest, such as totals, taxes, and estimates.
+service ManifestCalculationService {
+  // Calculates a manifest.
+  rpc CalculateManifest(CalculateManifestRequest) returns (CalculateManifestResponse);
+
+  // Estimates a manifest.
+  rpc EstimateManifest(EstimateManifestRequest) returns (EstimateManifestResponse);
+
+  // Quotes a manifest.
+  rpc QuoteManifest(QuoteManifestRequest) returns (QuoteManifestResponse);
+
+  // Compares a manifest.
+  rpc CompareManifestOptions(CompareManifestOptionsRequest) returns (CompareManifestOptionsResponse);
+
+  // Recalculates a manifest.
+  rpc RecalculateManifests(RecalculateManifestsRequest) returns (RecalculateManifestsResponse);
+
+  // Simulates a manifest.
+  rpc SimulateManifest(SimulateManifestRequest) returns (SimulateManifestResponse);
+}
+
+// The request of `CalculateManifest`.
+message CalculateManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  CalculateManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateManifest`.
+message CalculateManifestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateManifestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  CalculateManifestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateManifest`.
+message EstimateManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  EstimateManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateManifest`.
+message EstimateManifestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateManifestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  EstimateManifestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteManifest`.
+message QuoteManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  QuoteManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteManifest`.
+message QuoteManifestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteManifestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  QuoteManifestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareManifestOptions`.
+message CompareManifestOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  CompareManifestOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareManifestOptions`.
+message CompareManifestOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareManifestOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  CompareManifestOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateManifests`.
+message RecalculateManifestsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  RecalculateManifestsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateManifests`.
+message RecalculateManifestsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateManifestsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  RecalculateManifestsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateManifest`.
+message SimulateManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  SimulateManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateManifest`.
+message SimulateManifestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateManifestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Manifest manifest = 1;
+  SimulateManifestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}

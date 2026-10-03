@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CouponCalculationServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Computes the figures of a coupon, such as totals, taxes, and estimates.
+service CouponCalculationService {
+  // Calculates a coupon.
+  rpc CalculateCoupon(CalculateCouponRequest) returns (CalculateCouponResponse);
+
+  // Estimates a coupon.
+  rpc EstimateCoupon(EstimateCouponRequest) returns (EstimateCouponResponse);
+
+  // Quotes a coupon.
+  rpc QuoteCoupon(QuoteCouponRequest) returns (QuoteCouponResponse);
+
+  // Compares a coupon.
+  rpc CompareCouponOptions(CompareCouponOptionsRequest) returns (CompareCouponOptionsResponse);
+
+  // Recalculates a coupon.
+  rpc RecalculateCoupons(RecalculateCouponsRequest) returns (RecalculateCouponsResponse);
+
+  // Simulates a coupon.
+  rpc SimulateCoupon(SimulateCouponRequest) returns (SimulateCouponResponse);
+
+  // Explains a coupon.
+  rpc ExplainCouponCalculation(ExplainCouponCalculationRequest) returns (ExplainCouponCalculationResponse);
+
+  // Returns a coupon.
+  rpc GetCouponRates(GetCouponRatesRequest) returns (GetCouponRatesResponse);
+}
+
+// The request of `CalculateCoupon`.
+message CalculateCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  CalculateCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCoupon`.
+message CalculateCouponResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCouponResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  CalculateCouponResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCoupon`.
+message EstimateCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  EstimateCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCoupon`.
+message EstimateCouponResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCouponResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  EstimateCouponResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCoupon`.
+message QuoteCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  QuoteCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCoupon`.
+message QuoteCouponResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCouponResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  QuoteCouponResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCouponOptions`.
+message CompareCouponOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  CompareCouponOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCouponOptions`.
+message CompareCouponOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCouponOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  CompareCouponOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateCoupons`.
+message RecalculateCouponsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  RecalculateCouponsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateCoupons`.
+message RecalculateCouponsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateCouponsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  RecalculateCouponsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCoupon`.
+message SimulateCouponRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  SimulateCouponRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCoupon`.
+message SimulateCouponResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCouponResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Coupon coupon = 1;
+  SimulateCouponResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCouponCalculation`.
+message ExplainCouponCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  ExplainCouponCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCouponCalculation`.
+message ExplainCouponCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  ExplainCouponCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCouponRates`.
+message GetCouponRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCouponRates`.
+message GetCouponRatesResponse {
+  Coupon coupon = 1;
+  acme.common.v1.OperationResult result = 2;
+}

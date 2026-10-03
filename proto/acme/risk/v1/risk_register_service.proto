@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.risk.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/risk/v1/risk.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Risk.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/risk/v1;riskv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskRegisterServiceProto";
+option java_package = "com.acme.risk.v1";
+
+// Manages risk registers: creates, reads, changes, and lists them.
+service RiskRegisterService {
+  // Creates a risk register.
+  rpc CreateRiskRegister(CreateRiskRegisterRequest) returns (CreateRiskRegisterResponse);
+
+  // Returns a risk register.
+  rpc GetRiskRegister(GetRiskRegisterRequest) returns (GetRiskRegisterResponse);
+
+  // Changes a risk register.
+  rpc UpdateRiskRegister(UpdateRiskRegisterRequest) returns (UpdateRiskRegisterResponse);
+
+  // Deletes a risk register.
+  rpc DeleteRiskRegister(DeleteRiskRegisterRequest) returns (DeleteRiskRegisterResponse);
+
+  // Lists risk registers a page at a time.
+  rpc ListRiskRegisters(ListRiskRegistersRequest) returns (ListRiskRegistersResponse);
+
+  // Returns several risk registers at once.
+  rpc BatchGetRiskRegisters(BatchGetRiskRegistersRequest) returns (BatchGetRiskRegistersResponse);
+
+  // Lists risk registers a page at a time.
+  rpc SearchRiskRegisters(SearchRiskRegistersRequest) returns (SearchRiskRegistersResponse);
+
+  // Streams the changes of risk registers as they happen.
+  rpc WatchRiskRegisters(WatchRiskRegistersRequest) returns (stream WatchRiskRegistersResponse);
+
+  // Takes a stream of risk registers and answers once at the end.
+  rpc BatchCreateRiskRegisters(stream BatchCreateRiskRegistersRequest) returns (BatchCreateRiskRegistersResponse);
+
+  // Creates a risk register.
+  rpc CloneRiskRegister(CloneRiskRegisterRequest) returns (CloneRiskRegisterResponse);
+}
+
+// The request of `CreateRiskRegister`.
+message CreateRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  RiskRegister risk_register = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateRiskRegister`.
+message CreateRiskRegisterResponse {
+  RiskRegister risk_register = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetRiskRegister`.
+message GetRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_register_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRiskRegister`.
+message GetRiskRegisterResponse {
+  RiskRegister risk_register = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateRiskRegister`.
+message UpdateRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  RiskRegister risk_register = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateRiskRegister`.
+message UpdateRiskRegisterResponse {
+  RiskRegister risk_register = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteRiskRegister`.
+message DeleteRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  string risk_register_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteRiskRegister`.
+message DeleteRiskRegisterResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListRiskRegisters`.
+message ListRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRiskRegistersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRiskRegisters`.
+message ListRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetRiskRegisters`.
+message BatchGetRiskRegistersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string risk_register_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetRiskRegisters`.
+message BatchGetRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchRiskRegisters`.
+message SearchRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchRiskRegistersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchRiskRegisters`.
+message SearchRiskRegistersResponse {
+  repeated RiskRegister risk_registers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchRiskRegisters`.
+message WatchRiskRegistersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RiskRegisterStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchRiskRegistersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchRiskRegisters`.
+message WatchRiskRegistersResponse {
+  RiskRegister risk_register = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateRiskRegisters`.
+message BatchCreateRiskRegistersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateRiskRegistersRequest.StreamHeader header = 2;
+    RiskRegister record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateRiskRegisters`.
+message BatchCreateRiskRegistersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string risk_register_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateRiskRegistersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneRiskRegister`.
+message CloneRiskRegisterRequest {
+  acme.common.v1.RequestContext context = 1;
+  RiskRegister risk_register = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneRiskRegister`.
+message CloneRiskRegisterResponse {
+  RiskRegister risk_register = 1;
+  acme.common.v1.OperationResult result = 2;
+}

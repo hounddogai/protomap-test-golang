@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VideoVisitQueryServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Answers read-only questions about video visits, for screens and reports.
+service VideoVisitQueryService {
+  // Returns a video visit.
+  rpc LookupVideoVisit(LookupVideoVisitRequest) returns (LookupVideoVisitResponse);
+
+  // Lists video visits a page at a time.
+  rpc BrowseVideoVisits(BrowseVideoVisitsRequest) returns (BrowseVideoVisitsResponse);
+
+  // Counts video visits by status.
+  rpc CountVideoVisits(CountVideoVisitsRequest) returns (CountVideoVisitsResponse);
+
+  // Returns several video visits at once.
+  rpc ResolveVideoVisits(ResolveVideoVisitsRequest) returns (ResolveVideoVisitsResponse);
+
+  // Streams every matching video visit.
+  rpc ExportVideoVisits(ExportVideoVisitsRequest) returns (stream ExportVideoVisitsResponse);
+
+  // Summarizes a video visit.
+  rpc SummarizeVideoVisits(SummarizeVideoVisitsRequest) returns (SummarizeVideoVisitsResponse);
+
+  // Lists video visits a page at a time.
+  rpc SuggestVideoVisits(SuggestVideoVisitsRequest) returns (SuggestVideoVisitsResponse);
+
+  // Returns a video visit.
+  rpc PeekVideoVisit(PeekVideoVisitRequest) returns (PeekVideoVisitResponse);
+}
+
+// The request of `LookupVideoVisit`.
+message LookupVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupVideoVisit`.
+message LookupVideoVisitResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseVideoVisits`.
+message BrowseVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseVideoVisitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseVideoVisits`.
+message BrowseVideoVisitsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountVideoVisits`.
+message CountVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountVideoVisitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountVideoVisits`.
+message CountVideoVisitsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveVideoVisits`.
+message ResolveVideoVisitsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string video_visit_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveVideoVisits`.
+message ResolveVideoVisitsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportVideoVisits`.
+message ExportVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportVideoVisitsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportVideoVisits`.
+message ExportVideoVisitsResponse {
+  VideoVisit video_visit = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeVideoVisits`.
+message SummarizeVideoVisitsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  SummarizeVideoVisitsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeVideoVisits`.
+message SummarizeVideoVisitsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestVideoVisits`.
+message SuggestVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestVideoVisitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestVideoVisits`.
+message SuggestVideoVisitsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekVideoVisit`.
+message PeekVideoVisitRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekVideoVisit`.
+message PeekVideoVisitResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}

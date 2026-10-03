@@ -1,0 +1,170 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudSignalQueryServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Answers read-only questions about fraud signals, for screens and reports.
+service FraudSignalQueryService {
+  // Returns a fraud signal.
+  rpc LookupFraudSignal(LookupFraudSignalRequest) returns (LookupFraudSignalResponse);
+
+  // Lists fraud signals a page at a time.
+  rpc BrowseFraudSignals(BrowseFraudSignalsRequest) returns (BrowseFraudSignalsResponse);
+
+  // Lists fraud signals a page at a time.
+  rpc FindFraudSignals(FindFraudSignalsRequest) returns (FindFraudSignalsResponse);
+
+  // Counts fraud signals by status.
+  rpc CountFraudSignals(CountFraudSignalsRequest) returns (CountFraudSignalsResponse);
+
+  // Returns several fraud signals at once.
+  rpc ResolveFraudSignals(ResolveFraudSignalsRequest) returns (ResolveFraudSignalsResponse);
+
+  // Streams every matching fraud signal.
+  rpc ExportFraudSignals(ExportFraudSignalsRequest) returns (stream ExportFraudSignalsResponse);
+}
+
+// The request of `LookupFraudSignal`.
+message LookupFraudSignalRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_signal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupFraudSignal`.
+message LookupFraudSignalResponse {
+  FraudSignal fraud_signal = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseFraudSignals`.
+message BrowseFraudSignalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudSignalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseFraudSignalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseFraudSignals`.
+message BrowseFraudSignalsResponse {
+  repeated FraudSignal fraud_signals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindFraudSignals`.
+message FindFraudSignalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudSignalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindFraudSignalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindFraudSignals`.
+message FindFraudSignalsResponse {
+  repeated FraudSignal fraud_signals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountFraudSignals`.
+message CountFraudSignalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudSignalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountFraudSignalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountFraudSignals`.
+message CountFraudSignalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveFraudSignals`.
+message ResolveFraudSignalsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string fraud_signal_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveFraudSignals`.
+message ResolveFraudSignalsResponse {
+  repeated FraudSignal fraud_signals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportFraudSignals`.
+message ExportFraudSignalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudSignalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportFraudSignalsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportFraudSignals`.
+message ExportFraudSignalsResponse {
+  FraudSignal fraud_signal = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

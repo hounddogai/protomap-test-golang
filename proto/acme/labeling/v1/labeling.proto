@@ -1,0 +1,137 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.labeling.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/labeling/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Labeling.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/labeling/v1;labelingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LabelingProto";
+option java_package = "com.acme.labeling.v1";
+
+// Where a labeling task is in its lifecycle.
+enum LabelingTaskStatus {
+  LABELING_TASK_STATUS_UNSPECIFIED = 0;
+  LABELING_TASK_STATUS_NEW = 1;
+  LABELING_TASK_STATUS_OPEN = 2;
+  LABELING_TASK_STATUS_WAITING = 3;
+  LABELING_TASK_STATUS_RESOLVED = 4;
+  LABELING_TASK_STATUS_CLOSED = 5;
+}
+
+// Where an annotation is in its lifecycle.
+enum AnnotationStatus {
+  ANNOTATION_STATUS_UNSPECIFIED = 0;
+  ANNOTATION_STATUS_RECEIVED = 1;
+  ANNOTATION_STATUS_PROCESSED = 2;
+  ANNOTATION_STATUS_DISCARDED = 3;
+}
+
+// Where a label set is in its lifecycle.
+enum LabelSetStatus {
+  LABEL_SET_STATUS_UNSPECIFIED = 0;
+  LABEL_SET_STATUS_ACTIVE = 1;
+  LABEL_SET_STATUS_INACTIVE = 2;
+}
+
+// The comment of a labeling task.
+message LabelingTaskComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a labeling task.
+message LabelingTaskSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a labeling task.
+message LabelingTaskChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a labeling task.
+message LabelingTaskStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A labeling task of the labeling domain.
+message LabelingTask {
+  string labeling_task_id = 1;
+  string subject = 2;
+  LabelingTaskStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated LabelingTaskComment comments = 7;
+  LabelingTaskSla sla = 8;
+  oneof origin {
+    LabelSetRef customer = 9;
+    string external_reference = 10;
+    LabelingTaskChannelOrigin channel = 11;
+  }
+  repeated LabelingTaskStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of an annotation.
+message AnnotationMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// An annotation of the labeling domain.
+message Annotation {
+  string annotation_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  LabelingTaskRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated AnnotationMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// A label set of the labeling domain.
+message LabelSet {
+  string label_set_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated LabelSet children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  LabelSetStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}

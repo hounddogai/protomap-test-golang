@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.expenses.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/expenses/v1/expenses.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Expenses.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/expenses/v1;expensesv1";
+option java_multiple_files = true;
+option java_outer_classname = "ExpenseReportCalculationServiceProto";
+option java_package = "com.acme.expenses.v1";
+
+// Computes the figures of an expense report, such as totals, taxes, and estimates.
+service ExpenseReportCalculationService {
+  // Calculates an expense report.
+  rpc CalculateExpenseReport(CalculateExpenseReportRequest) returns (CalculateExpenseReportResponse);
+
+  // Estimates an expense report.
+  rpc EstimateExpenseReport(EstimateExpenseReportRequest) returns (EstimateExpenseReportResponse);
+
+  // Quotes an expense report.
+  rpc QuoteExpenseReport(QuoteExpenseReportRequest) returns (QuoteExpenseReportResponse);
+
+  // Compares an expense report.
+  rpc CompareExpenseReportOptions(CompareExpenseReportOptionsRequest) returns (CompareExpenseReportOptionsResponse);
+
+  // Recalculates an expense report.
+  rpc RecalculateExpenseReports(RecalculateExpenseReportsRequest) returns (RecalculateExpenseReportsResponse);
+
+  // Simulates an expense report.
+  rpc SimulateExpenseReport(SimulateExpenseReportRequest) returns (SimulateExpenseReportResponse);
+
+  // Explains an expense report.
+  rpc ExplainExpenseReportCalculation(ExplainExpenseReportCalculationRequest) returns (ExplainExpenseReportCalculationResponse);
+
+  // Returns an expense report.
+  rpc GetExpenseReportRates(GetExpenseReportRatesRequest) returns (GetExpenseReportRatesResponse);
+}
+
+// The request of `CalculateExpenseReport`.
+message CalculateExpenseReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  CalculateExpenseReportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateExpenseReport`.
+message CalculateExpenseReportResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateExpenseReportResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ExpenseReport expense_report = 1;
+  CalculateExpenseReportResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateExpenseReport`.
+message EstimateExpenseReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  EstimateExpenseReportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateExpenseReport`.
+message EstimateExpenseReportResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateExpenseReportResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ExpenseReport expense_report = 1;
+  EstimateExpenseReportResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteExpenseReport`.
+message QuoteExpenseReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  QuoteExpenseReportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteExpenseReport`.
+message QuoteExpenseReportResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteExpenseReportResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ExpenseReport expense_report = 1;
+  QuoteExpenseReportResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareExpenseReportOptions`.
+message CompareExpenseReportOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  CompareExpenseReportOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareExpenseReportOptions`.
+message CompareExpenseReportOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareExpenseReportOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ExpenseReport expense_report = 1;
+  CompareExpenseReportOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateExpenseReports`.
+message RecalculateExpenseReportsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  RecalculateExpenseReportsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateExpenseReports`.
+message RecalculateExpenseReportsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateExpenseReportsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ExpenseReport expense_report = 1;
+  RecalculateExpenseReportsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateExpenseReport`.
+message SimulateExpenseReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  SimulateExpenseReportRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateExpenseReport`.
+message SimulateExpenseReportResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateExpenseReportResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ExpenseReport expense_report = 1;
+  SimulateExpenseReportResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainExpenseReportCalculation`.
+message ExplainExpenseReportCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  ExpenseReport expense_report = 3;
+  ExplainExpenseReportCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainExpenseReportCalculation`.
+message ExplainExpenseReportCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ExpenseReport expense_report = 1;
+  ExplainExpenseReportCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetExpenseReportRates`.
+message GetExpenseReportRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string expense_report_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetExpenseReportRates`.
+message GetExpenseReportRatesResponse {
+  ExpenseReport expense_report = 1;
+  acme.common.v1.OperationResult result = 2;
+}

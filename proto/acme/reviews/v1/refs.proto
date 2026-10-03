@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.reviews.v1;
+
+option csharp_namespace = "Acme.Reviews.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/reviews/v1;reviewsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.reviews.v1";
+
+// A reference to a product review of the reviews domain.
+message ProductReviewRef {
+  string product_review_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a review moderation of the reviews domain.
+message ReviewModerationRef {
+  string review_moderation_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}
+
+// A reference to a review vote of the reviews domain.
+message ReviewVoteRef {
+  string review_vote_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}

@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConsentRecordLifecycleServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Moves a consent record between the states of its lifecycle.
+service ConsentRecordLifecycleService {
+  // Activates a consent record.
+  rpc ActivateConsentRecord(ActivateConsentRecordRequest) returns (ActivateConsentRecordResponse);
+
+  // Suspends a consent record.
+  rpc SuspendConsentRecord(SuspendConsentRecordRequest) returns (SuspendConsentRecordResponse);
+
+  // Reinstates a consent record.
+  rpc ReinstateConsentRecord(ReinstateConsentRecordRequest) returns (ReinstateConsentRecordResponse);
+
+  // Terminates a consent record.
+  rpc TerminateConsentRecord(TerminateConsentRecordRequest) returns (TerminateConsentRecordResponse);
+
+  // Renews a consent record.
+  rpc RenewConsentRecord(RenewConsentRecordRequest) returns (RenewConsentRecordResponse);
+
+  // Returns a consent record.
+  rpc GetConsentRecordLifecycle(GetConsentRecordLifecycleRequest) returns (GetConsentRecordLifecycleResponse);
+
+  // Schedules a consent record.
+  rpc ScheduleConsentRecordExpiry(ScheduleConsentRecordExpiryRequest) returns (ScheduleConsentRecordExpiryResponse);
+}
+
+// The request of `ActivateConsentRecord`.
+message ActivateConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ActivateConsentRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateConsentRecord`.
+message ActivateConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ActivateConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendConsentRecord`.
+message SuspendConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  SuspendConsentRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendConsentRecord`.
+message SuspendConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  SuspendConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateConsentRecord`.
+message ReinstateConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ReinstateConsentRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateConsentRecord`.
+message ReinstateConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ReinstateConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateConsentRecord`.
+message TerminateConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  TerminateConsentRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateConsentRecord`.
+message TerminateConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  TerminateConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewConsentRecord`.
+message RenewConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  RenewConsentRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewConsentRecord`.
+message RenewConsentRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  RenewConsentRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetConsentRecordLifecycle`.
+message GetConsentRecordLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConsentRecordLifecycle`.
+message GetConsentRecordLifecycleResponse {
+  ConsentRecord consent_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleConsentRecordExpiry`.
+message ScheduleConsentRecordExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  ScheduleConsentRecordExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleConsentRecordExpiry`.
+message ScheduleConsentRecordExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ConsentRecord consent_record = 1;
+  ScheduleConsentRecordExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,198 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CouponQueryServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Answers read-only questions about coupons, for screens and reports.
+service CouponQueryService {
+  // Returns a coupon.
+  rpc LookupCoupon(LookupCouponRequest) returns (LookupCouponResponse);
+
+  // Lists coupons a page at a time.
+  rpc BrowseCoupons(BrowseCouponsRequest) returns (BrowseCouponsResponse);
+
+  // Lists coupons a page at a time.
+  rpc FindCoupons(FindCouponsRequest) returns (FindCouponsResponse);
+
+  // Counts coupons by status.
+  rpc CountCoupons(CountCouponsRequest) returns (CountCouponsResponse);
+
+  // Returns several coupons at once.
+  rpc ResolveCoupons(ResolveCouponsRequest) returns (ResolveCouponsResponse);
+
+  // Summarizes a coupon.
+  rpc SummarizeCoupons(SummarizeCouponsRequest) returns (SummarizeCouponsResponse);
+
+  // Lists coupons a page at a time.
+  rpc SuggestCoupons(SuggestCouponsRequest) returns (SuggestCouponsResponse);
+}
+
+// The request of `LookupCoupon`.
+message LookupCouponRequest {
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCoupon`.
+message LookupCouponResponse {
+  Coupon coupon = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCoupons`.
+message BrowseCouponsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CouponStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCouponsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCoupons`.
+message BrowseCouponsResponse {
+  repeated Coupon coupons = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCoupons`.
+message FindCouponsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CouponStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCouponsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCoupons`.
+message FindCouponsResponse {
+  repeated Coupon coupons = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCoupons`.
+message CountCouponsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CouponStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCouponsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCoupons`.
+message CountCouponsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCoupons`.
+message ResolveCouponsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string coupon_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCoupons`.
+message ResolveCouponsResponse {
+  repeated Coupon coupons = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeCoupons`.
+message SummarizeCouponsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  SummarizeCouponsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCoupons`.
+message SummarizeCouponsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCoupons`.
+message SuggestCouponsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CouponStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCouponsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCoupons`.
+message SuggestCouponsResponse {
+  repeated Coupon coupons = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,216 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "TenantNotificationServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Tells the people who follow a tenant what changed.
+service TenantNotificationService {
+  // Subscribes a tenant.
+  rpc SubscribeTenantUpdates(SubscribeTenantUpdatesRequest) returns (SubscribeTenantUpdatesResponse);
+
+  // Unsubscribes a tenant.
+  rpc UnsubscribeTenantUpdates(UnsubscribeTenantUpdatesRequest) returns (UnsubscribeTenantUpdatesResponse);
+
+  // Notifys a tenant.
+  rpc NotifyTenantWatchers(NotifyTenantWatchersRequest) returns (NotifyTenantWatchersResponse);
+
+  // Lists tenants a page at a time.
+  rpc ListTenantSubscriptions(ListTenantSubscriptionsRequest) returns (ListTenantSubscriptionsResponse);
+
+  // Sends a tenant.
+  rpc SendTenantTestNotice(SendTenantTestNoticeRequest) returns (SendTenantTestNoticeResponse);
+
+  // Returns a tenant.
+  rpc GetTenantPreferences(GetTenantPreferencesRequest) returns (GetTenantPreferencesResponse);
+}
+
+// The request of `SubscribeTenantUpdates`.
+message SubscribeTenantUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tenant_id = 2;
+  SubscribeTenantUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribeTenantUpdates`.
+message SubscribeTenantUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Tenant tenant = 1;
+  SubscribeTenantUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribeTenantUpdates`.
+message UnsubscribeTenantUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tenant_id = 2;
+  UnsubscribeTenantUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribeTenantUpdates`.
+message UnsubscribeTenantUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Tenant tenant = 1;
+  UnsubscribeTenantUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifyTenantWatchers`.
+message NotifyTenantWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tenant_id = 2;
+  NotifyTenantWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifyTenantWatchers`.
+message NotifyTenantWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Tenant tenant = 1;
+  NotifyTenantWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListTenantSubscriptions`.
+message ListTenantSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TenantStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListTenantSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListTenantSubscriptions`.
+message ListTenantSubscriptionsResponse {
+  repeated Tenant tenants = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendTenantTestNotice`.
+message SendTenantTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tenant_id = 2;
+  SendTenantTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendTenantTestNotice`.
+message SendTenantTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Tenant tenant = 1;
+  SendTenantTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetTenantPreferences`.
+message GetTenantPreferencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string tenant_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTenantPreferences`.
+message GetTenantPreferencesResponse {
+  Tenant tenant = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductCalculationServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Computes the figures of a product, such as totals, taxes, and estimates.
+service ProductCalculationService {
+  // Calculates a product.
+  rpc CalculateProduct(CalculateProductRequest) returns (CalculateProductResponse);
+
+  // Estimates a product.
+  rpc EstimateProduct(EstimateProductRequest) returns (EstimateProductResponse);
+
+  // Quotes a product.
+  rpc QuoteProduct(QuoteProductRequest) returns (QuoteProductResponse);
+
+  // Compares a product.
+  rpc CompareProductOptions(CompareProductOptionsRequest) returns (CompareProductOptionsResponse);
+
+  // Recalculates a product.
+  rpc RecalculateProducts(RecalculateProductsRequest) returns (RecalculateProductsResponse);
+
+  // Simulates a product.
+  rpc SimulateProduct(SimulateProductRequest) returns (SimulateProductResponse);
+
+  // Explains a product.
+  rpc ExplainProductCalculation(ExplainProductCalculationRequest) returns (ExplainProductCalculationResponse);
+
+  // Returns a product.
+  rpc GetProductRates(GetProductRatesRequest) returns (GetProductRatesResponse);
+}
+
+// The request of `CalculateProduct`.
+message CalculateProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  CalculateProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateProduct`.
+message CalculateProductResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateProductResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Product product = 1;
+  CalculateProductResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateProduct`.
+message EstimateProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  EstimateProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateProduct`.
+message EstimateProductResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateProductResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Product product = 1;
+  EstimateProductResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteProduct`.
+message QuoteProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  QuoteProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteProduct`.
+message QuoteProductResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteProductResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Product product = 1;
+  QuoteProductResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareProductOptions`.
+message CompareProductOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  CompareProductOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareProductOptions`.
+message CompareProductOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareProductOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Product product = 1;
+  CompareProductOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateProducts`.
+message RecalculateProductsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  RecalculateProductsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateProducts`.
+message RecalculateProductsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateProductsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Product product = 1;
+  RecalculateProductsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateProduct`.
+message SimulateProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  SimulateProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateProduct`.
+message SimulateProductResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateProductResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Product product = 1;
+  SimulateProductResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainProductCalculation`.
+message ExplainProductCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  ExplainProductCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainProductCalculation`.
+message ExplainProductCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  ExplainProductCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetProductRates`.
+message GetProductRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProductRates`.
+message GetProductRatesResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}

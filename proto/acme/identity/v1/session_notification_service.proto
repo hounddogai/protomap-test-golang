@@ -1,0 +1,218 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "SessionNotificationServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Tells the people who follow a session what changed.
+service SessionNotificationService {
+  // Subscribes a session.
+  rpc SubscribeSessionUpdates(SubscribeSessionUpdatesRequest) returns (SubscribeSessionUpdatesResponse);
+
+  // Unsubscribes a session.
+  rpc UnsubscribeSessionUpdates(UnsubscribeSessionUpdatesRequest) returns (UnsubscribeSessionUpdatesResponse);
+
+  // Notifys a session.
+  rpc NotifySessionWatchers(NotifySessionWatchersRequest) returns (NotifySessionWatchersResponse);
+
+  // Sends a session.
+  rpc SendSessionTestNotice(SendSessionTestNoticeRequest) returns (SendSessionTestNoticeResponse);
+
+  // Returns a session.
+  rpc GetSessionPreferences(GetSessionPreferencesRequest) returns (GetSessionPreferencesResponse);
+
+  // Streams the changes of sessions as they happen.
+  rpc StreamSessionNotices(StreamSessionNoticesRequest) returns (stream StreamSessionNoticesResponse);
+}
+
+// The request of `SubscribeSessionUpdates`.
+message SubscribeSessionUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  SubscribeSessionUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribeSessionUpdates`.
+message SubscribeSessionUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  SubscribeSessionUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribeSessionUpdates`.
+message UnsubscribeSessionUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  UnsubscribeSessionUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribeSessionUpdates`.
+message UnsubscribeSessionUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  UnsubscribeSessionUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifySessionWatchers`.
+message NotifySessionWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  NotifySessionWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifySessionWatchers`.
+message NotifySessionWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  NotifySessionWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendSessionTestNotice`.
+message SendSessionTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  SendSessionTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendSessionTestNotice`.
+message SendSessionTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Session session = 1;
+  SendSessionTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSessionPreferences`.
+message GetSessionPreferencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string session_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSessionPreferences`.
+message GetSessionPreferencesResponse {
+  Session session = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StreamSessionNotices`.
+message StreamSessionNoticesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamSessionNoticesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamSessionNotices`.
+message StreamSessionNoticesResponse {
+  Session session = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

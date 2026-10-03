@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayoutApprovalServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Routes payouts through approval, with escalation and delegation.
+service PayoutApprovalService {
+  // Submits a payout.
+  rpc SubmitPayout(SubmitPayoutRequest) returns (SubmitPayoutResponse);
+
+  // Approves a payout.
+  rpc ApprovePayout(ApprovePayoutRequest) returns (ApprovePayoutResponse);
+
+  // Rejects a payout.
+  rpc RejectPayout(RejectPayoutRequest) returns (RejectPayoutResponse);
+
+  // Escalates a payout.
+  rpc EscalatePayout(EscalatePayoutRequest) returns (EscalatePayoutResponse);
+
+  // Lists payouts a page at a time.
+  rpc ListPendingPayouts(ListPendingPayoutsRequest) returns (ListPendingPayoutsResponse);
+
+  // Recalls a payout.
+  rpc RecallPayout(RecallPayoutRequest) returns (RecallPayoutResponse);
+
+  // Returns a payout.
+  rpc GetPayoutApprovalStatus(GetPayoutApprovalStatusRequest) returns (GetPayoutApprovalStatusResponse);
+}
+
+// The request of `SubmitPayout`.
+message SubmitPayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  SubmitPayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPayout`.
+message SubmitPayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  SubmitPayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePayout`.
+message ApprovePayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  ApprovePayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePayout`.
+message ApprovePayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  ApprovePayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPayout`.
+message RejectPayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  RejectPayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPayout`.
+message RejectPayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  RejectPayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePayout`.
+message EscalatePayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  EscalatePayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePayout`.
+message EscalatePayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  EscalatePayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPayouts`.
+message ListPendingPayoutsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PayoutStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPayoutsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPayouts`.
+message ListPendingPayoutsResponse {
+  repeated Payout payouts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPayout`.
+message RecallPayoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  Payout payout = 3;
+  RecallPayoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPayout`.
+message RecallPayoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payout payout = 1;
+  RecallPayoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPayoutApprovalStatus`.
+message GetPayoutApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payout_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPayoutApprovalStatus`.
+message GetPayoutApprovalStatusResponse {
+  Payout payout = 1;
+  acme.common.v1.OperationResult result = 2;
+}

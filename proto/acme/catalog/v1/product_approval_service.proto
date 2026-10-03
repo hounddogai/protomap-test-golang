@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductApprovalServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Routes products through approval, with escalation and delegation.
+service ProductApprovalService {
+  // Submits a product.
+  rpc SubmitProduct(SubmitProductRequest) returns (SubmitProductResponse);
+
+  // Approves a product.
+  rpc ApproveProduct(ApproveProductRequest) returns (ApproveProductResponse);
+
+  // Rejects a product.
+  rpc RejectProduct(RejectProductRequest) returns (RejectProductResponse);
+
+  // Escalates a product.
+  rpc EscalateProduct(EscalateProductRequest) returns (EscalateProductResponse);
+
+  // Lists products a page at a time.
+  rpc ListPendingProducts(ListPendingProductsRequest) returns (ListPendingProductsResponse);
+
+  // Delegates a product.
+  rpc DelegateProductApproval(DelegateProductApprovalRequest) returns (DelegateProductApprovalResponse);
+
+  // Recalls a product.
+  rpc RecallProduct(RecallProductRequest) returns (RecallProductResponse);
+
+  // Returns a product.
+  rpc GetProductApprovalStatus(GetProductApprovalStatusRequest) returns (GetProductApprovalStatusResponse);
+
+  // Comments a product.
+  rpc CommentProductApproval(CommentProductApprovalRequest) returns (CommentProductApprovalResponse);
+}
+
+// The request of `SubmitProduct`.
+message SubmitProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  SubmitProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitProduct`.
+message SubmitProductResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  SubmitProductResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveProduct`.
+message ApproveProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  ApproveProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveProduct`.
+message ApproveProductResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  ApproveProductResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectProduct`.
+message RejectProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  RejectProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectProduct`.
+message RejectProductResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  RejectProductResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateProduct`.
+message EscalateProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  EscalateProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateProduct`.
+message EscalateProductResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  EscalateProductResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingProducts`.
+message ListPendingProductsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingProductsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingProducts`.
+message ListPendingProductsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateProductApproval`.
+message DelegateProductApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  DelegateProductApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateProductApproval`.
+message DelegateProductApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  DelegateProductApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallProduct`.
+message RecallProductRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  RecallProductRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallProduct`.
+message RecallProductResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  RecallProductResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetProductApprovalStatus`.
+message GetProductApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProductApprovalStatus`.
+message GetProductApprovalStatusResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentProductApproval`.
+message CommentProductApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  Product product = 3;
+  CommentProductApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentProductApproval`.
+message CommentProductApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Product product = 1;
+  CommentProductApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

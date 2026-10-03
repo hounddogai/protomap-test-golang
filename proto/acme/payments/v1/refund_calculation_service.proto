@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefundCalculationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Computes the figures of a refund, such as totals, taxes, and estimates.
+service RefundCalculationService {
+  // Calculates a refund.
+  rpc CalculateRefund(CalculateRefundRequest) returns (CalculateRefundResponse);
+
+  // Estimates a refund.
+  rpc EstimateRefund(EstimateRefundRequest) returns (EstimateRefundResponse);
+
+  // Quotes a refund.
+  rpc QuoteRefund(QuoteRefundRequest) returns (QuoteRefundResponse);
+
+  // Compares a refund.
+  rpc CompareRefundOptions(CompareRefundOptionsRequest) returns (CompareRefundOptionsResponse);
+
+  // Recalculates a refund.
+  rpc RecalculateRefunds(RecalculateRefundsRequest) returns (RecalculateRefundsResponse);
+
+  // Simulates a refund.
+  rpc SimulateRefund(SimulateRefundRequest) returns (SimulateRefundResponse);
+
+  // Explains a refund.
+  rpc ExplainRefundCalculation(ExplainRefundCalculationRequest) returns (ExplainRefundCalculationResponse);
+
+  // Returns a refund.
+  rpc GetRefundRates(GetRefundRatesRequest) returns (GetRefundRatesResponse);
+}
+
+// The request of `CalculateRefund`.
+message CalculateRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  CalculateRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRefund`.
+message CalculateRefundResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRefundResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refund refund = 1;
+  CalculateRefundResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRefund`.
+message EstimateRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  EstimateRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRefund`.
+message EstimateRefundResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRefundResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refund refund = 1;
+  EstimateRefundResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRefund`.
+message QuoteRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  QuoteRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRefund`.
+message QuoteRefundResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRefundResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refund refund = 1;
+  QuoteRefundResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRefundOptions`.
+message CompareRefundOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  CompareRefundOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRefundOptions`.
+message CompareRefundOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRefundOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refund refund = 1;
+  CompareRefundOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRefunds`.
+message RecalculateRefundsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  RecalculateRefundsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRefunds`.
+message RecalculateRefundsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRefundsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refund refund = 1;
+  RecalculateRefundsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRefund`.
+message SimulateRefundRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  SimulateRefundRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRefund`.
+message SimulateRefundResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRefundResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refund refund = 1;
+  SimulateRefundResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRefundCalculation`.
+message ExplainRefundCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  Refund refund = 3;
+  ExplainRefundCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRefundCalculation`.
+message ExplainRefundCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refund refund = 1;
+  ExplainRefundCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefundRates`.
+message GetRefundRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refund_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefundRates`.
+message GetRefundRatesResponse {
+  Refund refund = 1;
+  acme.common.v1.OperationResult result = 2;
+}

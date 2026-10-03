@@ -1,0 +1,229 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchIndexQueryServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Answers read-only questions about search indexes, for screens and reports.
+service SearchIndexQueryService {
+  // Returns a search index.
+  rpc LookupSearchIndex(LookupSearchIndexRequest) returns (LookupSearchIndexResponse);
+
+  // Lists search indexes a page at a time.
+  rpc BrowseSearchIndexes(BrowseSearchIndexesRequest) returns (BrowseSearchIndexesResponse);
+
+  // Lists search indexes a page at a time.
+  rpc FindSearchIndexes(FindSearchIndexesRequest) returns (FindSearchIndexesResponse);
+
+  // Counts search indexes by status.
+  rpc CountSearchIndexes(CountSearchIndexesRequest) returns (CountSearchIndexesResponse);
+
+  // Returns several search indexes at once.
+  rpc ResolveSearchIndexes(ResolveSearchIndexesRequest) returns (ResolveSearchIndexesResponse);
+
+  // Streams every matching search index.
+  rpc ExportSearchIndexes(ExportSearchIndexesRequest) returns (stream ExportSearchIndexesResponse);
+
+  // Summarizes a search index.
+  rpc SummarizeSearchIndexes(SummarizeSearchIndexesRequest) returns (SummarizeSearchIndexesResponse);
+
+  // Lists search indexes a page at a time.
+  rpc SuggestSearchIndexes(SuggestSearchIndexesRequest) returns (SuggestSearchIndexesResponse);
+}
+
+// The request of `LookupSearchIndex`.
+message LookupSearchIndexRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupSearchIndex`.
+message LookupSearchIndexResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseSearchIndexes`.
+message BrowseSearchIndexesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseSearchIndexesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseSearchIndexes`.
+message BrowseSearchIndexesResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindSearchIndexes`.
+message FindSearchIndexesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindSearchIndexesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindSearchIndexes`.
+message FindSearchIndexesResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountSearchIndexes`.
+message CountSearchIndexesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountSearchIndexesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountSearchIndexes`.
+message CountSearchIndexesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveSearchIndexes`.
+message ResolveSearchIndexesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string search_index_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveSearchIndexes`.
+message ResolveSearchIndexesResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportSearchIndexes`.
+message ExportSearchIndexesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportSearchIndexesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportSearchIndexes`.
+message ExportSearchIndexesResponse {
+  SearchIndex search_index = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeSearchIndexes`.
+message SummarizeSearchIndexesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SummarizeSearchIndexesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeSearchIndexes`.
+message SummarizeSearchIndexesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestSearchIndexes`.
+message SuggestSearchIndexesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestSearchIndexesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestSearchIndexes`.
+message SuggestSearchIndexesResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

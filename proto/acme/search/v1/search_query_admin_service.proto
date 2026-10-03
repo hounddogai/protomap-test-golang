@@ -1,0 +1,311 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchQueryAdminServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Operator actions on search queries that support staff run by hand.
+service SearchQueryAdminService {
+  // Archives a search query.
+  rpc ArchiveSearchQuery(ArchiveSearchQueryRequest) returns (ArchiveSearchQueryResponse);
+
+  // Restores a search query.
+  rpc RestoreSearchQuery(RestoreSearchQueryRequest) returns (RestoreSearchQueryResponse);
+
+  // Deletes a search query.
+  rpc PurgeSearchQuery(PurgeSearchQueryRequest) returns (PurgeSearchQueryResponse);
+
+  // Reassigns a search query.
+  rpc ReassignSearchQuery(ReassignSearchQueryRequest) returns (ReassignSearchQueryResponse);
+
+  // Locks a search query.
+  rpc LockSearchQuery(LockSearchQueryRequest) returns (LockSearchQueryResponse);
+
+  // Unlocks a search query.
+  rpc UnlockSearchQuery(UnlockSearchQueryRequest) returns (UnlockSearchQueryResponse);
+
+  // Transfers a search query.
+  rpc TransferSearchQuery(TransferSearchQueryRequest) returns (TransferSearchQueryResponse);
+
+  // Repairs a search query.
+  rpc RepairSearchQuery(RepairSearchQueryRequest) returns (RepairSearchQueryResponse);
+
+  // Returns a search query.
+  rpc InspectSearchQuery(InspectSearchQueryRequest) returns (InspectSearchQueryResponse);
+}
+
+// The request of `ArchiveSearchQuery`.
+message ArchiveSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  ArchiveSearchQueryRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ArchiveSearchQuery`.
+message ArchiveSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  ArchiveSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RestoreSearchQuery`.
+message RestoreSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  RestoreSearchQueryRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RestoreSearchQuery`.
+message RestoreSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  RestoreSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PurgeSearchQuery`.
+message PurgeSearchQueryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `PurgeSearchQuery`.
+message PurgeSearchQueryResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ReassignSearchQuery`.
+message ReassignSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.identity.v1.UserRef assignee = 1;
+    string queue = 2;
+    int32 capacity = 3;
+    string assignee_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  ReassignSearchQueryRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReassignSearchQuery`.
+message ReassignSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  ReassignSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LockSearchQuery`.
+message LockSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  LockSearchQueryRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `LockSearchQuery`.
+message LockSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  LockSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnlockSearchQuery`.
+message UnlockSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  UnlockSearchQueryRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnlockSearchQuery`.
+message UnlockSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  UnlockSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TransferSearchQuery`.
+message TransferSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  TransferSearchQueryRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TransferSearchQuery`.
+message TransferSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  TransferSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RepairSearchQuery`.
+message RepairSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  RepairSearchQueryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RepairSearchQuery`.
+message RepairSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  RepairSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectSearchQuery`.
+message InspectSearchQueryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectSearchQuery`.
+message InspectSearchQueryResponse {
+  SearchQuery search_query = 1;
+  acme.common.v1.OperationResult result = 2;
+}

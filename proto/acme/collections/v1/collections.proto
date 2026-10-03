@@ -1,0 +1,207 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.collections.v1;
+
+import "acme/collections/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Collections.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/collections/v1;collectionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CollectionsProto";
+option java_package = "com.acme.collections.v1";
+
+// Where a collection case is in its lifecycle.
+enum CollectionCaseStatus {
+  COLLECTION_CASE_STATUS_UNSPECIFIED = 0;
+  COLLECTION_CASE_STATUS_NEW = 1;
+  COLLECTION_CASE_STATUS_OPEN = 2;
+  COLLECTION_CASE_STATUS_WAITING = 3;
+  COLLECTION_CASE_STATUS_RESOLVED = 4;
+  COLLECTION_CASE_STATUS_CLOSED = 5;
+}
+
+// Where a payment promise is in its lifecycle.
+enum PaymentPromiseStatus {
+  PAYMENT_PROMISE_STATUS_UNSPECIFIED = 0;
+  PAYMENT_PROMISE_STATUS_TENTATIVE = 1;
+  PAYMENT_PROMISE_STATUS_CONFIRMED = 2;
+  PAYMENT_PROMISE_STATUS_CANCELLED = 3;
+  PAYMENT_PROMISE_STATUS_COMPLETED = 4;
+}
+
+// Where a write off is in its lifecycle.
+enum WriteOffStatus {
+  WRITE_OFF_STATUS_UNSPECIFIED = 0;
+  WRITE_OFF_STATUS_DRAFT = 1;
+  WRITE_OFF_STATUS_ISSUED = 2;
+  WRITE_OFF_STATUS_APPROVED = 3;
+  WRITE_OFF_STATUS_PAID = 4;
+  WRITE_OFF_STATUS_VOID = 5;
+}
+
+// The comment of a collection case.
+message CollectionCaseComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a collection case.
+message CollectionCaseSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a collection case.
+message CollectionCaseChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a collection case.
+message CollectionCaseStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A collection case of the collections domain.
+message CollectionCase {
+  string collection_case_id = 1;
+  string subject = 2;
+  CollectionCaseStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated CollectionCaseComment comments = 7;
+  CollectionCaseSla sla = 8;
+  oneof origin {
+    PaymentPromiseRef customer = 9;
+    string external_reference = 10;
+    CollectionCaseChannelOrigin channel = 11;
+  }
+  repeated CollectionCaseStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a payment promise.
+message PaymentPromiseParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a payment promise.
+message PaymentPromiseDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a payment promise.
+message PaymentPromiseWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A payment promise of the collections domain.
+message PaymentPromise {
+  string payment_promise_id = 1;
+  string title = 2;
+  PaymentPromiseStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated PaymentPromiseParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    PaymentPromiseDailyRule daily = 7;
+    PaymentPromiseWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The line of a write off.
+message WriteOffLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  WriteOffLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a write off line.
+message WriteOffLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a write off.
+message WriteOffCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a write off.
+message WriteOffBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a write off.
+message WriteOffAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A write off of the collections domain.
+message WriteOff {
+  string write_off_id = 1;
+  string number = 2;
+  WriteOffStatus status = 3;
+  CollectionCaseRef counterparty = 4;
+  repeated WriteOffLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    WriteOffCardSettlement card = 8;
+    WriteOffBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated WriteOffAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

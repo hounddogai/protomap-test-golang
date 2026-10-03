@@ -1,0 +1,185 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.chat.v1;
+
+import "acme/chat/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Chat.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/chat/v1;chatv1";
+option java_multiple_files = true;
+option java_outer_classname = "ChatProto";
+option java_package = "com.acme.chat.v1";
+
+// Where a chat room is in its lifecycle.
+enum ChatRoomStatus {
+  CHAT_ROOM_STATUS_UNSPECIFIED = 0;
+  CHAT_ROOM_STATUS_PLANNED = 1;
+  CHAT_ROOM_STATUS_AVAILABLE = 2;
+  CHAT_ROOM_STATUS_RESERVED = 3;
+  CHAT_ROOM_STATUS_RETIRED = 4;
+}
+
+// Where a chat bot is in its lifecycle.
+enum ChatBotStatus {
+  CHAT_BOT_STATUS_UNSPECIFIED = 0;
+  CHAT_BOT_STATUS_DRAFT = 1;
+  CHAT_BOT_STATUS_ENABLED = 2;
+  CHAT_BOT_STATUS_DISABLED = 3;
+  CHAT_BOT_STATUS_RETIRED = 4;
+}
+
+// Where a handoff is in its lifecycle.
+enum HandoffStatus {
+  HANDOFF_STATUS_UNSPECIFIED = 0;
+  HANDOFF_STATUS_NEW = 1;
+  HANDOFF_STATUS_OPEN = 2;
+  HANDOFF_STATUS_WAITING = 3;
+  HANDOFF_STATUS_RESOLVED = 4;
+  HANDOFF_STATUS_CLOSED = 5;
+}
+
+// The dimensions of a chat room.
+message ChatRoomDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a chat room.
+message ChatRoomComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A chat room of the chat domain.
+message ChatRoom {
+  string chat_room_id = 1;
+  string code = 2;
+  string name = 3;
+  ChatRoomStatus status = 4;
+  repeated string category_path = 5;
+  ChatRoomDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ChatRoomComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a chat bot.
+message ChatBotCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a chat bot.
+message ChatBotDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a chat bot.
+message ChatBotRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a chat bot.
+message ChatBotBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A chat bot of the chat domain.
+message ChatBot {
+  string chat_bot_id = 1;
+  string name = 2;
+  string description = 3;
+  ChatBotStatus status = 4;
+  int32 priority = 5;
+  repeated ChatBotCondition conditions = 6;
+  oneof action {
+    ChatBotDiscountAction discount = 7;
+    ChatBotRouteAction route = 8;
+    ChatBotBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a handoff.
+message HandoffComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a handoff.
+message HandoffSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a handoff.
+message HandoffChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a handoff.
+message HandoffStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A handoff of the chat domain.
+message Handoff {
+  string handoff_id = 1;
+  string subject = 2;
+  HandoffStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated HandoffComment comments = 7;
+  HandoffSla sla = 8;
+  oneof origin {
+    ChatRoomRef customer = 9;
+    string external_reference = 10;
+    HandoffChannelOrigin channel = 11;
+  }
+  repeated HandoffStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

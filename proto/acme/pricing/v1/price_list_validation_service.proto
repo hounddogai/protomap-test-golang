@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.pricing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/pricing/v1/pricing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Pricing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/pricing/v1;pricingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PriceListValidationServiceProto";
+option java_package = "com.acme.pricing.v1";
+
+// Checks price lists against the rules before anything acts on them.
+service PriceListValidationService {
+  // Validates a price list.
+  rpc ValidatePriceList(ValidatePriceListRequest) returns (ValidatePriceListResponse);
+
+  // Previews a price list.
+  rpc PreviewPriceList(PreviewPriceListRequest) returns (PreviewPriceListResponse);
+
+  // Checks a price list.
+  rpc CheckPriceListEligibility(CheckPriceListEligibilityRequest) returns (CheckPriceListEligibilityResponse);
+
+  // Normalizes a price list.
+  rpc NormalizePriceList(NormalizePriceListRequest) returns (NormalizePriceListResponse);
+
+  // Explains a price list.
+  rpc ExplainPriceListDecision(ExplainPriceListDecisionRequest) returns (ExplainPriceListDecisionResponse);
+
+  // Scores a price list.
+  rpc ScorePriceList(ScorePriceListRequest) returns (ScorePriceListResponse);
+
+  // Lints a price list.
+  rpc LintPriceLists(LintPriceListsRequest) returns (LintPriceListsResponse);
+
+  // Returns a price list.
+  rpc GetPriceListRules(GetPriceListRulesRequest) returns (GetPriceListRulesResponse);
+}
+
+// The request of `ValidatePriceList`.
+message ValidatePriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  ValidatePriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePriceList`.
+message ValidatePriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  ValidatePriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPriceList`.
+message PreviewPriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  PreviewPriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPriceList`.
+message PreviewPriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  PreviewPriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPriceListEligibility`.
+message CheckPriceListEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  CheckPriceListEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPriceListEligibility`.
+message CheckPriceListEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  CheckPriceListEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePriceList`.
+message NormalizePriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  NormalizePriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePriceList`.
+message NormalizePriceListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  NormalizePriceListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPriceListDecision`.
+message ExplainPriceListDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  ExplainPriceListDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPriceListDecision`.
+message ExplainPriceListDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  ExplainPriceListDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePriceList`.
+message ScorePriceListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  ScorePriceListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePriceList`.
+message ScorePriceListResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePriceListResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PriceList price_list = 1;
+  ScorePriceListResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPriceLists`.
+message LintPriceListsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  PriceList price_list = 3;
+  LintPriceListsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPriceLists`.
+message LintPriceListsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PriceList price_list = 1;
+  LintPriceListsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPriceListRules`.
+message GetPriceListRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string price_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPriceListRules`.
+message GetPriceListRulesResponse {
+  PriceList price_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}

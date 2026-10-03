@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/giftcards/v1/giftcards.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftCardTransactionWorkflowServiceProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Runs the long-lived workflow that takes a gift card transaction from start to finish.
+service GiftCardTransactionWorkflowService {
+  // Starts a gift card transaction.
+  rpc StartGiftCardTransactionWorkflow(StartGiftCardTransactionWorkflowRequest) returns (StartGiftCardTransactionWorkflowResponse);
+
+  // Advances a gift card transaction.
+  rpc AdvanceGiftCardTransactionWorkflow(AdvanceGiftCardTransactionWorkflowRequest) returns (AdvanceGiftCardTransactionWorkflowResponse);
+
+  // Cancels a gift card transaction.
+  rpc CancelGiftCardTransactionWorkflow(CancelGiftCardTransactionWorkflowRequest) returns (CancelGiftCardTransactionWorkflowResponse);
+
+  // Pauses a gift card transaction.
+  rpc PauseGiftCardTransactionWorkflow(PauseGiftCardTransactionWorkflowRequest) returns (PauseGiftCardTransactionWorkflowResponse);
+
+  // Resumes a gift card transaction.
+  rpc ResumeGiftCardTransactionWorkflow(ResumeGiftCardTransactionWorkflowRequest) returns (ResumeGiftCardTransactionWorkflowResponse);
+
+  // Returns a gift card transaction.
+  rpc InspectGiftCardTransactionWorkflow(InspectGiftCardTransactionWorkflowRequest) returns (InspectGiftCardTransactionWorkflowResponse);
+
+  // Lists gift card transactions a page at a time.
+  rpc ListGiftCardTransactionWorkflows(ListGiftCardTransactionWorkflowsRequest) returns (ListGiftCardTransactionWorkflowsResponse);
+
+  // Signals a gift card transaction.
+  rpc SignalGiftCardTransactionWorkflow(SignalGiftCardTransactionWorkflowRequest) returns (SignalGiftCardTransactionWorkflowResponse);
+}
+
+// The request of `StartGiftCardTransactionWorkflow`.
+message StartGiftCardTransactionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  StartGiftCardTransactionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartGiftCardTransactionWorkflow`.
+message StartGiftCardTransactionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  StartGiftCardTransactionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceGiftCardTransactionWorkflow`.
+message AdvanceGiftCardTransactionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  AdvanceGiftCardTransactionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceGiftCardTransactionWorkflow`.
+message AdvanceGiftCardTransactionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  AdvanceGiftCardTransactionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelGiftCardTransactionWorkflow`.
+message CancelGiftCardTransactionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  CancelGiftCardTransactionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelGiftCardTransactionWorkflow`.
+message CancelGiftCardTransactionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  CancelGiftCardTransactionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseGiftCardTransactionWorkflow`.
+message PauseGiftCardTransactionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  PauseGiftCardTransactionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseGiftCardTransactionWorkflow`.
+message PauseGiftCardTransactionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  PauseGiftCardTransactionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeGiftCardTransactionWorkflow`.
+message ResumeGiftCardTransactionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  ResumeGiftCardTransactionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeGiftCardTransactionWorkflow`.
+message ResumeGiftCardTransactionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  ResumeGiftCardTransactionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectGiftCardTransactionWorkflow`.
+message InspectGiftCardTransactionWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectGiftCardTransactionWorkflow`.
+message InspectGiftCardTransactionWorkflowResponse {
+  GiftCardTransaction gift_card_transaction = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListGiftCardTransactionWorkflows`.
+message ListGiftCardTransactionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardTransactionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListGiftCardTransactionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListGiftCardTransactionWorkflows`.
+message ListGiftCardTransactionWorkflowsResponse {
+  repeated GiftCardTransaction gift_card_transactions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalGiftCardTransactionWorkflow`.
+message SignalGiftCardTransactionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_transaction_id = 2;
+  GiftCardTransaction gift_card_transaction = 3;
+  SignalGiftCardTransactionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalGiftCardTransactionWorkflow`.
+message SignalGiftCardTransactionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  GiftCardTransaction gift_card_transaction = 1;
+  SignalGiftCardTransactionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

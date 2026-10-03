@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentInstrumentWorkflowServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Runs the long-lived workflow that takes a payment instrument from start to finish.
+service PaymentInstrumentWorkflowService {
+  // Starts a payment instrument.
+  rpc StartPaymentInstrumentWorkflow(StartPaymentInstrumentWorkflowRequest) returns (StartPaymentInstrumentWorkflowResponse);
+
+  // Advances a payment instrument.
+  rpc AdvancePaymentInstrumentWorkflow(AdvancePaymentInstrumentWorkflowRequest) returns (AdvancePaymentInstrumentWorkflowResponse);
+
+  // Cancels a payment instrument.
+  rpc CancelPaymentInstrumentWorkflow(CancelPaymentInstrumentWorkflowRequest) returns (CancelPaymentInstrumentWorkflowResponse);
+
+  // Retrys a payment instrument.
+  rpc RetryPaymentInstrumentWorkflow(RetryPaymentInstrumentWorkflowRequest) returns (RetryPaymentInstrumentWorkflowResponse);
+
+  // Pauses a payment instrument.
+  rpc PausePaymentInstrumentWorkflow(PausePaymentInstrumentWorkflowRequest) returns (PausePaymentInstrumentWorkflowResponse);
+
+  // Resumes a payment instrument.
+  rpc ResumePaymentInstrumentWorkflow(ResumePaymentInstrumentWorkflowRequest) returns (ResumePaymentInstrumentWorkflowResponse);
+
+  // Returns a payment instrument.
+  rpc InspectPaymentInstrumentWorkflow(InspectPaymentInstrumentWorkflowRequest) returns (InspectPaymentInstrumentWorkflowResponse);
+
+  // Lists payment instruments a page at a time.
+  rpc ListPaymentInstrumentWorkflows(ListPaymentInstrumentWorkflowsRequest) returns (ListPaymentInstrumentWorkflowsResponse);
+
+  // Signals a payment instrument.
+  rpc SignalPaymentInstrumentWorkflow(SignalPaymentInstrumentWorkflowRequest) returns (SignalPaymentInstrumentWorkflowResponse);
+}
+
+// The request of `StartPaymentInstrumentWorkflow`.
+message StartPaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  StartPaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPaymentInstrumentWorkflow`.
+message StartPaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  StartPaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePaymentInstrumentWorkflow`.
+message AdvancePaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  AdvancePaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePaymentInstrumentWorkflow`.
+message AdvancePaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  AdvancePaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPaymentInstrumentWorkflow`.
+message CancelPaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  CancelPaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPaymentInstrumentWorkflow`.
+message CancelPaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  CancelPaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPaymentInstrumentWorkflow`.
+message RetryPaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  RetryPaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPaymentInstrumentWorkflow`.
+message RetryPaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  RetryPaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePaymentInstrumentWorkflow`.
+message PausePaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  PausePaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePaymentInstrumentWorkflow`.
+message PausePaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  PausePaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePaymentInstrumentWorkflow`.
+message ResumePaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  ResumePaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePaymentInstrumentWorkflow`.
+message ResumePaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ResumePaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPaymentInstrumentWorkflow`.
+message InspectPaymentInstrumentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPaymentInstrumentWorkflow`.
+message InspectPaymentInstrumentWorkflowResponse {
+  PaymentInstrument payment_instrument = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPaymentInstrumentWorkflows`.
+message ListPaymentInstrumentWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentInstrumentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPaymentInstrumentWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPaymentInstrumentWorkflows`.
+message ListPaymentInstrumentWorkflowsResponse {
+  repeated PaymentInstrument payment_instruments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPaymentInstrumentWorkflow`.
+message SignalPaymentInstrumentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  SignalPaymentInstrumentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPaymentInstrumentWorkflow`.
+message SignalPaymentInstrumentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  SignalPaymentInstrumentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.partnerapi.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/partnerapi/v1/partnerapi.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Partnerapi.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/partnerapi/v1;partnerapiv1";
+option java_multiple_files = true;
+option java_outer_classname = "PartnerIntegrationWorkflowServiceProto";
+option java_package = "com.acme.partnerapi.v1";
+
+// Runs the long-lived workflow that takes a partner integration from start to finish.
+service PartnerIntegrationWorkflowService {
+  // Starts a partner integration.
+  rpc StartPartnerIntegrationWorkflow(StartPartnerIntegrationWorkflowRequest) returns (StartPartnerIntegrationWorkflowResponse);
+
+  // Advances a partner integration.
+  rpc AdvancePartnerIntegrationWorkflow(AdvancePartnerIntegrationWorkflowRequest) returns (AdvancePartnerIntegrationWorkflowResponse);
+
+  // Cancels a partner integration.
+  rpc CancelPartnerIntegrationWorkflow(CancelPartnerIntegrationWorkflowRequest) returns (CancelPartnerIntegrationWorkflowResponse);
+
+  // Retrys a partner integration.
+  rpc RetryPartnerIntegrationWorkflow(RetryPartnerIntegrationWorkflowRequest) returns (RetryPartnerIntegrationWorkflowResponse);
+
+  // Pauses a partner integration.
+  rpc PausePartnerIntegrationWorkflow(PausePartnerIntegrationWorkflowRequest) returns (PausePartnerIntegrationWorkflowResponse);
+
+  // Resumes a partner integration.
+  rpc ResumePartnerIntegrationWorkflow(ResumePartnerIntegrationWorkflowRequest) returns (ResumePartnerIntegrationWorkflowResponse);
+
+  // Returns a partner integration.
+  rpc InspectPartnerIntegrationWorkflow(InspectPartnerIntegrationWorkflowRequest) returns (InspectPartnerIntegrationWorkflowResponse);
+
+  // Lists partner integrations a page at a time.
+  rpc ListPartnerIntegrationWorkflows(ListPartnerIntegrationWorkflowsRequest) returns (ListPartnerIntegrationWorkflowsResponse);
+
+  // Signals a partner integration.
+  rpc SignalPartnerIntegrationWorkflow(SignalPartnerIntegrationWorkflowRequest) returns (SignalPartnerIntegrationWorkflowResponse);
+}
+
+// The request of `StartPartnerIntegrationWorkflow`.
+message StartPartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  StartPartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPartnerIntegrationWorkflow`.
+message StartPartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  StartPartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePartnerIntegrationWorkflow`.
+message AdvancePartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  AdvancePartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePartnerIntegrationWorkflow`.
+message AdvancePartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  AdvancePartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPartnerIntegrationWorkflow`.
+message CancelPartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  CancelPartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPartnerIntegrationWorkflow`.
+message CancelPartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  CancelPartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPartnerIntegrationWorkflow`.
+message RetryPartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  RetryPartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPartnerIntegrationWorkflow`.
+message RetryPartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  RetryPartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePartnerIntegrationWorkflow`.
+message PausePartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  PausePartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePartnerIntegrationWorkflow`.
+message PausePartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  PausePartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePartnerIntegrationWorkflow`.
+message ResumePartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  ResumePartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePartnerIntegrationWorkflow`.
+message ResumePartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  ResumePartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPartnerIntegrationWorkflow`.
+message InspectPartnerIntegrationWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPartnerIntegrationWorkflow`.
+message InspectPartnerIntegrationWorkflowResponse {
+  PartnerIntegration partner_integration = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPartnerIntegrationWorkflows`.
+message ListPartnerIntegrationWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PartnerIntegrationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPartnerIntegrationWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPartnerIntegrationWorkflows`.
+message ListPartnerIntegrationWorkflowsResponse {
+  repeated PartnerIntegration partner_integrations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPartnerIntegrationWorkflow`.
+message SignalPartnerIntegrationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string partner_integration_id = 2;
+  PartnerIntegration partner_integration = 3;
+  SignalPartnerIntegrationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPartnerIntegrationWorkflow`.
+message SignalPartnerIntegrationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PartnerIntegration partner_integration = 1;
+  SignalPartnerIntegrationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

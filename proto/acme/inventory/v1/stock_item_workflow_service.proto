@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockItemWorkflowServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Runs the long-lived workflow that takes a stock item from start to finish.
+service StockItemWorkflowService {
+  // Starts a stock item.
+  rpc StartStockItemWorkflow(StartStockItemWorkflowRequest) returns (StartStockItemWorkflowResponse);
+
+  // Advances a stock item.
+  rpc AdvanceStockItemWorkflow(AdvanceStockItemWorkflowRequest) returns (AdvanceStockItemWorkflowResponse);
+
+  // Cancels a stock item.
+  rpc CancelStockItemWorkflow(CancelStockItemWorkflowRequest) returns (CancelStockItemWorkflowResponse);
+
+  // Pauses a stock item.
+  rpc PauseStockItemWorkflow(PauseStockItemWorkflowRequest) returns (PauseStockItemWorkflowResponse);
+
+  // Resumes a stock item.
+  rpc ResumeStockItemWorkflow(ResumeStockItemWorkflowRequest) returns (ResumeStockItemWorkflowResponse);
+
+  // Returns a stock item.
+  rpc InspectStockItemWorkflow(InspectStockItemWorkflowRequest) returns (InspectStockItemWorkflowResponse);
+
+  // Lists stock items a page at a time.
+  rpc ListStockItemWorkflows(ListStockItemWorkflowsRequest) returns (ListStockItemWorkflowsResponse);
+
+  // Signals a stock item.
+  rpc SignalStockItemWorkflow(SignalStockItemWorkflowRequest) returns (SignalStockItemWorkflowResponse);
+}
+
+// The request of `StartStockItemWorkflow`.
+message StartStockItemWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  StockItem stock_item = 3;
+  StartStockItemWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartStockItemWorkflow`.
+message StartStockItemWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockItem stock_item = 1;
+  StartStockItemWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceStockItemWorkflow`.
+message AdvanceStockItemWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  StockItem stock_item = 3;
+  AdvanceStockItemWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceStockItemWorkflow`.
+message AdvanceStockItemWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockItem stock_item = 1;
+  AdvanceStockItemWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelStockItemWorkflow`.
+message CancelStockItemWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  StockItem stock_item = 3;
+  CancelStockItemWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelStockItemWorkflow`.
+message CancelStockItemWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockItem stock_item = 1;
+  CancelStockItemWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseStockItemWorkflow`.
+message PauseStockItemWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  StockItem stock_item = 3;
+  PauseStockItemWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseStockItemWorkflow`.
+message PauseStockItemWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockItem stock_item = 1;
+  PauseStockItemWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeStockItemWorkflow`.
+message ResumeStockItemWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  StockItem stock_item = 3;
+  ResumeStockItemWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeStockItemWorkflow`.
+message ResumeStockItemWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockItem stock_item = 1;
+  ResumeStockItemWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectStockItemWorkflow`.
+message InspectStockItemWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectStockItemWorkflow`.
+message InspectStockItemWorkflowResponse {
+  StockItem stock_item = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListStockItemWorkflows`.
+message ListStockItemWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StockItemStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListStockItemWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListStockItemWorkflows`.
+message ListStockItemWorkflowsResponse {
+  repeated StockItem stock_items = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalStockItemWorkflow`.
+message SignalStockItemWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_item_id = 2;
+  StockItem stock_item = 3;
+  SignalStockItemWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalStockItemWorkflow`.
+message SignalStockItemWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockItem stock_item = 1;
+  SignalStockItemWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

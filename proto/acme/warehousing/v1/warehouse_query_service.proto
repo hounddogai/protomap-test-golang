@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "WarehouseQueryServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Answers read-only questions about warehouses, for screens and reports.
+service WarehouseQueryService {
+  // Returns a warehouse.
+  rpc LookupWarehouse(LookupWarehouseRequest) returns (LookupWarehouseResponse);
+
+  // Lists warehouses a page at a time.
+  rpc BrowseWarehouses(BrowseWarehousesRequest) returns (BrowseWarehousesResponse);
+
+  // Lists warehouses a page at a time.
+  rpc FindWarehouses(FindWarehousesRequest) returns (FindWarehousesResponse);
+
+  // Counts warehouses by status.
+  rpc CountWarehouses(CountWarehousesRequest) returns (CountWarehousesResponse);
+
+  // Returns several warehouses at once.
+  rpc ResolveWarehouses(ResolveWarehousesRequest) returns (ResolveWarehousesResponse);
+
+  // Streams every matching warehouse.
+  rpc ExportWarehouses(ExportWarehousesRequest) returns (stream ExportWarehousesResponse);
+
+  // Summarizes a warehouse.
+  rpc SummarizeWarehouses(SummarizeWarehousesRequest) returns (SummarizeWarehousesResponse);
+
+  // Lists warehouses a page at a time.
+  rpc SuggestWarehouses(SuggestWarehousesRequest) returns (SuggestWarehousesResponse);
+
+  // Returns a warehouse.
+  rpc PeekWarehouse(PeekWarehouseRequest) returns (PeekWarehouseResponse);
+}
+
+// The request of `LookupWarehouse`.
+message LookupWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupWarehouse`.
+message LookupWarehouseResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseWarehouses`.
+message BrowseWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseWarehousesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseWarehouses`.
+message BrowseWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindWarehouses`.
+message FindWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindWarehousesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindWarehouses`.
+message FindWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountWarehouses`.
+message CountWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountWarehousesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountWarehouses`.
+message CountWarehousesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveWarehouses`.
+message ResolveWarehousesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string warehouse_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveWarehouses`.
+message ResolveWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportWarehouses`.
+message ExportWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportWarehousesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportWarehouses`.
+message ExportWarehousesResponse {
+  Warehouse warehouse = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeWarehouses`.
+message SummarizeWarehousesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  SummarizeWarehousesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeWarehouses`.
+message SummarizeWarehousesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestWarehouses`.
+message SuggestWarehousesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated WarehouseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestWarehousesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestWarehouses`.
+message SuggestWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekWarehouse`.
+message PeekWarehouseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string warehouse_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekWarehouse`.
+message PeekWarehouseResponse {
+  Warehouse warehouse = 1;
+  acme.common.v1.OperationResult result = 2;
+}

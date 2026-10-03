@@ -1,0 +1,213 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fuel.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fuel/v1/fuel.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fuel.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fuel/v1;fuelv1";
+option java_multiple_files = true;
+option java_outer_classname = "FuelCardServiceProto";
+option java_package = "com.acme.fuel.v1";
+
+// Manages fuel cards: creates, reads, changes, and lists them.
+service FuelCardService {
+  // Creates a fuel card.
+  rpc CreateFuelCard(CreateFuelCardRequest) returns (CreateFuelCardResponse);
+
+  // Returns a fuel card.
+  rpc GetFuelCard(GetFuelCardRequest) returns (GetFuelCardResponse);
+
+  // Lists fuel cards a page at a time.
+  rpc ListFuelCards(ListFuelCardsRequest) returns (ListFuelCardsResponse);
+
+  // Returns several fuel cards at once.
+  rpc BatchGetFuelCards(BatchGetFuelCardsRequest) returns (BatchGetFuelCardsResponse);
+
+  // Lists fuel cards a page at a time.
+  rpc SearchFuelCards(SearchFuelCardsRequest) returns (SearchFuelCardsResponse);
+
+  // Streams the changes of fuel cards as they happen.
+  rpc WatchFuelCards(WatchFuelCardsRequest) returns (stream WatchFuelCardsResponse);
+
+  // Takes a stream of fuel cards and answers once at the end.
+  rpc BatchCreateFuelCards(stream BatchCreateFuelCardsRequest) returns (BatchCreateFuelCardsResponse);
+
+  // Creates a fuel card.
+  rpc CloneFuelCard(CloneFuelCardRequest) returns (CloneFuelCardResponse);
+}
+
+// The request of `CreateFuelCard`.
+message CreateFuelCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  FuelCard fuel_card = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateFuelCard`.
+message CreateFuelCardResponse {
+  FuelCard fuel_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetFuelCard`.
+message GetFuelCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fuel_card_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFuelCard`.
+message GetFuelCardResponse {
+  FuelCard fuel_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListFuelCards`.
+message ListFuelCardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FuelCardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFuelCardsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFuelCards`.
+message ListFuelCardsResponse {
+  repeated FuelCard fuel_cards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetFuelCards`.
+message BatchGetFuelCardsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string fuel_card_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetFuelCards`.
+message BatchGetFuelCardsResponse {
+  repeated FuelCard fuel_cards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchFuelCards`.
+message SearchFuelCardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FuelCardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchFuelCardsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchFuelCards`.
+message SearchFuelCardsResponse {
+  repeated FuelCard fuel_cards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchFuelCards`.
+message WatchFuelCardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FuelCardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchFuelCardsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchFuelCards`.
+message WatchFuelCardsResponse {
+  FuelCard fuel_card = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateFuelCards`.
+message BatchCreateFuelCardsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateFuelCardsRequest.StreamHeader header = 2;
+    FuelCard record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateFuelCards`.
+message BatchCreateFuelCardsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string fuel_card_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateFuelCardsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneFuelCard`.
+message CloneFuelCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  FuelCard fuel_card = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneFuelCard`.
+message CloneFuelCardResponse {
+  FuelCard fuel_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}

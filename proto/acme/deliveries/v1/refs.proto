@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.deliveries.v1;
+
+option csharp_namespace = "Acme.Deliveries.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/deliveries/v1;deliveriesv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.deliveries.v1";
+
+// A reference to a delivery of the deliveries domain.
+message DeliveryRef {
+  string delivery_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a proof of delivery of the deliveries domain.
+message ProofOfDeliveryRef {
+  string proof_of_delivery_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a delivery exception of the deliveries domain.
+message DeliveryExceptionRef {
+  string delivery_exception_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

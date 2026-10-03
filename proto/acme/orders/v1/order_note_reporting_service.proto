@@ -1,0 +1,173 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderNoteReportingServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Builds and schedules reports about order notes.
+service OrderNoteReportingService {
+  // Generates an order note.
+  rpc GenerateOrderNoteReport(GenerateOrderNoteReportRequest) returns (GenerateOrderNoteReportResponse);
+
+  // Returns an order note.
+  rpc FetchOrderNoteReport(FetchOrderNoteReportRequest) returns (FetchOrderNoteReportResponse);
+
+  // Schedules an order note.
+  rpc ScheduleOrderNoteReport(ScheduleOrderNoteReportRequest) returns (ScheduleOrderNoteReportResponse);
+
+  // Lists order notes a page at a time.
+  rpc ListOrderNoteReports(ListOrderNoteReportsRequest) returns (ListOrderNoteReportsResponse);
+
+  // Counts order notes by status.
+  rpc CountOrderNoteTotals(CountOrderNoteTotalsRequest) returns (CountOrderNoteTotalsResponse);
+
+  // Deletes an order note.
+  rpc DeleteOrderNoteReport(DeleteOrderNoteReportRequest) returns (DeleteOrderNoteReportResponse);
+}
+
+// The request of `GenerateOrderNoteReport`.
+message GenerateOrderNoteReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  GenerateOrderNoteReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `GenerateOrderNoteReport`.
+message GenerateOrderNoteReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `FetchOrderNoteReport`.
+message FetchOrderNoteReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `FetchOrderNoteReport`.
+message FetchOrderNoteReportResponse {
+  OrderNote order_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleOrderNoteReport`.
+message ScheduleOrderNoteReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  ScheduleOrderNoteReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ScheduleOrderNoteReport`.
+message ScheduleOrderNoteReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListOrderNoteReports`.
+message ListOrderNoteReportsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListOrderNoteReportsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListOrderNoteReports`.
+message ListOrderNoteReportsResponse {
+  repeated OrderNote order_notes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountOrderNoteTotals`.
+message CountOrderNoteTotalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountOrderNoteTotalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountOrderNoteTotals`.
+message CountOrderNoteTotalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DeleteOrderNoteReport`.
+message DeleteOrderNoteReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteOrderNoteReport`.
+message DeleteOrderNoteReportResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

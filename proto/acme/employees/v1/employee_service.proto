@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.employees.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/employees/v1/employees.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Employees.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/employees/v1;employeesv1";
+option java_multiple_files = true;
+option java_outer_classname = "EmployeeServiceProto";
+option java_package = "com.acme.employees.v1";
+
+// Manages employees: creates, reads, changes, and lists them.
+service EmployeeService {
+  // Creates an employee.
+  rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse);
+
+  // Returns an employee.
+  rpc GetEmployee(GetEmployeeRequest) returns (GetEmployeeResponse);
+
+  // Changes an employee.
+  rpc UpdateEmployee(UpdateEmployeeRequest) returns (UpdateEmployeeResponse);
+
+  // Deletes an employee.
+  rpc DeleteEmployee(DeleteEmployeeRequest) returns (DeleteEmployeeResponse);
+
+  // Lists employees a page at a time.
+  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse);
+
+  // Returns several employees at once.
+  rpc BatchGetEmployees(BatchGetEmployeesRequest) returns (BatchGetEmployeesResponse);
+
+  // Lists employees a page at a time.
+  rpc SearchEmployees(SearchEmployeesRequest) returns (SearchEmployeesResponse);
+
+  // Streams the changes of employees as they happen.
+  rpc WatchEmployees(WatchEmployeesRequest) returns (stream WatchEmployeesResponse);
+
+  // Takes a stream of employees and answers once at the end.
+  rpc BatchCreateEmployees(stream BatchCreateEmployeesRequest) returns (BatchCreateEmployeesResponse);
+
+  // Creates an employee.
+  rpc CloneEmployee(CloneEmployeeRequest) returns (CloneEmployeeResponse);
+}
+
+// The request of `CreateEmployee`.
+message CreateEmployeeRequest {
+  acme.common.v1.RequestContext context = 1;
+  Employee employee = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateEmployee`.
+message CreateEmployeeResponse {
+  Employee employee = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetEmployee`.
+message GetEmployeeRequest {
+  acme.common.v1.RequestContext context = 1;
+  string employee_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetEmployee`.
+message GetEmployeeResponse {
+  Employee employee = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateEmployee`.
+message UpdateEmployeeRequest {
+  acme.common.v1.RequestContext context = 1;
+  Employee employee = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateEmployee`.
+message UpdateEmployeeResponse {
+  Employee employee = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteEmployee`.
+message DeleteEmployeeRequest {
+  acme.common.v1.RequestContext context = 1;
+  string employee_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteEmployee`.
+message DeleteEmployeeResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListEmployees`.
+message ListEmployeesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated EmployeeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListEmployeesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListEmployees`.
+message ListEmployeesResponse {
+  repeated Employee employees = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetEmployees`.
+message BatchGetEmployeesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string employee_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetEmployees`.
+message BatchGetEmployeesResponse {
+  repeated Employee employees = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchEmployees`.
+message SearchEmployeesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated EmployeeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchEmployeesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchEmployees`.
+message SearchEmployeesResponse {
+  repeated Employee employees = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchEmployees`.
+message WatchEmployeesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated EmployeeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchEmployeesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchEmployees`.
+message WatchEmployeesResponse {
+  Employee employee = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateEmployees`.
+message BatchCreateEmployeesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateEmployeesRequest.StreamHeader header = 2;
+    Employee record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateEmployees`.
+message BatchCreateEmployeesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string employee_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateEmployeesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneEmployee`.
+message CloneEmployeeRequest {
+  acme.common.v1.RequestContext context = 1;
+  Employee employee = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneEmployee`.
+message CloneEmployeeResponse {
+  Employee employee = 1;
+  acme.common.v1.OperationResult result = 2;
+}

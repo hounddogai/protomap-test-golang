@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.messaging.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/messaging/v1/messaging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Messaging.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/messaging/v1;messagingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConversationServiceProto";
+option java_package = "com.acme.messaging.v1";
+
+// Manages conversations: creates, reads, changes, and lists them.
+service ConversationService {
+  // Creates a conversation.
+  rpc CreateConversation(CreateConversationRequest) returns (CreateConversationResponse);
+
+  // Returns a conversation.
+  rpc GetConversation(GetConversationRequest) returns (GetConversationResponse);
+
+  // Changes a conversation.
+  rpc UpdateConversation(UpdateConversationRequest) returns (UpdateConversationResponse);
+
+  // Deletes a conversation.
+  rpc DeleteConversation(DeleteConversationRequest) returns (DeleteConversationResponse);
+
+  // Lists conversations a page at a time.
+  rpc ListConversations(ListConversationsRequest) returns (ListConversationsResponse);
+
+  // Returns several conversations at once.
+  rpc BatchGetConversations(BatchGetConversationsRequest) returns (BatchGetConversationsResponse);
+
+  // Lists conversations a page at a time.
+  rpc SearchConversations(SearchConversationsRequest) returns (SearchConversationsResponse);
+
+  // Streams the changes of conversations as they happen.
+  rpc WatchConversations(WatchConversationsRequest) returns (stream WatchConversationsResponse);
+
+  // Takes a stream of conversations and answers once at the end.
+  rpc BatchCreateConversations(stream BatchCreateConversationsRequest) returns (BatchCreateConversationsResponse);
+
+  // Creates a conversation.
+  rpc CloneConversation(CloneConversationRequest) returns (CloneConversationResponse);
+}
+
+// The request of `CreateConversation`.
+message CreateConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  Conversation conversation = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateConversation`.
+message CreateConversationResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetConversation`.
+message GetConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConversation`.
+message GetConversationResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateConversation`.
+message UpdateConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  Conversation conversation = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateConversation`.
+message UpdateConversationResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteConversation`.
+message DeleteConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteConversation`.
+message DeleteConversationResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListConversations`.
+message ListConversationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConversationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListConversationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListConversations`.
+message ListConversationsResponse {
+  repeated Conversation conversations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetConversations`.
+message BatchGetConversationsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string conversation_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetConversations`.
+message BatchGetConversationsResponse {
+  repeated Conversation conversations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchConversations`.
+message SearchConversationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConversationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchConversationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchConversations`.
+message SearchConversationsResponse {
+  repeated Conversation conversations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchConversations`.
+message WatchConversationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConversationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchConversationsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchConversations`.
+message WatchConversationsResponse {
+  Conversation conversation = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateConversations`.
+message BatchCreateConversationsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateConversationsRequest.StreamHeader header = 2;
+    Conversation record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateConversations`.
+message BatchCreateConversationsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string conversation_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateConversationsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneConversation`.
+message CloneConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  Conversation conversation = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneConversation`.
+message CloneConversationResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}

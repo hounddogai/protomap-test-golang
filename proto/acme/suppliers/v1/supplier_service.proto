@@ -1,0 +1,203 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.suppliers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/suppliers/v1/suppliers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Suppliers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/suppliers/v1;suppliersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SupplierServiceProto";
+option java_package = "com.acme.suppliers.v1";
+
+// Manages suppliers: creates, reads, changes, and lists them.
+service SupplierService {
+  // Creates a supplier.
+  rpc CreateSupplier(CreateSupplierRequest) returns (CreateSupplierResponse);
+
+  // Returns a supplier.
+  rpc GetSupplier(GetSupplierRequest) returns (GetSupplierResponse);
+
+  // Changes a supplier.
+  rpc UpdateSupplier(UpdateSupplierRequest) returns (UpdateSupplierResponse);
+
+  // Deletes a supplier.
+  rpc DeleteSupplier(DeleteSupplierRequest) returns (DeleteSupplierResponse);
+
+  // Lists suppliers a page at a time.
+  rpc ListSuppliers(ListSuppliersRequest) returns (ListSuppliersResponse);
+
+  // Returns several suppliers at once.
+  rpc BatchGetSuppliers(BatchGetSuppliersRequest) returns (BatchGetSuppliersResponse);
+
+  // Streams the changes of suppliers as they happen.
+  rpc WatchSuppliers(WatchSuppliersRequest) returns (stream WatchSuppliersResponse);
+
+  // Takes a stream of suppliers and answers once at the end.
+  rpc BatchCreateSuppliers(stream BatchCreateSuppliersRequest) returns (BatchCreateSuppliersResponse);
+}
+
+// The request of `CreateSupplier`.
+message CreateSupplierRequest {
+  acme.common.v1.RequestContext context = 1;
+  Supplier supplier = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateSupplier`.
+message CreateSupplierResponse {
+  Supplier supplier = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetSupplier`.
+message GetSupplierRequest {
+  acme.common.v1.RequestContext context = 1;
+  string supplier_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSupplier`.
+message GetSupplierResponse {
+  Supplier supplier = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateSupplier`.
+message UpdateSupplierRequest {
+  acme.common.v1.RequestContext context = 1;
+  Supplier supplier = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateSupplier`.
+message UpdateSupplierResponse {
+  Supplier supplier = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteSupplier`.
+message DeleteSupplierRequest {
+  acme.common.v1.RequestContext context = 1;
+  string supplier_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteSupplier`.
+message DeleteSupplierResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListSuppliers`.
+message ListSuppliersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SupplierStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSuppliersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSuppliers`.
+message ListSuppliersResponse {
+  repeated Supplier suppliers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetSuppliers`.
+message BatchGetSuppliersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string supplier_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetSuppliers`.
+message BatchGetSuppliersResponse {
+  repeated Supplier suppliers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchSuppliers`.
+message WatchSuppliersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SupplierStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchSuppliersRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchSuppliers`.
+message WatchSuppliersResponse {
+  Supplier supplier = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateSuppliers`.
+message BatchCreateSuppliersRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateSuppliersRequest.StreamHeader header = 2;
+    Supplier record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateSuppliers`.
+message BatchCreateSuppliersResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string supplier_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateSuppliersResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

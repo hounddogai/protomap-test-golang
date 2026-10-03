@@ -1,0 +1,246 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderNoteSyncServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Keeps order notes in step with the systems of record in other regions.
+service OrderNoteSyncService {
+  // Syncs an order note.
+  rpc SyncOrderNotes(SyncOrderNotesRequest) returns (SyncOrderNotesResponse);
+
+  // Pushs an order note.
+  rpc PushOrderNote(PushOrderNoteRequest) returns (PushOrderNoteResponse);
+
+  // Reconciles an order note.
+  rpc ReconcileOrderNotes(ReconcileOrderNotesRequest) returns (ReconcileOrderNotesResponse);
+
+  // Exchanges changes of order notes with a peer.
+  rpc StreamOrderNoteChanges(stream StreamOrderNoteChangesRequest) returns (stream StreamOrderNoteChangesResponse);
+
+  // Resolves an order note.
+  rpc ResolveOrderNoteConflict(ResolveOrderNoteConflictRequest) returns (ResolveOrderNoteConflictResponse);
+
+  // Returns an order note.
+  rpc GetOrderNoteSyncState(GetOrderNoteSyncStateRequest) returns (GetOrderNoteSyncStateResponse);
+
+  // Lists order notes a page at a time.
+  rpc ListOrderNoteConflicts(ListOrderNoteConflictsRequest) returns (ListOrderNoteConflictsResponse);
+}
+
+// The request of `SyncOrderNotes`.
+message SyncOrderNotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  SyncOrderNotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncOrderNotes`.
+message SyncOrderNotesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  SyncOrderNotesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushOrderNote`.
+message PushOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  PushOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushOrderNote`.
+message PushOrderNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  PushOrderNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileOrderNotes`.
+message ReconcileOrderNotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ReconcileOrderNotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileOrderNotes`.
+message ReconcileOrderNotesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ReconcileOrderNotesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamOrderNoteChanges`.
+message StreamOrderNoteChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    OrderNote change = 2;
+    StreamOrderNoteChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamOrderNoteChanges`.
+message StreamOrderNoteChangesResponse {
+  OrderNote order_note = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveOrderNoteConflict`.
+message ResolveOrderNoteConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ResolveOrderNoteConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveOrderNoteConflict`.
+message ResolveOrderNoteConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ResolveOrderNoteConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderNoteSyncState`.
+message GetOrderNoteSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderNoteSyncState`.
+message GetOrderNoteSyncStateResponse {
+  OrderNote order_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListOrderNoteConflicts`.
+message ListOrderNoteConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated OrderNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListOrderNoteConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListOrderNoteConflicts`.
+message ListOrderNoteConflictsResponse {
+  repeated OrderNote order_notes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

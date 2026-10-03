@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnRequestApprovalServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Routes return requests through approval, with escalation and delegation.
+service ReturnRequestApprovalService {
+  // Submits a return request.
+  rpc SubmitReturnRequest(SubmitReturnRequestRequest) returns (SubmitReturnRequestResponse);
+
+  // Approves a return request.
+  rpc ApproveReturnRequest(ApproveReturnRequestRequest) returns (ApproveReturnRequestResponse);
+
+  // Rejects a return request.
+  rpc RejectReturnRequest(RejectReturnRequestRequest) returns (RejectReturnRequestResponse);
+
+  // Escalates a return request.
+  rpc EscalateReturnRequest(EscalateReturnRequestRequest) returns (EscalateReturnRequestResponse);
+
+  // Lists return requests a page at a time.
+  rpc ListPendingReturnRequests(ListPendingReturnRequestsRequest) returns (ListPendingReturnRequestsResponse);
+
+  // Delegates a return request.
+  rpc DelegateReturnRequestApproval(DelegateReturnRequestApprovalRequest) returns (DelegateReturnRequestApprovalResponse);
+
+  // Recalls a return request.
+  rpc RecallReturnRequest(RecallReturnRequestRequest) returns (RecallReturnRequestResponse);
+
+  // Returns a return request.
+  rpc GetReturnRequestApprovalStatus(GetReturnRequestApprovalStatusRequest) returns (GetReturnRequestApprovalStatusResponse);
+
+  // Comments a return request.
+  rpc CommentReturnRequestApproval(CommentReturnRequestApprovalRequest) returns (CommentReturnRequestApprovalResponse);
+}
+
+// The request of `SubmitReturnRequest`.
+message SubmitReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  SubmitReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitReturnRequest`.
+message SubmitReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  SubmitReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveReturnRequest`.
+message ApproveReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  ApproveReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveReturnRequest`.
+message ApproveReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  ApproveReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectReturnRequest`.
+message RejectReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  RejectReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectReturnRequest`.
+message RejectReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  RejectReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateReturnRequest`.
+message EscalateReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  EscalateReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateReturnRequest`.
+message EscalateReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  EscalateReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingReturnRequests`.
+message ListPendingReturnRequestsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ReturnRequestStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingReturnRequestsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingReturnRequests`.
+message ListPendingReturnRequestsResponse {
+  repeated ReturnRequest return_requests = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateReturnRequestApproval`.
+message DelegateReturnRequestApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  DelegateReturnRequestApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateReturnRequestApproval`.
+message DelegateReturnRequestApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  DelegateReturnRequestApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallReturnRequest`.
+message RecallReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  RecallReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallReturnRequest`.
+message RecallReturnRequestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  RecallReturnRequestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnRequestApprovalStatus`.
+message GetReturnRequestApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnRequestApprovalStatus`.
+message GetReturnRequestApprovalStatusResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentReturnRequestApproval`.
+message CommentReturnRequestApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  CommentReturnRequestApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentReturnRequestApproval`.
+message CommentReturnRequestApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  CommentReturnRequestApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

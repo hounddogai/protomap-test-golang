@@ -1,0 +1,195 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "UserHistoryServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Keeps every version of a user and restores earlier ones.
+service UserHistoryService {
+  // Records a user.
+  rpc RecordUserVersion(RecordUserVersionRequest) returns (RecordUserVersionResponse);
+
+  // Lists users a page at a time.
+  rpc ListUserVersions(ListUserVersionsRequest) returns (ListUserVersionsResponse);
+
+  // Returns a user.
+  rpc GetUserVersion(GetUserVersionRequest) returns (GetUserVersionResponse);
+
+  // Reverts a user.
+  rpc RevertUser(RevertUserRequest) returns (RevertUserResponse);
+
+  // Annotates a user.
+  rpc AnnotateUserVersion(AnnotateUserVersionRequest) returns (AnnotateUserVersionResponse);
+
+  // Deletes a user.
+  rpc PruneUserVersions(PruneUserVersionsRequest) returns (PruneUserVersionsResponse);
+}
+
+// The request of `RecordUserVersion`.
+message RecordUserVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  RecordUserVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecordUserVersion`.
+message RecordUserVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  RecordUserVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListUserVersions`.
+message ListUserVersionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UserStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListUserVersionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListUserVersions`.
+message ListUserVersionsResponse {
+  repeated User users = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetUserVersion`.
+message GetUserVersionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetUserVersion`.
+message GetUserVersionResponse {
+  User user = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `RevertUser`.
+message RevertUserRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  RevertUserRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RevertUser`.
+message RevertUserResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  RevertUserResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AnnotateUserVersion`.
+message AnnotateUserVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  User user = 3;
+  AnnotateUserVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AnnotateUserVersion`.
+message AnnotateUserVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  User user = 1;
+  AnnotateUserVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PruneUserVersions`.
+message PruneUserVersionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  string user_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `PruneUserVersions`.
+message PruneUserVersionsResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

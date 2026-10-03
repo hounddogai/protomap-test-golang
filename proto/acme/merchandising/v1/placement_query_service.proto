@@ -1,0 +1,200 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.merchandising.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/merchandising/v1/merchandising.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Merchandising.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/merchandising/v1;merchandisingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PlacementQueryServiceProto";
+option java_package = "com.acme.merchandising.v1";
+
+// Answers read-only questions about placements, for screens and reports.
+service PlacementQueryService {
+  // Returns a placement.
+  rpc LookupPlacement(LookupPlacementRequest) returns (LookupPlacementResponse);
+
+  // Lists placements a page at a time.
+  rpc BrowsePlacements(BrowsePlacementsRequest) returns (BrowsePlacementsResponse);
+
+  // Counts placements by status.
+  rpc CountPlacements(CountPlacementsRequest) returns (CountPlacementsResponse);
+
+  // Streams every matching placement.
+  rpc ExportPlacements(ExportPlacementsRequest) returns (stream ExportPlacementsResponse);
+
+  // Summarizes a placement.
+  rpc SummarizePlacements(SummarizePlacementsRequest) returns (SummarizePlacementsResponse);
+
+  // Lists placements a page at a time.
+  rpc SuggestPlacements(SuggestPlacementsRequest) returns (SuggestPlacementsResponse);
+
+  // Returns a placement.
+  rpc PeekPlacement(PeekPlacementRequest) returns (PeekPlacementResponse);
+}
+
+// The request of `LookupPlacement`.
+message LookupPlacementRequest {
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPlacement`.
+message LookupPlacementResponse {
+  Placement placement = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePlacements`.
+message BrowsePlacementsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PlacementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePlacementsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePlacements`.
+message BrowsePlacementsResponse {
+  repeated Placement placements = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountPlacements`.
+message CountPlacementsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PlacementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountPlacementsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountPlacements`.
+message CountPlacementsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportPlacements`.
+message ExportPlacementsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PlacementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportPlacementsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportPlacements`.
+message ExportPlacementsResponse {
+  Placement placement = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizePlacements`.
+message SummarizePlacementsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  SummarizePlacementsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizePlacements`.
+message SummarizePlacementsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestPlacements`.
+message SuggestPlacementsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PlacementStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestPlacementsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestPlacements`.
+message SuggestPlacementsResponse {
+  repeated Placement placements = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekPlacement`.
+message PeekPlacementRequest {
+  acme.common.v1.RequestContext context = 1;
+  string placement_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekPlacement`.
+message PeekPlacementResponse {
+  Placement placement = 1;
+  acme.common.v1.OperationResult result = 2;
+}

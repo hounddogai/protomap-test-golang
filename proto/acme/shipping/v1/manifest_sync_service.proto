@@ -1,0 +1,256 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ManifestSyncServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Keeps manifests in step with the systems of record in other regions.
+service ManifestSyncService {
+  // Syncs a manifest.
+  rpc SyncManifests(SyncManifestsRequest) returns (SyncManifestsResponse);
+
+  // Pushs a manifest.
+  rpc PushManifest(PushManifestRequest) returns (PushManifestResponse);
+
+  // Pulls a manifest.
+  rpc PullManifests(PullManifestsRequest) returns (PullManifestsResponse);
+
+  // Reconciles a manifest.
+  rpc ReconcileManifests(ReconcileManifestsRequest) returns (ReconcileManifestsResponse);
+
+  // Resolves a manifest.
+  rpc ResolveManifestConflict(ResolveManifestConflictRequest) returns (ResolveManifestConflictResponse);
+
+  // Returns a manifest.
+  rpc GetManifestSyncState(GetManifestSyncStateRequest) returns (GetManifestSyncStateResponse);
+
+  // Lists manifests a page at a time.
+  rpc ListManifestConflicts(ListManifestConflictsRequest) returns (ListManifestConflictsResponse);
+}
+
+// The request of `SyncManifests`.
+message SyncManifestsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  SyncManifestsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncManifests`.
+message SyncManifestsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  SyncManifestsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushManifest`.
+message PushManifestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  PushManifestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushManifest`.
+message PushManifestResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  PushManifestResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullManifests`.
+message PullManifestsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  PullManifestsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullManifests`.
+message PullManifestsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  PullManifestsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileManifests`.
+message ReconcileManifestsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  ReconcileManifestsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileManifests`.
+message ReconcileManifestsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ReconcileManifestsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveManifestConflict`.
+message ResolveManifestConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  Manifest manifest = 3;
+  ResolveManifestConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveManifestConflict`.
+message ResolveManifestConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Manifest manifest = 1;
+  ResolveManifestConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetManifestSyncState`.
+message GetManifestSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string manifest_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetManifestSyncState`.
+message GetManifestSyncStateResponse {
+  Manifest manifest = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListManifestConflicts`.
+message ListManifestConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ManifestStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListManifestConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListManifestConflicts`.
+message ListManifestConflictsResponse {
+  repeated Manifest manifests = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

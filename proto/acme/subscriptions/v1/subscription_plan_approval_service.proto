@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "SubscriptionPlanApprovalServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Routes subscription plans through approval, with escalation and delegation.
+service SubscriptionPlanApprovalService {
+  // Submits a subscription plan.
+  rpc SubmitSubscriptionPlan(SubmitSubscriptionPlanRequest) returns (SubmitSubscriptionPlanResponse);
+
+  // Approves a subscription plan.
+  rpc ApproveSubscriptionPlan(ApproveSubscriptionPlanRequest) returns (ApproveSubscriptionPlanResponse);
+
+  // Rejects a subscription plan.
+  rpc RejectSubscriptionPlan(RejectSubscriptionPlanRequest) returns (RejectSubscriptionPlanResponse);
+
+  // Escalates a subscription plan.
+  rpc EscalateSubscriptionPlan(EscalateSubscriptionPlanRequest) returns (EscalateSubscriptionPlanResponse);
+
+  // Lists subscription plans a page at a time.
+  rpc ListPendingSubscriptionPlans(ListPendingSubscriptionPlansRequest) returns (ListPendingSubscriptionPlansResponse);
+
+  // Delegates a subscription plan.
+  rpc DelegateSubscriptionPlanApproval(DelegateSubscriptionPlanApprovalRequest) returns (DelegateSubscriptionPlanApprovalResponse);
+
+  // Recalls a subscription plan.
+  rpc RecallSubscriptionPlan(RecallSubscriptionPlanRequest) returns (RecallSubscriptionPlanResponse);
+
+  // Returns a subscription plan.
+  rpc GetSubscriptionPlanApprovalStatus(GetSubscriptionPlanApprovalStatusRequest) returns (GetSubscriptionPlanApprovalStatusResponse);
+}
+
+// The request of `SubmitSubscriptionPlan`.
+message SubmitSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  SubmitSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitSubscriptionPlan`.
+message SubmitSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  SubmitSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveSubscriptionPlan`.
+message ApproveSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  ApproveSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveSubscriptionPlan`.
+message ApproveSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  ApproveSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectSubscriptionPlan`.
+message RejectSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  RejectSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectSubscriptionPlan`.
+message RejectSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  RejectSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateSubscriptionPlan`.
+message EscalateSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  EscalateSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateSubscriptionPlan`.
+message EscalateSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  EscalateSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingSubscriptionPlans`.
+message ListPendingSubscriptionPlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SubscriptionPlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingSubscriptionPlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingSubscriptionPlans`.
+message ListPendingSubscriptionPlansResponse {
+  repeated SubscriptionPlan subscription_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateSubscriptionPlanApproval`.
+message DelegateSubscriptionPlanApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  DelegateSubscriptionPlanApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateSubscriptionPlanApproval`.
+message DelegateSubscriptionPlanApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  DelegateSubscriptionPlanApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallSubscriptionPlan`.
+message RecallSubscriptionPlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  SubscriptionPlan subscription_plan = 3;
+  RecallSubscriptionPlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallSubscriptionPlan`.
+message RecallSubscriptionPlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SubscriptionPlan subscription_plan = 1;
+  RecallSubscriptionPlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSubscriptionPlanApprovalStatus`.
+message GetSubscriptionPlanApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string subscription_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSubscriptionPlanApprovalStatus`.
+message GetSubscriptionPlanApprovalStatusResponse {
+  SubscriptionPlan subscription_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

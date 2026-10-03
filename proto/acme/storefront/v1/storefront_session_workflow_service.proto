@@ -1,0 +1,317 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.storefront.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/storefront/v1/storefront.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Storefront.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/storefront/v1;storefrontv1";
+option java_multiple_files = true;
+option java_outer_classname = "StorefrontSessionWorkflowServiceProto";
+option java_package = "com.acme.storefront.v1";
+
+// Runs the long-lived workflow that takes a storefront session from start to finish.
+service StorefrontSessionWorkflowService {
+  // Starts a storefront session.
+  rpc StartStorefrontSessionWorkflow(StartStorefrontSessionWorkflowRequest) returns (StartStorefrontSessionWorkflowResponse);
+
+  // Advances a storefront session.
+  rpc AdvanceStorefrontSessionWorkflow(AdvanceStorefrontSessionWorkflowRequest) returns (AdvanceStorefrontSessionWorkflowResponse);
+
+  // Cancels a storefront session.
+  rpc CancelStorefrontSessionWorkflow(CancelStorefrontSessionWorkflowRequest) returns (CancelStorefrontSessionWorkflowResponse);
+
+  // Retrys a storefront session.
+  rpc RetryStorefrontSessionWorkflow(RetryStorefrontSessionWorkflowRequest) returns (RetryStorefrontSessionWorkflowResponse);
+
+  // Pauses a storefront session.
+  rpc PauseStorefrontSessionWorkflow(PauseStorefrontSessionWorkflowRequest) returns (PauseStorefrontSessionWorkflowResponse);
+
+  // Resumes a storefront session.
+  rpc ResumeStorefrontSessionWorkflow(ResumeStorefrontSessionWorkflowRequest) returns (ResumeStorefrontSessionWorkflowResponse);
+
+  // Lists storefront sessions a page at a time.
+  rpc ListStorefrontSessionWorkflows(ListStorefrontSessionWorkflowsRequest) returns (ListStorefrontSessionWorkflowsResponse);
+
+  // Signals a storefront session.
+  rpc SignalStorefrontSessionWorkflow(SignalStorefrontSessionWorkflowRequest) returns (SignalStorefrontSessionWorkflowResponse);
+}
+
+// The request of `StartStorefrontSessionWorkflow`.
+message StartStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  StartStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartStorefrontSessionWorkflow`.
+message StartStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  StartStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceStorefrontSessionWorkflow`.
+message AdvanceStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  AdvanceStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceStorefrontSessionWorkflow`.
+message AdvanceStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  AdvanceStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelStorefrontSessionWorkflow`.
+message CancelStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  CancelStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelStorefrontSessionWorkflow`.
+message CancelStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  CancelStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryStorefrontSessionWorkflow`.
+message RetryStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  RetryStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryStorefrontSessionWorkflow`.
+message RetryStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  RetryStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseStorefrontSessionWorkflow`.
+message PauseStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  PauseStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseStorefrontSessionWorkflow`.
+message PauseStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  PauseStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeStorefrontSessionWorkflow`.
+message ResumeStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  ResumeStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeStorefrontSessionWorkflow`.
+message ResumeStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  ResumeStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListStorefrontSessionWorkflows`.
+message ListStorefrontSessionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated StorefrontSessionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListStorefrontSessionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListStorefrontSessionWorkflows`.
+message ListStorefrontSessionWorkflowsResponse {
+  repeated StorefrontSession storefront_sessions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalStorefrontSessionWorkflow`.
+message SignalStorefrontSessionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string storefront_session_id = 2;
+  StorefrontSession storefront_session = 3;
+  SignalStorefrontSessionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalStorefrontSessionWorkflow`.
+message SignalStorefrontSessionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StorefrontSession storefront_session = 1;
+  SignalStorefrontSessionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

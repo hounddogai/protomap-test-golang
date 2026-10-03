@@ -1,0 +1,231 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.content.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/content/v1/content.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Content.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/content/v1;contentv1";
+option java_multiple_files = true;
+option java_outer_classname = "ArticleServiceProto";
+option java_package = "com.acme.content.v1";
+
+// Manages articles: creates, reads, changes, and lists them.
+service ArticleService {
+  // Creates an article.
+  rpc CreateArticle(CreateArticleRequest) returns (CreateArticleResponse);
+
+  // Returns an article.
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse);
+
+  // Changes an article.
+  rpc UpdateArticle(UpdateArticleRequest) returns (UpdateArticleResponse);
+
+  // Deletes an article.
+  rpc DeleteArticle(DeleteArticleRequest) returns (DeleteArticleResponse);
+
+  // Lists articles a page at a time.
+  rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse);
+
+  // Returns several articles at once.
+  rpc BatchGetArticles(BatchGetArticlesRequest) returns (BatchGetArticlesResponse);
+
+  // Lists articles a page at a time.
+  rpc SearchArticles(SearchArticlesRequest) returns (SearchArticlesResponse);
+
+  // Streams the changes of articles as they happen.
+  rpc WatchArticles(WatchArticlesRequest) returns (stream WatchArticlesResponse);
+
+  // Takes a stream of articles and answers once at the end.
+  rpc BatchCreateArticles(stream BatchCreateArticlesRequest) returns (BatchCreateArticlesResponse);
+}
+
+// The request of `CreateArticle`.
+message CreateArticleRequest {
+  acme.common.v1.RequestContext context = 1;
+  Article article = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateArticle`.
+message CreateArticleResponse {
+  Article article = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetArticle`.
+message GetArticleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string article_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetArticle`.
+message GetArticleResponse {
+  Article article = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateArticle`.
+message UpdateArticleRequest {
+  acme.common.v1.RequestContext context = 1;
+  Article article = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateArticle`.
+message UpdateArticleResponse {
+  Article article = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteArticle`.
+message DeleteArticleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string article_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteArticle`.
+message DeleteArticleResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListArticles`.
+message ListArticlesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ArticleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListArticlesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListArticles`.
+message ListArticlesResponse {
+  repeated Article articles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetArticles`.
+message BatchGetArticlesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string article_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetArticles`.
+message BatchGetArticlesResponse {
+  repeated Article articles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchArticles`.
+message SearchArticlesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ArticleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchArticlesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchArticles`.
+message SearchArticlesResponse {
+  repeated Article articles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchArticles`.
+message WatchArticlesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ArticleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchArticlesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchArticles`.
+message WatchArticlesResponse {
+  Article article = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateArticles`.
+message BatchCreateArticlesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateArticlesRequest.StreamHeader header = 2;
+    Article record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateArticles`.
+message BatchCreateArticlesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string article_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateArticlesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}

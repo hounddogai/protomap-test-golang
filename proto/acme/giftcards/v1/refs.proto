@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.giftcards.v1";
+
+// A reference to a gift card of the giftcards domain.
+message GiftCardRef {
+  string gift_card_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a gift card batch of the giftcards domain.
+message GiftCardBatchRef {
+  string gift_card_batch_id = 1;
+  string display_name = 2;
+  string number = 3;
+}
+
+// A reference to a gift card transaction of the giftcards domain.
+message GiftCardTransactionRef {
+  string gift_card_transaction_id = 1;
+  string display_name = 2;
+  string kind = 3;
+}

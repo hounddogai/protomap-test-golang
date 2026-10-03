@@ -1,0 +1,304 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/shipping/v1/shipping.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "TrackingEventApprovalServiceProto";
+option java_package = "com.acme.shipping.v1";
+
+// Routes tracking events through approval, with escalation and delegation.
+service TrackingEventApprovalService {
+  // Submits a tracking event.
+  rpc SubmitTrackingEvent(SubmitTrackingEventRequest) returns (SubmitTrackingEventResponse);
+
+  // Approves a tracking event.
+  rpc ApproveTrackingEvent(ApproveTrackingEventRequest) returns (ApproveTrackingEventResponse);
+
+  // Rejects a tracking event.
+  rpc RejectTrackingEvent(RejectTrackingEventRequest) returns (RejectTrackingEventResponse);
+
+  // Escalates a tracking event.
+  rpc EscalateTrackingEvent(EscalateTrackingEventRequest) returns (EscalateTrackingEventResponse);
+
+  // Delegates a tracking event.
+  rpc DelegateTrackingEventApproval(DelegateTrackingEventApprovalRequest) returns (DelegateTrackingEventApprovalResponse);
+
+  // Recalls a tracking event.
+  rpc RecallTrackingEvent(RecallTrackingEventRequest) returns (RecallTrackingEventResponse);
+
+  // Returns a tracking event.
+  rpc GetTrackingEventApprovalStatus(GetTrackingEventApprovalStatusRequest) returns (GetTrackingEventApprovalStatusResponse);
+
+  // Comments a tracking event.
+  rpc CommentTrackingEventApproval(CommentTrackingEventApprovalRequest) returns (CommentTrackingEventApprovalResponse);
+}
+
+// The request of `SubmitTrackingEvent`.
+message SubmitTrackingEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  SubmitTrackingEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitTrackingEvent`.
+message SubmitTrackingEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  SubmitTrackingEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveTrackingEvent`.
+message ApproveTrackingEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  ApproveTrackingEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveTrackingEvent`.
+message ApproveTrackingEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  ApproveTrackingEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectTrackingEvent`.
+message RejectTrackingEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  RejectTrackingEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectTrackingEvent`.
+message RejectTrackingEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  RejectTrackingEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateTrackingEvent`.
+message EscalateTrackingEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  EscalateTrackingEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateTrackingEvent`.
+message EscalateTrackingEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  EscalateTrackingEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateTrackingEventApproval`.
+message DelegateTrackingEventApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  DelegateTrackingEventApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateTrackingEventApproval`.
+message DelegateTrackingEventApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  DelegateTrackingEventApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallTrackingEvent`.
+message RecallTrackingEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  RecallTrackingEventRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallTrackingEvent`.
+message RecallTrackingEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  RecallTrackingEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetTrackingEventApprovalStatus`.
+message GetTrackingEventApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTrackingEventApprovalStatus`.
+message GetTrackingEventApprovalStatusResponse {
+  TrackingEvent tracking_event = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentTrackingEventApproval`.
+message CommentTrackingEventApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string tracking_event_id = 2;
+  TrackingEvent tracking_event = 3;
+  CommentTrackingEventApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentTrackingEventApproval`.
+message CommentTrackingEventApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  TrackingEvent tracking_event = 1;
+  CommentTrackingEventApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

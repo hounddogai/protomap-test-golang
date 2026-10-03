@@ -1,0 +1,27 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.common.v1;
+
+option csharp_namespace = "Acme.Common.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/common/v1;commonv1";
+option java_multiple_files = true;
+option java_outer_classname = "ContactProto";
+option java_package = "com.acme.common.v1";
+
+// A person's name.
+message PersonName {
+  string given_name = 1;
+  string family_name = 2;
+  string display_name = 3;
+}
+
+// How to reach a person or a team.
+message ContactInfo {
+  string email = 1;
+  string phone = 2;
+  string preferred_channel = 3;
+  PersonName name = 4;
+}

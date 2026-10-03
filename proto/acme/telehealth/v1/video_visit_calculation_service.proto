@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VideoVisitCalculationServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Computes the figures of a video visit, such as totals, taxes, and estimates.
+service VideoVisitCalculationService {
+  // Calculates a video visit.
+  rpc CalculateVideoVisit(CalculateVideoVisitRequest) returns (CalculateVideoVisitResponse);
+
+  // Estimates a video visit.
+  rpc EstimateVideoVisit(EstimateVideoVisitRequest) returns (EstimateVideoVisitResponse);
+
+  // Quotes a video visit.
+  rpc QuoteVideoVisit(QuoteVideoVisitRequest) returns (QuoteVideoVisitResponse);
+
+  // Compares a video visit.
+  rpc CompareVideoVisitOptions(CompareVideoVisitOptionsRequest) returns (CompareVideoVisitOptionsResponse);
+
+  // Recalculates a video visit.
+  rpc RecalculateVideoVisits(RecalculateVideoVisitsRequest) returns (RecalculateVideoVisitsResponse);
+
+  // Simulates a video visit.
+  rpc SimulateVideoVisit(SimulateVideoVisitRequest) returns (SimulateVideoVisitResponse);
+
+  // Explains a video visit.
+  rpc ExplainVideoVisitCalculation(ExplainVideoVisitCalculationRequest) returns (ExplainVideoVisitCalculationResponse);
+
+  // Returns a video visit.
+  rpc GetVideoVisitRates(GetVideoVisitRatesRequest) returns (GetVideoVisitRatesResponse);
+}
+
+// The request of `CalculateVideoVisit`.
+message CalculateVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  CalculateVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateVideoVisit`.
+message CalculateVideoVisitResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateVideoVisitResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VideoVisit video_visit = 1;
+  CalculateVideoVisitResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateVideoVisit`.
+message EstimateVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  EstimateVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateVideoVisit`.
+message EstimateVideoVisitResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateVideoVisitResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VideoVisit video_visit = 1;
+  EstimateVideoVisitResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteVideoVisit`.
+message QuoteVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  QuoteVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteVideoVisit`.
+message QuoteVideoVisitResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteVideoVisitResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VideoVisit video_visit = 1;
+  QuoteVideoVisitResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareVideoVisitOptions`.
+message CompareVideoVisitOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  CompareVideoVisitOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareVideoVisitOptions`.
+message CompareVideoVisitOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareVideoVisitOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VideoVisit video_visit = 1;
+  CompareVideoVisitOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateVideoVisits`.
+message RecalculateVideoVisitsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  RecalculateVideoVisitsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateVideoVisits`.
+message RecalculateVideoVisitsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateVideoVisitsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VideoVisit video_visit = 1;
+  RecalculateVideoVisitsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateVideoVisit`.
+message SimulateVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  SimulateVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateVideoVisit`.
+message SimulateVideoVisitResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateVideoVisitResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VideoVisit video_visit = 1;
+  SimulateVideoVisitResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainVideoVisitCalculation`.
+message ExplainVideoVisitCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  ExplainVideoVisitCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainVideoVisitCalculation`.
+message ExplainVideoVisitCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  ExplainVideoVisitCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVideoVisitRates`.
+message GetVideoVisitRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVideoVisitRates`.
+message GetVideoVisitRatesResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}

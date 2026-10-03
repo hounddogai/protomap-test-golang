@@ -1,0 +1,198 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductQueryServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Answers read-only questions about products, for screens and reports.
+service ProductQueryService {
+  // Returns a product.
+  rpc LookupProduct(LookupProductRequest) returns (LookupProductResponse);
+
+  // Lists products a page at a time.
+  rpc BrowseProducts(BrowseProductsRequest) returns (BrowseProductsResponse);
+
+  // Lists products a page at a time.
+  rpc FindProducts(FindProductsRequest) returns (FindProductsResponse);
+
+  // Counts products by status.
+  rpc CountProducts(CountProductsRequest) returns (CountProductsResponse);
+
+  // Returns several products at once.
+  rpc ResolveProducts(ResolveProductsRequest) returns (ResolveProductsResponse);
+
+  // Streams every matching product.
+  rpc ExportProducts(ExportProductsRequest) returns (stream ExportProductsResponse);
+
+  // Lists products a page at a time.
+  rpc SuggestProducts(SuggestProductsRequest) returns (SuggestProductsResponse);
+}
+
+// The request of `LookupProduct`.
+message LookupProductRequest {
+  acme.common.v1.RequestContext context = 1;
+  string product_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupProduct`.
+message LookupProductResponse {
+  Product product = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseProducts`.
+message BrowseProductsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseProductsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseProducts`.
+message BrowseProductsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindProducts`.
+message FindProductsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindProductsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindProducts`.
+message FindProductsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountProducts`.
+message CountProductsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountProductsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountProducts`.
+message CountProductsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveProducts`.
+message ResolveProductsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string product_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveProducts`.
+message ResolveProductsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportProducts`.
+message ExportProductsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportProductsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportProducts`.
+message ExportProductsResponse {
+  Product product = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestProducts`.
+message SuggestProductsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProductStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestProductsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestProducts`.
+message SuggestProductsResponse {
+  repeated Product products = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

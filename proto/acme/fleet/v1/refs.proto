@@ -1,0 +1,33 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fleet.v1;
+
+option csharp_namespace = "Acme.Fleet.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fleet/v1;fleetv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.fleet.v1";
+
+// A reference to a vehicle of the fleet domain.
+message VehicleRef {
+  string vehicle_id = 1;
+  string display_name = 2;
+  string code = 3;
+}
+
+// A reference to a vehicle group of the fleet domain.
+message VehicleGroupRef {
+  string vehicle_group_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to an inspection of the fleet domain.
+message InspectionRef {
+  string inspection_id = 1;
+  string display_name = 2;
+  int32 priority = 3;
+}

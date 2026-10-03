@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerListingCalculationServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Computes the figures of a seller listing, such as totals, taxes, and estimates.
+service SellerListingCalculationService {
+  // Calculates a seller listing.
+  rpc CalculateSellerListing(CalculateSellerListingRequest) returns (CalculateSellerListingResponse);
+
+  // Estimates a seller listing.
+  rpc EstimateSellerListing(EstimateSellerListingRequest) returns (EstimateSellerListingResponse);
+
+  // Quotes a seller listing.
+  rpc QuoteSellerListing(QuoteSellerListingRequest) returns (QuoteSellerListingResponse);
+
+  // Compares a seller listing.
+  rpc CompareSellerListingOptions(CompareSellerListingOptionsRequest) returns (CompareSellerListingOptionsResponse);
+
+  // Recalculates a seller listing.
+  rpc RecalculateSellerListings(RecalculateSellerListingsRequest) returns (RecalculateSellerListingsResponse);
+
+  // Simulates a seller listing.
+  rpc SimulateSellerListing(SimulateSellerListingRequest) returns (SimulateSellerListingResponse);
+
+  // Explains a seller listing.
+  rpc ExplainSellerListingCalculation(ExplainSellerListingCalculationRequest) returns (ExplainSellerListingCalculationResponse);
+
+  // Returns a seller listing.
+  rpc GetSellerListingRates(GetSellerListingRatesRequest) returns (GetSellerListingRatesResponse);
+}
+
+// The request of `CalculateSellerListing`.
+message CalculateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  CalculateSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateSellerListing`.
+message CalculateSellerListingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateSellerListingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerListing seller_listing = 1;
+  CalculateSellerListingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateSellerListing`.
+message EstimateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  EstimateSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateSellerListing`.
+message EstimateSellerListingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateSellerListingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerListing seller_listing = 1;
+  EstimateSellerListingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteSellerListing`.
+message QuoteSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  QuoteSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteSellerListing`.
+message QuoteSellerListingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteSellerListingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerListing seller_listing = 1;
+  QuoteSellerListingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareSellerListingOptions`.
+message CompareSellerListingOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  CompareSellerListingOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSellerListingOptions`.
+message CompareSellerListingOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareSellerListingOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerListing seller_listing = 1;
+  CompareSellerListingOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateSellerListings`.
+message RecalculateSellerListingsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  RecalculateSellerListingsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateSellerListings`.
+message RecalculateSellerListingsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateSellerListingsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerListing seller_listing = 1;
+  RecalculateSellerListingsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateSellerListing`.
+message SimulateSellerListingRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  SimulateSellerListingRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateSellerListing`.
+message SimulateSellerListingResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateSellerListingResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  SellerListing seller_listing = 1;
+  SimulateSellerListingResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSellerListingCalculation`.
+message ExplainSellerListingCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  SellerListing seller_listing = 3;
+  ExplainSellerListingCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSellerListingCalculation`.
+message ExplainSellerListingCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerListing seller_listing = 1;
+  ExplainSellerListingCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerListingRates`.
+message GetSellerListingRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_listing_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerListingRates`.
+message GetSellerListingRatesResponse {
+  SellerListing seller_listing = 1;
+  acme.common.v1.OperationResult result = 2;
+}

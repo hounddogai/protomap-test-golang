@@ -1,0 +1,307 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.shipping.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/shipping/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Shipping.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/shipping/v1;shippingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ShippingProto";
+option java_package = "com.acme.shipping.v1";
+
+// Where a shipment is in its lifecycle.
+enum ShipmentStatus {
+  SHIPMENT_STATUS_UNSPECIFIED = 0;
+  SHIPMENT_STATUS_DRAFT = 1;
+  SHIPMENT_STATUS_ISSUED = 2;
+  SHIPMENT_STATUS_APPROVED = 3;
+  SHIPMENT_STATUS_PAID = 4;
+  SHIPMENT_STATUS_VOID = 5;
+}
+
+// Where a parcel is in its lifecycle.
+enum ParcelStatus {
+  PARCEL_STATUS_UNSPECIFIED = 0;
+  PARCEL_STATUS_PLANNED = 1;
+  PARCEL_STATUS_AVAILABLE = 2;
+  PARCEL_STATUS_RESERVED = 3;
+  PARCEL_STATUS_RETIRED = 4;
+}
+
+// Where a carrier rate is in its lifecycle.
+enum CarrierRateStatus {
+  CARRIER_RATE_STATUS_UNSPECIFIED = 0;
+  CARRIER_RATE_STATUS_DRAFT = 1;
+  CARRIER_RATE_STATUS_ENABLED = 2;
+  CARRIER_RATE_STATUS_DISABLED = 3;
+  CARRIER_RATE_STATUS_RETIRED = 4;
+}
+
+// Where a tracking event is in its lifecycle.
+enum TrackingEventStatus {
+  TRACKING_EVENT_STATUS_UNSPECIFIED = 0;
+  TRACKING_EVENT_STATUS_RECEIVED = 1;
+  TRACKING_EVENT_STATUS_PROCESSED = 2;
+  TRACKING_EVENT_STATUS_DISCARDED = 3;
+}
+
+// Where a manifest is in its lifecycle.
+enum ManifestStatus {
+  MANIFEST_STATUS_UNSPECIFIED = 0;
+  MANIFEST_STATUS_DRAFT = 1;
+  MANIFEST_STATUS_ISSUED = 2;
+  MANIFEST_STATUS_APPROVED = 3;
+  MANIFEST_STATUS_PAID = 4;
+  MANIFEST_STATUS_VOID = 5;
+}
+
+// The line of a shipment.
+message ShipmentLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ShipmentLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a shipment line.
+message ShipmentLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a shipment.
+message ShipmentCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a shipment.
+message ShipmentBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a shipment.
+message ShipmentAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A shipment of the shipping domain.
+message Shipment {
+  string shipment_id = 1;
+  string number = 2;
+  ShipmentStatus status = 3;
+  ParcelRef counterparty = 4;
+  repeated ShipmentLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ShipmentCardSettlement card = 8;
+    ShipmentBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ShipmentAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The dimensions of a parcel.
+message ParcelDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a parcel.
+message ParcelComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A parcel of the shipping domain.
+message Parcel {
+  string parcel_id = 1;
+  string code = 2;
+  string name = 3;
+  ParcelStatus status = 4;
+  repeated string category_path = 5;
+  ParcelDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ParcelComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a carrier rate.
+message CarrierRateCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a carrier rate.
+message CarrierRateDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a carrier rate.
+message CarrierRateRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a carrier rate.
+message CarrierRateBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A carrier rate of the shipping domain.
+message CarrierRate {
+  string carrier_rate_id = 1;
+  string name = 2;
+  string description = 3;
+  CarrierRateStatus status = 4;
+  int32 priority = 5;
+  repeated CarrierRateCondition conditions = 6;
+  oneof action {
+    CarrierRateDiscountAction discount = 7;
+    CarrierRateRouteAction route = 8;
+    CarrierRateBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The measurement of a tracking event.
+message TrackingEventMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A tracking event of the shipping domain.
+message TrackingEvent {
+  string tracking_event_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  ShipmentRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated TrackingEventMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// The line of a manifest.
+message ManifestLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ManifestLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a manifest line.
+message ManifestLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a manifest.
+message ManifestCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a manifest.
+message ManifestBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a manifest.
+message ManifestAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A manifest of the shipping domain.
+message Manifest {
+  string manifest_id = 1;
+  string number = 2;
+  ManifestStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated ManifestLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ManifestCardSettlement card = 8;
+    ManifestBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ManifestAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

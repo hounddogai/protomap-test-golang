@@ -1,0 +1,152 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AppointmentServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Manages appointments: creates, reads, changes, and lists them.
+service AppointmentService {
+  // Creates an appointment.
+  rpc CreateAppointment(CreateAppointmentRequest) returns (CreateAppointmentResponse);
+
+  // Returns an appointment.
+  rpc GetAppointment(GetAppointmentRequest) returns (GetAppointmentResponse);
+
+  // Changes an appointment.
+  rpc UpdateAppointment(UpdateAppointmentRequest) returns (UpdateAppointmentResponse);
+
+  // Deletes an appointment.
+  rpc DeleteAppointment(DeleteAppointmentRequest) returns (DeleteAppointmentResponse);
+
+  // Lists appointments a page at a time.
+  rpc ListAppointments(ListAppointmentsRequest) returns (ListAppointmentsResponse);
+
+  // Returns several appointments at once.
+  rpc BatchGetAppointments(BatchGetAppointmentsRequest) returns (BatchGetAppointmentsResponse);
+
+  // Creates an appointment.
+  rpc CloneAppointment(CloneAppointmentRequest) returns (CloneAppointmentResponse);
+}
+
+// The request of `CreateAppointment`.
+message CreateAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  Appointment appointment = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateAppointment`.
+message CreateAppointmentResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetAppointment`.
+message GetAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAppointment`.
+message GetAppointmentResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateAppointment`.
+message UpdateAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  Appointment appointment = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateAppointment`.
+message UpdateAppointmentResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteAppointment`.
+message DeleteAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteAppointment`.
+message DeleteAppointmentResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListAppointments`.
+message ListAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAppointmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAppointments`.
+message ListAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetAppointments`.
+message BatchGetAppointmentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string appointment_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetAppointments`.
+message BatchGetAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CloneAppointment`.
+message CloneAppointmentRequest {
+  acme.common.v1.RequestContext context = 1;
+  Appointment appointment = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneAppointment`.
+message CloneAppointmentResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,241 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "CategoryWorkflowServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Runs the long-lived workflow that takes a category from start to finish.
+service CategoryWorkflowService {
+  // Starts a category.
+  rpc StartCategoryWorkflow(StartCategoryWorkflowRequest) returns (StartCategoryWorkflowResponse);
+
+  // Advances a category.
+  rpc AdvanceCategoryWorkflow(AdvanceCategoryWorkflowRequest) returns (AdvanceCategoryWorkflowResponse);
+
+  // Cancels a category.
+  rpc CancelCategoryWorkflow(CancelCategoryWorkflowRequest) returns (CancelCategoryWorkflowResponse);
+
+  // Pauses a category.
+  rpc PauseCategoryWorkflow(PauseCategoryWorkflowRequest) returns (PauseCategoryWorkflowResponse);
+
+  // Lists categories a page at a time.
+  rpc ListCategoryWorkflows(ListCategoryWorkflowsRequest) returns (ListCategoryWorkflowsResponse);
+
+  // Signals a category.
+  rpc SignalCategoryWorkflow(SignalCategoryWorkflowRequest) returns (SignalCategoryWorkflowResponse);
+}
+
+// The request of `StartCategoryWorkflow`.
+message StartCategoryWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  StartCategoryWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCategoryWorkflow`.
+message StartCategoryWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  StartCategoryWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCategoryWorkflow`.
+message AdvanceCategoryWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  AdvanceCategoryWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCategoryWorkflow`.
+message AdvanceCategoryWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  AdvanceCategoryWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCategoryWorkflow`.
+message CancelCategoryWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  CancelCategoryWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCategoryWorkflow`.
+message CancelCategoryWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  CancelCategoryWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCategoryWorkflow`.
+message PauseCategoryWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  PauseCategoryWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCategoryWorkflow`.
+message PauseCategoryWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  PauseCategoryWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListCategoryWorkflows`.
+message ListCategoryWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CategoryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCategoryWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCategoryWorkflows`.
+message ListCategoryWorkflowsResponse {
+  repeated Category categories = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCategoryWorkflow`.
+message SignalCategoryWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  SignalCategoryWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCategoryWorkflow`.
+message SignalCategoryWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  SignalCategoryWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

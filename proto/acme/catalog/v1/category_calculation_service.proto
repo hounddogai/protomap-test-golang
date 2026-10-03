@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "CategoryCalculationServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Computes the figures of a category, such as totals, taxes, and estimates.
+service CategoryCalculationService {
+  // Calculates a category.
+  rpc CalculateCategory(CalculateCategoryRequest) returns (CalculateCategoryResponse);
+
+  // Estimates a category.
+  rpc EstimateCategory(EstimateCategoryRequest) returns (EstimateCategoryResponse);
+
+  // Quotes a category.
+  rpc QuoteCategory(QuoteCategoryRequest) returns (QuoteCategoryResponse);
+
+  // Compares a category.
+  rpc CompareCategoryOptions(CompareCategoryOptionsRequest) returns (CompareCategoryOptionsResponse);
+
+  // Recalculates a category.
+  rpc RecalculateCategories(RecalculateCategoriesRequest) returns (RecalculateCategoriesResponse);
+
+  // Simulates a category.
+  rpc SimulateCategory(SimulateCategoryRequest) returns (SimulateCategoryResponse);
+
+  // Explains a category.
+  rpc ExplainCategoryCalculation(ExplainCategoryCalculationRequest) returns (ExplainCategoryCalculationResponse);
+
+  // Returns a category.
+  rpc GetCategoryRates(GetCategoryRatesRequest) returns (GetCategoryRatesResponse);
+}
+
+// The request of `CalculateCategory`.
+message CalculateCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  CalculateCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCategory`.
+message CalculateCategoryResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCategoryResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Category category = 1;
+  CalculateCategoryResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCategory`.
+message EstimateCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  EstimateCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCategory`.
+message EstimateCategoryResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCategoryResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Category category = 1;
+  EstimateCategoryResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCategory`.
+message QuoteCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  QuoteCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCategory`.
+message QuoteCategoryResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCategoryResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Category category = 1;
+  QuoteCategoryResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCategoryOptions`.
+message CompareCategoryOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  CompareCategoryOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCategoryOptions`.
+message CompareCategoryOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCategoryOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Category category = 1;
+  CompareCategoryOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateCategories`.
+message RecalculateCategoriesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  RecalculateCategoriesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateCategories`.
+message RecalculateCategoriesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateCategoriesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Category category = 1;
+  RecalculateCategoriesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCategory`.
+message SimulateCategoryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  SimulateCategoryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCategory`.
+message SimulateCategoryResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCategoryResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Category category = 1;
+  SimulateCategoryResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCategoryCalculation`.
+message ExplainCategoryCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  Category category = 3;
+  ExplainCategoryCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCategoryCalculation`.
+message ExplainCategoryCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Category category = 1;
+  ExplainCategoryCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCategoryRates`.
+message GetCategoryRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string category_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCategoryRates`.
+message GetCategoryRatesResponse {
+  Category category = 1;
+  acme.common.v1.OperationResult result = 2;
+}

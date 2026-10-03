@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.lending.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/lending/v1/lending.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Lending.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/lending/v1;lendingv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoanApplicationCalculationServiceProto";
+option java_package = "com.acme.lending.v1";
+
+// Computes the figures of a loan application, such as totals, taxes, and estimates.
+service LoanApplicationCalculationService {
+  // Calculates a loan application.
+  rpc CalculateLoanApplication(CalculateLoanApplicationRequest) returns (CalculateLoanApplicationResponse);
+
+  // Estimates a loan application.
+  rpc EstimateLoanApplication(EstimateLoanApplicationRequest) returns (EstimateLoanApplicationResponse);
+
+  // Quotes a loan application.
+  rpc QuoteLoanApplication(QuoteLoanApplicationRequest) returns (QuoteLoanApplicationResponse);
+
+  // Compares a loan application.
+  rpc CompareLoanApplicationOptions(CompareLoanApplicationOptionsRequest) returns (CompareLoanApplicationOptionsResponse);
+
+  // Recalculates a loan application.
+  rpc RecalculateLoanApplications(RecalculateLoanApplicationsRequest) returns (RecalculateLoanApplicationsResponse);
+
+  // Simulates a loan application.
+  rpc SimulateLoanApplication(SimulateLoanApplicationRequest) returns (SimulateLoanApplicationResponse);
+
+  // Explains a loan application.
+  rpc ExplainLoanApplicationCalculation(ExplainLoanApplicationCalculationRequest) returns (ExplainLoanApplicationCalculationResponse);
+
+  // Returns a loan application.
+  rpc GetLoanApplicationRates(GetLoanApplicationRatesRequest) returns (GetLoanApplicationRatesResponse);
+}
+
+// The request of `CalculateLoanApplication`.
+message CalculateLoanApplicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  CalculateLoanApplicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateLoanApplication`.
+message CalculateLoanApplicationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateLoanApplicationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoanApplication loan_application = 1;
+  CalculateLoanApplicationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateLoanApplication`.
+message EstimateLoanApplicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  EstimateLoanApplicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateLoanApplication`.
+message EstimateLoanApplicationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateLoanApplicationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoanApplication loan_application = 1;
+  EstimateLoanApplicationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteLoanApplication`.
+message QuoteLoanApplicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  QuoteLoanApplicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteLoanApplication`.
+message QuoteLoanApplicationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteLoanApplicationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoanApplication loan_application = 1;
+  QuoteLoanApplicationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareLoanApplicationOptions`.
+message CompareLoanApplicationOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  CompareLoanApplicationOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareLoanApplicationOptions`.
+message CompareLoanApplicationOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareLoanApplicationOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoanApplication loan_application = 1;
+  CompareLoanApplicationOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateLoanApplications`.
+message RecalculateLoanApplicationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  RecalculateLoanApplicationsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateLoanApplications`.
+message RecalculateLoanApplicationsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateLoanApplicationsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoanApplication loan_application = 1;
+  RecalculateLoanApplicationsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateLoanApplication`.
+message SimulateLoanApplicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  SimulateLoanApplicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateLoanApplication`.
+message SimulateLoanApplicationResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateLoanApplicationResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  LoanApplication loan_application = 1;
+  SimulateLoanApplicationResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainLoanApplicationCalculation`.
+message ExplainLoanApplicationCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  LoanApplication loan_application = 3;
+  ExplainLoanApplicationCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainLoanApplicationCalculation`.
+message ExplainLoanApplicationCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  LoanApplication loan_application = 1;
+  ExplainLoanApplicationCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetLoanApplicationRates`.
+message GetLoanApplicationRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string loan_application_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetLoanApplicationRates`.
+message GetLoanApplicationRatesResponse {
+  LoanApplication loan_application = 1;
+  acme.common.v1.OperationResult result = 2;
+}

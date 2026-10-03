@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.ticketing.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/ticketing/v1/ticketing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Ticketing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/ticketing/v1;ticketingv1";
+option java_multiple_files = true;
+option java_outer_classname = "TicketQueryServiceProto";
+option java_package = "com.acme.ticketing.v1";
+
+// Answers read-only questions about tickets, for screens and reports.
+service TicketQueryService {
+  // Returns a ticket.
+  rpc LookupTicket(LookupTicketRequest) returns (LookupTicketResponse);
+
+  // Lists tickets a page at a time.
+  rpc BrowseTickets(BrowseTicketsRequest) returns (BrowseTicketsResponse);
+
+  // Lists tickets a page at a time.
+  rpc FindTickets(FindTicketsRequest) returns (FindTicketsResponse);
+
+  // Counts tickets by status.
+  rpc CountTickets(CountTicketsRequest) returns (CountTicketsResponse);
+
+  // Returns several tickets at once.
+  rpc ResolveTickets(ResolveTicketsRequest) returns (ResolveTicketsResponse);
+
+  // Streams every matching ticket.
+  rpc ExportTickets(ExportTicketsRequest) returns (stream ExportTicketsResponse);
+
+  // Summarizes a ticket.
+  rpc SummarizeTickets(SummarizeTicketsRequest) returns (SummarizeTicketsResponse);
+
+  // Lists tickets a page at a time.
+  rpc SuggestTickets(SuggestTicketsRequest) returns (SuggestTicketsResponse);
+
+  // Returns a ticket.
+  rpc PeekTicket(PeekTicketRequest) returns (PeekTicketResponse);
+}
+
+// The request of `LookupTicket`.
+message LookupTicketRequest {
+  acme.common.v1.RequestContext context = 1;
+  string ticket_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupTicket`.
+message LookupTicketResponse {
+  Ticket ticket = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseTickets`.
+message BrowseTicketsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TicketStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseTicketsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseTickets`.
+message BrowseTicketsResponse {
+  repeated Ticket tickets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindTickets`.
+message FindTicketsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TicketStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindTicketsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindTickets`.
+message FindTicketsResponse {
+  repeated Ticket tickets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountTickets`.
+message CountTicketsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TicketStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountTicketsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountTickets`.
+message CountTicketsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveTickets`.
+message ResolveTicketsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string ticket_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveTickets`.
+message ResolveTicketsResponse {
+  repeated Ticket tickets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportTickets`.
+message ExportTicketsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TicketStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportTicketsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportTickets`.
+message ExportTicketsResponse {
+  Ticket ticket = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeTickets`.
+message SummarizeTicketsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string ticket_id = 2;
+  SummarizeTicketsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeTickets`.
+message SummarizeTicketsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestTickets`.
+message SuggestTicketsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated TicketStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestTicketsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestTickets`.
+message SuggestTicketsResponse {
+  repeated Ticket tickets = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekTicket`.
+message PeekTicketRequest {
+  acme.common.v1.RequestContext context = 1;
+  string ticket_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekTicket`.
+message PeekTicketResponse {
+  Ticket ticket = 1;
+  acme.common.v1.OperationResult result = 2;
+}

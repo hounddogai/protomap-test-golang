@@ -1,0 +1,236 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fanportal.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/fanportal/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/venues/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fanportal.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fanportal/v1;fanportalv1";
+option java_multiple_files = true;
+option java_outer_classname = "FanportalProto";
+option java_package = "com.acme.fanportal.v1";
+
+// Where a fan session is in its lifecycle.
+enum FanSessionStatus {
+  FAN_SESSION_STATUS_UNSPECIFIED = 0;
+  FAN_SESSION_STATUS_NEW = 1;
+  FAN_SESSION_STATUS_OPEN = 2;
+  FAN_SESSION_STATUS_WAITING = 3;
+  FAN_SESSION_STATUS_RESOLVED = 4;
+  FAN_SESSION_STATUS_CLOSED = 5;
+}
+
+// Where an event page is in its lifecycle.
+enum EventPageStatus {
+  EVENT_PAGE_STATUS_UNSPECIFIED = 0;
+  EVENT_PAGE_STATUS_DRAFT = 1;
+  EVENT_PAGE_STATUS_ISSUED = 2;
+  EVENT_PAGE_STATUS_APPROVED = 3;
+  EVENT_PAGE_STATUS_PAID = 4;
+  EVENT_PAGE_STATUS_VOID = 5;
+}
+
+// Where a wishlist is in its lifecycle.
+enum WishlistStatus {
+  WISHLIST_STATUS_UNSPECIFIED = 0;
+  WISHLIST_STATUS_DRAFT = 1;
+  WISHLIST_STATUS_ISSUED = 2;
+  WISHLIST_STATUS_APPROVED = 3;
+  WISHLIST_STATUS_PAID = 4;
+  WISHLIST_STATUS_VOID = 5;
+}
+
+// The comment of a fan session.
+message FanSessionComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a fan session.
+message FanSessionSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a fan session.
+message FanSessionChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a fan session.
+message FanSessionStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A fan session of the fanportal domain.
+message FanSession {
+  string fan_session_id = 1;
+  string subject = 2;
+  FanSessionStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated FanSessionComment comments = 7;
+  FanSessionSla sla = 8;
+  oneof origin {
+    WishlistRef customer = 9;
+    string external_reference = 10;
+    FanSessionChannelOrigin channel = 11;
+  }
+  repeated FanSessionStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of an event page.
+message EventPageLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  EventPageLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an event page line.
+message EventPageLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an event page.
+message EventPageCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an event page.
+message EventPageBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an event page.
+message EventPageAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An event page of the fanportal domain.
+message EventPage {
+  string event_page_id = 1;
+  string number = 2;
+  EventPageStatus status = 3;
+  WishlistRef counterparty = 4;
+  repeated EventPageLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    EventPageCardSettlement card = 8;
+    EventPageBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated EventPageAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a wishlist.
+message WishlistLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  WishlistLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a wishlist line.
+message WishlistLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a wishlist.
+message WishlistCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a wishlist.
+message WishlistBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a wishlist.
+message WishlistAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A wishlist of the fanportal domain.
+message Wishlist {
+  string wishlist_id = 1;
+  string number = 2;
+  WishlistStatus status = 3;
+  acme.venues.v1.VenueRef counterparty = 4;
+  repeated WishlistLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    WishlistCardSettlement card = 8;
+    WishlistBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated WishlistAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

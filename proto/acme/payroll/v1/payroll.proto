@@ -1,0 +1,283 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payroll.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/payroll/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payroll.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payroll/v1;payrollv1";
+option java_multiple_files = true;
+option java_outer_classname = "PayrollProto";
+option java_package = "com.acme.payroll.v1";
+
+// Where a pay run is in its lifecycle.
+enum PayRunStatus {
+  PAY_RUN_STATUS_UNSPECIFIED = 0;
+  PAY_RUN_STATUS_DRAFT = 1;
+  PAY_RUN_STATUS_ISSUED = 2;
+  PAY_RUN_STATUS_APPROVED = 3;
+  PAY_RUN_STATUS_PAID = 4;
+  PAY_RUN_STATUS_VOID = 5;
+}
+
+// Where a pay stub is in its lifecycle.
+enum PayStubStatus {
+  PAY_STUB_STATUS_UNSPECIFIED = 0;
+  PAY_STUB_STATUS_DRAFT = 1;
+  PAY_STUB_STATUS_ISSUED = 2;
+  PAY_STUB_STATUS_APPROVED = 3;
+  PAY_STUB_STATUS_PAID = 4;
+  PAY_STUB_STATUS_VOID = 5;
+}
+
+// Where a deduction is in its lifecycle.
+enum DeductionStatus {
+  DEDUCTION_STATUS_UNSPECIFIED = 0;
+  DEDUCTION_STATUS_DRAFT = 1;
+  DEDUCTION_STATUS_ENABLED = 2;
+  DEDUCTION_STATUS_DISABLED = 3;
+  DEDUCTION_STATUS_RETIRED = 4;
+}
+
+// Where a tax withholding is in its lifecycle.
+enum TaxWithholdingStatus {
+  TAX_WITHHOLDING_STATUS_UNSPECIFIED = 0;
+  TAX_WITHHOLDING_STATUS_DRAFT = 1;
+  TAX_WITHHOLDING_STATUS_ENABLED = 2;
+  TAX_WITHHOLDING_STATUS_DISABLED = 3;
+  TAX_WITHHOLDING_STATUS_RETIRED = 4;
+}
+
+// The line of a pay run.
+message PayRunLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PayRunLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a pay run line.
+message PayRunLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a pay run.
+message PayRunCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a pay run.
+message PayRunBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a pay run.
+message PayRunAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A pay run of the payroll domain.
+message PayRun {
+  string pay_run_id = 1;
+  string number = 2;
+  PayRunStatus status = 3;
+  DeductionRef counterparty = 4;
+  repeated PayRunLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PayRunCardSettlement card = 8;
+    PayRunBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PayRunAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of a pay stub.
+message PayStubLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PayStubLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a pay stub line.
+message PayStubLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a pay stub.
+message PayStubCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a pay stub.
+message PayStubBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a pay stub.
+message PayStubAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A pay stub of the payroll domain.
+message PayStub {
+  string pay_stub_id = 1;
+  string number = 2;
+  PayStubStatus status = 3;
+  DeductionRef counterparty = 4;
+  repeated PayStubLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PayStubCardSettlement card = 8;
+    PayStubBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PayStubAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The condition of a deduction.
+message DeductionCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a deduction.
+message DeductionDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a deduction.
+message DeductionRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a deduction.
+message DeductionBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A deduction of the payroll domain.
+message Deduction {
+  string deduction_id = 1;
+  string name = 2;
+  string description = 3;
+  DeductionStatus status = 4;
+  int32 priority = 5;
+  repeated DeductionCondition conditions = 6;
+  oneof action {
+    DeductionDiscountAction discount = 7;
+    DeductionRouteAction route = 8;
+    DeductionBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a tax withholding.
+message TaxWithholdingCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a tax withholding.
+message TaxWithholdingDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a tax withholding.
+message TaxWithholdingRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a tax withholding.
+message TaxWithholdingBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A tax withholding of the payroll domain.
+message TaxWithholding {
+  string tax_withholding_id = 1;
+  string name = 2;
+  string description = 3;
+  TaxWithholdingStatus status = 4;
+  int32 priority = 5;
+  repeated TaxWithholdingCondition conditions = 6;
+  oneof action {
+    TaxWithholdingDiscountAction discount = 7;
+    TaxWithholdingRouteAction route = 8;
+    TaxWithholdingBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,174 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.collections.v1;
+
+import "acme/collections/v1/collections.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Collections.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/collections/v1;collectionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CollectionCaseServiceProto";
+option java_package = "com.acme.collections.v1";
+
+// Manages collection cases: creates, reads, changes, and lists them.
+service CollectionCaseService {
+  // Creates a collection case.
+  rpc CreateCollectionCase(CreateCollectionCaseRequest) returns (CreateCollectionCaseResponse);
+
+  // Returns a collection case.
+  rpc GetCollectionCase(GetCollectionCaseRequest) returns (GetCollectionCaseResponse);
+
+  // Changes a collection case.
+  rpc UpdateCollectionCase(UpdateCollectionCaseRequest) returns (UpdateCollectionCaseResponse);
+
+  // Deletes a collection case.
+  rpc DeleteCollectionCase(DeleteCollectionCaseRequest) returns (DeleteCollectionCaseResponse);
+
+  // Streams the changes of collection cases as they happen.
+  rpc WatchCollectionCases(WatchCollectionCasesRequest) returns (stream WatchCollectionCasesResponse);
+
+  // Takes a stream of collection cases and answers once at the end.
+  rpc BatchCreateCollectionCases(stream BatchCreateCollectionCasesRequest) returns (BatchCreateCollectionCasesResponse);
+
+  // Creates a collection case.
+  rpc CloneCollectionCase(CloneCollectionCaseRequest) returns (CloneCollectionCaseResponse);
+}
+
+// The request of `CreateCollectionCase`.
+message CreateCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  CollectionCase collection_case = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateCollectionCase`.
+message CreateCollectionCaseResponse {
+  CollectionCase collection_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetCollectionCase`.
+message GetCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_case_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCollectionCase`.
+message GetCollectionCaseResponse {
+  CollectionCase collection_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateCollectionCase`.
+message UpdateCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  CollectionCase collection_case = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateCollectionCase`.
+message UpdateCollectionCaseResponse {
+  CollectionCase collection_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteCollectionCase`.
+message DeleteCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string collection_case_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteCollectionCase`.
+message DeleteCollectionCaseResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `WatchCollectionCases`.
+message WatchCollectionCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CollectionCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchCollectionCasesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchCollectionCases`.
+message WatchCollectionCasesResponse {
+  CollectionCase collection_case = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateCollectionCases`.
+message BatchCreateCollectionCasesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateCollectionCasesRequest.StreamHeader header = 2;
+    CollectionCase record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateCollectionCases`.
+message BatchCreateCollectionCasesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string collection_case_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateCollectionCasesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneCollectionCase`.
+message CloneCollectionCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  CollectionCase collection_case = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneCollectionCase`.
+message CloneCollectionCaseResponse {
+  CollectionCase collection_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}

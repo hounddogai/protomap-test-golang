@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PickListApprovalServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Routes pick lists through approval, with escalation and delegation.
+service PickListApprovalService {
+  // Submits a pick list.
+  rpc SubmitPickList(SubmitPickListRequest) returns (SubmitPickListResponse);
+
+  // Approves a pick list.
+  rpc ApprovePickList(ApprovePickListRequest) returns (ApprovePickListResponse);
+
+  // Rejects a pick list.
+  rpc RejectPickList(RejectPickListRequest) returns (RejectPickListResponse);
+
+  // Escalates a pick list.
+  rpc EscalatePickList(EscalatePickListRequest) returns (EscalatePickListResponse);
+
+  // Lists pick lists a page at a time.
+  rpc ListPendingPickLists(ListPendingPickListsRequest) returns (ListPendingPickListsResponse);
+
+  // Delegates a pick list.
+  rpc DelegatePickListApproval(DelegatePickListApprovalRequest) returns (DelegatePickListApprovalResponse);
+
+  // Recalls a pick list.
+  rpc RecallPickList(RecallPickListRequest) returns (RecallPickListResponse);
+
+  // Returns a pick list.
+  rpc GetPickListApprovalStatus(GetPickListApprovalStatusRequest) returns (GetPickListApprovalStatusResponse);
+
+  // Comments a pick list.
+  rpc CommentPickListApproval(CommentPickListApprovalRequest) returns (CommentPickListApprovalResponse);
+}
+
+// The request of `SubmitPickList`.
+message SubmitPickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  SubmitPickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPickList`.
+message SubmitPickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  SubmitPickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePickList`.
+message ApprovePickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  ApprovePickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePickList`.
+message ApprovePickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  ApprovePickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPickList`.
+message RejectPickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  RejectPickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPickList`.
+message RejectPickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  RejectPickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePickList`.
+message EscalatePickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  EscalatePickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePickList`.
+message EscalatePickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  EscalatePickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPickLists`.
+message ListPendingPickListsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PickListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPickListsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPickLists`.
+message ListPendingPickListsResponse {
+  repeated PickList pick_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePickListApproval`.
+message DelegatePickListApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  DelegatePickListApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePickListApproval`.
+message DelegatePickListApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  DelegatePickListApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPickList`.
+message RecallPickListRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  RecallPickListRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPickList`.
+message RecallPickListResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  RecallPickListResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPickListApprovalStatus`.
+message GetPickListApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPickListApprovalStatus`.
+message GetPickListApprovalStatusResponse {
+  PickList pick_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentPickListApproval`.
+message CommentPickListApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  CommentPickListApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentPickListApproval`.
+message CommentPickListApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  CommentPickListApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

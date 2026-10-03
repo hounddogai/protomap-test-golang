@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.promotions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/promotions/v1/promotions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Promotions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/promotions/v1;promotionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "CouponWorkflowServiceProto";
+option java_package = "com.acme.promotions.v1";
+
+// Runs the long-lived workflow that takes a coupon from start to finish.
+service CouponWorkflowService {
+  // Starts a coupon.
+  rpc StartCouponWorkflow(StartCouponWorkflowRequest) returns (StartCouponWorkflowResponse);
+
+  // Advances a coupon.
+  rpc AdvanceCouponWorkflow(AdvanceCouponWorkflowRequest) returns (AdvanceCouponWorkflowResponse);
+
+  // Cancels a coupon.
+  rpc CancelCouponWorkflow(CancelCouponWorkflowRequest) returns (CancelCouponWorkflowResponse);
+
+  // Retrys a coupon.
+  rpc RetryCouponWorkflow(RetryCouponWorkflowRequest) returns (RetryCouponWorkflowResponse);
+
+  // Pauses a coupon.
+  rpc PauseCouponWorkflow(PauseCouponWorkflowRequest) returns (PauseCouponWorkflowResponse);
+
+  // Resumes a coupon.
+  rpc ResumeCouponWorkflow(ResumeCouponWorkflowRequest) returns (ResumeCouponWorkflowResponse);
+
+  // Returns a coupon.
+  rpc InspectCouponWorkflow(InspectCouponWorkflowRequest) returns (InspectCouponWorkflowResponse);
+
+  // Lists coupons a page at a time.
+  rpc ListCouponWorkflows(ListCouponWorkflowsRequest) returns (ListCouponWorkflowsResponse);
+
+  // Signals a coupon.
+  rpc SignalCouponWorkflow(SignalCouponWorkflowRequest) returns (SignalCouponWorkflowResponse);
+}
+
+// The request of `StartCouponWorkflow`.
+message StartCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  StartCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCouponWorkflow`.
+message StartCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  StartCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCouponWorkflow`.
+message AdvanceCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  AdvanceCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCouponWorkflow`.
+message AdvanceCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  AdvanceCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCouponWorkflow`.
+message CancelCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  CancelCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCouponWorkflow`.
+message CancelCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  CancelCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryCouponWorkflow`.
+message RetryCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  RetryCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryCouponWorkflow`.
+message RetryCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  RetryCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCouponWorkflow`.
+message PauseCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  PauseCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCouponWorkflow`.
+message PauseCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  PauseCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeCouponWorkflow`.
+message ResumeCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  ResumeCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeCouponWorkflow`.
+message ResumeCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  ResumeCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectCouponWorkflow`.
+message InspectCouponWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectCouponWorkflow`.
+message InspectCouponWorkflowResponse {
+  Coupon coupon = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListCouponWorkflows`.
+message ListCouponWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CouponStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCouponWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCouponWorkflows`.
+message ListCouponWorkflowsResponse {
+  repeated Coupon coupons = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCouponWorkflow`.
+message SignalCouponWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string coupon_id = 2;
+  Coupon coupon = 3;
+  SignalCouponWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCouponWorkflow`.
+message SignalCouponWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Coupon coupon = 1;
+  SignalCouponWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

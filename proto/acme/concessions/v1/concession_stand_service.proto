@@ -1,0 +1,202 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.concessions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/concessions/v1/concessions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Concessions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/concessions/v1;concessionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConcessionStandServiceProto";
+option java_package = "com.acme.concessions.v1";
+
+// Manages concession stands: creates, reads, changes, and lists them.
+service ConcessionStandService {
+  // Creates a concession stand.
+  rpc CreateConcessionStand(CreateConcessionStandRequest) returns (CreateConcessionStandResponse);
+
+  // Returns a concession stand.
+  rpc GetConcessionStand(GetConcessionStandRequest) returns (GetConcessionStandResponse);
+
+  // Changes a concession stand.
+  rpc UpdateConcessionStand(UpdateConcessionStandRequest) returns (UpdateConcessionStandResponse);
+
+  // Returns several concession stands at once.
+  rpc BatchGetConcessionStands(BatchGetConcessionStandsRequest) returns (BatchGetConcessionStandsResponse);
+
+  // Lists concession stands a page at a time.
+  rpc SearchConcessionStands(SearchConcessionStandsRequest) returns (SearchConcessionStandsResponse);
+
+  // Streams the changes of concession stands as they happen.
+  rpc WatchConcessionStands(WatchConcessionStandsRequest) returns (stream WatchConcessionStandsResponse);
+
+  // Takes a stream of concession stands and answers once at the end.
+  rpc BatchCreateConcessionStands(stream BatchCreateConcessionStandsRequest) returns (BatchCreateConcessionStandsResponse);
+
+  // Creates a concession stand.
+  rpc CloneConcessionStand(CloneConcessionStandRequest) returns (CloneConcessionStandResponse);
+}
+
+// The request of `CreateConcessionStand`.
+message CreateConcessionStandRequest {
+  acme.common.v1.RequestContext context = 1;
+  ConcessionStand concession_stand = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateConcessionStand`.
+message CreateConcessionStandResponse {
+  ConcessionStand concession_stand = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetConcessionStand`.
+message GetConcessionStandRequest {
+  acme.common.v1.RequestContext context = 1;
+  string concession_stand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConcessionStand`.
+message GetConcessionStandResponse {
+  ConcessionStand concession_stand = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateConcessionStand`.
+message UpdateConcessionStandRequest {
+  acme.common.v1.RequestContext context = 1;
+  ConcessionStand concession_stand = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateConcessionStand`.
+message UpdateConcessionStandResponse {
+  ConcessionStand concession_stand = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BatchGetConcessionStands`.
+message BatchGetConcessionStandsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string concession_stand_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetConcessionStands`.
+message BatchGetConcessionStandsResponse {
+  repeated ConcessionStand concession_stands = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchConcessionStands`.
+message SearchConcessionStandsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConcessionStandStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchConcessionStandsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchConcessionStands`.
+message SearchConcessionStandsResponse {
+  repeated ConcessionStand concession_stands = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchConcessionStands`.
+message WatchConcessionStandsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConcessionStandStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchConcessionStandsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchConcessionStands`.
+message WatchConcessionStandsResponse {
+  ConcessionStand concession_stand = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateConcessionStands`.
+message BatchCreateConcessionStandsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateConcessionStandsRequest.StreamHeader header = 2;
+    ConcessionStand record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateConcessionStands`.
+message BatchCreateConcessionStandsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string concession_stand_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateConcessionStandsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneConcessionStand`.
+message CloneConcessionStandRequest {
+  acme.common.v1.RequestContext context = 1;
+  ConcessionStand concession_stand = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneConcessionStand`.
+message CloneConcessionStandResponse {
+  ConcessionStand concession_stand = 1;
+  acme.common.v1.OperationResult result = 2;
+}

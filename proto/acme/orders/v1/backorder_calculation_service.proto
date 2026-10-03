@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "BackorderCalculationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Computes the figures of a backorder, such as totals, taxes, and estimates.
+service BackorderCalculationService {
+  // Calculates a backorder.
+  rpc CalculateBackorder(CalculateBackorderRequest) returns (CalculateBackorderResponse);
+
+  // Estimates a backorder.
+  rpc EstimateBackorder(EstimateBackorderRequest) returns (EstimateBackorderResponse);
+
+  // Quotes a backorder.
+  rpc QuoteBackorder(QuoteBackorderRequest) returns (QuoteBackorderResponse);
+
+  // Compares a backorder.
+  rpc CompareBackorderOptions(CompareBackorderOptionsRequest) returns (CompareBackorderOptionsResponse);
+
+  // Recalculates a backorder.
+  rpc RecalculateBackorders(RecalculateBackordersRequest) returns (RecalculateBackordersResponse);
+
+  // Simulates a backorder.
+  rpc SimulateBackorder(SimulateBackorderRequest) returns (SimulateBackorderResponse);
+
+  // Explains a backorder.
+  rpc ExplainBackorderCalculation(ExplainBackorderCalculationRequest) returns (ExplainBackorderCalculationResponse);
+
+  // Returns a backorder.
+  rpc GetBackorderRates(GetBackorderRatesRequest) returns (GetBackorderRatesResponse);
+}
+
+// The request of `CalculateBackorder`.
+message CalculateBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  CalculateBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateBackorder`.
+message CalculateBackorderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateBackorderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  CalculateBackorderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateBackorder`.
+message EstimateBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  EstimateBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateBackorder`.
+message EstimateBackorderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateBackorderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  EstimateBackorderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteBackorder`.
+message QuoteBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  QuoteBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteBackorder`.
+message QuoteBackorderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteBackorderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  QuoteBackorderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareBackorderOptions`.
+message CompareBackorderOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  CompareBackorderOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareBackorderOptions`.
+message CompareBackorderOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareBackorderOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  CompareBackorderOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateBackorders`.
+message RecalculateBackordersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  RecalculateBackordersRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateBackorders`.
+message RecalculateBackordersResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateBackordersResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  RecalculateBackordersResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateBackorder`.
+message SimulateBackorderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  SimulateBackorderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateBackorder`.
+message SimulateBackorderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateBackorderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Backorder backorder = 1;
+  SimulateBackorderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainBackorderCalculation`.
+message ExplainBackorderCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  Backorder backorder = 3;
+  ExplainBackorderCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainBackorderCalculation`.
+message ExplainBackorderCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Backorder backorder = 1;
+  ExplainBackorderCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBackorderRates`.
+message GetBackorderRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string backorder_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBackorderRates`.
+message GetBackorderRatesResponse {
+  Backorder backorder = 1;
+  acme.common.v1.OperationResult result = 2;
+}

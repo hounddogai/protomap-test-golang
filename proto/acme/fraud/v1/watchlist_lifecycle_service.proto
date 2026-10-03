@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/fraud/v1/fraud.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "WatchlistLifecycleServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Moves a watchlist between the states of its lifecycle.
+service WatchlistLifecycleService {
+  // Activates a watchlist.
+  rpc ActivateWatchlist(ActivateWatchlistRequest) returns (ActivateWatchlistResponse);
+
+  // Suspends a watchlist.
+  rpc SuspendWatchlist(SuspendWatchlistRequest) returns (SuspendWatchlistResponse);
+
+  // Reinstates a watchlist.
+  rpc ReinstateWatchlist(ReinstateWatchlistRequest) returns (ReinstateWatchlistResponse);
+
+  // Terminates a watchlist.
+  rpc TerminateWatchlist(TerminateWatchlistRequest) returns (TerminateWatchlistResponse);
+
+  // Renews a watchlist.
+  rpc RenewWatchlist(RenewWatchlistRequest) returns (RenewWatchlistResponse);
+
+  // Expires a watchlist.
+  rpc ExpireWatchlist(ExpireWatchlistRequest) returns (ExpireWatchlistResponse);
+
+  // Returns a watchlist.
+  rpc GetWatchlistLifecycle(GetWatchlistLifecycleRequest) returns (GetWatchlistLifecycleResponse);
+
+  // Schedules a watchlist.
+  rpc ScheduleWatchlistExpiry(ScheduleWatchlistExpiryRequest) returns (ScheduleWatchlistExpiryResponse);
+}
+
+// The request of `ActivateWatchlist`.
+message ActivateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  ActivateWatchlistRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateWatchlist`.
+message ActivateWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ActivateWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendWatchlist`.
+message SuspendWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  SuspendWatchlistRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendWatchlist`.
+message SuspendWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  SuspendWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateWatchlist`.
+message ReinstateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  ReinstateWatchlistRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateWatchlist`.
+message ReinstateWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ReinstateWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateWatchlist`.
+message TerminateWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  TerminateWatchlistRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateWatchlist`.
+message TerminateWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  TerminateWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewWatchlist`.
+message RenewWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  RenewWatchlistRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewWatchlist`.
+message RenewWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  RenewWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireWatchlist`.
+message ExpireWatchlistRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  ExpireWatchlistRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireWatchlist`.
+message ExpireWatchlistResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ExpireWatchlistResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetWatchlistLifecycle`.
+message GetWatchlistLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetWatchlistLifecycle`.
+message GetWatchlistLifecycleResponse {
+  Watchlist watchlist = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleWatchlistExpiry`.
+message ScheduleWatchlistExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string watchlist_id = 2;
+  Watchlist watchlist = 3;
+  ScheduleWatchlistExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleWatchlistExpiry`.
+message ScheduleWatchlistExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Watchlist watchlist = 1;
+  ScheduleWatchlistExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

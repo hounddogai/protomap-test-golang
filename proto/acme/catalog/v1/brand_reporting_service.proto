@@ -1,0 +1,197 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "BrandReportingServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Builds and schedules reports about brands.
+service BrandReportingService {
+  // Generates a brand.
+  rpc GenerateBrandReport(GenerateBrandReportRequest) returns (GenerateBrandReportResponse);
+
+  // Returns a brand.
+  rpc FetchBrandReport(FetchBrandReportRequest) returns (FetchBrandReportResponse);
+
+  // Schedules a brand.
+  rpc ScheduleBrandReport(ScheduleBrandReportRequest) returns (ScheduleBrandReportResponse);
+
+  // Streams the changes of brands as they happen.
+  rpc StreamBrandMetrics(StreamBrandMetricsRequest) returns (stream StreamBrandMetricsResponse);
+
+  // Shares a brand.
+  rpc ShareBrandReport(ShareBrandReportRequest) returns (ShareBrandReportResponse);
+
+  // Counts brands by status.
+  rpc CountBrandTotals(CountBrandTotalsRequest) returns (CountBrandTotalsResponse);
+}
+
+// The request of `GenerateBrandReport`.
+message GenerateBrandReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  GenerateBrandReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `GenerateBrandReport`.
+message GenerateBrandReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `FetchBrandReport`.
+message FetchBrandReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `FetchBrandReport`.
+message FetchBrandReportResponse {
+  Brand brand = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleBrandReport`.
+message ScheduleBrandReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  ScheduleBrandReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ScheduleBrandReport`.
+message ScheduleBrandReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `StreamBrandMetrics`.
+message StreamBrandMetricsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BrandStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamBrandMetricsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamBrandMetrics`.
+message StreamBrandMetricsResponse {
+  Brand brand = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ShareBrandReport`.
+message ShareBrandReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  ShareBrandReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ShareBrandReport`.
+message ShareBrandReportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ShareBrandReportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountBrandTotals`.
+message CountBrandTotalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BrandStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountBrandTotalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountBrandTotals`.
+message CountBrandTotalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}

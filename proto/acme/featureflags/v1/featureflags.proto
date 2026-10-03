@@ -1,0 +1,158 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.featureflags.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/featureflags/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Featureflags.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/featureflags/v1;featureflagsv1";
+option java_multiple_files = true;
+option java_outer_classname = "FeatureflagsProto";
+option java_package = "com.acme.featureflags.v1";
+
+// Where a feature flag is in its lifecycle.
+enum FeatureFlagStatus {
+  FEATURE_FLAG_STATUS_UNSPECIFIED = 0;
+  FEATURE_FLAG_STATUS_DRAFT = 1;
+  FEATURE_FLAG_STATUS_ENABLED = 2;
+  FEATURE_FLAG_STATUS_DISABLED = 3;
+  FEATURE_FLAG_STATUS_RETIRED = 4;
+}
+
+// Where a flag rollout is in its lifecycle.
+enum FlagRolloutStatus {
+  FLAG_ROLLOUT_STATUS_UNSPECIFIED = 0;
+  FLAG_ROLLOUT_STATUS_TENTATIVE = 1;
+  FLAG_ROLLOUT_STATUS_CONFIRMED = 2;
+  FLAG_ROLLOUT_STATUS_CANCELLED = 3;
+  FLAG_ROLLOUT_STATUS_COMPLETED = 4;
+}
+
+// Where a flag evaluation is in its lifecycle.
+enum FlagEvaluationStatus {
+  FLAG_EVALUATION_STATUS_UNSPECIFIED = 0;
+  FLAG_EVALUATION_STATUS_RECEIVED = 1;
+  FLAG_EVALUATION_STATUS_PROCESSED = 2;
+  FLAG_EVALUATION_STATUS_DISCARDED = 3;
+}
+
+// The condition of a feature flag.
+message FeatureFlagCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a feature flag.
+message FeatureFlagDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a feature flag.
+message FeatureFlagRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a feature flag.
+message FeatureFlagBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A feature flag of the featureflags domain.
+message FeatureFlag {
+  string feature_flag_id = 1;
+  string name = 2;
+  string description = 3;
+  FeatureFlagStatus status = 4;
+  int32 priority = 5;
+  repeated FeatureFlagCondition conditions = 6;
+  oneof action {
+    FeatureFlagDiscountAction discount = 7;
+    FeatureFlagRouteAction route = 8;
+    FeatureFlagBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The participant of a flag rollout.
+message FlagRolloutParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a flag rollout.
+message FlagRolloutDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a flag rollout.
+message FlagRolloutWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A flag rollout of the featureflags domain.
+message FlagRollout {
+  string flag_rollout_id = 1;
+  string title = 2;
+  FlagRolloutStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated FlagRolloutParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    FlagRolloutDailyRule daily = 7;
+    FlagRolloutWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The measurement of a flag evaluation.
+message FlagEvaluationMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A flag evaluation of the featureflags domain.
+message FlagEvaluation {
+  string flag_evaluation_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  FlagRolloutRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated FlagEvaluationMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

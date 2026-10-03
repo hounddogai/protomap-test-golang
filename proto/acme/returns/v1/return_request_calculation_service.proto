@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnRequestCalculationServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Computes the figures of a return request, such as totals, taxes, and estimates.
+service ReturnRequestCalculationService {
+  // Calculates a return request.
+  rpc CalculateReturnRequest(CalculateReturnRequestRequest) returns (CalculateReturnRequestResponse);
+
+  // Estimates a return request.
+  rpc EstimateReturnRequest(EstimateReturnRequestRequest) returns (EstimateReturnRequestResponse);
+
+  // Quotes a return request.
+  rpc QuoteReturnRequest(QuoteReturnRequestRequest) returns (QuoteReturnRequestResponse);
+
+  // Compares a return request.
+  rpc CompareReturnRequestOptions(CompareReturnRequestOptionsRequest) returns (CompareReturnRequestOptionsResponse);
+
+  // Recalculates a return request.
+  rpc RecalculateReturnRequests(RecalculateReturnRequestsRequest) returns (RecalculateReturnRequestsResponse);
+
+  // Simulates a return request.
+  rpc SimulateReturnRequest(SimulateReturnRequestRequest) returns (SimulateReturnRequestResponse);
+
+  // Explains a return request.
+  rpc ExplainReturnRequestCalculation(ExplainReturnRequestCalculationRequest) returns (ExplainReturnRequestCalculationResponse);
+
+  // Returns a return request.
+  rpc GetReturnRequestRates(GetReturnRequestRatesRequest) returns (GetReturnRequestRatesResponse);
+}
+
+// The request of `CalculateReturnRequest`.
+message CalculateReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  CalculateReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateReturnRequest`.
+message CalculateReturnRequestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateReturnRequestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  CalculateReturnRequestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateReturnRequest`.
+message EstimateReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  EstimateReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateReturnRequest`.
+message EstimateReturnRequestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateReturnRequestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  EstimateReturnRequestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteReturnRequest`.
+message QuoteReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  QuoteReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteReturnRequest`.
+message QuoteReturnRequestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteReturnRequestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  QuoteReturnRequestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareReturnRequestOptions`.
+message CompareReturnRequestOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  CompareReturnRequestOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareReturnRequestOptions`.
+message CompareReturnRequestOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareReturnRequestOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  CompareReturnRequestOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateReturnRequests`.
+message RecalculateReturnRequestsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  RecalculateReturnRequestsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateReturnRequests`.
+message RecalculateReturnRequestsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateReturnRequestsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  RecalculateReturnRequestsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateReturnRequest`.
+message SimulateReturnRequestRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  SimulateReturnRequestRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateReturnRequest`.
+message SimulateReturnRequestResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateReturnRequestResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ReturnRequest return_request = 1;
+  SimulateReturnRequestResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainReturnRequestCalculation`.
+message ExplainReturnRequestCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  ReturnRequest return_request = 3;
+  ExplainReturnRequestCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainReturnRequestCalculation`.
+message ExplainReturnRequestCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnRequest return_request = 1;
+  ExplainReturnRequestCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnRequestRates`.
+message GetReturnRequestRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_request_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnRequestRates`.
+message GetReturnRequestRatesResponse {
+  ReturnRequest return_request = 1;
+  acme.common.v1.OperationResult result = 2;
+}

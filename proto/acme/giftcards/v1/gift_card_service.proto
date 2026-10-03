@@ -1,0 +1,167 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.giftcards.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/giftcards/v1/giftcards.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Giftcards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/giftcards/v1;giftcardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "GiftCardServiceProto";
+option java_package = "com.acme.giftcards.v1";
+
+// Manages gift cards: creates, reads, changes, and lists them.
+service GiftCardService {
+  // Creates a gift card.
+  rpc CreateGiftCard(CreateGiftCardRequest) returns (CreateGiftCardResponse);
+
+  // Returns a gift card.
+  rpc GetGiftCard(GetGiftCardRequest) returns (GetGiftCardResponse);
+
+  // Changes a gift card.
+  rpc UpdateGiftCard(UpdateGiftCardRequest) returns (UpdateGiftCardResponse);
+
+  // Deletes a gift card.
+  rpc DeleteGiftCard(DeleteGiftCardRequest) returns (DeleteGiftCardResponse);
+
+  // Lists gift cards a page at a time.
+  rpc SearchGiftCards(SearchGiftCardsRequest) returns (SearchGiftCardsResponse);
+
+  // Streams the changes of gift cards as they happen.
+  rpc WatchGiftCards(WatchGiftCardsRequest) returns (stream WatchGiftCardsResponse);
+
+  // Creates a gift card.
+  rpc CloneGiftCard(CloneGiftCardRequest) returns (CloneGiftCardResponse);
+}
+
+// The request of `CreateGiftCard`.
+message CreateGiftCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  GiftCard gift_card = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateGiftCard`.
+message CreateGiftCardResponse {
+  GiftCard gift_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetGiftCard`.
+message GetGiftCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetGiftCard`.
+message GetGiftCardResponse {
+  GiftCard gift_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateGiftCard`.
+message UpdateGiftCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  GiftCard gift_card = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateGiftCard`.
+message UpdateGiftCardResponse {
+  GiftCard gift_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteGiftCard`.
+message DeleteGiftCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  string gift_card_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteGiftCard`.
+message DeleteGiftCardResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `SearchGiftCards`.
+message SearchGiftCardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchGiftCardsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchGiftCards`.
+message SearchGiftCardsResponse {
+  repeated GiftCard gift_cards = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchGiftCards`.
+message WatchGiftCardsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated GiftCardStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchGiftCardsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchGiftCards`.
+message WatchGiftCardsResponse {
+  GiftCard gift_card = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `CloneGiftCard`.
+message CloneGiftCardRequest {
+  acme.common.v1.RequestContext context = 1;
+  GiftCard gift_card = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneGiftCard`.
+message CloneGiftCardResponse {
+  GiftCard gift_card = 1;
+  acme.common.v1.OperationResult result = 2;
+}

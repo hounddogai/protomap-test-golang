@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentQueryServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Answers read-only questions about payments, for screens and reports.
+service PaymentQueryService {
+  // Returns a payment.
+  rpc LookupPayment(LookupPaymentRequest) returns (LookupPaymentResponse);
+
+  // Lists payments a page at a time.
+  rpc BrowsePayments(BrowsePaymentsRequest) returns (BrowsePaymentsResponse);
+
+  // Lists payments a page at a time.
+  rpc FindPayments(FindPaymentsRequest) returns (FindPaymentsResponse);
+
+  // Returns several payments at once.
+  rpc ResolvePayments(ResolvePaymentsRequest) returns (ResolvePaymentsResponse);
+
+  // Streams every matching payment.
+  rpc ExportPayments(ExportPaymentsRequest) returns (stream ExportPaymentsResponse);
+
+  // Summarizes a payment.
+  rpc SummarizePayments(SummarizePaymentsRequest) returns (SummarizePaymentsResponse);
+
+  // Lists payments a page at a time.
+  rpc SuggestPayments(SuggestPaymentsRequest) returns (SuggestPaymentsResponse);
+
+  // Returns a payment.
+  rpc PeekPayment(PeekPaymentRequest) returns (PeekPaymentResponse);
+}
+
+// The request of `LookupPayment`.
+message LookupPaymentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupPayment`.
+message LookupPaymentResponse {
+  Payment payment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowsePayments`.
+message BrowsePaymentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowsePaymentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowsePayments`.
+message BrowsePaymentsResponse {
+  repeated Payment payments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindPayments`.
+message FindPaymentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindPaymentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindPayments`.
+message FindPaymentsResponse {
+  repeated Payment payments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolvePayments`.
+message ResolvePaymentsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string payment_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolvePayments`.
+message ResolvePaymentsResponse {
+  repeated Payment payments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportPayments`.
+message ExportPaymentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportPaymentsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportPayments`.
+message ExportPaymentsResponse {
+  Payment payment = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizePayments`.
+message SummarizePaymentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  SummarizePaymentsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizePayments`.
+message SummarizePaymentsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestPayments`.
+message SuggestPaymentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PaymentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestPaymentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestPayments`.
+message SuggestPaymentsResponse {
+  repeated Payment payments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekPayment`.
+message PeekPaymentRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekPayment`.
+message PeekPaymentResponse {
+  Payment payment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

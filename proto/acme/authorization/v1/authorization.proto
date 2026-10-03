@@ -1,0 +1,184 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.authorization.v1;
+
+import "acme/authorization/v1/refs.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Authorization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/authorization/v1;authorizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "AuthorizationProto";
+option java_package = "com.acme.authorization.v1";
+
+// Where an access policy is in its lifecycle.
+enum AccessPolicyStatus {
+  ACCESS_POLICY_STATUS_UNSPECIFIED = 0;
+  ACCESS_POLICY_STATUS_DRAFT = 1;
+  ACCESS_POLICY_STATUS_ENABLED = 2;
+  ACCESS_POLICY_STATUS_DISABLED = 3;
+  ACCESS_POLICY_STATUS_RETIRED = 4;
+}
+
+// Where a role binding is in its lifecycle.
+enum RoleBindingStatus {
+  ROLE_BINDING_STATUS_UNSPECIFIED = 0;
+  ROLE_BINDING_STATUS_DRAFT = 1;
+  ROLE_BINDING_STATUS_ISSUED = 2;
+  ROLE_BINDING_STATUS_APPROVED = 3;
+  ROLE_BINDING_STATUS_PAID = 4;
+  ROLE_BINDING_STATUS_VOID = 5;
+}
+
+// Where a permission check is in its lifecycle.
+enum PermissionCheckStatus {
+  PERMISSION_CHECK_STATUS_UNSPECIFIED = 0;
+  PERMISSION_CHECK_STATUS_RECEIVED = 1;
+  PERMISSION_CHECK_STATUS_PROCESSED = 2;
+  PERMISSION_CHECK_STATUS_DISCARDED = 3;
+}
+
+// The condition of an access policy.
+message AccessPolicyCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of an access policy.
+message AccessPolicyDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of an access policy.
+message AccessPolicyRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of an access policy.
+message AccessPolicyBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// An access policy of the authorization domain.
+message AccessPolicy {
+  string access_policy_id = 1;
+  string name = 2;
+  string description = 3;
+  AccessPolicyStatus status = 4;
+  int32 priority = 5;
+  repeated AccessPolicyCondition conditions = 6;
+  oneof action {
+    AccessPolicyDiscountAction discount = 7;
+    AccessPolicyRouteAction route = 8;
+    AccessPolicyBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of a role binding.
+message RoleBindingLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  RoleBindingLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a role binding line.
+message RoleBindingLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a role binding.
+message RoleBindingCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a role binding.
+message RoleBindingBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a role binding.
+message RoleBindingAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A role binding of the authorization domain.
+message RoleBinding {
+  string role_binding_id = 1;
+  string number = 2;
+  RoleBindingStatus status = 3;
+  AccessPolicyRef counterparty = 4;
+  repeated RoleBindingLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    RoleBindingCardSettlement card = 8;
+    RoleBindingBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated RoleBindingAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The measurement of a permission check.
+message PermissionCheckMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A permission check of the authorization domain.
+message PermissionCheck {
+  string permission_check_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  AccessPolicyRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated PermissionCheckMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}

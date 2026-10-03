@@ -1,0 +1,187 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.concessions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/concessions/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Concessions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/concessions/v1;concessionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConcessionsProto";
+option java_package = "com.acme.concessions.v1";
+
+// Where a concession stand is in its lifecycle.
+enum ConcessionStandStatus {
+  CONCESSION_STAND_STATUS_UNSPECIFIED = 0;
+  CONCESSION_STAND_STATUS_PLANNED = 1;
+  CONCESSION_STAND_STATUS_AVAILABLE = 2;
+  CONCESSION_STAND_STATUS_RESERVED = 3;
+  CONCESSION_STAND_STATUS_RETIRED = 4;
+}
+
+// Where a concession order is in its lifecycle.
+enum ConcessionOrderStatus {
+  CONCESSION_ORDER_STATUS_UNSPECIFIED = 0;
+  CONCESSION_ORDER_STATUS_DRAFT = 1;
+  CONCESSION_ORDER_STATUS_ISSUED = 2;
+  CONCESSION_ORDER_STATUS_APPROVED = 3;
+  CONCESSION_ORDER_STATUS_PAID = 4;
+  CONCESSION_ORDER_STATUS_VOID = 5;
+}
+
+// Where a menu item is in its lifecycle.
+enum MenuItemStatus {
+  MENU_ITEM_STATUS_UNSPECIFIED = 0;
+  MENU_ITEM_STATUS_PLANNED = 1;
+  MENU_ITEM_STATUS_AVAILABLE = 2;
+  MENU_ITEM_STATUS_RESERVED = 3;
+  MENU_ITEM_STATUS_RETIRED = 4;
+}
+
+// The dimensions of a concession stand.
+message ConcessionStandDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a concession stand.
+message ConcessionStandComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A concession stand of the concessions domain.
+message ConcessionStand {
+  string concession_stand_id = 1;
+  string code = 2;
+  string name = 3;
+  ConcessionStandStatus status = 4;
+  repeated string category_path = 5;
+  ConcessionStandDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ConcessionStandComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The line of a concession order.
+message ConcessionOrderLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ConcessionOrderLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a concession order line.
+message ConcessionOrderLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a concession order.
+message ConcessionOrderCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a concession order.
+message ConcessionOrderBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a concession order.
+message ConcessionOrderAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A concession order of the concessions domain.
+message ConcessionOrder {
+  string concession_order_id = 1;
+  string number = 2;
+  ConcessionOrderStatus status = 3;
+  MenuItemRef counterparty = 4;
+  repeated ConcessionOrderLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ConcessionOrderCardSettlement card = 8;
+    ConcessionOrderBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ConcessionOrderAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The dimensions of a menu item.
+message MenuItemDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a menu item.
+message MenuItemComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A menu item of the concessions domain.
+message MenuItem {
+  string menu_item_id = 1;
+  string code = 2;
+  string name = 3;
+  MenuItemStatus status = 4;
+  repeated string category_path = 5;
+  MenuItemDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, MenuItemComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

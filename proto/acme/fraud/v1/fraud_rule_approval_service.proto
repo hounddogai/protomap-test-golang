@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fraud.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fraud/v1/fraud.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fraud.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fraud/v1;fraudv1";
+option java_multiple_files = true;
+option java_outer_classname = "FraudRuleApprovalServiceProto";
+option java_package = "com.acme.fraud.v1";
+
+// Routes fraud rules through approval, with escalation and delegation.
+service FraudRuleApprovalService {
+  // Submits a fraud rule.
+  rpc SubmitFraudRule(SubmitFraudRuleRequest) returns (SubmitFraudRuleResponse);
+
+  // Approves a fraud rule.
+  rpc ApproveFraudRule(ApproveFraudRuleRequest) returns (ApproveFraudRuleResponse);
+
+  // Escalates a fraud rule.
+  rpc EscalateFraudRule(EscalateFraudRuleRequest) returns (EscalateFraudRuleResponse);
+
+  // Lists fraud rules a page at a time.
+  rpc ListPendingFraudRules(ListPendingFraudRulesRequest) returns (ListPendingFraudRulesResponse);
+
+  // Delegates a fraud rule.
+  rpc DelegateFraudRuleApproval(DelegateFraudRuleApprovalRequest) returns (DelegateFraudRuleApprovalResponse);
+
+  // Returns a fraud rule.
+  rpc GetFraudRuleApprovalStatus(GetFraudRuleApprovalStatusRequest) returns (GetFraudRuleApprovalStatusResponse);
+
+  // Comments a fraud rule.
+  rpc CommentFraudRuleApproval(CommentFraudRuleApprovalRequest) returns (CommentFraudRuleApprovalResponse);
+}
+
+// The request of `SubmitFraudRule`.
+message SubmitFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  SubmitFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitFraudRule`.
+message SubmitFraudRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  SubmitFraudRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveFraudRule`.
+message ApproveFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  ApproveFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveFraudRule`.
+message ApproveFraudRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  ApproveFraudRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateFraudRule`.
+message EscalateFraudRuleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  EscalateFraudRuleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateFraudRule`.
+message EscalateFraudRuleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  EscalateFraudRuleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingFraudRules`.
+message ListPendingFraudRulesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FraudRuleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingFraudRulesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingFraudRules`.
+message ListPendingFraudRulesResponse {
+  repeated FraudRule fraud_rules = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateFraudRuleApproval`.
+message DelegateFraudRuleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  DelegateFraudRuleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateFraudRuleApproval`.
+message DelegateFraudRuleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  DelegateFraudRuleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetFraudRuleApprovalStatus`.
+message GetFraudRuleApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetFraudRuleApprovalStatus`.
+message GetFraudRuleApprovalStatusResponse {
+  FraudRule fraud_rule = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentFraudRuleApproval`.
+message CommentFraudRuleApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fraud_rule_id = 2;
+  FraudRule fraud_rule = 3;
+  CommentFraudRuleApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentFraudRuleApproval`.
+message CommentFraudRuleApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  FraudRule fraud_rule = 1;
+  CommentFraudRuleApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

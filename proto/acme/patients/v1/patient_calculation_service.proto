@@ -1,0 +1,249 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientCalculationServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Computes the figures of a patient, such as totals, taxes, and estimates.
+service PatientCalculationService {
+  // Calculates a patient.
+  rpc CalculatePatient(CalculatePatientRequest) returns (CalculatePatientResponse);
+
+  // Estimates a patient.
+  rpc EstimatePatient(EstimatePatientRequest) returns (EstimatePatientResponse);
+
+  // Quotes a patient.
+  rpc QuotePatient(QuotePatientRequest) returns (QuotePatientResponse);
+
+  // Recalculates a patient.
+  rpc RecalculatePatients(RecalculatePatientsRequest) returns (RecalculatePatientsResponse);
+
+  // Explains a patient.
+  rpc ExplainPatientCalculation(ExplainPatientCalculationRequest) returns (ExplainPatientCalculationResponse);
+
+  // Returns a patient.
+  rpc GetPatientRates(GetPatientRatesRequest) returns (GetPatientRatesResponse);
+}
+
+// The request of `CalculatePatient`.
+message CalculatePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  CalculatePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculatePatient`.
+message CalculatePatientResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculatePatientResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Patient patient = 1;
+  CalculatePatientResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimatePatient`.
+message EstimatePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  EstimatePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimatePatient`.
+message EstimatePatientResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimatePatientResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Patient patient = 1;
+  EstimatePatientResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuotePatient`.
+message QuotePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  QuotePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuotePatient`.
+message QuotePatientResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuotePatientResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Patient patient = 1;
+  QuotePatientResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculatePatients`.
+message RecalculatePatientsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  RecalculatePatientsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculatePatients`.
+message RecalculatePatientsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculatePatientsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Patient patient = 1;
+  RecalculatePatientsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPatientCalculation`.
+message ExplainPatientCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ExplainPatientCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPatientCalculation`.
+message ExplainPatientCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  ExplainPatientCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPatientRates`.
+message GetPatientRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatientRates`.
+message GetPatientRatesResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}

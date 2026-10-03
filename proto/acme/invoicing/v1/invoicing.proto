@@ -1,0 +1,247 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.invoicing.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/invoicing/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Invoicing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/invoicing/v1;invoicingv1";
+option java_multiple_files = true;
+option java_outer_classname = "InvoicingProto";
+option java_package = "com.acme.invoicing.v1";
+
+// Where an invoice batch is in its lifecycle.
+enum InvoiceBatchStatus {
+  INVOICE_BATCH_STATUS_UNSPECIFIED = 0;
+  INVOICE_BATCH_STATUS_DRAFT = 1;
+  INVOICE_BATCH_STATUS_ISSUED = 2;
+  INVOICE_BATCH_STATUS_APPROVED = 3;
+  INVOICE_BATCH_STATUS_PAID = 4;
+  INVOICE_BATCH_STATUS_VOID = 5;
+}
+
+// Where an invoice template is in its lifecycle.
+enum InvoiceTemplateStatus {
+  INVOICE_TEMPLATE_STATUS_UNSPECIFIED = 0;
+  INVOICE_TEMPLATE_STATUS_DRAFT = 1;
+  INVOICE_TEMPLATE_STATUS_ISSUED = 2;
+  INVOICE_TEMPLATE_STATUS_APPROVED = 3;
+  INVOICE_TEMPLATE_STATUS_PAID = 4;
+  INVOICE_TEMPLATE_STATUS_VOID = 5;
+}
+
+// Where an e invoice is in its lifecycle.
+enum EInvoiceStatus {
+  E_INVOICE_STATUS_UNSPECIFIED = 0;
+  E_INVOICE_STATUS_DRAFT = 1;
+  E_INVOICE_STATUS_ISSUED = 2;
+  E_INVOICE_STATUS_APPROVED = 3;
+  E_INVOICE_STATUS_PAID = 4;
+  E_INVOICE_STATUS_VOID = 5;
+}
+
+// The line of an invoice batch.
+message InvoiceBatchLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  InvoiceBatchLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an invoice batch line.
+message InvoiceBatchLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an invoice batch.
+message InvoiceBatchCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an invoice batch.
+message InvoiceBatchBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an invoice batch.
+message InvoiceBatchAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An invoice batch of the invoicing domain.
+message InvoiceBatch {
+  string invoice_batch_id = 1;
+  string number = 2;
+  InvoiceBatchStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated InvoiceBatchLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    InvoiceBatchCardSettlement card = 8;
+    InvoiceBatchBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated InvoiceBatchAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of an invoice template.
+message InvoiceTemplateLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  InvoiceTemplateLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an invoice template line.
+message InvoiceTemplateLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an invoice template.
+message InvoiceTemplateCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an invoice template.
+message InvoiceTemplateBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an invoice template.
+message InvoiceTemplateAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An invoice template of the invoicing domain.
+message InvoiceTemplate {
+  string invoice_template_id = 1;
+  string number = 2;
+  InvoiceTemplateStatus status = 3;
+  acme.customers.v1.CustomerRef counterparty = 4;
+  repeated InvoiceTemplateLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    InvoiceTemplateCardSettlement card = 8;
+    InvoiceTemplateBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated InvoiceTemplateAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The line of an e invoice.
+message EInvoiceLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  EInvoiceLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an e invoice line.
+message EInvoiceLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an e invoice.
+message EInvoiceCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an e invoice.
+message EInvoiceBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an e invoice.
+message EInvoiceAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An e invoice of the invoicing domain.
+message EInvoice {
+  string e_invoice_id = 1;
+  string number = 2;
+  EInvoiceStatus status = 3;
+  InvoiceBatchRef counterparty = 4;
+  repeated EInvoiceLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    EInvoiceCardSettlement card = 8;
+    EInvoiceBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated EInvoiceAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}

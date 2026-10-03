@@ -1,0 +1,260 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.sellers.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/sellers/v1/sellers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Sellers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/sellers/v1;sellersv1";
+option java_multiple_files = true;
+option java_outer_classname = "SellerPayoutScheduleValidationServiceProto";
+option java_package = "com.acme.sellers.v1";
+
+// Checks seller payout schedules against the rules before anything acts on them.
+service SellerPayoutScheduleValidationService {
+  // Validates a seller payout schedule.
+  rpc ValidateSellerPayoutSchedule(ValidateSellerPayoutScheduleRequest) returns (ValidateSellerPayoutScheduleResponse);
+
+  // Previews a seller payout schedule.
+  rpc PreviewSellerPayoutSchedule(PreviewSellerPayoutScheduleRequest) returns (PreviewSellerPayoutScheduleResponse);
+
+  // Checks a seller payout schedule.
+  rpc CheckSellerPayoutScheduleEligibility(CheckSellerPayoutScheduleEligibilityRequest) returns (CheckSellerPayoutScheduleEligibilityResponse);
+
+  // Normalizes a seller payout schedule.
+  rpc NormalizeSellerPayoutSchedule(NormalizeSellerPayoutScheduleRequest) returns (NormalizeSellerPayoutScheduleResponse);
+
+  // Explains a seller payout schedule.
+  rpc ExplainSellerPayoutScheduleDecision(ExplainSellerPayoutScheduleDecisionRequest) returns (ExplainSellerPayoutScheduleDecisionResponse);
+
+  // Lints a seller payout schedule.
+  rpc LintSellerPayoutSchedules(LintSellerPayoutSchedulesRequest) returns (LintSellerPayoutSchedulesResponse);
+
+  // Returns a seller payout schedule.
+  rpc GetSellerPayoutScheduleRules(GetSellerPayoutScheduleRulesRequest) returns (GetSellerPayoutScheduleRulesResponse);
+}
+
+// The request of `ValidateSellerPayoutSchedule`.
+message ValidateSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  ValidateSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateSellerPayoutSchedule`.
+message ValidateSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ValidateSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewSellerPayoutSchedule`.
+message PreviewSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  PreviewSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewSellerPayoutSchedule`.
+message PreviewSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  PreviewSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckSellerPayoutScheduleEligibility`.
+message CheckSellerPayoutScheduleEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  CheckSellerPayoutScheduleEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckSellerPayoutScheduleEligibility`.
+message CheckSellerPayoutScheduleEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  CheckSellerPayoutScheduleEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeSellerPayoutSchedule`.
+message NormalizeSellerPayoutScheduleRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  NormalizeSellerPayoutScheduleRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeSellerPayoutSchedule`.
+message NormalizeSellerPayoutScheduleResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  NormalizeSellerPayoutScheduleResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainSellerPayoutScheduleDecision`.
+message ExplainSellerPayoutScheduleDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  ExplainSellerPayoutScheduleDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainSellerPayoutScheduleDecision`.
+message ExplainSellerPayoutScheduleDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  ExplainSellerPayoutScheduleDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintSellerPayoutSchedules`.
+message LintSellerPayoutSchedulesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  SellerPayoutSchedule seller_payout_schedule = 3;
+  LintSellerPayoutSchedulesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintSellerPayoutSchedules`.
+message LintSellerPayoutSchedulesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  LintSellerPayoutSchedulesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSellerPayoutScheduleRules`.
+message GetSellerPayoutScheduleRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string seller_payout_schedule_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSellerPayoutScheduleRules`.
+message GetSellerPayoutScheduleRulesResponse {
+  SellerPayoutSchedule seller_payout_schedule = 1;
+  acme.common.v1.OperationResult result = 2;
+}

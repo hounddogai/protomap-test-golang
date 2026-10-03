@@ -1,0 +1,158 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.messaging.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/messaging/v1/messaging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Messaging.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/messaging/v1;messagingv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConversationQueryServiceProto";
+option java_package = "com.acme.messaging.v1";
+
+// Answers read-only questions about conversations, for screens and reports.
+service ConversationQueryService {
+  // Returns a conversation.
+  rpc LookupConversation(LookupConversationRequest) returns (LookupConversationResponse);
+
+  // Lists conversations a page at a time.
+  rpc BrowseConversations(BrowseConversationsRequest) returns (BrowseConversationsResponse);
+
+  // Returns several conversations at once.
+  rpc ResolveConversations(ResolveConversationsRequest) returns (ResolveConversationsResponse);
+
+  // Streams every matching conversation.
+  rpc ExportConversations(ExportConversationsRequest) returns (stream ExportConversationsResponse);
+
+  // Lists conversations a page at a time.
+  rpc SuggestConversations(SuggestConversationsRequest) returns (SuggestConversationsResponse);
+
+  // Returns a conversation.
+  rpc PeekConversation(PeekConversationRequest) returns (PeekConversationResponse);
+}
+
+// The request of `LookupConversation`.
+message LookupConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupConversation`.
+message LookupConversationResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseConversations`.
+message BrowseConversationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConversationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseConversationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseConversations`.
+message BrowseConversationsResponse {
+  repeated Conversation conversations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveConversations`.
+message ResolveConversationsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string conversation_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveConversations`.
+message ResolveConversationsResponse {
+  repeated Conversation conversations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportConversations`.
+message ExportConversationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConversationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportConversationsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportConversations`.
+message ExportConversationsResponse {
+  Conversation conversation = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestConversations`.
+message SuggestConversationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ConversationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestConversationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestConversations`.
+message SuggestConversationsResponse {
+  repeated Conversation conversations = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekConversation`.
+message PeekConversationRequest {
+  acme.common.v1.RequestContext context = 1;
+  string conversation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekConversation`.
+message PeekConversationResponse {
+  Conversation conversation = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.subscriptions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/subscriptions/v1/subscriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Subscriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/subscriptions/v1;subscriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "UsageRecordApprovalServiceProto";
+option java_package = "com.acme.subscriptions.v1";
+
+// Routes usage records through approval, with escalation and delegation.
+service UsageRecordApprovalService {
+  // Submits a usage record.
+  rpc SubmitUsageRecord(SubmitUsageRecordRequest) returns (SubmitUsageRecordResponse);
+
+  // Approves a usage record.
+  rpc ApproveUsageRecord(ApproveUsageRecordRequest) returns (ApproveUsageRecordResponse);
+
+  // Rejects a usage record.
+  rpc RejectUsageRecord(RejectUsageRecordRequest) returns (RejectUsageRecordResponse);
+
+  // Lists usage records a page at a time.
+  rpc ListPendingUsageRecords(ListPendingUsageRecordsRequest) returns (ListPendingUsageRecordsResponse);
+
+  // Delegates a usage record.
+  rpc DelegateUsageRecordApproval(DelegateUsageRecordApprovalRequest) returns (DelegateUsageRecordApprovalResponse);
+
+  // Recalls a usage record.
+  rpc RecallUsageRecord(RecallUsageRecordRequest) returns (RecallUsageRecordResponse);
+
+  // Returns a usage record.
+  rpc GetUsageRecordApprovalStatus(GetUsageRecordApprovalStatusRequest) returns (GetUsageRecordApprovalStatusResponse);
+
+  // Comments a usage record.
+  rpc CommentUsageRecordApproval(CommentUsageRecordApprovalRequest) returns (CommentUsageRecordApprovalResponse);
+}
+
+// The request of `SubmitUsageRecord`.
+message SubmitUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  SubmitUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitUsageRecord`.
+message SubmitUsageRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  SubmitUsageRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveUsageRecord`.
+message ApproveUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  ApproveUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveUsageRecord`.
+message ApproveUsageRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  ApproveUsageRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectUsageRecord`.
+message RejectUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  RejectUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectUsageRecord`.
+message RejectUsageRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  RejectUsageRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingUsageRecords`.
+message ListPendingUsageRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated UsageRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingUsageRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingUsageRecords`.
+message ListPendingUsageRecordsResponse {
+  repeated UsageRecord usage_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateUsageRecordApproval`.
+message DelegateUsageRecordApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  DelegateUsageRecordApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateUsageRecordApproval`.
+message DelegateUsageRecordApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  DelegateUsageRecordApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallUsageRecord`.
+message RecallUsageRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  RecallUsageRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallUsageRecord`.
+message RecallUsageRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  RecallUsageRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetUsageRecordApprovalStatus`.
+message GetUsageRecordApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetUsageRecordApprovalStatus`.
+message GetUsageRecordApprovalStatusResponse {
+  UsageRecord usage_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentUsageRecordApproval`.
+message CommentUsageRecordApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string usage_record_id = 2;
+  UsageRecord usage_record = 3;
+  CommentUsageRecordApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentUsageRecordApproval`.
+message CommentUsageRecordApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  UsageRecord usage_record = 1;
+  CommentUsageRecordApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

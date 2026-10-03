@@ -1,0 +1,174 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.yards.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/yards/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Yards.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/yards/v1;yardsv1";
+option java_multiple_files = true;
+option java_outer_classname = "YardsProto";
+option java_package = "com.acme.yards.v1";
+
+// Where a yard is in its lifecycle.
+enum YardStatus {
+  YARD_STATUS_UNSPECIFIED = 0;
+  YARD_STATUS_PLANNED = 1;
+  YARD_STATUS_AVAILABLE = 2;
+  YARD_STATUS_RESERVED = 3;
+  YARD_STATUS_RETIRED = 4;
+}
+
+// Where a dock is in its lifecycle.
+enum DockStatus {
+  DOCK_STATUS_UNSPECIFIED = 0;
+  DOCK_STATUS_PLANNED = 1;
+  DOCK_STATUS_AVAILABLE = 2;
+  DOCK_STATUS_RESERVED = 3;
+  DOCK_STATUS_RETIRED = 4;
+}
+
+// Where a yard move is in its lifecycle.
+enum YardMoveStatus {
+  YARD_MOVE_STATUS_UNSPECIFIED = 0;
+  YARD_MOVE_STATUS_NEW = 1;
+  YARD_MOVE_STATUS_OPEN = 2;
+  YARD_MOVE_STATUS_WAITING = 3;
+  YARD_MOVE_STATUS_RESOLVED = 4;
+  YARD_MOVE_STATUS_CLOSED = 5;
+}
+
+// The dimensions of a yard.
+message YardDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a yard.
+message YardComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A yard of the yards domain.
+message Yard {
+  string yard_id = 1;
+  string code = 2;
+  string name = 3;
+  YardStatus status = 4;
+  repeated string category_path = 5;
+  YardDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, YardComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The dimensions of a dock.
+message DockDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a dock.
+message DockComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A dock of the yards domain.
+message Dock {
+  string dock_id = 1;
+  string code = 2;
+  string name = 3;
+  DockStatus status = 4;
+  repeated string category_path = 5;
+  DockDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, DockComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a yard move.
+message YardMoveComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a yard move.
+message YardMoveSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a yard move.
+message YardMoveChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a yard move.
+message YardMoveStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A yard move of the yards domain.
+message YardMove {
+  string yard_move_id = 1;
+  string subject = 2;
+  YardMoveStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated YardMoveComment comments = 7;
+  YardMoveSla sla = 8;
+  oneof origin {
+    YardRef customer = 9;
+    string external_reference = 10;
+    YardMoveChannelOrigin channel = 11;
+  }
+  repeated YardMoveStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

@@ -1,0 +1,253 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.customers.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/customers/v1/customers.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Customers.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/customers/v1;customersv1";
+option java_multiple_files = true;
+option java_outer_classname = "ConsentRecordCalculationServiceProto";
+option java_package = "com.acme.customers.v1";
+
+// Computes the figures of a consent record, such as totals, taxes, and estimates.
+service ConsentRecordCalculationService {
+  // Calculates a consent record.
+  rpc CalculateConsentRecord(CalculateConsentRecordRequest) returns (CalculateConsentRecordResponse);
+
+  // Estimates a consent record.
+  rpc EstimateConsentRecord(EstimateConsentRecordRequest) returns (EstimateConsentRecordResponse);
+
+  // Quotes a consent record.
+  rpc QuoteConsentRecord(QuoteConsentRecordRequest) returns (QuoteConsentRecordResponse);
+
+  // Compares a consent record.
+  rpc CompareConsentRecordOptions(CompareConsentRecordOptionsRequest) returns (CompareConsentRecordOptionsResponse);
+
+  // Recalculates a consent record.
+  rpc RecalculateConsentRecords(RecalculateConsentRecordsRequest) returns (RecalculateConsentRecordsResponse);
+
+  // Returns a consent record.
+  rpc GetConsentRecordRates(GetConsentRecordRatesRequest) returns (GetConsentRecordRatesResponse);
+}
+
+// The request of `CalculateConsentRecord`.
+message CalculateConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  CalculateConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateConsentRecord`.
+message CalculateConsentRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateConsentRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConsentRecord consent_record = 1;
+  CalculateConsentRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateConsentRecord`.
+message EstimateConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  EstimateConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateConsentRecord`.
+message EstimateConsentRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateConsentRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConsentRecord consent_record = 1;
+  EstimateConsentRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteConsentRecord`.
+message QuoteConsentRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  QuoteConsentRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteConsentRecord`.
+message QuoteConsentRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteConsentRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConsentRecord consent_record = 1;
+  QuoteConsentRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareConsentRecordOptions`.
+message CompareConsentRecordOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  CompareConsentRecordOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareConsentRecordOptions`.
+message CompareConsentRecordOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareConsentRecordOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConsentRecord consent_record = 1;
+  CompareConsentRecordOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateConsentRecords`.
+message RecalculateConsentRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  ConsentRecord consent_record = 3;
+  RecalculateConsentRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateConsentRecords`.
+message RecalculateConsentRecordsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateConsentRecordsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  ConsentRecord consent_record = 1;
+  RecalculateConsentRecordsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetConsentRecordRates`.
+message GetConsentRecordRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string consent_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetConsentRecordRates`.
+message GetConsentRecordRatesResponse {
+  ConsentRecord consent_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}

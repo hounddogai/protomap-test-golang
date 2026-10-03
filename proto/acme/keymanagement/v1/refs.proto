@@ -1,0 +1,35 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.keymanagement.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Keymanagement.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/keymanagement/v1;keymanagementv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefsProto";
+option java_package = "com.acme.keymanagement.v1";
+
+// A reference to a crypto key of the keymanagement domain.
+message CryptoKeyRef {
+  string crypto_key_id = 1;
+  string display_name = 2;
+  string currency_code = 3;
+}
+
+// A reference to a key ring of the keymanagement domain.
+message KeyRingRef {
+  string key_ring_id = 1;
+  string display_name = 2;
+  string path = 3;
+}
+
+// A reference to a key rotation of the keymanagement domain.
+message KeyRotationRef {
+  string key_rotation_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp starts_at = 3;
+}

@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.recruiting.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/recruiting/v1/recruiting.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Recruiting.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/recruiting/v1;recruitingv1";
+option java_multiple_files = true;
+option java_outer_classname = "JobOpeningCalculationServiceProto";
+option java_package = "com.acme.recruiting.v1";
+
+// Computes the figures of a job opening, such as totals, taxes, and estimates.
+service JobOpeningCalculationService {
+  // Calculates a job opening.
+  rpc CalculateJobOpening(CalculateJobOpeningRequest) returns (CalculateJobOpeningResponse);
+
+  // Estimates a job opening.
+  rpc EstimateJobOpening(EstimateJobOpeningRequest) returns (EstimateJobOpeningResponse);
+
+  // Quotes a job opening.
+  rpc QuoteJobOpening(QuoteJobOpeningRequest) returns (QuoteJobOpeningResponse);
+
+  // Compares a job opening.
+  rpc CompareJobOpeningOptions(CompareJobOpeningOptionsRequest) returns (CompareJobOpeningOptionsResponse);
+
+  // Recalculates a job opening.
+  rpc RecalculateJobOpenings(RecalculateJobOpeningsRequest) returns (RecalculateJobOpeningsResponse);
+
+  // Simulates a job opening.
+  rpc SimulateJobOpening(SimulateJobOpeningRequest) returns (SimulateJobOpeningResponse);
+
+  // Explains a job opening.
+  rpc ExplainJobOpeningCalculation(ExplainJobOpeningCalculationRequest) returns (ExplainJobOpeningCalculationResponse);
+
+  // Returns a job opening.
+  rpc GetJobOpeningRates(GetJobOpeningRatesRequest) returns (GetJobOpeningRatesResponse);
+}
+
+// The request of `CalculateJobOpening`.
+message CalculateJobOpeningRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  CalculateJobOpeningRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateJobOpening`.
+message CalculateJobOpeningResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateJobOpeningResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  JobOpening job_opening = 1;
+  CalculateJobOpeningResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateJobOpening`.
+message EstimateJobOpeningRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  EstimateJobOpeningRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateJobOpening`.
+message EstimateJobOpeningResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateJobOpeningResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  JobOpening job_opening = 1;
+  EstimateJobOpeningResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteJobOpening`.
+message QuoteJobOpeningRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  QuoteJobOpeningRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteJobOpening`.
+message QuoteJobOpeningResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteJobOpeningResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  JobOpening job_opening = 1;
+  QuoteJobOpeningResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareJobOpeningOptions`.
+message CompareJobOpeningOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  CompareJobOpeningOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareJobOpeningOptions`.
+message CompareJobOpeningOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareJobOpeningOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  JobOpening job_opening = 1;
+  CompareJobOpeningOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateJobOpenings`.
+message RecalculateJobOpeningsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  RecalculateJobOpeningsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateJobOpenings`.
+message RecalculateJobOpeningsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateJobOpeningsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  JobOpening job_opening = 1;
+  RecalculateJobOpeningsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateJobOpening`.
+message SimulateJobOpeningRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  SimulateJobOpeningRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateJobOpening`.
+message SimulateJobOpeningResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateJobOpeningResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  JobOpening job_opening = 1;
+  SimulateJobOpeningResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainJobOpeningCalculation`.
+message ExplainJobOpeningCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  JobOpening job_opening = 3;
+  ExplainJobOpeningCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainJobOpeningCalculation`.
+message ExplainJobOpeningCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  JobOpening job_opening = 1;
+  ExplainJobOpeningCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetJobOpeningRates`.
+message GetJobOpeningRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string job_opening_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetJobOpeningRates`.
+message GetJobOpeningRatesResponse {
+  JobOpening job_opening = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,288 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentInstrumentValidationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Checks payment instruments against the rules before anything acts on them.
+service PaymentInstrumentValidationService {
+  // Validates a payment instrument.
+  rpc ValidatePaymentInstrument(ValidatePaymentInstrumentRequest) returns (ValidatePaymentInstrumentResponse);
+
+  // Previews a payment instrument.
+  rpc PreviewPaymentInstrument(PreviewPaymentInstrumentRequest) returns (PreviewPaymentInstrumentResponse);
+
+  // Checks a payment instrument.
+  rpc CheckPaymentInstrumentEligibility(CheckPaymentInstrumentEligibilityRequest) returns (CheckPaymentInstrumentEligibilityResponse);
+
+  // Normalizes a payment instrument.
+  rpc NormalizePaymentInstrument(NormalizePaymentInstrumentRequest) returns (NormalizePaymentInstrumentResponse);
+
+  // Explains a payment instrument.
+  rpc ExplainPaymentInstrumentDecision(ExplainPaymentInstrumentDecisionRequest) returns (ExplainPaymentInstrumentDecisionResponse);
+
+  // Scores a payment instrument.
+  rpc ScorePaymentInstrument(ScorePaymentInstrumentRequest) returns (ScorePaymentInstrumentResponse);
+
+  // Lints a payment instrument.
+  rpc LintPaymentInstruments(LintPaymentInstrumentsRequest) returns (LintPaymentInstrumentsResponse);
+}
+
+// The request of `ValidatePaymentInstrument`.
+message ValidatePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  ValidatePaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePaymentInstrument`.
+message ValidatePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ValidatePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPaymentInstrument`.
+message PreviewPaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  PreviewPaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPaymentInstrument`.
+message PreviewPaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  PreviewPaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPaymentInstrumentEligibility`.
+message CheckPaymentInstrumentEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  CheckPaymentInstrumentEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPaymentInstrumentEligibility`.
+message CheckPaymentInstrumentEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  CheckPaymentInstrumentEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePaymentInstrument`.
+message NormalizePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  NormalizePaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePaymentInstrument`.
+message NormalizePaymentInstrumentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  NormalizePaymentInstrumentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPaymentInstrumentDecision`.
+message ExplainPaymentInstrumentDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  ExplainPaymentInstrumentDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPaymentInstrumentDecision`.
+message ExplainPaymentInstrumentDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ExplainPaymentInstrumentDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePaymentInstrument`.
+message ScorePaymentInstrumentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  ScorePaymentInstrumentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePaymentInstrument`.
+message ScorePaymentInstrumentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePaymentInstrumentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  ScorePaymentInstrumentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPaymentInstruments`.
+message LintPaymentInstrumentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_instrument_id = 2;
+  PaymentInstrument payment_instrument = 3;
+  LintPaymentInstrumentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPaymentInstruments`.
+message LintPaymentInstrumentsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PaymentInstrument payment_instrument = 1;
+  LintPaymentInstrumentsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

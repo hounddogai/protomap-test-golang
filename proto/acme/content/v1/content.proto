@@ -1,0 +1,173 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.content.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/money.proto";
+import "acme/content/v1/refs.proto";
+import "acme/customers/v1/refs.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Content.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/content/v1;contentv1";
+option java_multiple_files = true;
+option java_outer_classname = "ContentProto";
+option java_package = "com.acme.content.v1";
+
+// Where an article is in its lifecycle.
+enum ArticleStatus {
+  ARTICLE_STATUS_UNSPECIFIED = 0;
+  ARTICLE_STATUS_DRAFT = 1;
+  ARTICLE_STATUS_ISSUED = 2;
+  ARTICLE_STATUS_APPROVED = 3;
+  ARTICLE_STATUS_PAID = 4;
+  ARTICLE_STATUS_VOID = 5;
+}
+
+// Where a content block is in its lifecycle.
+enum ContentBlockStatus {
+  CONTENT_BLOCK_STATUS_UNSPECIFIED = 0;
+  CONTENT_BLOCK_STATUS_ACTIVE = 1;
+  CONTENT_BLOCK_STATUS_INACTIVE = 2;
+}
+
+// Where a content revision is in its lifecycle.
+enum ContentRevisionStatus {
+  CONTENT_REVISION_STATUS_UNSPECIFIED = 0;
+  CONTENT_REVISION_STATUS_RECEIVED = 1;
+  CONTENT_REVISION_STATUS_PROCESSED = 2;
+  CONTENT_REVISION_STATUS_DISCARDED = 3;
+}
+
+// Where a taxonomy is in its lifecycle.
+enum TaxonomyStatus {
+  TAXONOMY_STATUS_UNSPECIFIED = 0;
+  TAXONOMY_STATUS_ACTIVE = 1;
+  TAXONOMY_STATUS_INACTIVE = 2;
+}
+
+// The line of an article.
+message ArticleLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  ArticleLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of an article line.
+message ArticleLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of an article.
+message ArticleCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of an article.
+message ArticleBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of an article.
+message ArticleAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// An article of the content domain.
+message Article {
+  string article_id = 1;
+  string number = 2;
+  ArticleStatus status = 3;
+  ContentRevisionRef counterparty = 4;
+  repeated ArticleLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    ArticleCardSettlement card = 8;
+    ArticleBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated ArticleAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// A content block of the content domain.
+message ContentBlock {
+  string content_block_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated ContentBlock children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  ContentBlockStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}
+
+// The measurement of a content revision.
+message ContentRevisionMeasurement {
+  string metric = 1;
+  double value = 2;
+  string unit = 3;
+  google.protobuf.Timestamp observed_at = 4;
+}
+
+// A content revision of the content domain.
+message ContentRevision {
+  string content_revision_id = 1;
+  string kind = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  string source = 4;
+  acme.customers.v1.CustomerRef subject = 5;
+  map<string, string> attributes = 6;
+  google.protobuf.Struct payload = 7;
+  google.protobuf.Any detail = 8;
+  repeated ContentRevisionMeasurement measurements = 9;
+  string correlation_id = 10;
+  int64 sequence = 11;
+}
+
+// A taxonomy of the content domain.
+message Taxonomy {
+  string taxonomy_id = 1;
+  string name = 2;
+  string parent_id = 3;
+  repeated string path = 4;
+  repeated Taxonomy children = 5;
+  int32 depth = 6;
+  map<string, string> attributes = 7;
+  acme.identity.v1.UserRef manager = 8;
+  TaxonomyStatus status = 9;
+  acme.common.v1.PostalAddress location = 10;
+  acme.common.v1.AuditInfo audit = 11;
+}

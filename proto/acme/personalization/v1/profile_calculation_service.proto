@@ -1,0 +1,249 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.personalization.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/personalization/v1/personalization.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Personalization.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/personalization/v1;personalizationv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProfileCalculationServiceProto";
+option java_package = "com.acme.personalization.v1";
+
+// Computes the figures of a profile, such as totals, taxes, and estimates.
+service ProfileCalculationService {
+  // Calculates a profile.
+  rpc CalculateProfile(CalculateProfileRequest) returns (CalculateProfileResponse);
+
+  // Estimates a profile.
+  rpc EstimateProfile(EstimateProfileRequest) returns (EstimateProfileResponse);
+
+  // Recalculates a profile.
+  rpc RecalculateProfiles(RecalculateProfilesRequest) returns (RecalculateProfilesResponse);
+
+  // Simulates a profile.
+  rpc SimulateProfile(SimulateProfileRequest) returns (SimulateProfileResponse);
+
+  // Explains a profile.
+  rpc ExplainProfileCalculation(ExplainProfileCalculationRequest) returns (ExplainProfileCalculationResponse);
+
+  // Returns a profile.
+  rpc GetProfileRates(GetProfileRatesRequest) returns (GetProfileRatesResponse);
+}
+
+// The request of `CalculateProfile`.
+message CalculateProfileRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  Profile profile = 3;
+  CalculateProfileRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateProfile`.
+message CalculateProfileResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateProfileResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Profile profile = 1;
+  CalculateProfileResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateProfile`.
+message EstimateProfileRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  Profile profile = 3;
+  EstimateProfileRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateProfile`.
+message EstimateProfileResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateProfileResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Profile profile = 1;
+  EstimateProfileResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateProfiles`.
+message RecalculateProfilesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  Profile profile = 3;
+  RecalculateProfilesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateProfiles`.
+message RecalculateProfilesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateProfilesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Profile profile = 1;
+  RecalculateProfilesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateProfile`.
+message SimulateProfileRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  Profile profile = 3;
+  SimulateProfileRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateProfile`.
+message SimulateProfileResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateProfileResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Profile profile = 1;
+  SimulateProfileResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainProfileCalculation`.
+message ExplainProfileCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  Profile profile = 3;
+  ExplainProfileCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainProfileCalculation`.
+message ExplainProfileCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Profile profile = 1;
+  ExplainProfileCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetProfileRates`.
+message GetProfileRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string profile_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProfileRates`.
+message GetProfileRatesResponse {
+  Profile profile = 1;
+  acme.common.v1.OperationResult result = 2;
+}

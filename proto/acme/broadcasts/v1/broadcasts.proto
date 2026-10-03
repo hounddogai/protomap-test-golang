@@ -1,0 +1,166 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.broadcasts.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/shows/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Broadcasts.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/broadcasts/v1;broadcastsv1";
+option java_multiple_files = true;
+option java_outer_classname = "BroadcastsProto";
+option java_package = "com.acme.broadcasts.v1";
+
+// Where a broadcast is in its lifecycle.
+enum BroadcastStatus {
+  BROADCAST_STATUS_UNSPECIFIED = 0;
+  BROADCAST_STATUS_TENTATIVE = 1;
+  BROADCAST_STATUS_CONFIRMED = 2;
+  BROADCAST_STATUS_CANCELLED = 3;
+  BROADCAST_STATUS_COMPLETED = 4;
+}
+
+// Where a stream key is in its lifecycle.
+enum StreamKeyStatus {
+  STREAM_KEY_STATUS_UNSPECIFIED = 0;
+  STREAM_KEY_STATUS_PENDING = 1;
+  STREAM_KEY_STATUS_OPEN = 2;
+  STREAM_KEY_STATUS_FROZEN = 3;
+  STREAM_KEY_STATUS_CLOSED = 4;
+}
+
+// Where a replay clip is in its lifecycle.
+enum ReplayClipStatus {
+  REPLAY_CLIP_STATUS_UNSPECIFIED = 0;
+  REPLAY_CLIP_STATUS_PLANNED = 1;
+  REPLAY_CLIP_STATUS_AVAILABLE = 2;
+  REPLAY_CLIP_STATUS_RESERVED = 3;
+  REPLAY_CLIP_STATUS_RETIRED = 4;
+}
+
+// The participant of a broadcast.
+message BroadcastParticipant {
+  string participant_id = 1;
+  string role = 2;
+  acme.common.v1.ContactInfo contact = 3;
+  bool required = 4;
+}
+
+// The daily rule of a broadcast.
+message BroadcastDailyRule {
+  int32 interval = 1;
+  int32 at_hour = 2;
+}
+
+// The weekly rule of a broadcast.
+message BroadcastWeeklyRule {
+  repeated string days = 1;
+  int32 interval = 2;
+}
+
+// A broadcast of the broadcasts domain.
+message Broadcast {
+  string broadcast_id = 1;
+  string title = 2;
+  BroadcastStatus status = 3;
+  acme.common.v1.TimeWindow window = 4;
+  repeated BroadcastParticipant participants = 5;
+  acme.common.v1.PostalAddress location = 6;
+  oneof recurrence {
+    BroadcastDailyRule daily = 7;
+    BroadcastWeeklyRule weekly = 8;
+    string cron_expression = 9;
+  }
+  repeated google.protobuf.Duration reminders = 10;
+  acme.identity.v1.UserRef organizer = 11;
+  map<string, string> metadata = 12;
+  acme.common.v1.AuditInfo audit = 13;
+}
+
+// The limit of a stream key.
+message StreamKeyLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a stream key.
+message StreamKeyCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a stream key.
+message StreamKeyBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A stream key of the broadcasts domain.
+message StreamKey {
+  string stream_key_id = 1;
+  acme.shows.v1.ShowRef holder = 2;
+  StreamKeyStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated StreamKeyLimit limits = 7;
+  oneof funding {
+    StreamKeyCardFunding card = 8;
+    StreamKeyBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The dimensions of a replay clip.
+message ReplayClipDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a replay clip.
+message ReplayClipComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A replay clip of the broadcasts domain.
+message ReplayClip {
+  string replay_clip_id = 1;
+  string code = 2;
+  string name = 3;
+  ReplayClipStatus status = 4;
+  repeated string category_path = 5;
+  ReplayClipDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, ReplayClipComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

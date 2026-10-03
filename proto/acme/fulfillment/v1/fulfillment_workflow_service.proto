@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.fulfillment.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/fulfillment/v1/fulfillment.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Fulfillment.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/fulfillment/v1;fulfillmentv1";
+option java_multiple_files = true;
+option java_outer_classname = "FulfillmentWorkflowServiceProto";
+option java_package = "com.acme.fulfillment.v1";
+
+// Runs the long-lived workflow that takes a fulfillment from start to finish.
+service FulfillmentWorkflowService {
+  // Starts a fulfillment.
+  rpc StartFulfillmentWorkflow(StartFulfillmentWorkflowRequest) returns (StartFulfillmentWorkflowResponse);
+
+  // Advances a fulfillment.
+  rpc AdvanceFulfillmentWorkflow(AdvanceFulfillmentWorkflowRequest) returns (AdvanceFulfillmentWorkflowResponse);
+
+  // Cancels a fulfillment.
+  rpc CancelFulfillmentWorkflow(CancelFulfillmentWorkflowRequest) returns (CancelFulfillmentWorkflowResponse);
+
+  // Pauses a fulfillment.
+  rpc PauseFulfillmentWorkflow(PauseFulfillmentWorkflowRequest) returns (PauseFulfillmentWorkflowResponse);
+
+  // Resumes a fulfillment.
+  rpc ResumeFulfillmentWorkflow(ResumeFulfillmentWorkflowRequest) returns (ResumeFulfillmentWorkflowResponse);
+
+  // Returns a fulfillment.
+  rpc InspectFulfillmentWorkflow(InspectFulfillmentWorkflowRequest) returns (InspectFulfillmentWorkflowResponse);
+
+  // Lists fulfillments a page at a time.
+  rpc ListFulfillmentWorkflows(ListFulfillmentWorkflowsRequest) returns (ListFulfillmentWorkflowsResponse);
+
+  // Signals a fulfillment.
+  rpc SignalFulfillmentWorkflow(SignalFulfillmentWorkflowRequest) returns (SignalFulfillmentWorkflowResponse);
+}
+
+// The request of `StartFulfillmentWorkflow`.
+message StartFulfillmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  Fulfillment fulfillment = 3;
+  StartFulfillmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartFulfillmentWorkflow`.
+message StartFulfillmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Fulfillment fulfillment = 1;
+  StartFulfillmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceFulfillmentWorkflow`.
+message AdvanceFulfillmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  Fulfillment fulfillment = 3;
+  AdvanceFulfillmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceFulfillmentWorkflow`.
+message AdvanceFulfillmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Fulfillment fulfillment = 1;
+  AdvanceFulfillmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelFulfillmentWorkflow`.
+message CancelFulfillmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  Fulfillment fulfillment = 3;
+  CancelFulfillmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelFulfillmentWorkflow`.
+message CancelFulfillmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Fulfillment fulfillment = 1;
+  CancelFulfillmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseFulfillmentWorkflow`.
+message PauseFulfillmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  Fulfillment fulfillment = 3;
+  PauseFulfillmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseFulfillmentWorkflow`.
+message PauseFulfillmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Fulfillment fulfillment = 1;
+  PauseFulfillmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeFulfillmentWorkflow`.
+message ResumeFulfillmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  Fulfillment fulfillment = 3;
+  ResumeFulfillmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeFulfillmentWorkflow`.
+message ResumeFulfillmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Fulfillment fulfillment = 1;
+  ResumeFulfillmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectFulfillmentWorkflow`.
+message InspectFulfillmentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectFulfillmentWorkflow`.
+message InspectFulfillmentWorkflowResponse {
+  Fulfillment fulfillment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListFulfillmentWorkflows`.
+message ListFulfillmentWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated FulfillmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListFulfillmentWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListFulfillmentWorkflows`.
+message ListFulfillmentWorkflowsResponse {
+  repeated Fulfillment fulfillments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalFulfillmentWorkflow`.
+message SignalFulfillmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string fulfillment_id = 2;
+  Fulfillment fulfillment = 3;
+  SignalFulfillmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalFulfillmentWorkflow`.
+message SignalFulfillmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Fulfillment fulfillment = 1;
+  SignalFulfillmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

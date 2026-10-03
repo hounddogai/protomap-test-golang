@@ -1,0 +1,267 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.inventory.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/inventory/v1/inventory.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Inventory.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/inventory/v1;inventoryv1";
+option java_multiple_files = true;
+option java_outer_classname = "StockReservationWorkflowServiceProto";
+option java_package = "com.acme.inventory.v1";
+
+// Runs the long-lived workflow that takes a stock reservation from start to finish.
+service StockReservationWorkflowService {
+  // Starts a stock reservation.
+  rpc StartStockReservationWorkflow(StartStockReservationWorkflowRequest) returns (StartStockReservationWorkflowResponse);
+
+  // Advances a stock reservation.
+  rpc AdvanceStockReservationWorkflow(AdvanceStockReservationWorkflowRequest) returns (AdvanceStockReservationWorkflowResponse);
+
+  // Cancels a stock reservation.
+  rpc CancelStockReservationWorkflow(CancelStockReservationWorkflowRequest) returns (CancelStockReservationWorkflowResponse);
+
+  // Retrys a stock reservation.
+  rpc RetryStockReservationWorkflow(RetryStockReservationWorkflowRequest) returns (RetryStockReservationWorkflowResponse);
+
+  // Resumes a stock reservation.
+  rpc ResumeStockReservationWorkflow(ResumeStockReservationWorkflowRequest) returns (ResumeStockReservationWorkflowResponse);
+
+  // Returns a stock reservation.
+  rpc InspectStockReservationWorkflow(InspectStockReservationWorkflowRequest) returns (InspectStockReservationWorkflowResponse);
+
+  // Signals a stock reservation.
+  rpc SignalStockReservationWorkflow(SignalStockReservationWorkflowRequest) returns (SignalStockReservationWorkflowResponse);
+}
+
+// The request of `StartStockReservationWorkflow`.
+message StartStockReservationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  StartStockReservationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartStockReservationWorkflow`.
+message StartStockReservationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  StartStockReservationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceStockReservationWorkflow`.
+message AdvanceStockReservationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  AdvanceStockReservationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceStockReservationWorkflow`.
+message AdvanceStockReservationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  AdvanceStockReservationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelStockReservationWorkflow`.
+message CancelStockReservationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  CancelStockReservationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelStockReservationWorkflow`.
+message CancelStockReservationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  CancelStockReservationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryStockReservationWorkflow`.
+message RetryStockReservationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  RetryStockReservationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryStockReservationWorkflow`.
+message RetryStockReservationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  RetryStockReservationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeStockReservationWorkflow`.
+message ResumeStockReservationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  ResumeStockReservationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeStockReservationWorkflow`.
+message ResumeStockReservationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  ResumeStockReservationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectStockReservationWorkflow`.
+message InspectStockReservationWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectStockReservationWorkflow`.
+message InspectStockReservationWorkflowResponse {
+  StockReservation stock_reservation = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SignalStockReservationWorkflow`.
+message SignalStockReservationWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string stock_reservation_id = 2;
+  StockReservation stock_reservation = 3;
+  SignalStockReservationWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalStockReservationWorkflow`.
+message SignalStockReservationWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  StockReservation stock_reservation = 1;
+  SignalStockReservationWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

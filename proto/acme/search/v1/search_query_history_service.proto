@@ -1,0 +1,195 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchQueryHistoryServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Keeps every version of a search query and restores earlier ones.
+service SearchQueryHistoryService {
+  // Records a search query.
+  rpc RecordSearchQueryVersion(RecordSearchQueryVersionRequest) returns (RecordSearchQueryVersionResponse);
+
+  // Lists search queries a page at a time.
+  rpc ListSearchQueryVersions(ListSearchQueryVersionsRequest) returns (ListSearchQueryVersionsResponse);
+
+  // Returns a search query.
+  rpc GetSearchQueryVersion(GetSearchQueryVersionRequest) returns (GetSearchQueryVersionResponse);
+
+  // Compares a search query.
+  rpc CompareSearchQueryVersions(CompareSearchQueryVersionsRequest) returns (CompareSearchQueryVersionsResponse);
+
+  // Reverts a search query.
+  rpc RevertSearchQuery(RevertSearchQueryRequest) returns (RevertSearchQueryResponse);
+
+  // Deletes a search query.
+  rpc PruneSearchQueryVersions(PruneSearchQueryVersionsRequest) returns (PruneSearchQueryVersionsResponse);
+}
+
+// The request of `RecordSearchQueryVersion`.
+message RecordSearchQueryVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  RecordSearchQueryVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecordSearchQueryVersion`.
+message RecordSearchQueryVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  RecordSearchQueryVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListSearchQueryVersions`.
+message ListSearchQueryVersionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchQueryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSearchQueryVersionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSearchQueryVersions`.
+message ListSearchQueryVersionsResponse {
+  repeated SearchQuery search_queries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSearchQueryVersion`.
+message GetSearchQueryVersionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchQueryVersion`.
+message GetSearchQueryVersionResponse {
+  SearchQuery search_query = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CompareSearchQueryVersions`.
+message CompareSearchQueryVersionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  CompareSearchQueryVersionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSearchQueryVersions`.
+message CompareSearchQueryVersionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  CompareSearchQueryVersionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RevertSearchQuery`.
+message RevertSearchQueryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SearchQuery search_query = 3;
+  RevertSearchQueryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RevertSearchQuery`.
+message RevertSearchQueryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  RevertSearchQueryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PruneSearchQueryVersions`.
+message PruneSearchQueryVersionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `PruneSearchQueryVersions`.
+message PruneSearchQueryVersionsResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

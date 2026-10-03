@@ -1,0 +1,247 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.identity.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/identity.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Identity.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/identity/v1;identityv1";
+option java_multiple_files = true;
+option java_outer_classname = "RoleNotificationServiceProto";
+option java_package = "com.acme.identity.v1";
+
+// Tells the people who follow a role what changed.
+service RoleNotificationService {
+  // Subscribes a role.
+  rpc SubscribeRoleUpdates(SubscribeRoleUpdatesRequest) returns (SubscribeRoleUpdatesResponse);
+
+  // Unsubscribes a role.
+  rpc UnsubscribeRoleUpdates(UnsubscribeRoleUpdatesRequest) returns (UnsubscribeRoleUpdatesResponse);
+
+  // Notifys a role.
+  rpc NotifyRoleWatchers(NotifyRoleWatchersRequest) returns (NotifyRoleWatchersResponse);
+
+  // Lists roles a page at a time.
+  rpc ListRoleSubscriptions(ListRoleSubscriptionsRequest) returns (ListRoleSubscriptionsResponse);
+
+  // Sends a role.
+  rpc SendRoleTestNotice(SendRoleTestNoticeRequest) returns (SendRoleTestNoticeResponse);
+
+  // Returns a role.
+  rpc GetRolePreferences(GetRolePreferencesRequest) returns (GetRolePreferencesResponse);
+
+  // Streams the changes of roles as they happen.
+  rpc StreamRoleNotices(StreamRoleNoticesRequest) returns (stream StreamRoleNoticesResponse);
+}
+
+// The request of `SubscribeRoleUpdates`.
+message SubscribeRoleUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string role_id = 2;
+  SubscribeRoleUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribeRoleUpdates`.
+message SubscribeRoleUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Role role = 1;
+  SubscribeRoleUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribeRoleUpdates`.
+message UnsubscribeRoleUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string role_id = 2;
+  UnsubscribeRoleUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribeRoleUpdates`.
+message UnsubscribeRoleUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Role role = 1;
+  UnsubscribeRoleUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifyRoleWatchers`.
+message NotifyRoleWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string role_id = 2;
+  NotifyRoleWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifyRoleWatchers`.
+message NotifyRoleWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Role role = 1;
+  NotifyRoleWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListRoleSubscriptions`.
+message ListRoleSubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RoleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRoleSubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRoleSubscriptions`.
+message ListRoleSubscriptionsResponse {
+  repeated Role roles = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendRoleTestNotice`.
+message SendRoleTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string role_id = 2;
+  SendRoleTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendRoleTestNotice`.
+message SendRoleTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Role role = 1;
+  SendRoleTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRolePreferences`.
+message GetRolePreferencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string role_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRolePreferences`.
+message GetRolePreferencesResponse {
+  Role role = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StreamRoleNotices`.
+message StreamRoleNoticesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RoleStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamRoleNoticesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamRoleNotices`.
+message StreamRoleNoticesResponse {
+  Role role = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

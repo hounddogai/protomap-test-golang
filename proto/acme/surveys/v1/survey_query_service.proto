@@ -1,0 +1,198 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.surveys.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/surveys/v1/surveys.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Surveys.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/surveys/v1;surveysv1";
+option java_multiple_files = true;
+option java_outer_classname = "SurveyQueryServiceProto";
+option java_package = "com.acme.surveys.v1";
+
+// Answers read-only questions about surveys, for screens and reports.
+service SurveyQueryService {
+  // Returns a survey.
+  rpc LookupSurvey(LookupSurveyRequest) returns (LookupSurveyResponse);
+
+  // Lists surveys a page at a time.
+  rpc BrowseSurveys(BrowseSurveysRequest) returns (BrowseSurveysResponse);
+
+  // Lists surveys a page at a time.
+  rpc FindSurveys(FindSurveysRequest) returns (FindSurveysResponse);
+
+  // Counts surveys by status.
+  rpc CountSurveys(CountSurveysRequest) returns (CountSurveysResponse);
+
+  // Returns several surveys at once.
+  rpc ResolveSurveys(ResolveSurveysRequest) returns (ResolveSurveysResponse);
+
+  // Summarizes a survey.
+  rpc SummarizeSurveys(SummarizeSurveysRequest) returns (SummarizeSurveysResponse);
+
+  // Lists surveys a page at a time.
+  rpc SuggestSurveys(SuggestSurveysRequest) returns (SuggestSurveysResponse);
+}
+
+// The request of `LookupSurvey`.
+message LookupSurveyRequest {
+  acme.common.v1.RequestContext context = 1;
+  string survey_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupSurvey`.
+message LookupSurveyResponse {
+  Survey survey = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseSurveys`.
+message BrowseSurveysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SurveyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseSurveysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseSurveys`.
+message BrowseSurveysResponse {
+  repeated Survey surveys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindSurveys`.
+message FindSurveysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SurveyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindSurveysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindSurveys`.
+message FindSurveysResponse {
+  repeated Survey surveys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountSurveys`.
+message CountSurveysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SurveyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountSurveysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountSurveys`.
+message CountSurveysResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveSurveys`.
+message ResolveSurveysRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string survey_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveSurveys`.
+message ResolveSurveysResponse {
+  repeated Survey surveys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SummarizeSurveys`.
+message SummarizeSurveysRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string survey_id = 2;
+  SummarizeSurveysRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeSurveys`.
+message SummarizeSurveysResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestSurveys`.
+message SuggestSurveysRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SurveyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestSurveysRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestSurveys`.
+message SuggestSurveysResponse {
+  repeated Survey surveys = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

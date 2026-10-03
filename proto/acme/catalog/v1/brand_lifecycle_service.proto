@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.catalog.v1;
+
+import "acme/catalog/v1/catalog.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Catalog.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/catalog/v1;catalogv1";
+option java_multiple_files = true;
+option java_outer_classname = "BrandLifecycleServiceProto";
+option java_package = "com.acme.catalog.v1";
+
+// Moves a brand between the states of its lifecycle.
+service BrandLifecycleService {
+  // Activates a brand.
+  rpc ActivateBrand(ActivateBrandRequest) returns (ActivateBrandResponse);
+
+  // Suspends a brand.
+  rpc SuspendBrand(SuspendBrandRequest) returns (SuspendBrandResponse);
+
+  // Reinstates a brand.
+  rpc ReinstateBrand(ReinstateBrandRequest) returns (ReinstateBrandResponse);
+
+  // Terminates a brand.
+  rpc TerminateBrand(TerminateBrandRequest) returns (TerminateBrandResponse);
+
+  // Renews a brand.
+  rpc RenewBrand(RenewBrandRequest) returns (RenewBrandResponse);
+
+  // Expires a brand.
+  rpc ExpireBrand(ExpireBrandRequest) returns (ExpireBrandResponse);
+
+  // Returns a brand.
+  rpc GetBrandLifecycle(GetBrandLifecycleRequest) returns (GetBrandLifecycleResponse);
+
+  // Schedules a brand.
+  rpc ScheduleBrandExpiry(ScheduleBrandExpiryRequest) returns (ScheduleBrandExpiryResponse);
+}
+
+// The request of `ActivateBrand`.
+message ActivateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  ActivateBrandRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateBrand`.
+message ActivateBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ActivateBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendBrand`.
+message SuspendBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  SuspendBrandRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendBrand`.
+message SuspendBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  SuspendBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateBrand`.
+message ReinstateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  ReinstateBrandRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateBrand`.
+message ReinstateBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ReinstateBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateBrand`.
+message TerminateBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  TerminateBrandRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateBrand`.
+message TerminateBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  TerminateBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewBrand`.
+message RenewBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  RenewBrandRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewBrand`.
+message RenewBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  RenewBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireBrand`.
+message ExpireBrandRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  ExpireBrandRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireBrand`.
+message ExpireBrandResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ExpireBrandResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetBrandLifecycle`.
+message GetBrandLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBrandLifecycle`.
+message GetBrandLifecycleResponse {
+  Brand brand = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleBrandExpiry`.
+message ScheduleBrandExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string brand_id = 2;
+  Brand brand = 3;
+  ScheduleBrandExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleBrandExpiry`.
+message ScheduleBrandExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Brand brand = 1;
+  ScheduleBrandExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

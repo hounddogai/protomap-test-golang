@@ -1,0 +1,249 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderCalculationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Computes the figures of an order, such as totals, taxes, and estimates.
+service OrderCalculationService {
+  // Calculates an order.
+  rpc CalculateOrder(CalculateOrderRequest) returns (CalculateOrderResponse);
+
+  // Estimates an order.
+  rpc EstimateOrder(EstimateOrderRequest) returns (EstimateOrderResponse);
+
+  // Quotes an order.
+  rpc QuoteOrder(QuoteOrderRequest) returns (QuoteOrderResponse);
+
+  // Simulates an order.
+  rpc SimulateOrder(SimulateOrderRequest) returns (SimulateOrderResponse);
+
+  // Explains an order.
+  rpc ExplainOrderCalculation(ExplainOrderCalculationRequest) returns (ExplainOrderCalculationResponse);
+
+  // Returns an order.
+  rpc GetOrderRates(GetOrderRatesRequest) returns (GetOrderRatesResponse);
+}
+
+// The request of `CalculateOrder`.
+message CalculateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  CalculateOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateOrder`.
+message CalculateOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Order order = 1;
+  CalculateOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateOrder`.
+message EstimateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  EstimateOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateOrder`.
+message EstimateOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Order order = 1;
+  EstimateOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteOrder`.
+message QuoteOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  QuoteOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteOrder`.
+message QuoteOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Order order = 1;
+  QuoteOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateOrder`.
+message SimulateOrderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  SimulateOrderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateOrder`.
+message SimulateOrderResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateOrderResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Order order = 1;
+  SimulateOrderResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainOrderCalculation`.
+message ExplainOrderCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  Order order = 3;
+  ExplainOrderCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainOrderCalculation`.
+message ExplainOrderCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Order order = 1;
+  ExplainOrderCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetOrderRates`.
+message GetOrderRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string order_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetOrderRates`.
+message GetOrderRatesResponse {
+  Order order = 1;
+  acme.common.v1.OperationResult result = 2;
+}

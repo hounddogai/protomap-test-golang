@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.warehousing.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/warehousing/v1/warehousing.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Warehousing.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/warehousing/v1;warehousingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PickListWorkflowServiceProto";
+option java_package = "com.acme.warehousing.v1";
+
+// Runs the long-lived workflow that takes a pick list from start to finish.
+service PickListWorkflowService {
+  // Starts a pick list.
+  rpc StartPickListWorkflow(StartPickListWorkflowRequest) returns (StartPickListWorkflowResponse);
+
+  // Advances a pick list.
+  rpc AdvancePickListWorkflow(AdvancePickListWorkflowRequest) returns (AdvancePickListWorkflowResponse);
+
+  // Cancels a pick list.
+  rpc CancelPickListWorkflow(CancelPickListWorkflowRequest) returns (CancelPickListWorkflowResponse);
+
+  // Retrys a pick list.
+  rpc RetryPickListWorkflow(RetryPickListWorkflowRequest) returns (RetryPickListWorkflowResponse);
+
+  // Resumes a pick list.
+  rpc ResumePickListWorkflow(ResumePickListWorkflowRequest) returns (ResumePickListWorkflowResponse);
+
+  // Returns a pick list.
+  rpc InspectPickListWorkflow(InspectPickListWorkflowRequest) returns (InspectPickListWorkflowResponse);
+
+  // Lists pick lists a page at a time.
+  rpc ListPickListWorkflows(ListPickListWorkflowsRequest) returns (ListPickListWorkflowsResponse);
+
+  // Signals a pick list.
+  rpc SignalPickListWorkflow(SignalPickListWorkflowRequest) returns (SignalPickListWorkflowResponse);
+}
+
+// The request of `StartPickListWorkflow`.
+message StartPickListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  StartPickListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPickListWorkflow`.
+message StartPickListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  StartPickListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePickListWorkflow`.
+message AdvancePickListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  AdvancePickListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePickListWorkflow`.
+message AdvancePickListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  AdvancePickListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPickListWorkflow`.
+message CancelPickListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  CancelPickListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPickListWorkflow`.
+message CancelPickListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  CancelPickListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPickListWorkflow`.
+message RetryPickListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  RetryPickListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPickListWorkflow`.
+message RetryPickListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  RetryPickListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePickListWorkflow`.
+message ResumePickListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  ResumePickListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePickListWorkflow`.
+message ResumePickListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  ResumePickListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPickListWorkflow`.
+message InspectPickListWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPickListWorkflow`.
+message InspectPickListWorkflowResponse {
+  PickList pick_list = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPickListWorkflows`.
+message ListPickListWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PickListStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPickListWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPickListWorkflows`.
+message ListPickListWorkflowsResponse {
+  repeated PickList pick_lists = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPickListWorkflow`.
+message SignalPickListWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string pick_list_id = 2;
+  PickList pick_list = 3;
+  SignalPickListWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPickListWorkflow`.
+message SignalPickListWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PickList pick_list = 1;
+  SignalPickListWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

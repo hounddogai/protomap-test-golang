@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.payments.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/payments/v1/payments.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Payments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/payments/v1;paymentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentCalculationServiceProto";
+option java_package = "com.acme.payments.v1";
+
+// Computes the figures of a payment, such as totals, taxes, and estimates.
+service PaymentCalculationService {
+  // Calculates a payment.
+  rpc CalculatePayment(CalculatePaymentRequest) returns (CalculatePaymentResponse);
+
+  // Estimates a payment.
+  rpc EstimatePayment(EstimatePaymentRequest) returns (EstimatePaymentResponse);
+
+  // Quotes a payment.
+  rpc QuotePayment(QuotePaymentRequest) returns (QuotePaymentResponse);
+
+  // Recalculates a payment.
+  rpc RecalculatePayments(RecalculatePaymentsRequest) returns (RecalculatePaymentsResponse);
+
+  // Simulates a payment.
+  rpc SimulatePayment(SimulatePaymentRequest) returns (SimulatePaymentResponse);
+
+  // Explains a payment.
+  rpc ExplainPaymentCalculation(ExplainPaymentCalculationRequest) returns (ExplainPaymentCalculationResponse);
+
+  // Returns a payment.
+  rpc GetPaymentRates(GetPaymentRatesRequest) returns (GetPaymentRatesResponse);
+}
+
+// The request of `CalculatePayment`.
+message CalculatePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  CalculatePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculatePayment`.
+message CalculatePaymentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculatePaymentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payment payment = 1;
+  CalculatePaymentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimatePayment`.
+message EstimatePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  EstimatePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimatePayment`.
+message EstimatePaymentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimatePaymentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payment payment = 1;
+  EstimatePaymentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuotePayment`.
+message QuotePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  QuotePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuotePayment`.
+message QuotePaymentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuotePaymentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payment payment = 1;
+  QuotePaymentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculatePayments`.
+message RecalculatePaymentsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  RecalculatePaymentsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculatePayments`.
+message RecalculatePaymentsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculatePaymentsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payment payment = 1;
+  RecalculatePaymentsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulatePayment`.
+message SimulatePaymentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  SimulatePaymentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulatePayment`.
+message SimulatePaymentResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulatePaymentResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Payment payment = 1;
+  SimulatePaymentResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPaymentCalculation`.
+message ExplainPaymentCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  Payment payment = 3;
+  ExplainPaymentCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPaymentCalculation`.
+message ExplainPaymentCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Payment payment = 1;
+  ExplainPaymentCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPaymentRates`.
+message GetPaymentRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string payment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPaymentRates`.
+message GetPaymentRatesResponse {
+  Payment payment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

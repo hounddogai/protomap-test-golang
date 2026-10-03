@@ -1,0 +1,219 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.returns.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/returns/v1/returns.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Returns.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/returns/v1;returnsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnLabelLifecycleServiceProto";
+option java_package = "com.acme.returns.v1";
+
+// Moves a return label between the states of its lifecycle.
+service ReturnLabelLifecycleService {
+  // Activates a return label.
+  rpc ActivateReturnLabel(ActivateReturnLabelRequest) returns (ActivateReturnLabelResponse);
+
+  // Suspends a return label.
+  rpc SuspendReturnLabel(SuspendReturnLabelRequest) returns (SuspendReturnLabelResponse);
+
+  // Terminates a return label.
+  rpc TerminateReturnLabel(TerminateReturnLabelRequest) returns (TerminateReturnLabelResponse);
+
+  // Renews a return label.
+  rpc RenewReturnLabel(RenewReturnLabelRequest) returns (RenewReturnLabelResponse);
+
+  // Expires a return label.
+  rpc ExpireReturnLabel(ExpireReturnLabelRequest) returns (ExpireReturnLabelResponse);
+
+  // Returns a return label.
+  rpc GetReturnLabelLifecycle(GetReturnLabelLifecycleRequest) returns (GetReturnLabelLifecycleResponse);
+}
+
+// The request of `ActivateReturnLabel`.
+message ActivateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ActivateReturnLabelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateReturnLabel`.
+message ActivateReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  ActivateReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendReturnLabel`.
+message SuspendReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  SuspendReturnLabelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendReturnLabel`.
+message SuspendReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  SuspendReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateReturnLabel`.
+message TerminateReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  TerminateReturnLabelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateReturnLabel`.
+message TerminateReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  TerminateReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewReturnLabel`.
+message RenewReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  RenewReturnLabelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewReturnLabel`.
+message RenewReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  RenewReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireReturnLabel`.
+message ExpireReturnLabelRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  ExpireReturnLabelRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireReturnLabel`.
+message ExpireReturnLabelResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ReturnLabel return_label = 1;
+  ExpireReturnLabelResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetReturnLabelLifecycle`.
+message GetReturnLabelLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string return_label_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetReturnLabelLifecycle`.
+message GetReturnLabelLifecycleResponse {
+  ReturnLabel return_label = 1;
+  acme.common.v1.OperationResult result = 2;
+}

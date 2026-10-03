@@ -1,0 +1,234 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.loyalty.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/loyalty/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Loyalty.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/loyalty/v1;loyaltyv1";
+option java_multiple_files = true;
+option java_outer_classname = "LoyaltyProto";
+option java_package = "com.acme.loyalty.v1";
+
+// Where a loyalty member is in its lifecycle.
+enum LoyaltyMemberStatus {
+  LOYALTY_MEMBER_STATUS_UNSPECIFIED = 0;
+  LOYALTY_MEMBER_STATUS_PENDING = 1;
+  LOYALTY_MEMBER_STATUS_OPEN = 2;
+  LOYALTY_MEMBER_STATUS_FROZEN = 3;
+  LOYALTY_MEMBER_STATUS_CLOSED = 4;
+}
+
+// Where a points ledger is in its lifecycle.
+enum PointsLedgerStatus {
+  POINTS_LEDGER_STATUS_UNSPECIFIED = 0;
+  POINTS_LEDGER_STATUS_PENDING = 1;
+  POINTS_LEDGER_STATUS_OPEN = 2;
+  POINTS_LEDGER_STATUS_FROZEN = 3;
+  POINTS_LEDGER_STATUS_CLOSED = 4;
+}
+
+// Where a reward is in its lifecycle.
+enum RewardStatus {
+  REWARD_STATUS_UNSPECIFIED = 0;
+  REWARD_STATUS_DRAFT = 1;
+  REWARD_STATUS_ENABLED = 2;
+  REWARD_STATUS_DISABLED = 3;
+  REWARD_STATUS_RETIRED = 4;
+}
+
+// Where a tier is in its lifecycle.
+enum TierStatus {
+  TIER_STATUS_UNSPECIFIED = 0;
+  TIER_STATUS_DRAFT = 1;
+  TIER_STATUS_ENABLED = 2;
+  TIER_STATUS_DISABLED = 3;
+  TIER_STATUS_RETIRED = 4;
+}
+
+// The limit of a loyalty member.
+message LoyaltyMemberLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a loyalty member.
+message LoyaltyMemberCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a loyalty member.
+message LoyaltyMemberBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A loyalty member of the loyalty domain.
+message LoyaltyMember {
+  string loyalty_member_id = 1;
+  RewardRef holder = 2;
+  LoyaltyMemberStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated LoyaltyMemberLimit limits = 7;
+  oneof funding {
+    LoyaltyMemberCardFunding card = 8;
+    LoyaltyMemberBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The limit of a points ledger.
+message PointsLedgerLimit {
+  string name = 1;
+  acme.common.v1.Money amount = 2;
+  google.protobuf.Duration period = 3;
+}
+
+// The card funding of a points ledger.
+message PointsLedgerCardFunding {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank funding of a points ledger.
+message PointsLedgerBankFunding {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// A points ledger of the loyalty domain.
+message PointsLedger {
+  string points_ledger_id = 1;
+  RewardRef holder = 2;
+  PointsLedgerStatus status = 3;
+  string currency_code = 4;
+  acme.common.v1.Money balance = 5;
+  acme.common.v1.Money available = 6;
+  repeated PointsLedgerLimit limits = 7;
+  oneof funding {
+    PointsLedgerCardFunding card = 8;
+    PointsLedgerBankFunding bank = 9;
+    string external_account_id = 10;
+  }
+  google.protobuf.Timestamp opened_at = 11;
+  acme.common.v1.ContactInfo contact = 12;
+  map<string, string> labels = 13;
+  acme.common.v1.AuditInfo audit = 14;
+}
+
+// The condition of a reward.
+message RewardCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a reward.
+message RewardDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a reward.
+message RewardRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a reward.
+message RewardBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A reward of the loyalty domain.
+message Reward {
+  string reward_id = 1;
+  string name = 2;
+  string description = 3;
+  RewardStatus status = 4;
+  int32 priority = 5;
+  repeated RewardCondition conditions = 6;
+  oneof action {
+    RewardDiscountAction discount = 7;
+    RewardRouteAction route = 8;
+    RewardBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The condition of a tier.
+message TierCondition {
+  string attribute = 1;
+  string operator = 2;
+  string value = 3;
+  bool negate = 4;
+}
+
+// The discount action of a tier.
+message TierDiscountAction {
+  double percent = 1;
+  acme.common.v1.Money amount = 2;
+}
+
+// The route action of a tier.
+message TierRouteAction {
+  string target = 1;
+  int32 weight = 2;
+}
+
+// The block action of a tier.
+message TierBlockAction {
+  string reason = 1;
+  string notify_email = 2;
+}
+
+// A tier of the loyalty domain.
+message Tier {
+  string tier_id = 1;
+  string name = 2;
+  string description = 3;
+  TierStatus status = 4;
+  int32 priority = 5;
+  repeated TierCondition conditions = 6;
+  oneof action {
+    TierDiscountAction discount = 7;
+    TierRouteAction route = 8;
+    TierBlockAction block = 9;
+  }
+  acme.common.v1.TimeWindow effective = 10;
+  repeated string scopes = 11;
+  map<string, string> parameters = 12;
+  int64 version = 13;
+  acme.identity.v1.UserRef owner = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

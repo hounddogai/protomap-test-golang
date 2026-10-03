@@ -1,0 +1,206 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/money.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/refs.proto";
+import "acme/prescriptions/v1/refs.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PrescriptionsProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Where a prescription is in its lifecycle.
+enum PrescriptionStatus {
+  PRESCRIPTION_STATUS_UNSPECIFIED = 0;
+  PRESCRIPTION_STATUS_DRAFT = 1;
+  PRESCRIPTION_STATUS_ISSUED = 2;
+  PRESCRIPTION_STATUS_APPROVED = 3;
+  PRESCRIPTION_STATUS_PAID = 4;
+  PRESCRIPTION_STATUS_VOID = 5;
+}
+
+// Where a medication is in its lifecycle.
+enum MedicationStatus {
+  MEDICATION_STATUS_UNSPECIFIED = 0;
+  MEDICATION_STATUS_PLANNED = 1;
+  MEDICATION_STATUS_AVAILABLE = 2;
+  MEDICATION_STATUS_RESERVED = 3;
+  MEDICATION_STATUS_RETIRED = 4;
+}
+
+// Where a refill is in its lifecycle.
+enum RefillStatus {
+  REFILL_STATUS_UNSPECIFIED = 0;
+  REFILL_STATUS_NEW = 1;
+  REFILL_STATUS_OPEN = 2;
+  REFILL_STATUS_WAITING = 3;
+  REFILL_STATUS_RESOLVED = 4;
+  REFILL_STATUS_CLOSED = 5;
+}
+
+// The line of a prescription.
+message PrescriptionLine {
+  string line_id = 1;
+  string sku = 2;
+  string description = 3;
+  int64 quantity = 4;
+  acme.common.v1.Money unit_price = 5;
+  acme.common.v1.Money amount = 6;
+  PrescriptionLineTax tax = 7;
+  map<string, string> attributes = 8;
+}
+
+// The tax of a prescription line.
+message PrescriptionLineTax {
+  string jurisdiction = 1;
+  double rate = 2;
+  acme.common.v1.Money amount = 3;
+  repeated string exemptions = 4;
+}
+
+// The card settlement of a prescription.
+message PrescriptionCardSettlement {
+  string holder_name = 1;
+  string last4 = 2;
+  string network = 3;
+  string token = 4;
+}
+
+// The bank settlement of a prescription.
+message PrescriptionBankSettlement {
+  string iban = 1;
+  string bic = 2;
+  string account_holder = 3;
+}
+
+// The attachment of a prescription.
+message PrescriptionAttachment {
+  string file_name = 1;
+  string content_type = 2;
+  int64 size_bytes = 3;
+  string checksum = 4;
+  string uri = 5;
+}
+
+// A prescription of the prescriptions domain.
+message Prescription {
+  string prescription_id = 1;
+  string number = 2;
+  PrescriptionStatus status = 3;
+  acme.patients.v1.PatientRef counterparty = 4;
+  repeated PrescriptionLine lines = 5;
+  acme.common.v1.Money total = 6;
+  acme.common.v1.PostalAddress billing_address = 7;
+  oneof settlement {
+    PrescriptionCardSettlement card = 8;
+    PrescriptionBankSettlement bank = 9;
+    string voucher_code = 10;
+  }
+  google.protobuf.Timestamp issued_at = 11;
+  google.protobuf.Timestamp due_at = 12;
+  string notes = 13;
+  repeated PrescriptionAttachment attachments = 14;
+  map<string, string> metadata = 15;
+  acme.common.v1.AuditInfo audit = 16;
+}
+
+// The dimensions of a medication.
+message MedicationDimensions {
+  double length = 1;
+  double width = 2;
+  double height = 3;
+  double weight = 4;
+  string unit = 5;
+}
+
+// The component of a medication.
+message MedicationComponent {
+  string component_id = 1;
+  int64 quantity = 2;
+  string description = 3;
+}
+
+// A medication of the prescriptions domain.
+message Medication {
+  string medication_id = 1;
+  string code = 2;
+  string name = 3;
+  MedicationStatus status = 4;
+  repeated string category_path = 5;
+  MedicationDimensions dimensions = 6;
+  oneof locator {
+    acme.common.v1.GeoPoint geo = 7;
+    acme.common.v1.PostalAddress address = 8;
+    string facility_code = 9;
+  }
+  map<string, string> specs = 10;
+  map<string, MedicationComponent> components = 11;
+  acme.identity.v1.UserRef owner = 12;
+  repeated string tags = 13;
+  int64 capacity = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}
+
+// The comment of a refill.
+message RefillComment {
+  string comment_id = 1;
+  string author_email = 2;
+  string body = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string visibility = 5;
+}
+
+// The sla of a refill.
+message RefillSla {
+  string policy_id = 1;
+  google.protobuf.Timestamp due_at = 2;
+  bool breached = 3;
+  google.protobuf.Duration paused_for = 4;
+}
+
+// The channel origin of a refill.
+message RefillChannelOrigin {
+  string channel = 1;
+  string address = 2;
+}
+
+// The status change of a refill.
+message RefillStatusChange {
+  string from_status = 1;
+  string to_status = 2;
+  string changed_by = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// A refill of the prescriptions domain.
+message Refill {
+  string refill_id = 1;
+  string subject = 2;
+  RefillStatus status = 3;
+  int32 priority = 4;
+  acme.identity.v1.UserRef assignee = 5;
+  acme.common.v1.ContactInfo requester = 6;
+  repeated RefillComment comments = 7;
+  RefillSla sla = 8;
+  oneof origin {
+    PrescriptionRef customer = 9;
+    string external_reference = 10;
+    RefillChannelOrigin channel = 11;
+  }
+  repeated RefillStatusChange history = 12;
+  repeated string tags = 13;
+  map<string, string> custom_fields = 14;
+  acme.common.v1.AuditInfo audit = 15;
+}

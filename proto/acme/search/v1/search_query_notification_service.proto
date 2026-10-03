@@ -1,0 +1,247 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchQueryNotificationServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Tells the people who follow a search query what changed.
+service SearchQueryNotificationService {
+  // Subscribes a search query.
+  rpc SubscribeSearchQueryUpdates(SubscribeSearchQueryUpdatesRequest) returns (SubscribeSearchQueryUpdatesResponse);
+
+  // Unsubscribes a search query.
+  rpc UnsubscribeSearchQueryUpdates(UnsubscribeSearchQueryUpdatesRequest) returns (UnsubscribeSearchQueryUpdatesResponse);
+
+  // Notifys a search query.
+  rpc NotifySearchQueryWatchers(NotifySearchQueryWatchersRequest) returns (NotifySearchQueryWatchersResponse);
+
+  // Lists search queries a page at a time.
+  rpc ListSearchQuerySubscriptions(ListSearchQuerySubscriptionsRequest) returns (ListSearchQuerySubscriptionsResponse);
+
+  // Sends a search query.
+  rpc SendSearchQueryTestNotice(SendSearchQueryTestNoticeRequest) returns (SendSearchQueryTestNoticeResponse);
+
+  // Returns a search query.
+  rpc GetSearchQueryPreferences(GetSearchQueryPreferencesRequest) returns (GetSearchQueryPreferencesResponse);
+
+  // Streams the changes of search queries as they happen.
+  rpc StreamSearchQueryNotices(StreamSearchQueryNoticesRequest) returns (stream StreamSearchQueryNoticesResponse);
+}
+
+// The request of `SubscribeSearchQueryUpdates`.
+message SubscribeSearchQueryUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SubscribeSearchQueryUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SubscribeSearchQueryUpdates`.
+message SubscribeSearchQueryUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  SubscribeSearchQueryUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `UnsubscribeSearchQueryUpdates`.
+message UnsubscribeSearchQueryUpdatesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  UnsubscribeSearchQueryUpdatesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `UnsubscribeSearchQueryUpdates`.
+message UnsubscribeSearchQueryUpdatesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  UnsubscribeSearchQueryUpdatesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NotifySearchQueryWatchers`.
+message NotifySearchQueryWatchersRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  NotifySearchQueryWatchersRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `NotifySearchQueryWatchers`.
+message NotifySearchQueryWatchersResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  NotifySearchQueryWatchersResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListSearchQuerySubscriptions`.
+message ListSearchQuerySubscriptionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchQueryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSearchQuerySubscriptionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSearchQuerySubscriptions`.
+message ListSearchQuerySubscriptionsResponse {
+  repeated SearchQuery search_queries = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SendSearchQueryTestNotice`.
+message SendSearchQueryTestNoticeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  SendSearchQueryTestNoticeRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SendSearchQueryTestNotice`.
+message SendSearchQueryTestNoticeResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchQuery search_query = 1;
+  SendSearchQueryTestNoticeResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSearchQueryPreferences`.
+message GetSearchQueryPreferencesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_query_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchQueryPreferences`.
+message GetSearchQueryPreferencesResponse {
+  SearchQuery search_query = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StreamSearchQueryNotices`.
+message StreamSearchQueryNoticesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchQueryStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamSearchQueryNoticesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamSearchQueryNotices`.
+message StreamSearchQueryNoticesResponse {
+  SearchQuery search_query = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

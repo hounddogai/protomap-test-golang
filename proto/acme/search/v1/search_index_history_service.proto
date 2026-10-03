@@ -1,0 +1,195 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.search.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/search/v1/search.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Search.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/search/v1;searchv1";
+option java_multiple_files = true;
+option java_outer_classname = "SearchIndexHistoryServiceProto";
+option java_package = "com.acme.search.v1";
+
+// Keeps every version of a search index and restores earlier ones.
+service SearchIndexHistoryService {
+  // Records a search index.
+  rpc RecordSearchIndexVersion(RecordSearchIndexVersionRequest) returns (RecordSearchIndexVersionResponse);
+
+  // Lists search indexes a page at a time.
+  rpc ListSearchIndexVersions(ListSearchIndexVersionsRequest) returns (ListSearchIndexVersionsResponse);
+
+  // Returns a search index.
+  rpc GetSearchIndexVersion(GetSearchIndexVersionRequest) returns (GetSearchIndexVersionResponse);
+
+  // Compares a search index.
+  rpc CompareSearchIndexVersions(CompareSearchIndexVersionsRequest) returns (CompareSearchIndexVersionsResponse);
+
+  // Annotates a search index.
+  rpc AnnotateSearchIndexVersion(AnnotateSearchIndexVersionRequest) returns (AnnotateSearchIndexVersionResponse);
+
+  // Deletes a search index.
+  rpc PruneSearchIndexVersions(PruneSearchIndexVersionsRequest) returns (PruneSearchIndexVersionsResponse);
+}
+
+// The request of `RecordSearchIndexVersion`.
+message RecordSearchIndexVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  RecordSearchIndexVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecordSearchIndexVersion`.
+message RecordSearchIndexVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  RecordSearchIndexVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListSearchIndexVersions`.
+message ListSearchIndexVersionsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated SearchIndexStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListSearchIndexVersionsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListSearchIndexVersions`.
+message ListSearchIndexVersionsResponse {
+  repeated SearchIndex search_indexes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetSearchIndexVersion`.
+message GetSearchIndexVersionRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetSearchIndexVersion`.
+message GetSearchIndexVersionResponse {
+  SearchIndex search_index = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CompareSearchIndexVersions`.
+message CompareSearchIndexVersionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  CompareSearchIndexVersionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareSearchIndexVersions`.
+message CompareSearchIndexVersionsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  CompareSearchIndexVersionsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AnnotateSearchIndexVersion`.
+message AnnotateSearchIndexVersionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    int64 version = 1;
+    int64 other_version = 2;
+    bytes snapshot = 3;
+    string author_email = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  SearchIndex search_index = 3;
+  AnnotateSearchIndexVersionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AnnotateSearchIndexVersion`.
+message AnnotateSearchIndexVersionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  SearchIndex search_index = 1;
+  AnnotateSearchIndexVersionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PruneSearchIndexVersions`.
+message PruneSearchIndexVersionsRequest {
+  acme.common.v1.RequestContext context = 1;
+  string search_index_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `PruneSearchIndexVersions`.
+message PruneSearchIndexVersionsResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}

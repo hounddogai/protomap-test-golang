@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.broadcasts.v1;
+
+import "acme/broadcasts/v1/broadcasts.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Broadcasts.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/broadcasts/v1;broadcastsv1";
+option java_multiple_files = true;
+option java_outer_classname = "BroadcastServiceProto";
+option java_package = "com.acme.broadcasts.v1";
+
+// Manages broadcasts: creates, reads, changes, and lists them.
+service BroadcastService {
+  // Creates a broadcast.
+  rpc CreateBroadcast(CreateBroadcastRequest) returns (CreateBroadcastResponse);
+
+  // Returns a broadcast.
+  rpc GetBroadcast(GetBroadcastRequest) returns (GetBroadcastResponse);
+
+  // Changes a broadcast.
+  rpc UpdateBroadcast(UpdateBroadcastRequest) returns (UpdateBroadcastResponse);
+
+  // Deletes a broadcast.
+  rpc DeleteBroadcast(DeleteBroadcastRequest) returns (DeleteBroadcastResponse);
+
+  // Lists broadcasts a page at a time.
+  rpc ListBroadcasts(ListBroadcastsRequest) returns (ListBroadcastsResponse);
+
+  // Returns several broadcasts at once.
+  rpc BatchGetBroadcasts(BatchGetBroadcastsRequest) returns (BatchGetBroadcastsResponse);
+
+  // Lists broadcasts a page at a time.
+  rpc SearchBroadcasts(SearchBroadcastsRequest) returns (SearchBroadcastsResponse);
+
+  // Streams the changes of broadcasts as they happen.
+  rpc WatchBroadcasts(WatchBroadcastsRequest) returns (stream WatchBroadcastsResponse);
+
+  // Takes a stream of broadcasts and answers once at the end.
+  rpc BatchCreateBroadcasts(stream BatchCreateBroadcastsRequest) returns (BatchCreateBroadcastsResponse);
+
+  // Creates a broadcast.
+  rpc CloneBroadcast(CloneBroadcastRequest) returns (CloneBroadcastResponse);
+}
+
+// The request of `CreateBroadcast`.
+message CreateBroadcastRequest {
+  acme.common.v1.RequestContext context = 1;
+  Broadcast broadcast = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateBroadcast`.
+message CreateBroadcastResponse {
+  Broadcast broadcast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetBroadcast`.
+message GetBroadcastRequest {
+  acme.common.v1.RequestContext context = 1;
+  string broadcast_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetBroadcast`.
+message GetBroadcastResponse {
+  Broadcast broadcast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateBroadcast`.
+message UpdateBroadcastRequest {
+  acme.common.v1.RequestContext context = 1;
+  Broadcast broadcast = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateBroadcast`.
+message UpdateBroadcastResponse {
+  Broadcast broadcast = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteBroadcast`.
+message DeleteBroadcastRequest {
+  acme.common.v1.RequestContext context = 1;
+  string broadcast_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteBroadcast`.
+message DeleteBroadcastResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListBroadcasts`.
+message ListBroadcastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BroadcastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListBroadcastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListBroadcasts`.
+message ListBroadcastsResponse {
+  repeated Broadcast broadcasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetBroadcasts`.
+message BatchGetBroadcastsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string broadcast_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetBroadcasts`.
+message BatchGetBroadcastsResponse {
+  repeated Broadcast broadcasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchBroadcasts`.
+message SearchBroadcastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BroadcastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchBroadcastsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchBroadcasts`.
+message SearchBroadcastsResponse {
+  repeated Broadcast broadcasts = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchBroadcasts`.
+message WatchBroadcastsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated BroadcastStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchBroadcastsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchBroadcasts`.
+message WatchBroadcastsResponse {
+  Broadcast broadcast = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateBroadcasts`.
+message BatchCreateBroadcastsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateBroadcastsRequest.StreamHeader header = 2;
+    Broadcast record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateBroadcasts`.
+message BatchCreateBroadcastsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string broadcast_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateBroadcastsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneBroadcast`.
+message CloneBroadcastRequest {
+  acme.common.v1.RequestContext context = 1;
+  Broadcast broadcast = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneBroadcast`.
+message CloneBroadcastResponse {
+  Broadcast broadcast = 1;
+  acme.common.v1.OperationResult result = 2;
+}

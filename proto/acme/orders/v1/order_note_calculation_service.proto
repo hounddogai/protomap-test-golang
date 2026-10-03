@@ -1,0 +1,275 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.orders.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/orders/v1/orders.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Orders.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/orders/v1;ordersv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderNoteCalculationServiceProto";
+option java_package = "com.acme.orders.v1";
+
+// Computes the figures of an order note, such as totals, taxes, and estimates.
+service OrderNoteCalculationService {
+  // Calculates an order note.
+  rpc CalculateOrderNote(CalculateOrderNoteRequest) returns (CalculateOrderNoteResponse);
+
+  // Estimates an order note.
+  rpc EstimateOrderNote(EstimateOrderNoteRequest) returns (EstimateOrderNoteResponse);
+
+  // Compares an order note.
+  rpc CompareOrderNoteOptions(CompareOrderNoteOptionsRequest) returns (CompareOrderNoteOptionsResponse);
+
+  // Recalculates an order note.
+  rpc RecalculateOrderNotes(RecalculateOrderNotesRequest) returns (RecalculateOrderNotesResponse);
+
+  // Simulates an order note.
+  rpc SimulateOrderNote(SimulateOrderNoteRequest) returns (SimulateOrderNoteResponse);
+
+  // Explains an order note.
+  rpc ExplainOrderNoteCalculation(ExplainOrderNoteCalculationRequest) returns (ExplainOrderNoteCalculationResponse);
+}
+
+// The request of `CalculateOrderNote`.
+message CalculateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  CalculateOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateOrderNote`.
+message CalculateOrderNoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateOrderNoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderNote order_note = 1;
+  CalculateOrderNoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateOrderNote`.
+message EstimateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  EstimateOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateOrderNote`.
+message EstimateOrderNoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateOrderNoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderNote order_note = 1;
+  EstimateOrderNoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareOrderNoteOptions`.
+message CompareOrderNoteOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  CompareOrderNoteOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareOrderNoteOptions`.
+message CompareOrderNoteOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareOrderNoteOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderNote order_note = 1;
+  CompareOrderNoteOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateOrderNotes`.
+message RecalculateOrderNotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  RecalculateOrderNotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateOrderNotes`.
+message RecalculateOrderNotesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateOrderNotesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderNote order_note = 1;
+  RecalculateOrderNotesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateOrderNote`.
+message SimulateOrderNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  SimulateOrderNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateOrderNote`.
+message SimulateOrderNoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateOrderNoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  OrderNote order_note = 1;
+  SimulateOrderNoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainOrderNoteCalculation`.
+message ExplainOrderNoteCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string order_note_id = 2;
+  OrderNote order_note = 3;
+  ExplainOrderNoteCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainOrderNoteCalculation`.
+message ExplainOrderNoteCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  OrderNote order_note = 1;
+  ExplainOrderNoteCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
