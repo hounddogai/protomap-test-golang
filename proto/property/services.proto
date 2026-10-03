@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.property.v1;
+option go_package = "example.com/protomap-fixtures/gen/property;propertypb";
+import "common/common.proto";
+
+// Deposit deduction calculation.
+service DepositDeductionCalculation {
+  rpc CalculateDeduction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lease document preparation.
+service LeaseDocumentPreparation {
+  rpc PrepareLease(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lease notice assessment.
+service LeaseNoticeAssessment {
+  rpc AssessNotice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lease origination coordination.
+service LeaseOriginationCoordination {
+  rpc Lease(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lease termination coordination.
+service LeaseTerminationCoordination {
+  rpc TerminateLease(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lease terms calculation.
+service LeaseTermsCalculation {
+  rpc CalculateTerms(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Maintenance responsibility assessment.
+service MaintenanceResponsibilityAssessment {
+  rpc AssessResponsibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Move in inventory validation.
+service MoveInInventoryValidation {
+  rpc ValidateInventory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Move in readiness assessment.
+service MoveInReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property availability lookup.
+service PropertyAvailabilityLookup {
+  rpc FindProperty(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property contractor selection.
+service PropertyContractorSelection {
+  rpc SelectContractor(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property fault lookup.
+service PropertyFaultLookup {
+  rpc FindFault(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property inspection scheduling.
+service PropertyInspectionScheduling {
+  rpc ScheduleInspection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property maintenance coordination.
+service PropertyMaintenanceCoordination {
+  rpc MaintainProperty(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property move in coordination.
+service PropertyMoveInCoordination {
+  rpc MoveIn(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Property work order preparation.
+service PropertyWorkOrderPreparation {
+  rpc PrepareWorkOrder(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tenant access preparation.
+service TenantAccessPreparation {
+  rpc PrepareAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tenant exit preparation.
+service TenantExitPreparation {
+  rpc PrepareExit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tenant qualification assessment.
+service TenantQualificationAssessment {
+  rpc AssessTenant(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Unit condition lookup.
+service UnitConditionLookup {
+  rpc FindCondition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

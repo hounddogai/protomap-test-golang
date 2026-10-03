@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.recruiting.v1;
+option go_package = "example.com/protomap-fixtures/gen/recruiting;recruitingpb";
+import "common/common.proto";
+
+// Candidate consent assessment.
+service CandidateConsentAssessment {
+  rpc AssessConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate eligibility validation.
+service CandidateEligibilityValidation {
+  rpc ValidateEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate intake coordination.
+service CandidateIntakeCoordination {
+  rpc RegisterCandidate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate profile lookup.
+service CandidateProfileLookup {
+  rpc FindCandidate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate readiness evaluation.
+service CandidateReadinessEvaluation {
+  rpc EvaluateReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate reference assessment.
+service CandidateReferenceAssessment {
+  rpc AssessReferences(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate screening coordination.
+service CandidateScreeningCoordination {
+  rpc ScreenCandidate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Candidate skill assessment.
+service CandidateSkillAssessment {
+  rpc AssessSkills(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Compensation band lookup.
+service CompensationBandLookup {
+  rpc FindBand(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Employment offer preparation.
+service EmploymentOfferPreparation {
+  rpc PrepareOffer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Interview coordination.
+service InterviewCoordination {
+  rpc Interview(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Interview feedback assessment.
+service InterviewFeedbackAssessment {
+  rpc AssessFeedback(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Interview format selection.
+service InterviewFormatSelection {
+  rpc SelectFormat(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Interview panel availability.
+service InterviewPanelAvailability {
+  rpc FindPanel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Interview question preparation.
+service InterviewQuestionPreparation {
+  rpc PrepareQuestions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Job offer coordination.
+service JobOfferCoordination {
+  rpc OfferJob(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Job requirement lookup.
+service JobRequirementLookup {
+  rpc FindRequirements(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Offer approval selection.
+service OfferApprovalSelection {
+  rpc SelectApprover(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Resume qualification extraction.
+service ResumeQualificationExtraction {
+  rpc ExtractQualifications(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Screening decision preparation.
+service ScreeningDecisionPreparation {
+  rpc PrepareDecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

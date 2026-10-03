@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.invoicing.v1;
+option go_package = "example.com/protomap-fixtures/gen/invoicing;invoicingpb";
+import "common/common.proto";
+
+// Approval threshold assessment.
+service ApprovalThresholdAssessment {
+  rpc AssessThreshold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Credit note amount calculation.
+service CreditNoteAmountCalculation {
+  rpc CalculateAmount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Credit note publication.
+service CreditNotePublication {
+  rpc PublishCredit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Credit note reason validation.
+service CreditNoteReasonValidation {
+  rpc ValidateReason(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice approval coordination.
+service InvoiceApprovalCoordination {
+  rpc Approve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice approval recording.
+service InvoiceApprovalRecording {
+  rpc RecordApproval(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice approver selection.
+service InvoiceApproverSelection {
+  rpc SelectApprover(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice attachment preparation.
+service InvoiceAttachmentPreparation {
+  rpc PrepareAttachments(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice credit coordination.
+service InvoiceCreditCoordination {
+  rpc Credit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice delivery coordination.
+service InvoiceDeliveryCoordination {
+  rpc Deliver(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice delivery readiness.
+service InvoiceDeliveryReadiness {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice evidence lookup.
+service InvoiceEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice format selection.
+service InvoiceFormatSelection {
+  rpc SelectFormat(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice issuance coordination.
+service InvoiceIssuanceCoordination {
+  rpc Issue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice line validation.
+service InvoiceLineValidation {
+  rpc ValidateLines(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice number reservation.
+service InvoiceNumberReservation {
+  rpc ReserveNumber(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice party lookup.
+service InvoicePartyLookup {
+  rpc FindParties(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice recipient lookup.
+service InvoiceRecipientLookup {
+  rpc FindRecipient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Invoice total calculation.
+service InvoiceTotalCalculation {
+  rpc CalculateTotal(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Original invoice lookup.
+service OriginalInvoiceLookup {
+  rpc FindOriginal(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

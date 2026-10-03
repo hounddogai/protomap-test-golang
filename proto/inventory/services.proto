@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.inventory.v1;
+option go_package = "example.com/protomap-fixtures/gen/inventory;inventorypb";
+import "common/common.proto";
+
+// Destination capacity assessment.
+service DestinationCapacityAssessment {
+  rpc AssessCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inventory correction preparation.
+service InventoryCorrectionPreparation {
+  rpc PrepareCorrection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inventory demand lookup.
+service InventoryDemandLookup {
+  rpc FindDemand(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inventory reconciliation coordination.
+service InventoryReconciliationCoordination {
+  rpc Reconcile(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inventory variance calculation.
+service InventoryVarianceCalculation {
+  rpc CalculateVariance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reorder point calculation.
+service ReorderPointCalculation {
+  rpc CalculateReorderPoint(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Replenishment coordination.
+service ReplenishmentCoordination {
+  rpc Replenish(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Replenishment quantity calculation.
+service ReplenishmentQuantityCalculation {
+  rpc CalculateQuantity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation priority evaluation.
+service ReservationPriorityEvaluation {
+  rpc EvaluatePriority(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Safety stock assessment.
+service SafetyStockAssessment {
+  rpc AssessSafetyStock(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Source stock lookup.
+service SourceStockLookup {
+  rpc FindSourceStock(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock adjustment eligibility.
+service StockAdjustmentEligibility {
+  rpc AssessAdjustment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock availability lookup.
+service StockAvailabilityLookup {
+  rpc FindAvailability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock count lookup.
+service StockCountLookup {
+  rpc FindCount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock movement preparation.
+service StockMovementPreparation {
+  rpc PrepareMovement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock ownership assessment.
+service StockOwnershipAssessment {
+  rpc AssessOwnership(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock reservation coordination.
+service StockReservationCoordination {
+  rpc Reserve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock reservation preparation.
+service StockReservationPreparation {
+  rpc PrepareReservation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stock transfer coordination.
+service StockTransferCoordination {
+  rpc Transfer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transfer allocation planning.
+service TransferAllocationPlanning {
+  rpc PlanAllocation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

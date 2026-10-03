@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.marketplace.v1;
+option go_package = "example.com/protomap-fixtures/gen/marketplace;marketplacepb";
+import "common/common.proto";
+
+// Buyer seller evidence lookup.
+service BuyerSellerEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dispute remedy selection.
+service DisputeRemedySelection {
+  rpc SelectRemedy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Listing policy validation.
+service ListingPolicyValidation {
+  rpc ValidatePolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Listing quality assessment.
+service ListingQualityAssessment {
+  rpc AssessQuality(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Marketplace commission calculation.
+service MarketplaceCommissionCalculation {
+  rpc CalculateCommission(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Marketplace dispute coordination.
+service MarketplaceDisputeCoordination {
+  rpc Resolve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Marketplace liability assessment.
+service MarketplaceLiabilityAssessment {
+  rpc AssessLiability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payout schedule selection.
+service PayoutScheduleSelection {
+  rpc SelectSchedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller activation readiness.
+service SellerActivationReadiness {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller agreement validation.
+service SellerAgreementValidation {
+  rpc ValidateAgreement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller balance lookup.
+service SellerBalanceLookup {
+  rpc FindBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller capability lookup.
+service SellerCapabilityLookup {
+  rpc FindCapabilities(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller catalog mapping.
+service SellerCatalogMapping {
+  rpc MapCatalog(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller identity assessment.
+service SellerIdentityAssessment {
+  rpc AssessIdentity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller inventory publication.
+service SellerInventoryPublication {
+  rpc PublishInventory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller listing coordination.
+service SellerListingCoordination {
+  rpc List(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller onboarding coordination.
+service SellerOnboardingCoordination {
+  rpc Onboard(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller payout coordination.
+service SellerPayoutCoordination {
+  rpc Pay(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller performance evaluation.
+service SellerPerformanceEvaluation {
+  rpc EvaluatePerformance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Seller reserve assessment.
+service SellerReserveAssessment {
+  rpc AssessReserve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

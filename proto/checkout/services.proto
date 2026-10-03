@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.checkout.v1;
+option go_package = "example.com/protomap-fixtures/gen/checkout;checkoutpb";
+import "common/common.proto";
+
+// Age restricted purchase validation.
+service AgeRestrictedPurchaseValidation {
+  rpc ValidateAge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout address validation.
+service CheckoutAddressValidation {
+  rpc ValidateAddress(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout commitment assessment.
+service CheckoutCommitmentAssessment {
+  rpc AssessCommitment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout consent coordination.
+service CheckoutConsentCoordination {
+  rpc CollectConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout disclosure selection.
+service CheckoutDisclosureSelection {
+  rpc SelectDisclosures(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout draft lookup.
+service CheckoutDraftLookup {
+  rpc FindDraft(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout failure classification.
+service CheckoutFailureClassification {
+  rpc ClassifyFailure(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout identity verification.
+service CheckoutIdentityVerification {
+  rpc VerifyIdentity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout inventory revalidation.
+service CheckoutInventoryRevalidation {
+  rpc RevalidateInventory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout payment selection.
+service CheckoutPaymentSelection {
+  rpc SelectPayment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout price revalidation.
+service CheckoutPriceRevalidation {
+  rpc RevalidatePrice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout recovery coordination.
+service CheckoutRecoveryCoordination {
+  rpc Resume(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery fee assessment.
+service DeliveryFeeAssessment {
+  rpc AssessFee(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery option coordination.
+service DeliveryOptionCoordination {
+  rpc Offer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery promise calculation.
+service DeliveryPromiseCalculation {
+  rpc CalculatePromise(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery window reservation.
+service DeliveryWindowReservation {
+  rpc ReserveWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Marketing consent assessment.
+service MarketingConsentAssessment {
+  rpc AssessConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pickup point selection.
+service PickupPointSelection {
+  rpc SelectPickup(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase completion coordination.
+service PurchaseCompletionCoordination {
+  rpc Complete(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase terms lookup.
+service PurchaseTermsLookup {
+  rpc FindTerms(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

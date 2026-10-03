@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.notifications.v1;
+option go_package = "example.com/protomap-fixtures/gen/notifications;notificationspb";
+import "common/common.proto";
+
+// Communication consent assessment.
+service CommunicationConsentAssessment {
+  rpc AssessConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery channel selection.
+service DeliveryChannelSelection {
+  rpc SelectChannel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery failure assessment.
+service DeliveryFailureAssessment {
+  rpc AssessFailure(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery outcome preparation.
+service DeliveryOutcomePreparation {
+  rpc PrepareOutcome(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery receipt coordination.
+service DeliveryReceiptCoordination {
+  rpc TrackReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message attempt lookup.
+service MessageAttemptLookup {
+  rpc FindAttempts(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message delivery preparation.
+service MessageDeliveryPreparation {
+  rpc PrepareDelivery(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message dispatch coordination.
+service MessageDispatchCoordination {
+  rpc Dispatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message localization selection.
+service MessageLocalizationSelection {
+  rpc SelectLocale(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message recipient lookup.
+service MessageRecipientLookup {
+  rpc FindRecipient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message retry eligibility.
+service MessageRetryEligibility {
+  rpc AssessRetry(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message template coordination.
+service MessageTemplateCoordination {
+  rpc Render(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Message template lookup.
+service MessageTemplateLookup {
+  rpc FindTemplate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Notification preference lookup.
+service NotificationPreferenceLookup {
+  rpc FindPreferences(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Notification schedule coordination.
+service NotificationScheduleCoordination {
+  rpc ScheduleNotification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Notification send window.
+service NotificationSendWindow {
+  rpc SelectWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Notification urgency classification.
+service NotificationUrgencyClassification {
+  rpc ClassifyUrgency(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quiet hours assessment.
+service QuietHoursAssessment {
+  rpc AssessQuietHours(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Template rendering preparation.
+service TemplateRenderingPreparation {
+  rpc PrepareRendering(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Template variable validation.
+service TemplateVariableValidation {
+  rpc ValidateVariables(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

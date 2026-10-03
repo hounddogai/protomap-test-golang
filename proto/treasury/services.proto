@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.treasury.v1;
+option go_package = "example.com/protomap-fixtures/gen/treasury;treasurypb";
+import "common/common.proto";
+
+// Bank statement lookup.
+service BankStatementLookup {
+  rpc FindStatement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cash adjustment preparation.
+service CashAdjustmentPreparation {
+  rpc PrepareAdjustment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cash discrepancy classification.
+service CashDiscrepancyClassification {
+  rpc ClassifyDiscrepancy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cash entry matching.
+service CashEntryMatching {
+  rpc MatchEntries(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cash forecast calculation.
+service CashForecastCalculation {
+  rpc CalculateForecast(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cash reconciliation coordination.
+service CashReconciliationCoordination {
+  rpc Reconcile(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Currency exposure assessment.
+service CurrencyExposureAssessment {
+  rpc AssessExposure(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Exchange order preparation.
+service ExchangeOrderPreparation {
+  rpc PrepareOrder(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Exchange rate lookup.
+service ExchangeRateLookup {
+  rpc FindRate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Foreign exchange coordination.
+service ForeignExchangeCoordination {
+  rpc Exchange(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Funding requirement evaluation.
+service FundingRequirementEvaluation {
+  rpc EvaluateRequirement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Hedge eligibility evaluation.
+service HedgeEligibilityEvaluation {
+  rpc EvaluateHedge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Liquidity buffer assessment.
+service LiquidityBufferAssessment {
+  rpc AssessBuffer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Liquidity planning coordination.
+service LiquidityPlanningCoordination {
+  rpc Plan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Liquidity position lookup.
+service LiquidityPositionLookup {
+  rpc FindPosition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transfer instruction preparation.
+service TransferInstructionPreparation {
+  rpc PrepareInstruction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transfer limit assessment.
+service TransferLimitAssessment {
+  rpc AssessLimit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transfer mandate validation.
+service TransferMandateValidation {
+  rpc ValidateMandate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Treasury account lookup.
+service TreasuryAccountLookup {
+  rpc FindAccount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Treasury transfer coordination.
+service TreasuryTransferCoordination {
+  rpc Transfer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

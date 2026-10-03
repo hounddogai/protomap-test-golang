@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.support.v1;
+option go_package = "example.com/protomap-fixtures/gen/support;supportpb";
+import "common/common.proto";
+
+// Agent availability assessment.
+service AgentAvailabilityAssessment {
+  rpc AssessAvailability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Agent skill lookup.
+service AgentSkillLookup {
+  rpc FindSkills(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Case priority calculation.
+service CasePriorityCalculation {
+  rpc CalculatePriority(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Escalation evidence preparation.
+service EscalationEvidencePreparation {
+  rpc PrepareEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Escalation owner selection.
+service EscalationOwnerSelection {
+  rpc SelectOwner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Escalation policy lookup.
+service EscalationPolicyLookup {
+  rpc FindPolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Knowledge article lookup.
+service KnowledgeArticleLookup {
+  rpc FindArticles(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Resolution instruction preparation.
+service ResolutionInstructionPreparation {
+  rpc PrepareInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Resolution option assessment.
+service ResolutionOptionAssessment {
+  rpc AssessOptions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support assignment preparation.
+service SupportAssignmentPreparation {
+  rpc PrepareAssignment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support case coordination.
+service SupportCaseCoordination {
+  rpc OpenCase(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support customer lookup.
+service SupportCustomerLookup {
+  rpc FindCustomer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support entitlement assessment.
+service SupportEntitlementAssessment {
+  rpc AssessEntitlement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support escalation coordination.
+service SupportEscalationCoordination {
+  rpc EscalateCase(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support issue classification.
+service SupportIssueClassification {
+  rpc ClassifyIssue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support queue selection.
+service SupportQueueSelection {
+  rpc SelectQueue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support remedy eligibility.
+service SupportRemedyEligibility {
+  rpc AssessRemedy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support resolution coordination.
+service SupportResolutionCoordination {
+  rpc ResolveCase(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support routing coordination.
+service SupportRoutingCoordination {
+  rpc RouteCase(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Support sla assessment.
+service SupportSlaAssessment {
+  rpc AssessSla(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

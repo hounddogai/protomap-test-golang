@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.travel.v1;
+option go_package = "example.com/protomap-fixtures/gen/travel;travelpb";
+import "common/common.proto";
+
+// Alternative journey selection.
+service AlternativeJourneySelection {
+  rpc SelectJourney(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Baggage allowance assessment.
+service BaggageAllowanceAssessment {
+  rpc AssessAllowance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Disruption event lookup.
+service DisruptionEventLookup {
+  rpc FindEvents(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Expense claim preparation.
+service ExpenseClaimPreparation {
+  rpc PrepareClaim(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Expense receipt validation.
+service ExpenseReceiptValidation {
+  rpc ValidateReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Itinerary connection evaluation.
+service ItineraryConnectionEvaluation {
+  rpc EvaluateConnections(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Itinerary option preparation.
+service ItineraryOptionPreparation {
+  rpc PrepareOptions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Itinerary planning coordination.
+service ItineraryPlanningCoordination {
+  rpc PlanItinerary(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Passenger assistance selection.
+service PassengerAssistanceSelection {
+  rpc SelectAssistance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Passenger journey coordination.
+service PassengerJourneyCoordination {
+  rpc ArrangeJourney(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Passenger profile lookup.
+service PassengerProfileLookup {
+  rpc FindPassenger(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel allowance calculation.
+service TravelAllowanceCalculation {
+  rpc CalculateAllowance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel compensation calculation.
+service TravelCompensationCalculation {
+  rpc CalculateCompensation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel destination lookup.
+service TravelDestinationLookup {
+  rpc FindDestination(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel disruption coordination.
+service TravelDisruptionCoordination {
+  rpc RecoverJourney(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel document validation.
+service TravelDocumentValidation {
+  rpc ValidateDocuments(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel expense coordination.
+service TravelExpenseCoordination {
+  rpc Expense(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel expense policy lookup.
+service TravelExpensePolicyLookup {
+  rpc FindPolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel rebooking eligibility.
+service TravelRebookingEligibility {
+  rpc AssessRebooking(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Travel requirement assessment.
+service TravelRequirementAssessment {
+  rpc AssessRequirements(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.insurance.v1;
+option go_package = "example.com/protomap-fixtures/gen/insurance;insurancepb";
+import "common/common.proto";
+
+// Claim adjudication coordination.
+service ClaimAdjudicationCoordination {
+  rpc Adjudicate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim benefit calculation.
+service ClaimBenefitCalculation {
+  rpc CalculateBenefit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim evidence lookup.
+service ClaimEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim liability assessment.
+service ClaimLiabilityAssessment {
+  rpc AssessLiability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim payee verification.
+service ClaimPayeeVerification {
+  rpc VerifyPayee(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim payout instruction.
+service ClaimPayoutInstruction {
+  rpc PreparePayout(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim reserve assessment.
+service ClaimReserveAssessment {
+  rpc AssessReserve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Claim settlement coordination.
+service ClaimSettlementCoordination {
+  rpc Settle(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coverage change evaluation.
+service CoverageChangeEvaluation {
+  rpc EvaluateChanges(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coverage eligibility assessment.
+service CoverageEligibilityAssessment {
+  rpc AssessCoverage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Insurance applicant lookup.
+service InsuranceApplicantLookup {
+  rpc FindApplicant(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Policy coverage validation.
+service PolicyCoverageValidation {
+  rpc ValidateCoverage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Policy history lookup.
+service PolicyHistoryLookup {
+  rpc FindHistory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Policy issuance coordination.
+service PolicyIssuanceCoordination {
+  rpc Issue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Policy renewal coordination.
+service PolicyRenewalCoordination {
+  rpc Renew(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Policy renewal offer.
+service PolicyRenewalOffer {
+  rpc PrepareRenewal(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Policy terms preparation.
+service PolicyTermsPreparation {
+  rpc PrepareTerms(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Premium calculation.
+service PremiumCalculation {
+  rpc CalculatePremium(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Renewal risk assessment.
+service RenewalRiskAssessment {
+  rpc AssessRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Settlement agreement preparation.
+service SettlementAgreementPreparation {
+  rpc PrepareAgreement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

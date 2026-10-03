@@ -30,3 +30,6 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Local toolchains, runtime state, and build outputs
+/.cache/

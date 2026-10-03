@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.workforce.v1;
+option go_package = "example.com/protomap-fixtures/gen/workforce;workforcepb";
+import "common/common.proto";
+
+// Crew duty compliance.
+service CrewDutyCompliance {
+  rpc AssessDuty(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Crew fatigue evaluation.
+service CrewFatigueEvaluation {
+  rpc EvaluateFatigue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Crew qualification lookup.
+service CrewQualificationLookup {
+  rpc FindQualification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Crew roster readiness.
+service CrewRosterReadiness {
+  rpc AssessRoster(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Duty rest window assessment.
+service DutyRestWindowAssessment {
+  rpc AssessRest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Employee leave coordination.
+service EmployeeLeaveCoordination {
+  rpc GrantLeave(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Leave approval preparation.
+service LeaveApprovalPreparation {
+  rpc PrepareApproval(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Leave balance calculation.
+service LeaveBalanceCalculation {
+  rpc CalculateBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Leave coverage assessment.
+service LeaveCoverageAssessment {
+  rpc AssessCoverage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Leave entitlement lookup.
+service LeaveEntitlementLookup {
+  rpc FindEntitlement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Schedule fairness assessment.
+service ScheduleFairnessAssessment {
+  rpc AssessFairness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shift assignment preparation.
+service ShiftAssignmentPreparation {
+  rpc PrepareAssignment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shift coverage calculation.
+service ShiftCoverageCalculation {
+  rpc CalculateCoverage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shift coverage coordination.
+service ShiftCoverageCoordination {
+  rpc CoverShift(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shift skill assessment.
+service ShiftSkillAssessment {
+  rpc AssessSkills(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Work time constraint validation.
+service WorkTimeConstraintValidation {
+  rpc ValidateConstraints(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Worker availability lookup.
+service WorkerAvailabilityLookup {
+  rpc FindAvailability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Worker contract lookup.
+service WorkerContractLookup {
+  rpc FindContract(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Workforce schedule preparation.
+service WorkforceSchedulePreparation {
+  rpc PrepareSchedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Workforce scheduling coordination.
+service WorkforceSchedulingCoordination {
+  rpc Schedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

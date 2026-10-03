@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.customs.v1;
+option go_package = "example.com/protomap-fixtures/gen/customs;customspb";
+import "common/common.proto";
+
+// Clearance readiness validation.
+service ClearanceReadinessValidation {
+  rpc ValidateReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Commodity classification lookup.
+service CommodityClassificationLookup {
+  rpc FindClassification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Country of origin assessment.
+service CountryOfOriginAssessment {
+  rpc AssessOrigin(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs clearance coordination.
+service CustomsClearanceCoordination {
+  rpc Clear(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs declaration coordination.
+service CustomsDeclarationCoordination {
+  rpc Declare(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs discrepancy assessment.
+service CustomsDiscrepancyAssessment {
+  rpc AssessDiscrepancy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs duty calculation.
+service CustomsDutyCalculation {
+  rpc CalculateDuty(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs evidence preparation.
+service CustomsEvidencePreparation {
+  rpc PrepareEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs inspection coordination.
+service CustomsInspectionCoordination {
+  rpc Inspect(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs release instruction.
+service CustomsReleaseInstruction {
+  rpc PrepareRelease(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs restriction assessment.
+service CustomsRestrictionAssessment {
+  rpc AssessRestrictions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customs value calculation.
+service CustomsValueCalculation {
+  rpc CalculateValue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Declaration document preparation.
+service DeclarationDocumentPreparation {
+  rpc PrepareDocuments(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Import permit lookup.
+service ImportPermitLookup {
+  rpc FindPermit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inspection notice lookup.
+service InspectionNoticeLookup {
+  rpc FindNotice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Origin rule evaluation.
+service OriginRuleEvaluation {
+  rpc EvaluateOrigin(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Preferential duty calculation.
+service PreferentialDutyCalculation {
+  rpc CalculatePreference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Trade agreement lookup.
+service TradeAgreementLookup {
+  rpc FindAgreement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Trade certificate validation.
+service TradeCertificateValidation {
+  rpc ValidateCertificate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Trade preference coordination.
+service TradePreferenceCoordination {
+  rpc ApplyPreference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

@@ -1,0 +1,115 @@
+syntax = "proto3";
+package fixture.identity.v1;
+option go_package = "example.com/protomap-fixtures/gen/identity;identitypb";
+import "common/common.proto";
+
+// Access decision coordination.
+service AccessDecisionCoordination {
+  rpc DecideAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+  // Review an access decision against its compliance assessment and audit.
+  rpc ReviewAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+  // Revoke access and record the revocation for compliance.
+  rpc RevokeAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+  // Explain an access decision to an auditor.
+  rpc ExplainDecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Access policy resolution.
+service AccessPolicyResolution {
+  rpc ResolvePolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Access token validation.
+service AccessTokenValidation {
+  rpc ValidateToken(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Account recovery coordination.
+service AccountRecoveryCoordination {
+  rpc RecoverAccount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Authenticate service requests across the enterprise network.
+service AuthService {
+  rpc Authenticate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Authentication factor assessment.
+service AuthenticationFactorAssessment {
+  rpc AssessFactors(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity account lookup.
+service IdentityAccountLookup {
+  rpc FindAccount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity activation preparation.
+service IdentityActivationPreparation {
+  rpc PrepareActivation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity attribute validation.
+service IdentityAttributeValidation {
+  rpc ValidateAttributes(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity directory lookup.
+service IdentityDirectoryLookup {
+  rpc FindDirectory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity group assignment.
+service IdentityGroupAssignment {
+  rpc AssignGroups(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity provisioning coordination.
+service IdentityProvisioningCoordination {
+  rpc Provision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Permission scope assessment.
+service PermissionScopeAssessment {
+  rpc AssessScope(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Recovery authorization validation.
+service RecoveryAuthorizationValidation {
+  rpc ValidateRecovery(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Recovery challenge preparation.
+service RecoveryChallengePreparation {
+  rpc PrepareChallenge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Recovery channel assessment.
+service RecoveryChannelAssessment {
+  rpc AssessChannel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Recovery evidence lookup.
+service RecoveryEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Session credential lookup.
+service SessionCredentialLookup {
+  rpc FindCredentials(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Session establishment coordination.
+service SessionEstablishmentCoordination {
+  rpc EstablishSession(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Session grant preparation.
+service SessionGrantPreparation {
+  rpc PrepareGrant(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Session risk evaluation.
+service SessionRiskEvaluation {
+  rpc EvaluateRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

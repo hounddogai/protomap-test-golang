@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.healthcare.v1;
+option go_package = "example.com/protomap-fixtures/gen/healthcare;healthcarepb";
+import "common/common.proto";
+
+// Care access barrier assessment.
+service CareAccessBarrierAssessment {
+  rpc AssessBarriers(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Care discharge coordination.
+service CareDischargeCoordination {
+  rpc Discharge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Care provider availability.
+service CareProviderAvailability {
+  rpc FindProviders(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Care referral coordination.
+service CareReferralCoordination {
+  rpc Refer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Discharge instruction preparation.
+service DischargeInstructionPreparation {
+  rpc PrepareInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Discharge readiness assessment.
+service DischargeReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Discharge support assessment.
+service DischargeSupportAssessment {
+  rpc AssessSupport(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Followup care planning.
+service FollowupCarePlanning {
+  rpc PlanFollowup(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Intake readiness assessment.
+service IntakeReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Language assistance lookup.
+service LanguageAssistanceLookup {
+  rpc FindAssistance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient access coordination.
+service PatientAccessCoordination {
+  rpc ArrangeAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient accommodation assessment.
+service PatientAccommodationAssessment {
+  rpc AssessAccommodation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient consent validation.
+service PatientConsentValidation {
+  rpc ValidateConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient coverage assessment.
+service PatientCoverageAssessment {
+  rpc AssessCoverage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient identity lookup.
+service PatientIdentityLookup {
+  rpc FindPatient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient intake coordination.
+service PatientIntakeCoordination {
+  rpc Admit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Patient transport selection.
+service PatientTransportSelection {
+  rpc SelectTransport(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral document preparation.
+service ReferralDocumentPreparation {
+  rpc PrepareDocuments(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral eligibility assessment.
+service ReferralEligibilityAssessment {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral reason classification.
+service ReferralReasonClassification {
+  rpc ClassifyReason(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

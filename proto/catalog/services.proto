@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.catalog.v1;
+option go_package = "example.com/protomap-fixtures/gen/catalog;catalogpb";
+import "common/common.proto";
+
+// Accessory relationship lookup.
+service AccessoryRelationshipLookup {
+  rpc FindAccessories(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assortment coverage assessment.
+service AssortmentCoverageAssessment {
+  rpc AssessCoverage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assortment gap detection.
+service AssortmentGapDetection {
+  rpc DetectGaps(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assortment planning coordination.
+service AssortmentPlanningCoordination {
+  rpc Plan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Brand portfolio lookup.
+service BrandPortfolioLookup {
+  rpc FindPortfolio(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Collection membership lookup.
+service CollectionMembershipLookup {
+  rpc FindMembers(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Merchandising collection coordination.
+service MerchandisingCollectionCoordination {
+  rpc Curate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product attribute validation.
+service ProductAttributeValidation {
+  rpc ValidateAttributes(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product badge assignment.
+service ProductBadgeAssignment {
+  rpc AssignBadge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product compatibility coordination.
+service ProductCompatibilityCoordination {
+  rpc CheckCompatibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product content approval.
+service ProductContentApproval {
+  rpc ApproveContent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product discoverability assessment.
+service ProductDiscoverabilityAssessment {
+  rpc AssessDiscoverability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product fitment lookup.
+service ProductFitmentLookup {
+  rpc FindFitment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product lifecycle assessment.
+service ProductLifecycleAssessment {
+  rpc AssessLifecycle(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product media selection.
+service ProductMediaSelection {
+  rpc SelectMedia(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product publication coordination.
+service ProductPublicationCoordination {
+  rpc Publish(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product range evaluation.
+service ProductRangeEvaluation {
+  rpc EvaluateRange(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product taxonomy assignment.
+service ProductTaxonomyAssignment {
+  rpc AssignTaxonomy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Product variant resolution.
+service ProductVariantResolution {
+  rpc ResolveVariant(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Substitute product selection.
+service SubstituteProductSelection {
+  rpc SelectSubstitute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

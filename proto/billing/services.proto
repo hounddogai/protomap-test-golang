@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.billing.v1;
+option go_package = "example.com/protomap-fixtures/gen/billing;billingpb";
+import "common/common.proto";
+
+// Account balance lookup.
+service AccountBalanceLookup {
+  rpc FindBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Adjustment reason validation.
+service AdjustmentReasonValidation {
+  rpc ValidateReason(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billable usage aggregation.
+service BillableUsageAggregation {
+  rpc AggregateUsage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing account lookup.
+service BillingAccountLookup {
+  rpc FindAccount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing adjustment coordination.
+service BillingAdjustmentCoordination {
+  rpc Adjust(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing charge calculation.
+service BillingChargeCalculation {
+  rpc CalculateCharge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing collection coordination.
+service BillingCollectionCoordination {
+  rpc Collect(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing correction preparation.
+service BillingCorrectionPreparation {
+  rpc PrepareCorrection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing cycle coordination.
+service BillingCycleCoordination {
+  rpc Bill(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing disclosure selection.
+service BillingDisclosureSelection {
+  rpc SelectDisclosures(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing dispute lookup.
+service BillingDisputeLookup {
+  rpc FindDispute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing period assessment.
+service BillingPeriodAssessment {
+  rpc AssessPeriod(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Billing statement coordination.
+service BillingStatementCoordination {
+  rpc ComposeStatement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Collection notice preparation.
+service CollectionNoticePreparation {
+  rpc PrepareNotice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Credit allowance assessment.
+service CreditAllowanceAssessment {
+  rpc AssessAllowance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dunning stage assessment.
+service DunningStageAssessment {
+  rpc AssessStage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment plan selection.
+service PaymentPlanSelection {
+  rpc SelectPlan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Statement balance calculation.
+service StatementBalanceCalculation {
+  rpc CalculateBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Statement delivery preference.
+service StatementDeliveryPreference {
+  rpc FindPreference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Statement line classification.
+service StatementLineClassification {
+  rpc ClassifyLines(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

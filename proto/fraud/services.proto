@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.fraud.v1;
+option go_package = "example.com/protomap-fixtures/gen/fraud;fraudpb";
+import "common/common.proto";
+
+// Account takeover assessment.
+service AccountTakeoverAssessment {
+  rpc AssessTakeover(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Behavioral anomaly detection.
+service BehavioralAnomalyDetection {
+  rpc DetectAnomaly(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Device reputation lookup.
+service DeviceReputationLookup {
+  rpc FindReputation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud action eligibility.
+service FraudActionEligibility {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud appeal assessment.
+service FraudAppealAssessment {
+  rpc AssessAppeal(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud block policy resolution.
+service FraudBlockPolicyResolution {
+  rpc ResolvePolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud case coordination.
+service FraudCaseCoordination {
+  rpc Investigate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud case evidence preparation.
+service FraudCaseEvidencePreparation {
+  rpc PrepareEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud decision coordination.
+service FraudDecisionCoordination {
+  rpc Decide(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud loss calculation.
+service FraudLossCalculation {
+  rpc CalculateLoss(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud relationship lookup.
+service FraudRelationshipLookup {
+  rpc FindRelationships(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud remediation coordination.
+service FraudRemediationCoordination {
+  rpc Remediate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud risk scoring.
+service FraudRiskScoring {
+  rpc ScoreRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fraud signal aggregation.
+service FraudSignalAggregation {
+  rpc AggregateSignals(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity evidence lookup.
+service IdentityEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity fraud screening.
+service IdentityFraudScreening {
+  rpc Screen(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Identity mismatch detection.
+service IdentityMismatchDetection {
+  rpc DetectMismatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Investigation priority assessment.
+service InvestigationPriorityAssessment {
+  rpc AssessPriority(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Synthetic identity assessment.
+service SyntheticIdentityAssessment {
+  rpc AssessSyntheticIdentity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transaction velocity assessment.
+service TransactionVelocityAssessment {
+  rpc AssessVelocity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

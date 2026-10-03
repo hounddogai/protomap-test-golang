@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.promotions.v1;
+option go_package = "example.com/protomap-fixtures/gen/promotions;promotionspb";
+import "common/common.proto";
+
+// Campaign activation coordination.
+service CampaignActivationCoordination {
+  rpc Activate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Campaign audience lookup.
+service CampaignAudienceLookup {
+  rpc FindAudience(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Campaign schedule validation.
+service CampaignScheduleValidation {
+  rpc ValidateSchedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coupon benefit calculation.
+service CouponBenefitCalculation {
+  rpc CalculateBenefit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coupon code validation.
+service CouponCodeValidation {
+  rpc ValidateCode(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coupon ownership lookup.
+service CouponOwnershipLookup {
+  rpc FindOwner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coupon redemption coordination.
+service CouponRedemptionCoordination {
+  rpc Redeem(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Coupon usage assessment.
+service CouponUsageAssessment {
+  rpc AssessUsage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Offer benefit allocation.
+service OfferBenefitAllocation {
+  rpc AllocateBenefit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Offer conflict detection.
+service OfferConflictDetection {
+  rpc DetectConflicts(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Offer priority resolution.
+service OfferPriorityResolution {
+  rpc ResolvePriority(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Offer stacking coordination.
+service OfferStackingCoordination {
+  rpc Stack(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Promotion budget assessment.
+service PromotionBudgetAssessment {
+  rpc AssessBudget(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Promotion eligibility.
+service PromotionEligibility {
+  rpc EvaluateEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Promotion exclusion lookup.
+service PromotionExclusionLookup {
+  rpc FindExclusions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral fraud screening.
+service ReferralFraudScreening {
+  rpc ScreenReferral(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral payout calculation.
+service ReferralPayoutCalculation {
+  rpc CalculatePayout(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral qualification assessment.
+service ReferralQualificationAssessment {
+  rpc AssessQualification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral relationship lookup.
+service ReferralRelationshipLookup {
+  rpc FindRelationship(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Referral reward coordination.
+service ReferralRewardCoordination {
+  rpc Reward(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

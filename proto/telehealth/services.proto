@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.telehealth.v1;
+option go_package = "example.com/protomap-fixtures/gen/telehealth;telehealthpb";
+import "common/common.proto";
+
+// Remote alert assessment.
+service RemoteAlertAssessment {
+  rpc AssessAlert(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remote care escalation.
+service RemoteCareEscalation {
+  rpc PrepareEscalation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remote care plan assessment.
+service RemoteCarePlanAssessment {
+  rpc AssessPlan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remote device enrollment.
+service RemoteDeviceEnrollment {
+  rpc EnrollDevice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remote monitoring coordination.
+service RemoteMonitoringCoordination {
+  rpc MonitorRemote(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remote observation lookup.
+service RemoteObservationLookup {
+  rpc FindObservation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remote patient lookup.
+service RemotePatientLookup {
+  rpc FindPatient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Teleconsultation coordination.
+service TeleconsultationCoordination {
+  rpc Consult(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telehealth consent validation.
+service TelehealthConsentValidation {
+  rpc ValidateConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telehealth followup coordination.
+service TelehealthFollowupCoordination {
+  rpc Followup(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telehealth prescription readiness.
+service TelehealthPrescriptionReadiness {
+  rpc AssessPrescription(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual care summary lookup.
+service VirtualCareSummaryLookup {
+  rpc FindSummary(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual encounter preparation.
+service VirtualEncounterPreparation {
+  rpc PrepareEncounter(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual followup scheduling.
+service VirtualFollowupScheduling {
+  rpc ScheduleFollowup(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual provider readiness.
+service VirtualProviderReadiness {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual queue position lookup.
+service VirtualQueuePositionLookup {
+  rpc FindPosition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual room assignment.
+service VirtualRoomAssignment {
+  rpc AssignRoom(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual triage assessment.
+service VirtualTriageAssessment {
+  rpc AssessTriage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual visit eligibility.
+service VirtualVisitEligibility {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Virtual waiting room coordination.
+service VirtualWaitingRoomCoordination {
+  rpc AdmitVirtual(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

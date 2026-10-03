@@ -1,0 +1,108 @@
+syntax = "proto3";
+package fixture.compliance.v1;
+option go_package = "example.com/protomap-fixtures/gen/compliance;compliancepb";
+import "common/common.proto";
+
+// Compliance assessment coordination.
+service ComplianceAssessmentCoordination {
+  rpc Assess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+  // Audit an access decision with its explanation.
+  rpc AuditDecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+  // Record an access revocation and confirm the access decision.
+  rpc RecordRevocation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Compliance evidence validation.
+service ComplianceEvidenceValidation {
+  rpc ValidateEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Compliance exception evaluation.
+service ComplianceExceptionEvaluation {
+  rpc EvaluateException(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Compliance policy resolution.
+service CompliancePolicyResolution {
+  rpc ResolvePolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Compliance remediation coordination.
+service ComplianceRemediationCoordination {
+  rpc Remediate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Consent policy resolution.
+service ConsentPolicyResolution {
+  rpc ResolveConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Control deficiency lookup.
+service ControlDeficiencyLookup {
+  rpc FindDeficiencies(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Entity name normalization.
+service EntityNameNormalization {
+  rpc NormalizeName(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Regulatory obligation lookup.
+service RegulatoryObligationLookup {
+  rpc FindObligations(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Regulatory record aggregation.
+service RegulatoryRecordAggregation {
+  rpc AggregateRecords(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Regulatory reporting coordination.
+service RegulatoryReportingCoordination {
+  rpc Report(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Regulatory submission preparation.
+service RegulatorySubmissionPreparation {
+  rpc PrepareSubmission(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Regulatory threshold assessment.
+service RegulatoryThresholdAssessment {
+  rpc AssessThreshold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remediation evidence preparation.
+service RemediationEvidencePreparation {
+  rpc PrepareEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Remediation priority assessment.
+service RemediationPriorityAssessment {
+  rpc AssessPriority(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reportable event classification.
+service ReportableEventClassification {
+  rpc ClassifyEvent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Sanctions disposition preparation.
+service SanctionsDispositionPreparation {
+  rpc PrepareDisposition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Sanctions list lookup.
+service SanctionsListLookup {
+  rpc FindLists(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Sanctions match assessment.
+service SanctionsMatchAssessment {
+  rpc AssessMatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Sanctions screening coordination.
+service SanctionsScreeningCoordination {
+  rpc Screen(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

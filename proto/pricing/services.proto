@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.pricing.v1;
+option go_package = "example.com/protomap-fixtures/gen/pricing;pricingpb";
+import "common/common.proto";
+
+// Base price lookup.
+service BasePriceLookup {
+  rpc FindBasePrice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bundle component valuation.
+service BundleComponentValuation {
+  rpc ValueComponents(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bundle discount allocation.
+service BundleDiscountAllocation {
+  rpc AllocateDiscount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bundle price coordination.
+service BundlePriceCoordination {
+  rpc PriceBundle(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Competitor price assessment.
+service CompetitorPriceAssessment {
+  rpc AssessCompetition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Currency price conversion.
+service CurrencyPriceConversion {
+  rpc Convert(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Customer price agreement.
+service CustomerPriceAgreement {
+  rpc FindAgreement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Demand signal lookup.
+service DemandSignalLookup {
+  rpc FindDemand(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dynamic price coordination.
+service DynamicPriceCoordination {
+  rpc Adjust(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Elasticity model evaluation.
+service ElasticityModelEvaluation {
+  rpc EvaluateElasticity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Margin guardrail assessment.
+service MarginGuardrailAssessment {
+  rpc AssessMargin(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price book publication.
+service PriceBookPublication {
+  rpc Publish(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price break evaluation.
+service PriceBreakEvaluation {
+  rpc EvaluateBreaks(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price change approval.
+service PriceChangeApproval {
+  rpc ApproveChange(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price experiment assignment.
+service PriceExperimentAssignment {
+  rpc AssignExperiment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price floor validation.
+service PriceFloorValidation {
+  rpc ValidateFloor(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price quote coordination.
+service PriceQuoteCoordination {
+  rpc Quote(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Price rounding policy.
+service PriceRoundingPolicy {
+  rpc Round(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quote validity assessment.
+service QuoteValidityAssessment {
+  rpc AssessValidity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Regional price lookup.
+service RegionalPriceLookup {
+  rpc FindRegionalPrice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

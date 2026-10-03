@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.manufacturing.v1;
+option go_package = "example.com/protomap-fixtures/gen/manufacturing;manufacturingpb";
+import "common/common.proto";
+
+// Bill of materials validation.
+service BillOfMaterialsValidation {
+  rpc ValidateMaterials(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Engineering revision lookup.
+service EngineeringRevisionLookup {
+  rpc FindRevision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Finished goods validation.
+service FinishedGoodsValidation {
+  rpc ValidateGoods(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Machine readiness assessment.
+service MachineReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Manufacturing change coordination.
+service ManufacturingChangeCoordination {
+  rpc Change(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Manufacturing deviation evaluation.
+service ManufacturingDeviationEvaluation {
+  rpc EvaluateDeviation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Material consumption calculation.
+service MaterialConsumptionCalculation {
+  rpc CalculateConsumption(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Process change impact assessment.
+service ProcessChangeImpactAssessment {
+  rpc AssessImpact(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production capacity assessment.
+service ProductionCapacityAssessment {
+  rpc AssessCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production change approval.
+service ProductionChangeApproval {
+  rpc ApproveChange(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production completion coordination.
+service ProductionCompletionCoordination {
+  rpc Complete(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production demand lookup.
+service ProductionDemandLookup {
+  rpc FindDemand(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production execution coordination.
+service ProductionExecutionCoordination {
+  rpc Execute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production lot release.
+service ProductionLotRelease {
+  rpc ReleaseLot(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production planning coordination.
+service ProductionPlanningCoordination {
+  rpc Plan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production schedule preparation.
+service ProductionSchedulePreparation {
+  rpc PrepareSchedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production task dispatch.
+service ProductionTaskDispatch {
+  rpc DispatchTasks(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Production yield calculation.
+service ProductionYieldCalculation {
+  rpc CalculateYield(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Scrap reason classification.
+service ScrapReasonClassification {
+  rpc ClassifyScrap(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Work order lookup.
+service WorkOrderLookup {
+  rpc FindWorkOrder(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

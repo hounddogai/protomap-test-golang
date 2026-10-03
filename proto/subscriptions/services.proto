@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.subscriptions.v1;
+option go_package = "example.com/protomap-fixtures/gen/subscriptions;subscriptionspb";
+import "common/common.proto";
+
+// Plan migration eligibility.
+service PlanMigrationEligibility {
+  rpc AssessMigration(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Proration calculation.
+service ProrationCalculation {
+  rpc CalculateProration(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Renewal commitment recording.
+service RenewalCommitmentRecording {
+  rpc RecordRenewal(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Renewal payment readiness.
+service RenewalPaymentReadiness {
+  rpc AssessPayment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Renewal price calculation.
+service RenewalPriceCalculation {
+  rpc CalculatePrice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Renewal window assessment.
+service RenewalWindowAssessment {
+  rpc AssessWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Retention offer selection.
+service RetentionOfferSelection {
+  rpc SelectOffer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription activation scheduling.
+service SubscriptionActivationScheduling {
+  rpc ScheduleActivation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription change coordination.
+service SubscriptionChangeCoordination {
+  rpc Change(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription change scheduling.
+service SubscriptionChangeScheduling {
+  rpc ScheduleChange(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription churn assessment.
+service SubscriptionChurnAssessment {
+  rpc AssessChurn(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription enrollment coordination.
+service SubscriptionEnrollmentCoordination {
+  rpc Enroll(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription entitlement assessment.
+service SubscriptionEntitlementAssessment {
+  rpc AssessEntitlement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription exit survey preparation.
+service SubscriptionExitSurveyPreparation {
+  rpc PrepareSurvey(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription pause eligibility.
+service SubscriptionPauseEligibility {
+  rpc AssessPause(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription plan lookup.
+service SubscriptionPlanLookup {
+  rpc FindPlan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription renewal coordination.
+service SubscriptionRenewalCoordination {
+  rpc Renew(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription retention coordination.
+service SubscriptionRetentionCoordination {
+  rpc Retain(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription seat allocation.
+service SubscriptionSeatAllocation {
+  rpc AllocateSeats(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Subscription trial eligibility.
+service SubscriptionTrialEligibility {
+  rpc AssessTrial(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

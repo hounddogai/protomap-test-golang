@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.commerce.v1;
+option go_package = "example.com/protomap-fixtures/gen/commerce;commercepb";
+import "common/common.proto";
+
+// Basket merge resolution.
+service BasketMergeResolution {
+  rpc Merge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cart abandonment detection.
+service CartAbandonmentDetection {
+  rpc Detect(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cart checkout coordination.
+service CartCheckoutCoordination {
+  rpc Checkout(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cart item validation.
+service CartItemValidation {
+  rpc ValidateItems(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cart price calculation.
+service CartPriceCalculation {
+  rpc CalculatePrice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Checkout readiness assessment.
+service CheckoutReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Gift delivery preference.
+service GiftDeliveryPreference {
+  rpc SetPreference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Gift message validation.
+service GiftMessageValidation {
+  rpc ValidateMessage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Gift purchase coordination.
+service GiftPurchaseCoordination {
+  rpc Purchase(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Gift recipient lookup.
+service GiftRecipientLookup {
+  rpc FindRecipient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Gift wrap selection.
+service GiftWrapSelection {
+  rpc SelectWrap(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Saved basket retrieval.
+service SavedBasketRetrieval {
+  rpc Retrieve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shopper intent classification.
+service ShopperIntentClassification {
+  rpc ClassifyIntent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shopper profile lookup.
+service ShopperProfileLookup {
+  rpc FindShopper(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shopping session recovery.
+service ShoppingSessionRecovery {
+  rpc Recover(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Wishlist access policy.
+service WishlistAccessPolicy {
+  rpc Authorize(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Wishlist availability assessment.
+service WishlistAvailabilityAssessment {
+  rpc AssessAvailability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Wishlist item lookup.
+service WishlistItemLookup {
+  rpc FindItems(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Wishlist recipient notification.
+service WishlistRecipientNotification {
+  rpc NotifyRecipient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Wishlist sharing coordination.
+service WishlistSharingCoordination {
+  rpc Share(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

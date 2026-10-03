@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.returns.v1;
+option go_package = "example.com/protomap-fixtures/gen/returns;returnspb";
+import "common/common.proto";
+
+// Refund amount calculation.
+service RefundAmountCalculation {
+  rpc CalculateAmount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Refund tender selection.
+service RefundTenderSelection {
+  rpc SelectTender(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return authorization coordination.
+service ReturnAuthorizationCoordination {
+  rpc Authorize(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return charge assessment.
+service ReturnChargeAssessment {
+  rpc AssessCharges(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return collection coordination.
+service ReturnCollectionCoordination {
+  rpc Collect(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return credit preparation.
+service ReturnCreditPreparation {
+  rpc PrepareCredit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return disposition selection.
+service ReturnDispositionSelection {
+  rpc SelectDisposition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return eligibility assessment.
+service ReturnEligibilityAssessment {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return inspection coordination.
+service ReturnInspectionCoordination {
+  rpc Inspect(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return label preparation.
+service ReturnLabelPreparation {
+  rpc PrepareLabel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return packaging assessment.
+service ReturnPackagingAssessment {
+  rpc AssessPackaging(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return pickup scheduling.
+service ReturnPickupScheduling {
+  rpc SchedulePickup(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return policy lookup.
+service ReturnPolicyLookup {
+  rpc FindPolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return reason classification.
+service ReturnReasonClassification {
+  rpc ClassifyReason(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return refund coordination.
+service ReturnRefundCoordination {
+  rpc Refund(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return restocking assessment.
+service ReturnRestockingAssessment {
+  rpc AssessRestocking(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Return window assessment.
+service ReturnWindowAssessment {
+  rpc AssessWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Returned condition assessment.
+service ReturnedConditionAssessment {
+  rpc AssessCondition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Returned item identification.
+service ReturnedItemIdentification {
+  rpc IdentifyItem(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reverse route selection.
+service ReverseRouteSelection {
+  rpc SelectRoute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

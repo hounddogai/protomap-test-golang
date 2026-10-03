@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.payments.v1;
+option go_package = "example.com/protomap-fixtures/gen/payments;paymentspb";
+import "common/common.proto";
+
+// Authorization balance lookup.
+service AuthorizationBalanceLookup {
+  rpc FindBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Authorization decision recording.
+service AuthorizationDecisionRecording {
+  rpc RecordDecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Capture amount validation.
+service CaptureAmountValidation {
+  rpc ValidateAmount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Capture receipt preparation.
+service CaptureReceiptPreparation {
+  rpc PrepareReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Capture window assessment.
+service CaptureWindowAssessment {
+  rpc AssessWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Merchant settlement reconciliation.
+service MerchantSettlementReconciliation {
+  rpc Reconcile(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment authorization.
+service PaymentAuthorization {
+  rpc Authorize(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment capture coordination.
+service PaymentCaptureCoordination {
+  rpc Capture(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment instrument lookup.
+service PaymentInstrumentLookup {
+  rpc FindInstrument(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment limit validation.
+service PaymentLimitValidation {
+  rpc ValidateLimit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment reference lookup.
+service PaymentReferenceLookup {
+  rpc FindReference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment reversal coordination.
+service PaymentReversalCoordination {
+  rpc Reverse(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payment risk assessment.
+service PaymentRiskAssessment {
+  rpc AssessRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reversal amount calculation.
+service ReversalAmountCalculation {
+  rpc CalculateAmount(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reversal confirmation preparation.
+service ReversalConfirmationPreparation {
+  rpc PrepareConfirmation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reversal eligibility assessment.
+service ReversalEligibilityAssessment {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Settlement adjustment preparation.
+service SettlementAdjustmentPreparation {
+  rpc PrepareAdjustment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Settlement batch lookup.
+service SettlementBatchLookup {
+  rpc FindBatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Settlement fee calculation.
+service SettlementFeeCalculation {
+  rpc CalculateFees(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Settlement mismatch detection.
+service SettlementMismatchDetection {
+  rpc DetectMismatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.orders.v1;
+option go_package = "example.com/protomap-fixtures/gen/orders;orderspb";
+import "common/common.proto";
+
+// Cancellation charge calculation.
+service CancellationChargeCalculation {
+  rpc CalculateCharge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cancellation confirmation preparation.
+service CancellationConfirmationPreparation {
+  rpc PrepareConfirmation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cancellation window assessment.
+service CancellationWindowAssessment {
+  rpc AssessWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order acknowledgement preparation.
+service OrderAcknowledgementPreparation {
+  rpc PrepareAcknowledgement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order allocation planning.
+service OrderAllocationPlanning {
+  rpc PlanAllocation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order amendment coordination.
+service OrderAmendmentCoordination {
+  rpc Amend(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order amendment pricing.
+service OrderAmendmentPricing {
+  rpc PriceAmendment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order archive classification.
+service OrderArchiveClassification {
+  rpc ClassifyArchive(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order cancellation coordination.
+service OrderCancellationCoordination {
+  rpc Cancel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order change eligibility.
+service OrderChangeEligibility {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order commitment recording.
+service OrderCommitmentRecording {
+  rpc RecordCommitment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order completion assessment.
+service OrderCompletionAssessment {
+  rpc AssessCompletion(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order completion coordination.
+service OrderCompletionCoordination {
+  rpc Complete(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order difference calculation.
+service OrderDifferenceCalculation {
+  rpc CalculateDifference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order line validation.
+service OrderLineValidation {
+  rpc ValidateLines(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order milestone lookup.
+service OrderMilestoneLookup {
+  rpc FindMilestones(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order placement coordination.
+service OrderPlacementCoordination {
+  rpc Place(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order receipt composition.
+service OrderReceiptComposition {
+  rpc ComposeReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order release planning.
+service OrderReleasePlanning {
+  rpc PlanRelease(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order revision recording.
+service OrderRevisionRecording {
+  rpc RecordRevision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

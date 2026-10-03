@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.laboratory.v1;
+option go_package = "example.com/protomap-fixtures/gen/laboratory;laboratorypb";
+import "common/common.proto";
+
+// Accession label preparation.
+service AccessionLabelPreparation {
+  rpc PrepareLabel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Analyzer readiness evaluation.
+service AnalyzerReadinessEvaluation {
+  rpc EvaluateReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assay eligibility assessment.
+service AssayEligibilityAssessment {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assay measurement lookup.
+service AssayMeasurementLookup {
+  rpc FindMeasurements(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assay precision calculation.
+service AssayPrecisionCalculation {
+  rpc CalculatePrecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assay run preparation.
+service AssayRunPreparation {
+  rpc PrepareRun(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Control sample lookup.
+service ControlSampleLookup {
+  rpc FindSamples(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Critical result assessment.
+service CriticalResultAssessment {
+  rpc AssessCriticality(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Instrument calibration assessment.
+service InstrumentCalibrationAssessment {
+  rpc AssessCalibration(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Laboratory batch release.
+service LaboratoryBatchRelease {
+  rpc ReleaseBatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Laboratory order lookup.
+service LaboratoryOrderLookup {
+  rpc FindOrder(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Laboratory quality coordination.
+service LaboratoryQualityCoordination {
+  rpc ValidateQuality(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Laboratory reference range.
+service LaboratoryReferenceRange {
+  rpc FindRange(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Laboratory result coordination.
+service LaboratoryResultCoordination {
+  rpc ReportResult(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Laboratory test coordination.
+service LaboratoryTestCoordination {
+  rpc Test(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Result interpretation preparation.
+service ResultInterpretationPreparation {
+  rpc PrepareInterpretation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Specimen accession coordination.
+service SpecimenAccessionCoordination {
+  rpc Accession(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Specimen collection assessment.
+service SpecimenCollectionAssessment {
+  rpc AssessCollection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Specimen identity validation.
+service SpecimenIdentityValidation {
+  rpc ValidateIdentity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Specimen transport condition.
+service SpecimenTransportCondition {
+  rpc AssessCondition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

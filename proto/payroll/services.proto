@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.payroll.v1;
+option go_package = "example.com/protomap-fixtures/gen/payroll;payrollpb";
+import "common/common.proto";
+
+// Earnings aggregation.
+service EarningsAggregation {
+  rpc AggregateEarnings(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Employee pay profile lookup.
+service EmployeePayProfileLookup {
+  rpc FindPayProfile(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Net pay calculation.
+service NetPayCalculation {
+  rpc CalculateNetPay(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pay period history lookup.
+service PayPeriodHistoryLookup {
+  rpc FindHistory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll adjustment preparation.
+service PayrollAdjustmentPreparation {
+  rpc PrepareAdjustment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll bank instruction lookup.
+service PayrollBankInstructionLookup {
+  rpc FindInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll calculation coordination.
+service PayrollCalculationCoordination {
+  rpc CalculatePayroll(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll compliance coordination.
+service PayrollComplianceCoordination {
+  rpc ReportPayroll(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll correction coordination.
+service PayrollCorrectionCoordination {
+  rpc CorrectPayroll(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll deduction calculation.
+service PayrollDeductionCalculation {
+  rpc CalculateDeductions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll disbursement coordination.
+service PayrollDisbursementCoordination {
+  rpc PayEmployees(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll filing preparation.
+service PayrollFilingPreparation {
+  rpc PrepareFiling(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll funding assessment.
+service PayrollFundingAssessment {
+  rpc AssessFunding(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll jurisdiction lookup.
+service PayrollJurisdictionLookup {
+  rpc FindJurisdiction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll payment validation.
+service PayrollPaymentValidation {
+  rpc ValidatePayments(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll reporting threshold.
+service PayrollReportingThreshold {
+  rpc AssessThreshold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payroll variance calculation.
+service PayrollVarianceCalculation {
+  rpc CalculateVariance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Payslip preparation.
+service PayslipPreparation {
+  rpc PreparePayslip(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Retroactive pay assessment.
+service RetroactivePayAssessment {
+  rpc AssessRetroPay(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Statutory contribution calculation.
+service StatutoryContributionCalculation {
+  rpc CalculateContribution(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

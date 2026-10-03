@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.freight.v1;
+option go_package = "example.com/protomap-fixtures/gen/freight;freightpb";
+import "common/common.proto";
+
+// Consignee instruction lookup.
+service ConsigneeInstructionLookup {
+  rpc FindInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight arrival estimate.
+service FreightArrivalEstimate {
+  rpc EstimateArrival(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight booking coordination.
+service FreightBookingCoordination {
+  rpc Book(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight capacity assessment.
+service FreightCapacityAssessment {
+  rpc AssessCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight commitment preparation.
+service FreightCommitmentPreparation {
+  rpc PrepareCommitment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight condition assessment.
+service FreightConditionAssessment {
+  rpc AssessCondition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight delivery coordination.
+service FreightDeliveryCoordination {
+  rpc Deliver(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight delivery receipt.
+service FreightDeliveryReceipt {
+  rpc PrepareReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight lane lookup.
+service FreightLaneLookup {
+  rpc FindLane(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight load coordination.
+service FreightLoadCoordination {
+  rpc Load(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight proof validation.
+service FreightProofValidation {
+  rpc ValidateProof(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight quote calculation.
+service FreightQuoteCalculation {
+  rpc CalculateQuote(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight route coordination.
+service FreightRouteCoordination {
+  rpc Route(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight route lookup.
+service FreightRouteLookup {
+  rpc FindRoute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Freight stop planning.
+service FreightStopPlanning {
+  rpc PlanStops(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Load compatibility validation.
+service LoadCompatibilityValidation {
+  rpc ValidateCompatibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Load distribution calculation.
+service LoadDistributionCalculation {
+  rpc CalculateDistribution(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Load manifest lookup.
+service LoadManifestLookup {
+  rpc FindManifest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Load securement assessment.
+service LoadSecurementAssessment {
+  rpc AssessSecurement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transit constraint assessment.
+service TransitConstraintAssessment {
+  rpc AssessConstraints(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

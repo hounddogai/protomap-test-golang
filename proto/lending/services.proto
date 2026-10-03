@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.lending.v1;
+option go_package = "example.com/protomap-fixtures/gen/lending;lendingpb";
+import "common/common.proto";
+
+// Borrower profile lookup.
+service BorrowerProfileLookup {
+  rpc FindBorrower(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Collateral valuation.
+service CollateralValuation {
+  rpc ValueCollateral(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Creditworthiness assessment.
+service CreditworthinessAssessment {
+  rpc AssessCreditworthiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Debt exposure assessment.
+service DebtExposureAssessment {
+  rpc AssessExposure(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Disbursement condition assessment.
+service DisbursementConditionAssessment {
+  rpc AssessConditions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Disbursement schedule selection.
+service DisbursementScheduleSelection {
+  rpc SelectSchedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Income evidence lookup.
+service IncomeEvidenceLookup {
+  rpc FindIncome(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan affordability calculation.
+service LoanAffordabilityCalculation {
+  rpc CalculateAffordability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan agreement validation.
+service LoanAgreementValidation {
+  rpc ValidateAgreement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan delinquency assessment.
+service LoanDelinquencyAssessment {
+  rpc AssessDelinquency(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan disbursement coordination.
+service LoanDisbursementCoordination {
+  rpc Disburse(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan funding instruction.
+service LoanFundingInstruction {
+  rpc PrepareFunding(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan interest calculation.
+service LoanInterestCalculation {
+  rpc CalculateInterest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan offer preparation.
+service LoanOfferPreparation {
+  rpc PrepareOffer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan origination coordination.
+service LoanOriginationCoordination {
+  rpc Originate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan restructuring eligibility.
+service LoanRestructuringEligibility {
+  rpc AssessRestructuring(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan servicing coordination.
+service LoanServicingCoordination {
+  rpc Service(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loan underwriting coordination.
+service LoanUnderwritingCoordination {
+  rpc Underwrite(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Repayment schedule lookup.
+service RepaymentScheduleLookup {
+  rpc FindSchedule(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Underwriting decision recording.
+service UnderwritingDecisionRecording {
+  rpc RecordDecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

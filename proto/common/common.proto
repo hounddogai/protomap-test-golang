@@ -1,0 +1,17 @@
+syntax = "proto3";
+package fixture.common.v1;
+option go_package = "example.com/protomap-fixtures/gen/common;commonpb";
+
+// Synthetic business data and controls for bounded fixture workflows.
+message Request {
+  string tenant_id = 1;
+  string subject_id = 2;
+  string email = 3;
+  int32 remaining_hops = 4;
+}
+
+message Response {
+  string subject_id = 1;
+  string email = 2;
+  repeated string visited_services = 3;
+}

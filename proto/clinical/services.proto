@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.clinical.v1;
+option go_package = "example.com/protomap-fixtures/gen/clinical;clinicalpb";
+import "common/common.proto";
+
+// Care goal progress calculation.
+service CareGoalProgressCalculation {
+  rpc CalculateProgress(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Care plan adherence assessment.
+service CarePlanAdherenceAssessment {
+  rpc AssessAdherence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Care plan review coordination.
+service CarePlanReviewCoordination {
+  rpc ReviewCare(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Care plan revision preparation.
+service CarePlanRevisionPreparation {
+  rpc PrepareRevision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical deterioration assessment.
+service ClinicalDeteriorationAssessment {
+  rpc AssessDeterioration(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical encounter coordination.
+service ClinicalEncounterCoordination {
+  rpc ConductEncounter(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical escalation preparation.
+service ClinicalEscalationPreparation {
+  rpc PrepareEscalation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical guideline lookup.
+service ClinicalGuidelineLookup {
+  rpc FindGuideline(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical history lookup.
+service ClinicalHistoryLookup {
+  rpc FindHistory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical monitoring coordination.
+service ClinicalMonitoringCoordination {
+  rpc Monitor(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical outcome lookup.
+service ClinicalOutcomeLookup {
+  rpc FindOutcomes(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Clinical risk stratification.
+service ClinicalRiskStratification {
+  rpc StratifyRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Encounter documentation preparation.
+service EncounterDocumentationPreparation {
+  rpc PrepareDocumentation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Monitoring threshold evaluation.
+service MonitoringThresholdEvaluation {
+  rpc EvaluateThresholds(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Symptom assessment.
+service SymptomAssessment {
+  rpc AssessSymptoms(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Treatment consent preparation.
+service TreatmentConsentPreparation {
+  rpc PrepareConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Treatment contraindication screening.
+service TreatmentContraindicationScreening {
+  rpc ScreenContraindications(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Treatment option evaluation.
+service TreatmentOptionEvaluation {
+  rpc EvaluateOptions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Treatment planning coordination.
+service TreatmentPlanningCoordination {
+  rpc PlanTreatment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vital observation lookup.
+service VitalObservationLookup {
+  rpc FindObservations(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

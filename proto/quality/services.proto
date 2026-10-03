@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.quality.v1;
+option go_package = "example.com/protomap-fixtures/gen/quality;qualitypb";
+import "common/common.proto";
+
+// Containment action preparation.
+service ContainmentActionPreparation {
+  rpc PrepareContainment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Corrective action approval.
+service CorrectiveActionApproval {
+  rpc ApproveAction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Corrective action effectiveness.
+service CorrectiveActionEffectiveness {
+  rpc AssessEffectiveness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Corrective action history.
+service CorrectiveActionHistory {
+  rpc FindHistory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Defect severity assessment.
+service DefectSeverityAssessment {
+  rpc AssessSeverity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inspection disposition preparation.
+service InspectionDispositionPreparation {
+  rpc PrepareDisposition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Measurement tolerance assessment.
+service MeasurementToleranceAssessment {
+  rpc AssessTolerance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Nonconformance evidence lookup.
+service NonconformanceEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quality corrective action coordination.
+service QualityCorrectiveActionCoordination {
+  rpc Correct(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quality inspection coordination.
+service QualityInspectionCoordination {
+  rpc Inspect(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quality nonconformance coordination.
+service QualityNonconformanceCoordination {
+  rpc Investigate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quality risk evaluation.
+service QualityRiskEvaluation {
+  rpc EvaluateRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Quality specification lookup.
+service QualitySpecificationLookup {
+  rpc FindSpecification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Root cause classification.
+service RootCauseClassification {
+  rpc ClassifyCause(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Sampling plan selection.
+service SamplingPlanSelection {
+  rpc SelectPlan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier defect trend assessment.
+service SupplierDefectTrendAssessment {
+  rpc AssessTrend(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier inspection lookup.
+service SupplierInspectionLookup {
+  rpc FindInspection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier quality coordination.
+service SupplierQualityCoordination {
+  rpc Review(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier quality release.
+service SupplierQualityRelease {
+  rpc ReleaseSupplier(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier quality score calculation.
+service SupplierQualityScoreCalculation {
+  rpc CalculateScore(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

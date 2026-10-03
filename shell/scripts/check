@@ -1,0 +1,9 @@
+#!/bin/sh
+# Check the catalog, deterministic generation, Go formatting, vet, and integration tests.
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+cd "$root"
+"$root/shell/scripts/generate" --check
+python3 "$root/shell/check.py"
+"$root/shell/scripts/go" vet ./...
+"$root/shell/scripts/go" test ./...

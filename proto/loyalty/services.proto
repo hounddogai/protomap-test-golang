@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.loyalty.v1;
+option go_package = "example.com/protomap-fixtures/gen/loyalty;loyaltypb";
+import "common/common.proto";
+
+// Accrual receipt preparation.
+service AccrualReceiptPreparation {
+  rpc PrepareReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Benefit allowance calculation.
+service BenefitAllowanceCalculation {
+  rpc CalculateAllowance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bonus point eligibility.
+service BonusPointEligibility {
+  rpc AssessBonus(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loyalty accrual coordination.
+service LoyaltyAccrualCoordination {
+  rpc Accrue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loyalty member lookup.
+service LoyaltyMemberLookup {
+  rpc FindMember(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loyalty redemption coordination.
+service LoyaltyRedemptionCoordination {
+  rpc Redeem(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loyalty tier assessment.
+service LoyaltyTierAssessment {
+  rpc AssessTier(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Loyalty tier review coordination.
+service LoyaltyTierReviewCoordination {
+  rpc Review(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Member benefit coordination.
+service MemberBenefitCoordination {
+  rpc GrantBenefit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Member benefit eligibility.
+service MemberBenefitEligibility {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Point balance lookup.
+service PointBalanceLookup {
+  rpc FindBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Point posting validation.
+service PointPostingValidation {
+  rpc ValidatePosting(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase point calculation.
+service PurchasePointCalculation {
+  rpc CalculatePoints(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Redemption catalog selection.
+service RedemptionCatalogSelection {
+  rpc SelectReward(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Redemption reservation.
+service RedemptionReservation {
+  rpc ReservePoints(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Redemption value calculation.
+service RedemptionValueCalculation {
+  rpc CalculateValue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tier benefit transition.
+service TierBenefitTransition {
+  rpc TransitionBenefits(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tier downgrade assessment.
+service TierDowngradeAssessment {
+  rpc AssessDowngrade(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tier progress calculation.
+service TierProgressCalculation {
+  rpc CalculateProgress(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tier qualification lookup.
+service TierQualificationLookup {
+  rpc FindQualification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

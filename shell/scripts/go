@@ -1,0 +1,4 @@
+#!/bin/sh
+# Use a matching compiler and standard library without changing the user's Go configuration.
+set -eu
+exec env -u GOROOT GOENV=off GOTOOLCHAIN=go1.25.0 go "$@"

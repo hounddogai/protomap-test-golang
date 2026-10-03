@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.hospitality.v1;
+option go_package = "example.com/protomap-fixtures/gen/hospitality;hospitalitypb";
+import "common/common.proto";
+
+// Banquet package selection.
+service BanquetPackageSelection {
+  rpc SelectPackage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event hosting preparation.
+service EventHostingPreparation {
+  rpc PrepareHosting(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event service capacity.
+service EventServiceCapacity {
+  rpc AssessCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event space availability.
+service EventSpaceAvailability {
+  rpc FindSpace(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest amenity eligibility.
+service GuestAmenityEligibility {
+  rpc AssessAmenities(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest arrival coordination.
+service GuestArrivalCoordination {
+  rpc Welcome(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest booking lookup.
+service GuestBookingLookup {
+  rpc FindBooking(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest departure coordination.
+service GuestDepartureCoordination {
+  rpc CheckOut(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest departure readiness.
+service GuestDepartureReadiness {
+  rpc AssessDeparture(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest folio lookup.
+service GuestFolioLookup {
+  rpc FindFolio(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest identity validation.
+service GuestIdentityValidation {
+  rpc ValidateGuest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest preference lookup.
+service GuestPreferenceLookup {
+  rpc FindPreferences(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest receipt preparation.
+service GuestReceiptPreparation {
+  rpc PrepareReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest service task preparation.
+service GuestServiceTaskPreparation {
+  rpc PrepareTasks(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest stay coordination.
+service GuestStayCoordination {
+  rpc ServeGuest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Guest welcome preparation.
+service GuestWelcomePreparation {
+  rpc PrepareWelcome(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Hospitality event coordination.
+service HospitalityEventCoordination {
+  rpc HostEvent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Housekeeping schedule selection.
+service HousekeepingScheduleSelection {
+  rpc SelectHousekeeping(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Room readiness assessment.
+service RoomReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Stay charge calculation.
+service StayChargeCalculation {
+  rpc CalculateCharges(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

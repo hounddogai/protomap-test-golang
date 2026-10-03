@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.pharmacy.v1;
+option go_package = "example.com/protomap-fixtures/gen/pharmacy;pharmacypb";
+import "common/common.proto";
+
+// Controlled dispensing evidence.
+service ControlledDispensingEvidence {
+  rpc PrepareEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Controlled medication coordination.
+service ControlledMedicationCoordination {
+  rpc DispenseControlled(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Controlled prescription lookup.
+service ControlledPrescriptionLookup {
+  rpc FindPrescription(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Controlled quantity assessment.
+service ControlledQuantityAssessment {
+  rpc AssessQuantity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dispensing label preparation.
+service DispensingLabelPreparation {
+  rpc PrepareLabel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Formulary alternative lookup.
+service FormularyAlternativeLookup {
+  rpc FindAlternatives(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Medication adherence assessment.
+service MedicationAdherenceAssessment {
+  rpc AssessAdherence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Medication stock lookup.
+service MedicationStockLookup {
+  rpc FindMedication(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Medication substitution approval.
+service MedicationSubstitutionApproval {
+  rpc ApproveSubstitution(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Medication substitution coordination.
+service MedicationSubstitutionCoordination {
+  rpc Substitute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pharmacy refill coordination.
+service PharmacyRefillCoordination {
+  rpc Refill(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Prescriber authority validation.
+service PrescriberAuthorityValidation {
+  rpc ValidateAuthority(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Prescription dispensing coordination.
+service PrescriptionDispensingCoordination {
+  rpc Dispense(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Prescription interaction screening.
+service PrescriptionInteractionScreening {
+  rpc ScreenInteractions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Prescription validity assessment.
+service PrescriptionValidityAssessment {
+  rpc AssessValidity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Refill allowance lookup.
+service RefillAllowanceLookup {
+  rpc FindAllowance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Refill pickup preparation.
+service RefillPickupPreparation {
+  rpc PreparePickup(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Refill timing evaluation.
+service RefillTimingEvaluation {
+  rpc EvaluateTiming(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Substitution consent validation.
+service SubstitutionConsentValidation {
+  rpc ValidateConsent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Therapeutic equivalence assessment.
+service TherapeuticEquivalenceAssessment {
+  rpc AssessEquivalence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

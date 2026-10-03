@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.shipping.v1;
+option go_package = "example.com/protomap-fixtures/gen/shipping;shippingpb";
+import "common/common.proto";
+
+// Carrier capability lookup.
+service CarrierCapabilityLookup {
+  rpc FindCapabilities(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Carrier claim preparation.
+service CarrierClaimPreparation {
+  rpc PrepareClaim(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Carrier event lookup.
+service CarrierEventLookup {
+  rpc FindEvents(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Carrier liability assessment.
+service CarrierLiabilityAssessment {
+  rpc AssessLiability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery access instruction.
+service DeliveryAccessInstruction {
+  rpc FindInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery attempt coordination.
+service DeliveryAttemptCoordination {
+  rpc Deliver(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery completion preparation.
+service DeliveryCompletionPreparation {
+  rpc PrepareCompletion(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery estimate calculation.
+service DeliveryEstimateCalculation {
+  rpc CalculateEstimate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery milestone assessment.
+service DeliveryMilestoneAssessment {
+  rpc AssessMilestones(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery proof validation.
+service DeliveryProofValidation {
+  rpc ValidateProof(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Delivery recipient verification.
+service DeliveryRecipientVerification {
+  rpc VerifyRecipient(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment address validation.
+service ShipmentAddressValidation {
+  rpc ValidateAddress(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment booking coordination.
+service ShipmentBookingCoordination {
+  rpc Book(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment claim coordination.
+service ShipmentClaimCoordination {
+  rpc Claim(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment evidence lookup.
+service ShipmentEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment exception classification.
+service ShipmentExceptionClassification {
+  rpc ClassifyException(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment label preparation.
+service ShipmentLabelPreparation {
+  rpc PrepareLabel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment loss calculation.
+service ShipmentLossCalculation {
+  rpc CalculateLoss(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment tracking coordination.
+service ShipmentTrackingCoordination {
+  rpc Track(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipping rate calculation.
+service ShippingRateCalculation {
+  rpc CalculateRate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

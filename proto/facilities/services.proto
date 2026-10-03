@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.facilities.v1;
+option go_package = "example.com/protomap-fixtures/gen/facilities;facilitiespb";
+import "common/common.proto";
+
+// Building access eligibility.
+service BuildingAccessEligibility {
+  rpc AssessAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Building energy coordination.
+service BuildingEnergyCoordination {
+  rpc ManageEnergy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Building incident lookup.
+service BuildingIncidentLookup {
+  rpc FindIncident(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Building setpoint calculation.
+service BuildingSetpointCalculation {
+  rpc CalculateSetpoint(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Emergency resource selection.
+service EmergencyResourceSelection {
+  rpc SelectResources(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Energy adjustment preparation.
+service EnergyAdjustmentPreparation {
+  rpc PrepareAdjustment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Energy demand assessment.
+service EnergyDemandAssessment {
+  rpc AssessDemand(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Evacuation readiness assessment.
+service EvacuationReadinessAssessment {
+  rpc AssessEvacuation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility access coordination.
+service FacilityAccessCoordination {
+  rpc ArrangeAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility arrival instruction.
+service FacilityArrivalInstruction {
+  rpc PrepareInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility emergency coordination.
+service FacilityEmergencyCoordination {
+  rpc Respond(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility resource assessment.
+service FacilityResourceAssessment {
+  rpc AssessResources(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility response preparation.
+service FacilityResponsePreparation {
+  rpc PrepareResponse(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility service coordination.
+service FacilityServiceCoordination {
+  rpc ProvideService(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility service request lookup.
+service FacilityServiceRequestLookup {
+  rpc FindRequest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility task preparation.
+service FacilityTaskPreparation {
+  rpc PrepareTask(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility technician selection.
+service FacilityTechnicianSelection {
+  rpc SelectTechnician(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Facility visitor lookup.
+service FacilityVisitorLookup {
+  rpc FindVisitor(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Meter observation lookup.
+service MeterObservationLookup {
+  rpc FindReadings(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Visitor badge preparation.
+service VisitorBadgePreparation {
+  rpc PrepareBadge(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

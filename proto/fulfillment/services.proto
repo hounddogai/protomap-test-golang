@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.fulfillment.v1;
+option go_package = "example.com/protomap-fixtures/gen/fulfillment;fulfillmentpb";
+import "common/common.proto";
+
+// Alternative fulfillment selection.
+service AlternativeFulfillmentSelection {
+  rpc SelectAlternative(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Backorder eligibility assessment.
+service BackorderEligibilityAssessment {
+  rpc AssessBackorder(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dispatch coordination.
+service DispatchCoordination {
+  rpc Dispatch(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dispatch handoff preparation.
+service DispatchHandoffPreparation {
+  rpc PrepareHandoff(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dispatch manifest lookup.
+service DispatchManifestLookup {
+  rpc FindManifest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dispatch readiness assessment.
+service DispatchReadinessAssessment {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment capacity lookup.
+service FulfillmentCapacityLookup {
+  rpc FindCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment commitment preparation.
+service FulfillmentCommitmentPreparation {
+  rpc PrepareCommitment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment exception coordination.
+service FulfillmentExceptionCoordination {
+  rpc Resolve(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment failure classification.
+service FulfillmentFailureClassification {
+  rpc ClassifyFailure(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment node selection.
+service FulfillmentNodeSelection {
+  rpc SelectNode(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment planning coordination.
+service FulfillmentPlanningCoordination {
+  rpc Plan(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fulfillment recovery planning.
+service FulfillmentRecoveryPlanning {
+  rpc PlanRecovery(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Order split calculation.
+service OrderSplitCalculation {
+  rpc CalculateSplit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Package weight calculation.
+service PackageWeightCalculation {
+  rpc CalculateWeight(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Packaging material selection.
+service PackagingMaterialSelection {
+  rpc SelectMaterials(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Packing coordination.
+service PackingCoordination {
+  rpc Pack(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Packing instruction lookup.
+service PackingInstructionLookup {
+  rpc FindInstructions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Packing quality assessment.
+service PackingQualityAssessment {
+  rpc AssessQuality(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Shipment consolidation planning.
+service ShipmentConsolidationPlanning {
+  rpc PlanConsolidation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

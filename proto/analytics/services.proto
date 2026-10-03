@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.analytics.v1;
+option go_package = "example.com/protomap-fixtures/gen/analytics;analyticspb";
+import "common/common.proto";
+
+// Business event ingestion.
+service BusinessEventIngestion {
+  rpc Ingest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Business metric coordination.
+service BusinessMetricCoordination {
+  rpc CalculateMetric(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Business report coordination.
+service BusinessReportCoordination {
+  rpc BuildReport(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event deduplication assessment.
+service EventDeduplicationAssessment {
+  rpc AssessDuplication(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event partition selection.
+service EventPartitionSelection {
+  rpc SelectPartition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event payload validation.
+service EventPayloadValidation {
+  rpc ValidatePayload(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Event schema lookup.
+service EventSchemaLookup {
+  rpc FindSchema(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Insight confidence assessment.
+service InsightConfidenceAssessment {
+  rpc AssessConfidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Insight distribution selection.
+service InsightDistributionSelection {
+  rpc SelectDistribution(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Insight evidence lookup.
+service InsightEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Insight publication coordination.
+service InsightPublicationCoordination {
+  rpc PublishInsight(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Insight summary preparation.
+service InsightSummaryPreparation {
+  rpc PrepareSummary(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Metric definition lookup.
+service MetricDefinitionLookup {
+  rpc FindDefinition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Metric input aggregation.
+service MetricInputAggregation {
+  rpc AggregateInputs(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Metric value calculation.
+service MetricValueCalculation {
+  rpc CalculateValue(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Metric window assessment.
+service MetricWindowAssessment {
+  rpc AssessWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Report audience lookup.
+service ReportAudienceLookup {
+  rpc FindAudience(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Report data eligibility.
+service ReportDataEligibility {
+  rpc AssessEligibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Report dimension selection.
+service ReportDimensionSelection {
+  rpc SelectDimensions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Report result preparation.
+service ReportResultPreparation {
+  rpc PrepareResults(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

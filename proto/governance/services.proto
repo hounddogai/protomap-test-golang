@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.governance.v1;
+option go_package = "example.com/protomap-fixtures/gen/governance;governancepb";
+import "common/common.proto";
+
+// Data access decision preparation.
+service DataAccessDecisionPreparation {
+  rpc PrepareDecision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data access review coordination.
+service DataAccessReviewCoordination {
+  rpc ReviewAccess(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data anomaly evaluation.
+service DataAnomalyEvaluation {
+  rpc EvaluateAnomaly(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data classification assessment.
+service DataClassificationAssessment {
+  rpc AssessClassification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data lineage coordination.
+service DataLineageCoordination {
+  rpc TraceLineage(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data origin assessment.
+service DataOriginAssessment {
+  rpc AssessOrigin(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data owner lookup.
+service DataOwnerLookup {
+  rpc FindOwner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data quality coordination.
+service DataQualityCoordination {
+  rpc AssessDataQuality(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data quality remediation preparation.
+service DataQualityRemediationPreparation {
+  rpc PrepareRemediation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data quality rule lookup.
+service DataQualityRuleLookup {
+  rpc FindRules(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data retention coordination.
+service DataRetentionCoordination {
+  rpc RetainData(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Data use policy validation.
+service DataUsePolicyValidation {
+  rpc ValidateUse(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dataset completeness assessment.
+service DatasetCompletenessAssessment {
+  rpc AssessCompleteness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dataset relationship lookup.
+service DatasetRelationshipLookup {
+  rpc FindRelationships(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Legal hold assessment.
+service LegalHoldAssessment {
+  rpc AssessHold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lineage evidence preparation.
+service LineageEvidencePreparation {
+  rpc PrepareEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Lineage integrity validation.
+service LineageIntegrityValidation {
+  rpc ValidateIntegrity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Retention deadline calculation.
+service RetentionDeadlineCalculation {
+  rpc CalculateDeadline(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Retention disposition preparation.
+service RetentionDispositionPreparation {
+  rpc PrepareDisposition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Retention policy lookup.
+service RetentionPolicyLookup {
+  rpc FindPolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

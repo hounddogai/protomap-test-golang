@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.banking.v1;
+option go_package = "example.com/protomap-fixtures/gen/banking;bankingpb";
+import "common/common.proto";
+
+// Account activity lookup.
+service AccountActivityLookup {
+  rpc FindActivity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Account maintenance decision.
+service AccountMaintenanceDecision {
+  rpc DecideMaintenance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Account opening coordination.
+service AccountOpeningCoordination {
+  rpc Open(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Account opening readiness.
+service AccountOpeningReadiness {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Account ownership validation.
+service AccountOwnershipValidation {
+  rpc ValidateOwnership(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Account restriction assessment.
+service AccountRestrictionAssessment {
+  rpc AssessRestrictions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bank account review coordination.
+service BankAccountReviewCoordination {
+  rpc Review(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bank customer lookup.
+service BankCustomerLookup {
+  rpc FindCustomer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bank transfer coordination.
+service BankTransferCoordination {
+  rpc Transfer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Bank transfer instruction.
+service BankTransferInstruction {
+  rpc PrepareTransfer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Beneficiary lookup.
+service BeneficiaryLookup {
+  rpc FindBeneficiary(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Deposit availability calculation.
+service DepositAvailabilityCalculation {
+  rpc CalculateAvailability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Deposit hold assessment.
+service DepositHoldAssessment {
+  rpc AssessHold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Deposit instrument validation.
+service DepositInstrumentValidation {
+  rpc ValidateInstrument(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Deposit posting preparation.
+service DepositPostingPreparation {
+  rpc PreparePosting(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Deposit processing coordination.
+service DepositProcessingCoordination {
+  rpc Deposit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Deposit product selection.
+service DepositProductSelection {
+  rpc SelectProduct(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dormancy evaluation.
+service DormancyEvaluation {
+  rpc EvaluateDormancy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Routing number validation.
+service RoutingNumberValidation {
+  rpc ValidateRouting(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Transfer balance assessment.
+service TransferBalanceAssessment {
+  rpc AssessBalance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

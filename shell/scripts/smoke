@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+cd "$root"
+"$root/shell/scripts/go" build -o "$root/.cache/smoke" ./cmd/fixture
+exec "$root/.cache/smoke" smoke --state "$root/.cache/runtime.json" "$@"

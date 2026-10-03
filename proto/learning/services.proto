@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.learning.v1;
+option go_package = "example.com/protomap-fixtures/gen/learning;learningpb";
+import "common/common.proto";
+
+// Assessment feedback preparation.
+service AssessmentFeedbackPreparation {
+  rpc PrepareFeedback(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assessment question lookup.
+service AssessmentQuestionLookup {
+  rpc FindQuestions(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Assessment scoring calculation.
+service AssessmentScoringCalculation {
+  rpc CalculateScore(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Certificate preparation.
+service CertificatePreparation {
+  rpc PrepareCertificate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Certification award coordination.
+service CertificationAwardCoordination {
+  rpc Certify(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Certification evidence validation.
+service CertificationEvidenceValidation {
+  rpc ValidateEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Certification expiry calculation.
+service CertificationExpiryCalculation {
+  rpc CalculateExpiry(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Certification requirement lookup.
+service CertificationRequirementLookup {
+  rpc FindRequirements(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Course prerequisite assessment.
+service CoursePrerequisiteAssessment {
+  rpc AssessPrerequisites(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Enrollment confirmation preparation.
+service EnrollmentConfirmationPreparation {
+  rpc PrepareConfirmation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learner profile lookup.
+service LearnerProfileLookup {
+  rpc FindLearner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning activity preparation.
+service LearningActivityPreparation {
+  rpc PrepareActivities(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning assessment coordination.
+service LearningAssessmentCoordination {
+  rpc AssessLearner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning content lookup.
+service LearningContentLookup {
+  rpc FindContent(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning delivery coordination.
+service LearningDeliveryCoordination {
+  rpc DeliverLearning(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning enrollment coordination.
+service LearningEnrollmentCoordination {
+  rpc EnrollLearner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning format selection.
+service LearningFormatSelection {
+  rpc SelectFormat(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning outcome evaluation.
+service LearningOutcomeEvaluation {
+  rpc EvaluateOutcome(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning seat availability.
+service LearningSeatAvailability {
+  rpc FindSeats(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Learning session readiness.
+service LearningSessionReadiness {
+  rpc AssessReadiness(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.observability.v1;
+option go_package = "example.com/protomap-fixtures/gen/observability;observabilitypb";
+import "common/common.proto";
+
+// Alert correlation calculation.
+service AlertCorrelationCalculation {
+  rpc CalculateCorrelation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Alert disposition preparation.
+service AlertDispositionPreparation {
+  rpc PrepareDisposition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Alert evaluation coordination.
+service AlertEvaluationCoordination {
+  rpc EvaluateAlert(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Alert rule lookup.
+service AlertRuleLookup {
+  rpc FindRules(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Availability budget calculation.
+service AvailabilityBudgetCalculation {
+  rpc CalculateBudget(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Incident context lookup.
+service IncidentContextLookup {
+  rpc FindContext(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Incident response coordination.
+service IncidentResponseCoordination {
+  rpc RespondToIncident(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Incident runbook preparation.
+service IncidentRunbookPreparation {
+  rpc PrepareRunbook(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Incident severity assessment.
+service IncidentSeverityAssessment {
+  rpc AssessSeverity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// On call owner selection.
+service OnCallOwnerSelection {
+  rpc SelectOwner(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reliability action preparation.
+service ReliabilityActionPreparation {
+  rpc PrepareAction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reliability trend assessment.
+service ReliabilityTrendAssessment {
+  rpc AssessTrend(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Service objective lookup.
+service ServiceObjectiveLookup {
+  rpc FindObjectives(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Service reliability coordination.
+service ServiceReliabilityCoordination {
+  rpc AssessReliability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Signal threshold assessment.
+service SignalThresholdAssessment {
+  rpc AssessThreshold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telemetry ingestion coordination.
+service TelemetryIngestionCoordination {
+  rpc IngestTelemetry(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telemetry routing preparation.
+service TelemetryRoutingPreparation {
+  rpc PrepareRouting(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telemetry sampling assessment.
+service TelemetrySamplingAssessment {
+  rpc AssessSampling(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telemetry schema validation.
+service TelemetrySchemaValidation {
+  rpc ValidateSchema(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telemetry source lookup.
+service TelemetrySourceLookup {
+  rpc FindSource(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

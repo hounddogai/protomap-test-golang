@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.reservations.v1;
+option go_package = "example.com/protomap-fixtures/gen/reservations;reservationspb";
+import "common/common.proto";
+
+// Booking confirmation preparation.
+service BookingConfirmationPreparation {
+  rpc PrepareConfirmation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Booking difference calculation.
+service BookingDifferenceCalculation {
+  rpc CalculateDifference(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Booking eligibility assessment.
+service BookingEligibilityAssessment {
+  rpc AssessBooking(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Booking release assessment.
+service BookingReleaseAssessment {
+  rpc AssessRelease(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Cancellation penalty calculation.
+service CancellationPenaltyCalculation {
+  rpc CalculatePenalty(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Capacity calendar lookup.
+service CapacityCalendarLookup {
+  rpc FindCalendar(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Existing reservation lookup.
+service ExistingReservationLookup {
+  rpc FindReservation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Released capacity assessment.
+service ReleasedCapacityAssessment {
+  rpc AssessCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation booking coordination.
+service ReservationBookingCoordination {
+  rpc Book(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation cancellation coordination.
+service ReservationCancellationCoordination {
+  rpc CancelBooking(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation cancellation policy.
+service ReservationCancellationPolicy {
+  rpc FindPolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation cancellation receipt.
+service ReservationCancellationReceipt {
+  rpc PrepareReceipt(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation change coordination.
+service ReservationChangeCoordination {
+  rpc ChangeBooking(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation change window.
+service ReservationChangeWindow {
+  rpc AssessWindow(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation hold calculation.
+service ReservationHoldCalculation {
+  rpc CalculateHold(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Reservation revision preparation.
+service ReservationRevisionPreparation {
+  rpc PrepareRevision(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Waitlist acceptance preparation.
+service WaitlistAcceptancePreparation {
+  rpc PrepareAcceptance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Waitlist fulfillment coordination.
+service WaitlistFulfillmentCoordination {
+  rpc FulfillWaitlist(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Waitlist offer selection.
+service WaitlistOfferSelection {
+  rpc SelectOffer(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Waitlist position lookup.
+service WaitlistPositionLookup {
+  rpc FindPosition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

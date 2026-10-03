@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.fleet.v1;
+option go_package = "example.com/protomap-fixtures/gen/fleet;fleetpb";
+import "common/common.proto";
+
+// Driver duty assessment.
+service DriverDutyAssessment {
+  rpc AssessDuty(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Driver qualification assessment.
+service DriverQualificationAssessment {
+  rpc AssessQualification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fleet fuel coordination.
+service FleetFuelCoordination {
+  rpc Refuel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fleet maintenance coordination.
+service FleetMaintenanceCoordination {
+  rpc Maintain(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fleet safety action preparation.
+service FleetSafetyActionPreparation {
+  rpc PrepareAction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fleet safety coordination.
+service FleetSafetyCoordination {
+  rpc AssessSafety(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fuel card authorization.
+service FuelCardAuthorization {
+  rpc AuthorizeFuel(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fuel consumption lookup.
+service FuelConsumptionLookup {
+  rpc FindConsumption(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Fuel efficiency assessment.
+service FuelEfficiencyAssessment {
+  rpc AssessEfficiency(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Maintenance due assessment.
+service MaintenanceDueAssessment {
+  rpc AssessMaintenance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Maintenance work order preparation.
+service MaintenanceWorkOrderPreparation {
+  rpc PrepareWorkOrder(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Refueling stop selection.
+service RefuelingStopSelection {
+  rpc SelectStop(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Spare part availability.
+service SparePartAvailability {
+  rpc FindParts(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Telematics incident classification.
+service TelematicsIncidentClassification {
+  rpc ClassifyIncident(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vehicle assignment coordination.
+service VehicleAssignmentCoordination {
+  rpc Assign(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vehicle assignment preparation.
+service VehicleAssignmentPreparation {
+  rpc PrepareAssignment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vehicle availability lookup.
+service VehicleAvailabilityLookup {
+  rpc FindAvailability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vehicle inspection lookup.
+service VehicleInspectionLookup {
+  rpc FindInspection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vehicle service history.
+service VehicleServiceHistory {
+  rpc FindHistory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Vehicle suitability evaluation.
+service VehicleSuitabilityEvaluation {
+  rpc EvaluateSuitability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

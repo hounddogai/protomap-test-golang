@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.warehousing.v1;
+option go_package = "example.com/protomap-fixtures/gen/warehousing;warehousingpb";
+import "common/common.proto";
+
+// Bin occupancy lookup.
+service BinOccupancyLookup {
+  rpc FindOccupancy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Count discrepancy assessment.
+service CountDiscrepancyAssessment {
+  rpc AssessDiscrepancy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Count scope selection.
+service CountScopeSelection {
+  rpc SelectScope(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Dock appointment lookup.
+service DockAppointmentLookup {
+  rpc FindAppointment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Inbound manifest validation.
+service InboundManifestValidation {
+  rpc ValidateManifest(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pick inventory validation.
+service PickInventoryValidation {
+  rpc ValidateInventory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pick route calculation.
+service PickRouteCalculation {
+  rpc CalculateRoute(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pick task preparation.
+service PickTaskPreparation {
+  rpc PrepareTasks(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Pick wave lookup.
+service PickWaveLookup {
+  rpc FindWave(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Putaway location selection.
+service PutawayLocationSelection {
+  rpc SelectLocation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Receiving capacity assessment.
+service ReceivingCapacityAssessment {
+  rpc AssessCapacity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Slotting assignment preparation.
+service SlottingAssignmentPreparation {
+  rpc PrepareAssignment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Slotting velocity assessment.
+service SlottingVelocityAssessment {
+  rpc AssessVelocity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Storage compatibility validation.
+service StorageCompatibilityValidation {
+  rpc ValidateCompatibility(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Storage zone lookup.
+service StorageZoneLookup {
+  rpc FindZones(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Warehouse count adjustment.
+service WarehouseCountAdjustment {
+  rpc PrepareAdjustment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Warehouse cycle count coordination.
+service WarehouseCycleCountCoordination {
+  rpc Count(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Warehouse inbound coordination.
+service WarehouseInboundCoordination {
+  rpc Receive(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Warehouse picking coordination.
+service WarehousePickingCoordination {
+  rpc Pick(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Warehouse slotting coordination.
+service WarehouseSlottingCoordination {
+  rpc Slot(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.procurement.v1;
+option go_package = "example.com/protomap-fixtures/gen/procurement;procurementpb";
+import "common/common.proto";
+
+// Procurement catalog lookup.
+service ProcurementCatalogLookup {
+  rpc FindItems(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Procurement price validation.
+service ProcurementPriceValidation {
+  rpc ValidatePrice(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase commitment preparation.
+service PurchaseCommitmentPreparation {
+  rpc PrepareCommitment(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase delivery assessment.
+service PurchaseDeliveryAssessment {
+  rpc AssessDelivery(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase order coordination.
+service PurchaseOrderCoordination {
+  rpc Purchase(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Purchase requisition coordination.
+service PurchaseRequisitionCoordination {
+  rpc Requisition(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Requisition approval selection.
+service RequisitionApprovalSelection {
+  rpc SelectApprover(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Requisition budget assessment.
+service RequisitionBudgetAssessment {
+  rpc AssessBudget(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Requisition policy validation.
+service RequisitionPolicyValidation {
+  rpc ValidatePolicy(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Sourcing award recommendation.
+service SourcingAwardRecommendation {
+  rpc RecommendAward(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier agreement lookup.
+service SupplierAgreementLookup {
+  rpc FindAgreement(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier capability lookup.
+service SupplierCapabilityLookup {
+  rpc FindCapabilities(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier delivery history.
+service SupplierDeliveryHistory {
+  rpc FindHistory(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier offer comparison.
+service SupplierOfferComparison {
+  rpc CompareOffers(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier performance coordination.
+service SupplierPerformanceCoordination {
+  rpc Evaluate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier qualification assessment.
+service SupplierQualificationAssessment {
+  rpc AssessQualification(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier quality assessment.
+service SupplierQualityAssessment {
+  rpc AssessQuality(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier remediation planning.
+service SupplierRemediationPlanning {
+  rpc PlanRemediation(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier risk evaluation.
+service SupplierRiskEvaluation {
+  rpc EvaluateRisk(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Supplier sourcing coordination.
+service SupplierSourcingCoordination {
+  rpc Source(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+package fixture.taxation.v1;
+option go_package = "example.com/protomap-fixtures/gen/taxation;taxationpb";
+import "common/common.proto";
+
+// Exemption certificate lookup.
+service ExemptionCertificateLookup {
+  rpc FindCertificate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Exemption evidence recording.
+service ExemptionEvidenceRecording {
+  rpc RecordEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Exemption scope resolution.
+service ExemptionScopeResolution {
+  rpc ResolveScope(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Exemption validity assessment.
+service ExemptionValidityAssessment {
+  rpc AssessValidity(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax amount calculation.
+service TaxAmountCalculation {
+  rpc CalculateTax(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax audit coordination.
+service TaxAuditCoordination {
+  rpc Audit(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax audit response preparation.
+service TaxAuditResponsePreparation {
+  rpc PrepareResponse(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax correction calculation.
+service TaxCorrectionCalculation {
+  rpc CalculateCorrection(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax determination coordination.
+service TaxDeterminationCoordination {
+  rpc Determine(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax evidence lookup.
+service TaxEvidenceLookup {
+  rpc FindEvidence(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax exemption coordination.
+service TaxExemptionCoordination {
+  rpc ApplyExemption(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax filing coordination.
+service TaxFilingCoordination {
+  rpc File(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax jurisdiction lookup.
+service TaxJurisdictionLookup {
+  rpc FindJurisdiction(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax liability aggregation.
+service TaxLiabilityAggregation {
+  rpc AggregateLiability(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax period lookup.
+service TaxPeriodLookup {
+  rpc FindPeriod(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax product classification.
+service TaxProductClassification {
+  rpc ClassifyProduct(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax rate lookup.
+service TaxRateLookup {
+  rpc FindRate(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax return validation.
+service TaxReturnValidation {
+  rpc ValidateReturn(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax submission preparation.
+service TaxSubmissionPreparation {
+  rpc PrepareSubmission(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
+
+// Tax variance assessment.
+service TaxVarianceAssessment {
+  rpc AssessVariance(fixture.common.v1.Request) returns (fixture.common.v1.Response);
+}
